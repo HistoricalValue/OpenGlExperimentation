@@ -13,24 +13,29 @@
 namespace my { namespace gl { namespace textures {
 
 	namespace TextureUnitUtil {
+
+		typedef GLenum									TextureUnitId;
 	
 		__MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL__LINKAGE
-		bool 											IsValid (GLenum const textureUnit);
+		bool 											IsValid (TextureUnitId textureUnit);
 		
 		__MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL__LINKAGE
-		bool											IsActive (GLenum const textureUnit);
+		bool											IsActive (TextureUnitId textureUnit);
 		
+		__MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL__LINKAGE
+		TextureUnitId									GetActive (void);
+
 		__MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL__LINKAGE 
-		void											Activate (GLenum const textureUnit);
+		void											Activate (TextureUnitId textureUnit);
 		
 		__MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL__LINKAGE
-		void											ActivateIfInactive (GLenum const textureUnit);
+		void											ActivateIfInactive (TextureUnitId textureUnit);
 		
 		__MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL__LINKAGE
-		void											Deactivate (GLenum const textureUnit);
+		void											Deactivate (TextureUnitId textureUnit);
 		
 		__MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL__LINKAGE
-		void											DeactivateIfActive (GLenum const textureUnit);
+		void											DeactivateIfActive (TextureUnitId textureUnit);
 		
 	} // namespace TextureUnitUtil
 

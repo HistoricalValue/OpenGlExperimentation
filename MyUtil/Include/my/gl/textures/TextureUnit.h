@@ -1,16 +1,20 @@
 #ifndef __MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT__H__
 #define __MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT__H__
 
-#include "MyUtil.h"
+#include "my/gl/textures/TextureUnit_fwd.h"
 #include "MyOpenGLUtils.h"
+#include "my/gl/textures/TextureUnitUtil.h"
+#include "my/gl/textures/TextureUnitManager.h"
 
 #include "PConfigurations.h"
 
 namespace my { namespace gl { namespace textures {
 
+	using TextureUnitUtil::TextureUnitId;
+
 	class MYUTIL_API TextureUnit {
 	public:
-		
+
 		P_INLINE										TextureUnit (TextureUnit const&);
 		P_INLINE										~TextureUnit (void);
 														
@@ -22,9 +26,12 @@ namespace my { namespace gl { namespace textures {
 		P_INLINE void									Deactivate (void);
 		P_INLINE void									DeactivateIfActive (void);
 
-		P_INLINE										TextureUnit (GLenum const& textureUnit); // TODO make private
+		P_INLINE TextureUnitId							GetId (void) const;
+
 	private:
-		
+		friend TextureUnit& TextureUnitManager::GetUnit (TextureUnitId const&);
+
+		P_INLINE										TextureUnit (TextureUnitId const& textureUnit);
 		P_INLINE void									operator = (TextureUnit const&);
 		
 		enum openglutil::GlConst const					textureUnit;

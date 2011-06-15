@@ -128,9 +128,11 @@
     <ClInclude Include="Include\my\gl\shapes\Vertex_inl.h" />
     <ClInclude Include="Include\my\gl\textures\TextureUnit.h" />
     <ClInclude Include="Include\my\gl\textures\TextureUnitManager.h" />
+    <ClInclude Include="Include\my\gl\textures\TextureUnitManager_fwd.h" />
     <ClInclude Include="Include\my\gl\textures\TextureUnitManager_inl.h" />
     <ClInclude Include="Include\my\gl\textures\TextureUnitUtil.h" />
     <ClInclude Include="Include\my\gl\textures\TextureUnitUtil_inl.h" />
+    <ClInclude Include="Include\my\gl\textures\TextureUnit_fwd.h" />
     <ClInclude Include="Include\my\gl\textures\TextureUnit_inl.h" />
     <ClInclude Include="Include\stdafx.h" />
     <ClInclude Include="Include\targetver.h" />
@@ -170,8 +172,9 @@
     <ClCompile Include="Source\my\gl\shapes\Triangle.cpp" />
     <ClCompile Include="Source\my\gl\shapes\Vertex.cpp" />
     <ClCompile Include="Source\my\gl\shapes\VertexData.cpp" />
-    <ClCompile Include="Source\my\gl\texture\TextureUnit.cpp" />
-    <ClCompile Include="Source\my\gl\texture\TextureUnitUtil.cpp" />
+    <ClCompile Include="Source\my\gl\textures\TextureUnit.cpp" />
+    <ClCompile Include="Source\my\gl\textures\TextureUnitManager.cpp" />
+    <ClCompile Include="Source\my\gl\textures\TextureUnitUtil.cpp" />
     <ClCompile Include="Source\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

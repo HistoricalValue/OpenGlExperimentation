@@ -25,9 +25,11 @@ CMyUtil::CMyUtil()
 namespace my {
 
 	void Initialise (void) {
+		gl::textures::TextureUnitManager::Initialise();
 	}
 
 	void CleanUp (void) {
+		gl::textures::TextureUnitManager::CleanUp();
 	}
 
 } // namespace my

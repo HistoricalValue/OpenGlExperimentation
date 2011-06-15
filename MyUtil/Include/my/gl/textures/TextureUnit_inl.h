@@ -24,7 +24,6 @@ namespace my { namespace gl { namespace textures {
 		
 	P_INLINE
 	TextureUnit::~TextureUnit (void) {
-		DeactivateIfActive();
 	}
 	
 	P_INLINE

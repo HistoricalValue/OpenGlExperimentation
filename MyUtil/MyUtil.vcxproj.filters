@@ -213,6 +213,12 @@
     <ClInclude Include="Include\my\gl\textures\TextureUnitManager_inl.h">
       <Filter>Header Files\my\gl\textures</Filter>
     </ClInclude>
+    <ClInclude Include="Include\my\gl\textures\TextureUnitManager_fwd.h">
+      <Filter>Header Files\my\gl\textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\textures\TextureUnit_fwd.h">
+      <Filter>Header Files\my\gl\textures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\MyLogger.cpp">
@@ -293,14 +299,17 @@
     <ClCompile Include="Source\my\gl\shapes\Nothing.cpp">
       <Filter>Source Files\my\gl\shapes</Filter>
     </ClCompile>
-    <ClCompile Include="Source\my\gl\texture\TextureUnit.cpp">
-      <Filter>Source Files\my\gl\textures</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\my\gl\texture\TextureUnitUtil.cpp">
-      <Filter>Source Files\my\gl\textures</Filter>
-    </ClCompile>
     <ClCompile Include="Source\stdafx.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\textures\TextureUnit.cpp">
+      <Filter>Source Files\my\gl\textures</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\textures\TextureUnitUtil.cpp">
+      <Filter>Source Files\my\gl\textures</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\textures\TextureUnitManager.cpp">
+      <Filter>Source Files\my\gl\textures</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

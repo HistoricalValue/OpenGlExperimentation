@@ -347,7 +347,7 @@ namespace my {
 			GLbyte* textureData(NULL); {
 				using namespace gl::textures;
 
-				TextureUnit tu(GL_TEXTURE1);
+				TextureUnit tu(TextureUnitManager::GetUnit(GL_TEXTURE1));
 				tu.Activate();
 				TextureUnit _tu(tu);
 				tu.IsValid(); tu.IsActive();

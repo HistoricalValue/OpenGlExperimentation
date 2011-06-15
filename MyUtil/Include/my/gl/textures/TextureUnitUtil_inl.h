@@ -15,7 +15,7 @@ namespace my { namespace gl { namespace textures {
 
 
 		P_INLINE
-		bool IsValid (GLenum const textureUnit) {
+		bool IsValid (TextureUnitId const textureUnit) {
 			return false
 				|| textureUnit == GL_TEXTURE0	|| textureUnit == GL_TEXTURE1
 				|| textureUnit == GL_TEXTURE2	|| textureUnit == GL_TEXTURE3
@@ -37,40 +37,44 @@ namespace my { namespace gl { namespace textures {
 		}
 		
 		P_INLINE
-		bool IsActive (GLenum const textureUnit) {
+		bool IsActive (TextureUnitId const textureUnit) {
 			PASSERT(IsValid(textureUnit))
-			
+
+			return GetActive() == textureUnit;
+		}
+
+		P_INLINE
+		TextureUnitId GetActive (void) {
 			GLint activeTextureUnit(0xffffffff);
 			
 			glGetIntegerv(GL_ACTIVE_TEXTURE, &activeTextureUnit);
 			
 			PASSERT(activeTextureUnit != 0xffffffff);
 			PASSERT(IsValid(activeTextureUnit));
-			
-			return activeTextureUnit == textureUnit;
-		}
 
+			return activeTextureUnit;
+		}
 		
 		P_INLINE
-		void Activate (GLenum const textureUnit) {
+		void Activate (TextureUnitId const textureUnit) {
 			PASSERT(!IsActive(textureUnit)) // -> IsValid
 			glActiveTexture(textureUnit);
 		}
 		
 		P_INLINE
-		void ActivateIfInactive (GLenum const textureUnit) {
+		void ActivateIfInactive (TextureUnitId const textureUnit) {
 			if (!IsActive(textureUnit)) // -> IsValid
 				glActiveTexture(textureUnit);
 		}
 		
 		P_INLINE
-		void Deactivate (GLenum const textureUnit) {
+		void Deactivate (TextureUnitId const textureUnit) {
 			PASSERT(IsActive(textureUnit)) // -> IsValid
 			glActiveTexture(GL_TEXTURE0);
 		}
 		
 		P_INLINE
-		void DeactivateIfActive (GLenum const textureUnit) {
+		void DeactivateIfActive (TextureUnitId const textureUnit) {
 			if (IsActive(textureUnit)) // -> IsValid
 				glActiveTexture(GL_TEXTURE0);
 		}

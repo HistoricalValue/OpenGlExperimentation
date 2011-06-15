@@ -26,6 +26,8 @@
 #include "my/gl/extensions/ExtensionManager.h"
 
 #include "my/gl/textures/TextureUnit.h"
+#include "my/gl/textures/TextureUnitManager.h"
 #include "my/gl/textures/textureUnitUtil.h"
+
 
 #endif // __MY_UTIL__MY__GL__MY_GL__H__
