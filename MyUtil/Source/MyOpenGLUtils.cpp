@@ -78,7 +78,7 @@ namespace my { namespace openglutil {
 					(i * (1 + 1))	// \t and \n
 					+ 1);			// EOS
 			// Get static buffer for string
-			LPTSTR message(codeshare::StaticBuffer::AsArrayOf<TCHAR>(available));
+			LPTSTR message(codeshare::utilities::GlobalSingleAllocationBuffer::Get().AsArrayOf<TCHAR>(available));
 
 			// EOS reserved
 			--available;
@@ -116,7 +116,7 @@ namespace my { namespace openglutil {
 			GLsizei infoLogLength(0);
 			(*paramGetter)(object, infoLogLengthParameterName, &infoLogLength);
 			PASSERT(infoLogLength > 0)
-			GLchar* const infoLog(codeshare::StaticBuffer::AsArrayOf<GLchar>(infoLogLength + 1));
+			GLchar* const infoLog(codeshare::utilities::GlobalSingleAllocationBuffer::Get().AsArrayOf<GLchar>(infoLogLength + 1));
 			lastInfoLogLength = infoLogLength;
 			GLsizei actuallyWritten(0);
 			(*infoLogGetter)(object, infoLogLength + 1, &actuallyWritten, &infoLog[0]);
@@ -124,7 +124,7 @@ namespace my { namespace openglutil {
 		}
 
 		static void ReleaseInfoLog (void) {
-			codeshare::StaticBuffer::ReleaseArrayOf<GLchar>(lastInfoLogLength + 1);
+			codeshare::utilities::GlobalSingleAllocationBuffer::Get().ReleaseArrayOf<GLchar>(lastInfoLogLength + 1);
 		}
 	}
 

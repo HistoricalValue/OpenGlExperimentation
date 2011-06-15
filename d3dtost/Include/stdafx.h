@@ -50,7 +50,7 @@
 
 #include "PPointerUtilities.h"
 #include "PCString.h"
-#include "PStaticBuffer.h"
+#include "PSingleAllocationBuffer.h"
 #include "PStaticAssert.h"
 #include "PUtilitiesDSO.h"
 #include "Pnewdelete.h"
@@ -58,6 +58,7 @@
 #include "PFunctors_inl.h"
 #include "PProtectedClass_inl.h"
 #include "PSystem.h"
+#include "PGlobalSingleAllocationBuffer.h"
 
 namespace d3dtost {
 	extern LPWSTR ConvertErrorMessage (char const* const msg);

@@ -8,9 +8,9 @@ in vec4		texcoord;
 out vec4	interpolatedColour;
 out	vec4	textureCoordinate;
 
-const float WORLD_WIDTH		= 1000.f;
+const float WORLD_WIDTH		= 2000.f;
 const float WW				= WORLD_WIDTH;
-const float width			= ( WORLD_WIDTH * 0.125f * 3);	// 80%
+const float width			= ( WORLD_WIDTH * 0.125f * 2);	// 2/8
 const float near			= WORLD_WIDTH * 4 * 2 * 0.125;
 
 float sine = sin(radians(axyc[0]));
@@ -23,25 +23,21 @@ void main (void) {
 			radians(axyc[0]),
 			radians(axyc[3]));
 	
-	mat4 rot = mat4(					
+	mat4 rotx = mat4(					
 				1.f,	0.f,		0.f,		0.f,
 				0.f,	cosine,		sine,		0.f,
 				0.f,	-sine,		cosine,		0.f,
-				0.f,	0.f,		0.f,		1.f)
-				*
-				mat4(
+				0.f,	0.f,		0.f,		1.f);
+	mat4 roty = mat4(
 				cosine,	0.f,	-sine,		0.f,
 				0.f,	1.f,	0.f,		0.f,
 				sine,	0.f,	cosine,		0.f,
-				0.f,	0.f,	0.f,		1.f
-				)
-				*
-				mat4(
+				0.f,	0.f,	0.f,		1.f);
+	mat4 rotz = mat4(
 				cosine,		sine,	0.f,	0.f,
 				-sine,		cosine,	0.f,	0.f,
 				0.f,		0.f,	1.f,	0.f,
-				0.f,		0.f,	0.f,	1.f
-				);
+				0.f,		0.f,	0.f,	1.f);
 
 	vec4 trans = vec4(-sine * width, 0, 0, 0);
 
@@ -51,8 +47,12 @@ void main (void) {
 						0,					0,	0,				1) ;
 
 	vec4 pos = position;
-//	pos *=  rot;
-	pos += trans;
+	pos *=  rotx * mat4(
+				cos(radians(30.f)),	0.f,	-sin(radians(30.f)),		0.f,
+				0.f,	1.f,	0.f,		0.f,
+				sin(radians(30.f)),	0.f,	cos(radians(30.f)),		0.f,
+				0.f,	0.f,	0.f,		1.f);;
+//	pos += trans;
 	//pos *=  cam;
 	float mod = near/(pos.z + near);
 	//float zmod = (far + near - 2*far*near/zdist) / (zdist * (far - near));

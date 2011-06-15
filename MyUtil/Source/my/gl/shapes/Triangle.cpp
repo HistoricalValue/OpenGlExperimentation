@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include "PPointerUtilities_inl.h"
 
 namespace _ {
 	static const size_t numberOfVertices(0x3u);
@@ -34,8 +35,23 @@ namespace my { namespace gl { namespace shapes {
 	}
 
 	VertexData* Triangle::GetVertexData (void* const memory, size_t const bytesize) const {
-		PASSERT(!"Not implemented")
-		return NULL;
+		using			codeshare::pointer_utilities::reinterpret_assign;
+		VertexData*		result				(NULL);
+		size_t const	requiredBytesize	(3 * sizeof(VertexData));
+
+		Colour const	colour1				(ColourFactory::Dimmer(colour));
+		Colour const	colour2				(colour);
+		Colour const	colour3				(ColourFactory::Brighter(colour));
+
+		if (bytesize >= requiredBytesize) {
+			reinterpret_assign(result, memory);
+
+			new(&result[0]) VertexData(a.xyzw(), colour1);
+			new(&result[1]) VertexData(b.xyzw(), colour2);
+			new(&result[2]) VertexData(c.xyzw(), colour3);
+		}
+
+		return result;
 	}
 
 	Triangle* Triangle::Clone (void* memory, size_t size) const {

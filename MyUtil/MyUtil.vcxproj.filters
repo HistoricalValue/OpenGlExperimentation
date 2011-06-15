@@ -210,13 +210,25 @@
     <ClInclude Include="Include\my\gl\textures\TextureUnitManager.h">
       <Filter>Header Files\my\gl\textures</Filter>
     </ClInclude>
-    <ClInclude Include="Include\my\gl\textures\TextureUnitManager_inl.h">
-      <Filter>Header Files\my\gl\textures</Filter>
-    </ClInclude>
     <ClInclude Include="Include\my\gl\textures\TextureUnitManager_fwd.h">
       <Filter>Header Files\my\gl\textures</Filter>
     </ClInclude>
     <ClInclude Include="Include\my\gl\textures\TextureUnit_fwd.h">
+      <Filter>Header Files\my\gl\textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\shapes\Plane.h">
+      <Filter>Header Files\my\gl\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\shapes\Texturable.h">
+      <Filter>Header Files\my\gl\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\shapes\TextureData.h">
+      <Filter>Header Files\my\gl\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\textures\TextureObject.h">
+      <Filter>Header Files\my\gl\textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\textures\TextureObjectManager.h">
       <Filter>Header Files\my\gl\textures</Filter>
     </ClInclude>
   </ItemGroup>
@@ -310,6 +322,9 @@
     </ClCompile>
     <ClCompile Include="Source\my\gl\textures\TextureUnitManager.cpp">
       <Filter>Source Files\my\gl\textures</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\shapes\Plane.cpp">
+      <Filter>Source Files\my\gl\shapes</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

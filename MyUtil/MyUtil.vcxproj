@@ -116,20 +116,24 @@
     <ClInclude Include="Include\my\gl\shapes\Line_inl.h" />
     <ClInclude Include="Include\my\gl\shapes\Nothing.h" />
     <ClInclude Include="Include\my\gl\shapes\Nothing_inl.h" />
+    <ClInclude Include="Include\my\gl\shapes\Plane.h" />
     <ClInclude Include="Include\my\gl\shapes\Shape.h" />
     <ClInclude Include="Include\my\gl\shapes\ShapeComposition.h" />
     <ClInclude Include="Include\my\gl\shapes\ShapeComposition_inl.h" />
     <ClInclude Include="Include\my\gl\shapes\SolidCube.h" />
+    <ClInclude Include="Include\my\gl\shapes\Texturable.h" />
+    <ClInclude Include="Include\my\gl\shapes\TextureData.h" />
     <ClInclude Include="Include\my\gl\shapes\Transformable.h" />
     <ClInclude Include="Include\my\gl\shapes\Triangle.h" />
     <ClInclude Include="Include\my\gl\shapes\Vertex.h" />
     <ClInclude Include="Include\my\gl\shapes\VertexData.h" />
     <ClInclude Include="Include\my\gl\shapes\VertexData_inl.h" />
     <ClInclude Include="Include\my\gl\shapes\Vertex_inl.h" />
+    <ClInclude Include="Include\my\gl\textures\TextureObject.h" />
+    <ClInclude Include="Include\my\gl\textures\TextureObjectManager.h" />
     <ClInclude Include="Include\my\gl\textures\TextureUnit.h" />
     <ClInclude Include="Include\my\gl\textures\TextureUnitManager.h" />
     <ClInclude Include="Include\my\gl\textures\TextureUnitManager_fwd.h" />
-    <ClInclude Include="Include\my\gl\textures\TextureUnitManager_inl.h" />
     <ClInclude Include="Include\my\gl\textures\TextureUnitUtil.h" />
     <ClInclude Include="Include\my\gl\textures\TextureUnitUtil_inl.h" />
     <ClInclude Include="Include\my\gl\textures\TextureUnit_fwd.h" />
@@ -139,6 +143,9 @@
     <ClInclude Include="Include\my\gl\extensions\ExtensionManager.h" />
     <ClCompile Include="Source\my\gl\shapes\Axes.cpp" />
     <ClCompile Include="Source\my\gl\shapes\ColourFactory.cpp" />
+    <ClCompile Include="Source\my\gl\shapes\Plane.cpp">
+      <FileType>CppCode</FileType>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dllmain.cpp">

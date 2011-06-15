@@ -15,6 +15,7 @@
 #include "my/gl/shapes/ColourFactory.h"
 #include "my/gl/shapes/Axes.h"
 #include "my/gl/shapes/Nothing.h"
+#include "my/gl/shapes/Plane.h"
 
 #include "my/gl/math/Matrix4x4.h"
 #include "my/gl/math/Vector4.h"

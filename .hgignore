@@ -1,8 +1,12 @@
 syntax: glob
 *.opensdf
 *.sdf
-Debug
-MyUtil/Debug
-d3dtost/Debug
-d3dtost/log.txt
 ipch
+d3dtost/log.txt
+Debug
+Release
+MyUtil/Debug
+MyUtil/Release
+d3dtost/Debug
+d3dtost/Release
+winappReference/Release

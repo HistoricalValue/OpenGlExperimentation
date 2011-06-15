@@ -5,6 +5,9 @@
 #include "my/gl/textures/TextureUnitUtil_inl.h"
 #include "my/gl/textures/TextureUnit_inl.h"
 
+
+#define DONT if (false)
+
 #define __NE()  PASSERT(!my::openglutil::GlErrorsHandled(&_::errorHandler))
 
 // #define __WITH_GL_IS_TEXTURE
@@ -16,7 +19,7 @@
 #endif
 
 namespace _ {
-	const static float WW(1000.f);
+	const static float WW(2000.f);
 
 	const static size_t VAOs(3);
 	const static size_t VBOs(6);
@@ -51,9 +54,9 @@ namespace _ {
 	static void* __last_static_buffer_allocation(NULL);
 	static size_t __last_static_buffer_allocation_size(0);
 	P_INLINE
-	static void* AllocateStaticBufferMemory (size_t const size) {
+	static void* AllocateSingleAllocationBufferMemory (size_t const size) {
 
-		void* const result(codeshare::StaticBuffer::Allocate(size));
+		void* const result(codeshare::utilities::GlobalSingleAllocationBuffer::Get().Allocate(size));
 
 		P_DEBUG_STMT(__last_static_buffer_allocation = result;)
 		P_DEBUG_STMT(__last_static_buffer_allocation_size = size;)
@@ -62,10 +65,10 @@ namespace _ {
 	}
 
 	P_INLINE
-	static void* ReallocateStaticBufferMemory (size_t const size) {
+	static void* ReallocateSingleAllocationBufferMemory (size_t const size) {
 		P_DEBUG_STMT(__last_static_buffer_allocation_size = size;)
 
-		void* const result(codeshare::StaticBuffer::Reallocate(size));
+		void* const result(codeshare::utilities::GlobalSingleAllocationBuffer::Get().Reallocate(size));
 
 		P_DEBUG_STMT(__last_static_buffer_allocation = result;)
 
@@ -73,9 +76,9 @@ namespace _ {
 	}
 
 	P_INLINE
-	static void DeallocateStaticBufferMemory (void* ptr) {
+	static void DeallocateSingleAllocationBufferMemory (void* ptr) {
 		PASSERT(ptr == __last_static_buffer_allocation)
-		codeshare::StaticBuffer::ReleaseArrayOf<char>(__last_static_buffer_allocation_size);
+		codeshare::utilities::GlobalSingleAllocationBuffer::Get().ReleaseArrayOf<char>(__last_static_buffer_allocation_size);
 	}
 
 	static const float FLOAT_EQUALITY_MARGIN(1e-6f);
@@ -115,14 +118,14 @@ namespace _ {
 
 		size_t const count		(shape.GetNumberOfVertices());
 		size_t const bytesize	(std::max(count * sizeof(VertexData), 1u));
-		void* const _data		(_::AllocateStaticBufferMemory(bytesize));
+		void* const _data		(_::AllocateSingleAllocationBufferMemory(bytesize));
 
 		VertexData* const data	(shape.GetVertexData(_data, bytesize));
 		PASSERT(data != NULL)
 
 		glBufferData(GL_ARRAY_BUFFER, bytesize, data, GL_STATIC_DRAW); __NE()
 
-		_::DeallocateStaticBufferMemory(_data);
+		_::DeallocateSingleAllocationBufferMemory(_data);
 
 		glVertexAttribPointer(OpenGL::VAI_POSITION, 4, GL_FLOAT, normalised, VertexData::Stride(), VertexData::PositionOffsetPointer()); __NE()
 		glVertexAttribPointer(OpenGL::VAI_COLOUR, 4, GL_FLOAT, normalised, VertexData::Stride(), VertexData::ColourOffsetPointer()); __NE()
@@ -137,9 +140,10 @@ namespace _ {
 		using namespace my::gl::shapes;
 		using namespace my::gl::math;
 
-	//	shape.TranslateZ(- _::WW * 0.125f * 4);
-	//	shape.RotateY(M_PI/18.f);
-	//	shape.RotateX(-M_PI/18.f);
+	//	shape.TranslateZ( _::WW * 0.125f * 2);
+	//	shape.RotateY(M_PI/6.f);
+	//	shape.RotateX(-M_PI/4.f);
+	//	shape.TranslateY(_::WW * 0.125f * 1);
 	}
 }
 
@@ -193,6 +197,7 @@ namespace my {
 			}
 		
 			// Draw Triangles
+		//	DONT
 			{
 				PASSERT(glIsVertexArray(dd.vertexArrayIds[2]) == GL_TRUE)
 				glBindVertexArray(dd.vertexArrayIds[2]); __NE()
@@ -276,7 +281,7 @@ namespace my {
 							//	nothing
 							);
 						
-						shape.Scale(_::WW);
+						shape.Scale(500.f);
 						_::ApplyCamera(shape);
 						_::SetAttribute(vertexArrayIds[1], bufferIds[3], shape, POINTS_NORMALISED);
 						numberOfPoints = shape.GetNumberOfVertices();
@@ -289,8 +294,6 @@ namespace my {
 					PASSERT(SolidCube::GetSolidCubeNumberOfVertices() == 36u)
 					
 					Shape*								shapesArray[7];
-					shapesArray[0] = (Shape*)0xdeadfeed;
-					shapesArray[6] = (Shape*)0xb00bcafe;
 
 					SolidCube							companion0;
 					SolidCube							companion1;
@@ -298,27 +301,25 @@ namespace my {
 					SolidCube							companion3;
 					SolidCube							companion4;
 
-					ShapeComposition					companions(&shapesArray[1], sizeof(shapesArray) - 2*sizeof(shapesArray[0]));
+					ShapeComposition					companions(&shapesArray[0], sizeof(shapesArray));
 					companions.Add(&companion0);
 					companions.Add(&companion1);
 					companions.Add(&companion2);
 					companions.Add(&companion3);
 					companions.Add(&companion4);
-					PASSERT(shapesArray[0] == (Shape*)0xdeadfeed)
-					PASSERT(shapesArray[6] == (Shape*)0xb00bcafe)
-					PASSERT(shapesArray[1] == &companion0)
-					PASSERT(shapesArray[2] == &companion1)
-					PASSERT(shapesArray[3] == &companion2)
-					PASSERT(shapesArray[4] == &companion3)
-					PASSERT(shapesArray[5] == &companion4)
+					PASSERT(shapesArray[0] == &companion0)
+					PASSERT(shapesArray[1] == &companion1)
+					PASSERT(shapesArray[2] == &companion2)
+					PASSERT(shapesArray[3] == &companion3)
+					PASSERT(shapesArray[4] == &companion4)
 
-					companions.Scale( 0.125f * _::WW);
-					companion0.Adjust(Vector4::New(-3.f  * 0.25f * _::WW, 0.f, 0.f, 0.f));
-					companion1.Adjust(Vector4::New(-1.5f * 0.25f * _::WW, 0.f, 0.f, 0.f));
-					companion2.Adjust(Vector4::New(-0.f  * 0.25f * _::WW, 0.f, 0.f, 0.f));
-					companion3.Adjust(Vector4::New( 1.5f * 0.25f * _::WW, 0.f, 0.f, 0.f));
-					companion4.Adjust(Vector4::New( 3.f  * 0.25f * _::WW, 0.f, 0.f, 0.f));
-					companions.Adjust(Vector4::New(0.f, 0.125f * _::WW, 0.f, 0.f));
+					companions.Scale( 125.f);
+					companion0.Adjust(Vector4::New(-3.f  * 250.f, 0.f, 0.f, 0.f));
+					companion1.Adjust(Vector4::New(-1.5f * 250.f, 0.f, 0.f, 0.f));
+					companion2.Adjust(Vector4::New(-0.f  * 250.f, 0.f, 0.f, 0.f));
+					companion3.Adjust(Vector4::New( 1.5f * 250.f, 0.f, 0.f, 0.f));
+					companion4.Adjust(Vector4::New( 3.f  * 250.f, 0.f, 0.f, 0.f));
+					companions.Adjust(Vector4::New(0.f, 125.f, 0.f, 0.f));
 
 					companion0.SetColour(ColourFactory::LightRed());
 					companion1.SetColour(ColourFactory::LightGreen());
@@ -326,12 +327,20 @@ namespace my {
 					companion3.SetColour(ColourFactory::LightYellow());
 					companion4.SetColour(ColourFactory::LightPurple());
 
+					Plane plane(ColourFactory::LightTyal());
+					plane.RotateX(M_PI / 2.f);
+					plane.TranslateY(-1.0f);
+					plane.ScaleZ(125.f * 2);
+					plane.ScaleX(125.f * 5);
+					companions.Add(&plane);
+
 					Nothing								nothing;
 					{
 						Shape& shape(
 						//	nothing
 							companions
 						//	companion0
+						//	plane
 							);
 
 					//	shape.Scale(_::WW / 10.f);
@@ -347,14 +356,6 @@ namespace my {
 			GLbyte* textureData(NULL); {
 				using namespace gl::textures;
 
-				TextureUnit tu(TextureUnitManager::GetUnit(GL_TEXTURE1));
-				tu.Activate();
-				TextureUnit _tu(tu);
-				tu.IsValid(); tu.IsActive();
-				tu.ActivateIfInactive();
-				tu.Deactivate();
-				tu.DeactivateIfActive();
-
 				__ASSERT_GL_IS_TEXTURE(textureIds[0])
 				glBindTexture(GL_TEXTURE_2D, textureIds[0]); __NE()
 
@@ -365,7 +366,7 @@ namespace my {
 
 				textureData = (glt::ReadTGABits(
 						"../textures/stone.tga",
-						&_::AllocateStaticBufferMemory, &_::DeallocateStaticBufferMemory,
+						&_::AllocateSingleAllocationBufferMemory, &_::DeallocateSingleAllocationBufferMemory,
 						&format, &width, &height,
 						&depth, &imageSize,
 						&internalFormat
@@ -414,8 +415,8 @@ namespace my {
 							GL_UNSIGNED_BYTE,	// data type
 							textureData); __NE()
 
-					_::DeallocateStaticBufferMemory(textureData);
-					{ void* n = _::AllocateStaticBufferMemory(12); _::DeallocateStaticBufferMemory(n); }
+					_::DeallocateSingleAllocationBufferMemory(textureData);
+					{ void* n = _::AllocateSingleAllocationBufferMemory(12); _::DeallocateSingleAllocationBufferMemory(n); }
 				}
 				else
 					global::logger::Get().Warning(_T("Could not load texture Stone"));
