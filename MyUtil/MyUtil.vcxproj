@@ -1,0 +1,188 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{B5B97509-1F26-4D3E-AC89-C3B99CA25E55}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>MyUtil</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\Bloost.props" />
+    <Import Project="..\d3dtost\OpenGL.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\Bloost.props" />
+    <Import Project="..\d3dtost\OpenGL.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>.\Include;$(IncludePath)</IncludePath>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>.\Include;$(IncludePath)</IncludePath>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;MYUTIL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;MYUTIL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Include\Codeutils.h" />
+    <ClInclude Include="Include\dmalloc.h" />
+    <ClInclude Include="Include\glt.h" />
+    <ClInclude Include="Include\gl\glext.h" />
+    <ClInclude Include="Include\gl\wglext.h" />
+    <ClInclude Include="Include\MyGlobalInstances.h" />
+    <ClInclude Include="Include\MyList.h" />
+    <ClInclude Include="Include\MyLogger.h" />
+    <ClInclude Include="Include\MyGL.h" />
+    <ClInclude Include="Include\MyOpenGLUtils.h" />
+    <ClInclude Include="Include\MyOpenGLUtils_inl.h" />
+    <ClInclude Include="Include\MyString.h" />
+    <ClInclude Include="Include\MyUtil.h" />
+    <ClInclude Include="Include\MyWindows.h" />
+    <ClInclude Include="Include\MyWinUtils.h" />
+    <ClInclude Include="Include\my\gl\math\Matrix4x4.h" />
+    <ClInclude Include="Include\my\gl\math\Vector4.h" />
+    <ClInclude Include="Include\my\gl\math\Vector4_inl.h" />
+    <ClInclude Include="Include\my\gl\mygl.h" />
+    <ClInclude Include="Include\my\gl\shaders\ProgramBuilder.h" />
+    <ClInclude Include="Include\my\gl\shaders\ShaderCompiler.h" />
+    <ClInclude Include="Include\my\gl\shaders\ShaderManager.h" />
+    <ClInclude Include="Include\my\gl\shapes\Axes.h" />
+    <ClInclude Include="Include\my\gl\shapes\Colour.h" />
+    <ClInclude Include="Include\my\gl\shapes\ColourFactory.h" />
+    <ClInclude Include="Include\my\gl\shapes\Colour_inl.h" />
+    <ClInclude Include="Include\my\gl\shapes\Cube.h" />
+    <ClInclude Include="Include\my\gl\shapes\Line.h" />
+    <ClInclude Include="Include\my\gl\shapes\Line_inl.h" />
+    <ClInclude Include="Include\my\gl\shapes\Nothing.h" />
+    <ClInclude Include="Include\my\gl\shapes\Nothing_inl.h" />
+    <ClInclude Include="Include\my\gl\shapes\Shape.h" />
+    <ClInclude Include="Include\my\gl\shapes\ShapeComposition.h" />
+    <ClInclude Include="Include\my\gl\shapes\ShapeComposition_inl.h" />
+    <ClInclude Include="Include\my\gl\shapes\SolidCube.h" />
+    <ClInclude Include="Include\my\gl\shapes\Transformable.h" />
+    <ClInclude Include="Include\my\gl\shapes\Triangle.h" />
+    <ClInclude Include="Include\my\gl\shapes\Vertex.h" />
+    <ClInclude Include="Include\my\gl\shapes\VertexData.h" />
+    <ClInclude Include="Include\my\gl\shapes\VertexData_inl.h" />
+    <ClInclude Include="Include\my\gl\shapes\Vertex_inl.h" />
+    <ClInclude Include="Include\my\gl\textures\TextureUnit.h" />
+    <ClInclude Include="Include\my\gl\textures\TextureUnitManager.h" />
+    <ClInclude Include="Include\my\gl\textures\TextureUnitManager_inl.h" />
+    <ClInclude Include="Include\my\gl\textures\TextureUnitUtil.h" />
+    <ClInclude Include="Include\my\gl\textures\TextureUnitUtil_inl.h" />
+    <ClInclude Include="Include\my\gl\textures\TextureUnit_inl.h" />
+    <ClInclude Include="Include\stdafx.h" />
+    <ClInclude Include="Include\targetver.h" />
+    <ClInclude Include="Include\my\gl\extensions\ExtensionManager.h" />
+    <ClCompile Include="Source\my\gl\shapes\Axes.cpp" />
+    <ClCompile Include="Source\my\gl\shapes\ColourFactory.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\dllmain.cpp">
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</CompileAsManaged>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Source\glt.cpp" />
+    <ClCompile Include="Source\MyGlobalInstances.cpp" />
+    <ClCompile Include="Source\MyOpenGLUtils.cpp" />
+    <ClCompile Include="Source\MyUtil.cpp" />
+    <ClCompile Include="Source\MyLogger.cpp" />
+    <ClCompile Include="Source\MyWinUtils.cpp" />
+    <ClCompile Include="Source\my\gl\extensions\ExtensionManager.cpp" />
+    <ClCompile Include="Source\my\gl\math\Matrix4x4.cpp" />
+    <ClCompile Include="Source\my\gl\math\Vector4.cpp" />
+    <ClCompile Include="Source\my\gl\shaders\ProgramBuilder.cpp" />
+    <ClCompile Include="Source\my\gl\shaders\ShaderCompiler.cpp" />
+    <ClCompile Include="Source\my\gl\shaders\ShaderManager.cpp" />
+    <ClCompile Include="Source\my\gl\shapes\Colour.cpp" />
+    <ClCompile Include="Source\my\gl\shapes\Cube.cpp" />
+    <ClCompile Include="Source\my\gl\shapes\Line.cpp" />
+    <ClCompile Include="Source\my\gl\shapes\Nothing.cpp" />
+    <ClCompile Include="Source\my\gl\shapes\Shape.cpp" />
+    <ClCompile Include="Source\my\gl\shapes\ShapeComposition.cpp" />
+    <ClCompile Include="Source\my\gl\shapes\SolidCube.cpp" />
+    <ClCompile Include="Source\my\gl\shapes\Transformable.cpp" />
+    <ClCompile Include="Source\my\gl\shapes\Triangle.cpp" />
+    <ClCompile Include="Source\my\gl\shapes\Vertex.cpp" />
+    <ClCompile Include="Source\my\gl\shapes\VertexData.cpp" />
+    <ClCompile Include="Source\my\gl\texture\TextureUnit.cpp" />
+    <ClCompile Include="Source\my\gl\texture\TextureUnitUtil.cpp" />
+    <ClCompile Include="Source\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Codeshare\isi_branch\Utilities\Project\Utilities.vcxproj">
+      <Project>{cf84d42c-a3c4-4d56-9586-eff4fc3271ed}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

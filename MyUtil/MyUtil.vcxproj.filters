@@ -1,0 +1,306 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\my">
+      <UniqueIdentifier>{a51e66f5-74fd-461d-8916-ae8e0a114f38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\my\gl">
+      <UniqueIdentifier>{116589f3-7cb2-4c9e-b38f-fcd90d0029a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\my\gl\shaders">
+      <UniqueIdentifier>{a14478ca-f260-4be3-b00c-69cf53e7dfbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\my">
+      <UniqueIdentifier>{76ea3660-430e-4156-a243-567a74cc3ce7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\my\gl">
+      <UniqueIdentifier>{a342ddcc-a426-47df-98c2-70bcd422c42e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\my\gl\shaders">
+      <UniqueIdentifier>{6b537636-30b0-41fa-ab72-f3934165b03a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\my\gl\extensions">
+      <UniqueIdentifier>{b3f5374c-06d1-4efa-af13-0f9e21daf978}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\my\gl\extensions">
+      <UniqueIdentifier>{7beea7c8-26e0-4219-bc74-eb57771a9fd5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\gl">
+      <UniqueIdentifier>{268c4981-68b8-4b2c-8030-b87f927a052c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\my\gl\shapes">
+      <UniqueIdentifier>{d3711dc0-7851-488b-b771-ae15796f0e90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\my\gl\shapes">
+      <UniqueIdentifier>{c584a11d-9cbf-4192-b2fd-5e1cbcfb3942}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\my\gl\math">
+      <UniqueIdentifier>{328875f5-8dfd-46e3-9fce-25cadcc37f70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\my\gl\math">
+      <UniqueIdentifier>{163bb6d2-fab8-4a0b-bfd1-306ea9abf7bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\my\gl\textures">
+      <UniqueIdentifier>{ba91c39f-f931-4f4b-832e-705dba4e9e1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\my\gl\textures">
+      <UniqueIdentifier>{903b6379-abd0-4dda-bda4-8dc9dd532ece}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Include\Codeutils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dmalloc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\MyLogger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\MyUtil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\MyWindows.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\MyWinUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\MyString.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\MyList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\MyOpenGLUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\MyOpenGLUtils_inl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\shaders\ShaderManager.h">
+      <Filter>Header Files\my\gl\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\shaders\ShaderCompiler.h">
+      <Filter>Header Files\my\gl\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\extensions\ExtensionManager.h">
+      <Filter>Header Files\my\gl\extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\MyGlobalInstances.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\gl\glext.h">
+      <Filter>Header Files\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\gl\wglext.h">
+      <Filter>Header Files\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\shaders\ProgramBuilder.h">
+      <Filter>Header Files\my\gl\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\glt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\MyGL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\shapes\Cube.h">
+      <Filter>Header Files\my\gl\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\shapes\Transformable.h">
+      <Filter>Header Files\my\gl\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\math\Matrix4x4.h">
+      <Filter>Header Files\my\gl\math</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\shapes\Shape.h">
+      <Filter>Header Files\my\gl\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\math\Vector4.h">
+      <Filter>Header Files\my\gl\math</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\shapes\Vertex.h">
+      <Filter>Header Files\my\gl\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\shapes\Line.h">
+      <Filter>Header Files\my\gl\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\shapes\VertexData.h">
+      <Filter>Header Files\my\gl\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\shapes\Colour.h">
+      <Filter>Header Files\my\gl\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\math\Vector4_inl.h">
+      <Filter>Header Files\my\gl\math</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\shapes\Line_inl.h">
+      <Filter>Header Files\my\gl\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\shapes\Vertex_inl.h">
+      <Filter>Header Files\my\gl\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\shapes\VertexData_inl.h">
+      <Filter>Header Files\my\gl\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\shapes\SolidCube.h">
+      <Filter>Header Files\my\gl\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\shapes\Triangle.h">
+      <Filter>Header Files\my\gl\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\shapes\ShapeComposition.h">
+      <Filter>Header Files\my\gl\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\shapes\ShapeComposition_inl.h">
+      <Filter>Header Files\my\gl\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\shapes\ColourFactory.h">
+      <Filter>Header Files\my\gl\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\shapes\Colour_inl.h">
+      <Filter>Header Files\my\gl\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\shapes\Axes.h">
+      <Filter>Header Files\my\gl\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\shapes\Nothing.h">
+      <Filter>Header Files\my\gl\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\shapes\Nothing_inl.h">
+      <Filter>Header Files\my\gl\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\textures\TextureUnit.h">
+      <Filter>Header Files\my\gl\textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\textures\TextureUnit_inl.h">
+      <Filter>Header Files\my\gl\textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\textures\TextureUnitUtil.h">
+      <Filter>Header Files\my\gl\textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\textures\TextureUnitUtil_inl.h">
+      <Filter>Header Files\my\gl\textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\mygl.h">
+      <Filter>Header Files\my\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\textures\TextureUnitManager.h">
+      <Filter>Header Files\my\gl\textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\textures\TextureUnitManager_inl.h">
+      <Filter>Header Files\my\gl\textures</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\MyLogger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\MyUtil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\MyWinUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\MyOpenGLUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\shaders\ShaderCompiler.cpp">
+      <Filter>Source Files\my\gl\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\extensions\ExtensionManager.cpp">
+      <Filter>Source Files\my\gl\extensions</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\MyGlobalInstances.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\shaders\ProgramBuilder.cpp">
+      <Filter>Source Files\my\gl\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\shaders\ShaderManager.cpp">
+      <Filter>Source Files\my\gl\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\glt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\shapes\Cube.cpp">
+      <Filter>Source Files\my\gl\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\shapes\Transformable.cpp">
+      <Filter>Source Files\my\gl\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\math\Matrix4x4.cpp">
+      <Filter>Source Files\my\gl\math</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\shapes\Shape.cpp">
+      <Filter>Source Files\my\gl\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\math\Vector4.cpp">
+      <Filter>Source Files\my\gl\math</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\shapes\Colour.cpp">
+      <Filter>Source Files\my\gl\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\shapes\Line.cpp">
+      <Filter>Source Files\my\gl\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\shapes\Vertex.cpp">
+      <Filter>Source Files\my\gl\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\shapes\VertexData.cpp">
+      <Filter>Source Files\my\gl\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\shapes\SolidCube.cpp">
+      <Filter>Source Files\my\gl\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\shapes\Triangle.cpp">
+      <Filter>Source Files\my\gl\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\shapes\ShapeComposition.cpp">
+      <Filter>Source Files\my\gl\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\shapes\ColourFactory.cpp">
+      <Filter>Source Files\my\gl\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\shapes\Axes.cpp">
+      <Filter>Source Files\my\gl\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\shapes\Nothing.cpp">
+      <Filter>Source Files\my\gl\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\texture\TextureUnit.cpp">
+      <Filter>Source Files\my\gl\textures</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\texture\TextureUnitUtil.cpp">
+      <Filter>Source Files\my\gl\textures</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

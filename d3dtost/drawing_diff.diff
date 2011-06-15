@@ -1,0 +1,354 @@
+--- drawing.cpp	2011-06-02 20:22:39.415489100 +0300
++++ Source/drawing.cpp	2011-06-03 22:40:11.109111200 +0300
+@@ -3,13 +3,21 @@
+ 
+ #define __NE()  PASSERT(!my::openglutil::GlErrorsHandled(&_::errorHandler))
+ 
++// #define __WITH_GL_IS_TEXTURE
++
++#ifdef __WITH_GL_IS_TEXTURE
++#	define __ASSERT_GL_IS_TEXTURE(TEX_ID)	PASSERT(glIsTexture((TEX_ID)) == GL_TRUE)
++#else
++#	define __ASSERT_GL_IS_TEXTURE(TEX_ID)
++#endif
+ 
+ namespace _ {
+ 	struct DrawData {
+-		GLuint				vertexArrayIds[2];
+-		GLuint				bufferIds[5];
++		GLuint				vertexArrayIds[3];
++		GLuint				bufferIds[6];
+ 		GLuint				textureIds[1];
+ 		GLuint				numberOfPoints;
++		GLuint				numberOfWorldCubeLineSegments;
+ 		unsigned long int	startingTime;
+ 		unsigned long int	prevtime;
+ 	};
+@@ -96,7 +104,10 @@
+ 		using my::gl::extensions::ExtensionManager::glDisableVertexAttribArray;
+ 		using my::gl::extensions::ExtensionManager::glVertexAttrib1f;
+ 		using my::gl::extensions::ExtensionManager::glVertexAttrib4f;
+-//		using my::gl::extensions::ExtensionManager::glDepthRangef;
++		using my::gl::extensions::ExtensionManager::glDepthRangef;
++		using my::gl::extensions::ExtensionManager::glIsBuffer;
++		using my::gl::extensions::ExtensionManager::glIsVertexArray;
++		using my::gl::extensions::ExtensionManager::glIsTexture;
+ 
+ 
+ 		// ----------------------------
+@@ -444,6 +455,7 @@
+ 
+ #else
+ 
++				PASSERT(glIsVertexArray(dd.vertexArrayIds[0]) == GL_TRUE)
+ 				glBindVertexArray(dd.vertexArrayIds[0]); __NE()
+ 				glVertexAttrib4f(2,
+ 						_::GetRotationAngle(dd.startingTime, currtime),
+@@ -452,6 +464,16 @@
+ 						cam); __NE()
+ 				glDrawArrays(GL_TRIANGLES, 0, dd.numberOfPoints); __NE()
+ 
++	
++				PASSERT(glIsVertexArray(dd.vertexArrayIds[2]) == GL_TRUE)
++				glBindVertexArray(dd.vertexArrayIds[2]); __NE()
++				glVertexAttrib4f(2,
++						_::GetRotationAngle(dd.startingTime, currtime),
++						-0.0f,
++						0.0f,
++						cam); __NE()
++				glDrawArrays(GL_TRIANGLES, 0, dd.numberOfWorldCubeLineSegments); __NE()
++
+ #endif
+ 
+ 				(*bufferSwapper)(bufferSwapperClosure);
+@@ -470,25 +492,28 @@
+ #	define GROUP3
+ #endif
+ 
+-#define NORMALISING_FACTOR 100.f
++#define NORMALISING_FACTOR 70.f
+ 
+-#define COORDS(XYZ) 0.##XYZ##f, 0.##XYZ##f, 0.##XYZ##f
+-#define POINT(X,Y)	(X##.f/100.f), (Y##.f/100.f), 0.0f, 1.0f
+-#define P3(X,Y,Z)	(X##.f/NORMALISING_FACTOR), (Y##.f/NORMALISING_FACTOR), (Z##.f/NORMALISING_FACTOR), 1.0f
++#define POINTS_NORMALISED GL_FALSE
++#define P3(X,Y,Z)	( X##.f ), ( Y##.f ), ( Z##.f ), ( NORMALISING_FACTOR )
++#define P33(X,Y,Z)	( X##.f * NORMALISING_FACTOR ), ( Y##.f * NORMALISING_FACTOR ), ( Z##.f * NORMALISING_FACTOR), ( 1.f )
++#define POINT(X,Y)	P3(X, Y, 0)
+ #undef RGB
+-#define RGB(R,G,B)	0.##R##f, 0.##G##f, 0.##B##f, 1.0f
++#define RGB(R,G,B)	( R##.f / 10.f ), ( G##.f / 10.f ), ( B##.f / 10.f ), 1.0f
+ #define COLOR(R, G, B) R, G, B, 1.0f, R, G, B, 1.0f, R, G, B, 1.0f, R, G, B, 1.0f, R, G, B, 1.0f
+ #define POSCOL(X,Y,Z,COL) { { P3(X,Y,Z) } , { COL } }
+ 
+ 		// ----------------------------
+ 		void* setup (void) {
+ 			_::DrawData&		drawData					(*new _::DrawData);
+-			GLuint				(&vertexArrayIds)[2]		(drawData.vertexArrayIds);
+-			GLuint				(&bufferIds)[5]				(drawData.bufferIds);
++			GLuint				(&vertexArrayIds)[3]		(drawData.vertexArrayIds);
++			GLuint				(&bufferIds)[6]				(drawData.bufferIds);
+ 			GLuint				(&textureIds)[1]			(drawData.textureIds);
+ 			GLuint&				numberOfPoints				(drawData.numberOfPoints);
++			GLuint				&numberOfWorldCubeLineSegments	(drawData.numberOfWorldCubeLineSegments);
+ 			unsigned long int&	startingTime				(drawData.startingTime);
+ 			unsigned long int&	prevtime					(drawData.prevtime);
++			
+ 
+ 			startingTime									= codeshare::GetATimestamp();
+ 			prevtime										= startingTime;
+@@ -677,9 +702,11 @@
+ 			GLsizei const	stride				(sizeof(_::VertexData));
+ 
+ 			// Gen VAOs
++			P_STATIC_ASSERT(sizeof(vertexArrayIds)/sizeof(vertexArrayIds[0]) == 3)
+ 			glGenVertexArrays(sizeof(vertexArrayIds)/sizeof(vertexArrayIds[0]), &vertexArrayIds[0]); __NE()
+ 			
+ 			// Gen VBOs
++			P_STATIC_ASSERT(sizeof(bufferIds)/sizeof(bufferIds[0]) == 6)
+ 			glGenBuffers(sizeof(bufferIds)/sizeof(bufferIds[0]), &bufferIds[0]); __NE()
+ 
+ 			// create position-only and color-only data
+@@ -693,12 +720,15 @@
+ 			// upload data
+ 			// buffer#0: positions for shape#0
+ 			glBindBuffer(GL_ARRAY_BUFFER, bufferIds[0]); __NE()
++			PASSERT( glIsBuffer(bufferIds[0]) == GL_TRUE )
+ 			glBufferData(GL_ARRAY_BUFFER, sizeof(vertexPositions), &vertexPositions[0], GL_STATIC_DRAW); __NE()
+ 			// buffer#1: colors for shape#0
+ 			glBindBuffer(GL_ARRAY_BUFFER, bufferIds[1]); __NE()
++			PASSERT( glIsBuffer(bufferIds[1]) == GL_TRUE )
+ 			glBufferData(GL_ARRAY_BUFFER, sizeof(vertexColors), &vertexColors[0], GL_STATIC_DRAW); __NE()
+ 			// buffer#2: positions for shape#1
+ 			glBindBuffer(GL_ARRAY_BUFFER, bufferIds[2]); __NE()
++			PASSERT( glIsBuffer(bufferIds[2]) == GL_TRUE )
+ 			glBufferData(GL_ARRAY_BUFFER, sizeof(vertexPositions), &vertexPositions[0], GL_STATIC_DRAW); __NE()
+ 			// buffer#3: colors for shape#1
+ 			// change colours for second color buffer
+@@ -717,42 +747,102 @@
+ 				PASSERT( vertexColorsGrey[i].colour[3] == grey[3] )
+ 			}
+ 			glBindBuffer(GL_ARRAY_BUFFER, bufferIds[3]); __NE()
++			PASSERT( glIsBuffer(bufferIds[3]) == GL_TRUE )
+ 			glBufferData(GL_ARRAY_BUFFER, sizeof(vertexColorsGrey), &vertexColorsGrey[0], GL_STATIC_DRAW); __NE()
+ 
+ 
+-			//////////////////////////
++			/////////////////////////
+ 			// VAO#0: shape/colors #0
++			PASSERT(glIsVertexArray(vertexArrayIds[0]) == GL_TRUE)
+ 			glBindVertexArray(vertexArrayIds[0]); __NE()
+ 			// position data from buffer#0
++			PASSERT( glIsBuffer(bufferIds[0]) == GL_TRUE )
+ 			glBindBuffer(GL_ARRAY_BUFFER, bufferIds[0]); __NE()
+-			glVertexAttribPointer(0, 4, GL_FLOAT, GL_TRUE, stride, positionOffset); __NE()
++			glVertexAttribPointer(OpenGL::VAI_POSITION, 4, GL_FLOAT, POINTS_NORMALISED, stride, positionOffset); __NE()
+ 			// colour data from buffer#1
++			PASSERT( glIsBuffer(bufferIds[1]) == GL_TRUE )
+ 			glBindBuffer(GL_ARRAY_BUFFER, bufferIds[1]); __NE()
+-			glVertexAttribPointer(1, 4, GL_FLOAT, GL_TRUE, stride, colorOffset); __NE()
++			glVertexAttribPointer(OpenGL::VAI_COLOUR, 4, GL_FLOAT, POINTS_NORMALISED, stride, colorOffset); __NE()
+ 
+ 
+-			glEnableVertexAttribArray(0); __NE()
+-			glEnableVertexAttribArray(1); __NE()
++			glEnableVertexAttribArray(OpenGL::VAI_POSITION); __NE()
++			glEnableVertexAttribArray(OpenGL::VAI_COLOUR); __NE()
+ 
+ 
+ 			/////////////////////////
+ 			// VAO#1: shape/colors #1
++			PASSERT(glIsVertexArray(vertexArrayIds[1]) == GL_TRUE)
+ 			glBindVertexArray(vertexArrayIds[1]); __NE()
+ 			// position data from buffer#2
++			PASSERT( glIsBuffer(bufferIds[2]) == GL_TRUE )
+ 			glBindBuffer(GL_ARRAY_BUFFER, bufferIds[2]); __NE()
+-			glVertexAttribPointer(0, 4, GL_FLOAT, GL_TRUE, stride, positionOffset); __NE()
++			glVertexAttribPointer(OpenGL::VAI_POSITION, 4, GL_FLOAT, POINTS_NORMALISED, stride, positionOffset); __NE()
+ 			// colour data from buffer#3
++			PASSERT( glIsBuffer(bufferIds[3]) == GL_TRUE )
+ 			glBindBuffer(GL_ARRAY_BUFFER, bufferIds[3]); __NE()
+-			glVertexAttribPointer(1, 4, GL_FLOAT, GL_TRUE, stride, colorOffset); __NE()
++			glVertexAttribPointer(OpenGL::VAI_COLOUR, 4, GL_FLOAT, POINTS_NORMALISED, stride, colorOffset); __NE()
+ 
+ 
+-			glEnableVertexAttribArray(0); __NE()
+-			glEnableVertexAttribArray(1); __NE()
++			glEnableVertexAttribArray(OpenGL::VAI_POSITION); __NE()
++			glEnableVertexAttribArray(OpenGL::VAI_COLOUR); __NE()
+ 
+ 
++			///////////////////////////
++			// VAO#2: World container cube
++			{
++				_::VertexData data[] = {
++					{ { P33(-1,-1,-1) } , { WHITE } },
++					{ { P33(-1,-1, 1) } , { WHITE } },
++					//
++					{ { P33(-1,-1, 1) } , { WHITE } },
++					{ { P33( 1,-1, 1) } , { WHITE } },
++					//
++					{ { P33( 1,-1, 1) } , { WHITE } },
++					{ { P33( 1,-1,-1) } , { WHITE } },
++					//
++					{ { P33( 1,-1,-1) } , { WHITE } },
++					{ { P33(-1,-1,-1) } , { WHITE } },
++					////////////////////////////////
++					{ { P33(-1,-1,-1) } , { WHITE } },
++					{ { P33(-1, 1,-1) } , { WHITE } },
++					//
++					{ { P33(-1, 1,-1) } , { WHITE } },
++					{ { P33(-1, 1, 1) } , { WHITE } },
++					//
++					{ { P33(-1, 1, 1) } , { WHITE } },
++					{ { P33( 1, 1, 1) } , { WHITE } },
++					//
++					{ { P33( 1, 1, 1) } , { WHITE } },
++					{ { P33( 1, 1,-1) } , { WHITE } },
++					//
++					{ { P33( 1, 1,-1) } , { WHITE } },
++					{ { P33(-1, 1,-1) } , { WHITE } },
++					////////////////////////////////
++					{ { P33(-1,-1, 1) } , { WHITE } },
++					{ { P33(-1, 1, 1) } , { WHITE } },
++					////////////////////////////////
++					{ { P33( 1,-1, 1) } , { WHITE } },
++					{ { P33( 1, 1, 1) } , { WHITE } },
++					////////////////////////////////
++					{ { P33( 1,-1,-1) } , { WHITE } },
++					{ { P33( 1, 1,-1) } , { WHITE } },
++				};
++
++				glBindVertexArray(vertexArrayIds[2]); __NE()
++				PASSERT(glIsVertexArray(vertexArrayIds[2]) == GL_TRUE)
++				
++				glBindBuffer(GL_ARRAY_BUFFER, bufferIds[5]); __NE()
++				PASSERT( glIsBuffer(bufferIds[5]) == GL_TRUE )
++				
++				glBufferData(GL_ARRAY_BUFFER, sizeof(data), &data[0], GL_STATIC_DRAW); __NE()
++				
++				glVertexAttribPointer(OpenGL::VAI_POSITION, 4, GL_FLOAT, POINTS_NORMALISED, stride, positionOffset); __NE()
++				glVertexAttribPointer(OpenGL::VAI_COLOUR, 4, GL_FLOAT, POINTS_NORMALISED, stride, colorOffset); __NE()
++				
++				numberOfWorldCubeLineSegments = sizeof(data)/sizeof(data[0]);
++			}
+ 
+ 			glDepthFunc(
+-//				GL_NEVER
+ 				GL_LESS
+ //				GL_EQUAL
+ //				GL_LEQUAL
+@@ -760,7 +850,7 @@
+ ///				GL_NOTEQUAL
+ //				GL_GEQUAL
+ //				GL_ALWAYS
+-				);
++				); __NE()
+ 			glEnable(GL_DEPTH_TEST); __NE()
+ //			glEnable(GL_CULL_FACE); __NE()
+ 			glDisable(GL_CULL_FACE); __NE()
+@@ -782,7 +872,11 @@
+ 			GLbyte* textureData(NULL); {
+ 
+ 				P_STATIC_ASSERT(sizeof(textureIds) == sizeof(textureIds[0]))
++				P_STATIC_ASSERT(sizeof(textureIds) / sizeof(textureIds[0]) == 1)
++
+ 				glGenTextures(sizeof(textureIds)/sizeof(textureIds[0]), &textureIds[0]); __NE()
++
++				__ASSERT_GL_IS_TEXTURE(textureIds[0])
+ 				glBindTexture(GL_TEXTURE_2D, textureIds[0]); __NE()
+ 
+ 				GLint width(0), height(0), components(0);
+@@ -831,20 +925,20 @@
+ 
+ 					glTexImage2D(
+ 							GL_TEXTURE_2D,
+-							0,
+-							components,
++							0,					// mipmap level
++							components,			// internal format
+ 							width,
+ 							height,
+-							0,
+-							format,
+-							GL_UNSIGNED_BYTE,
++							0,					// border -- must be 0
++							format,				// data format
++							GL_UNSIGNED_BYTE,	// data type
+ 							textureData); __NE()
+ 
+ 
+ 
+ 					// Create a buffer with texture coordinates
+ 					float	textureCoordinates[4 * _numberOfPoints];
+-					memset(&textureCoordinates[0], 0x00, sizeof(textureCoordinates)/sizeof(textureCoordinates[0]));
++					memset(&textureCoordinates[0], 0x00, sizeof(textureCoordinates));
+ 					{	float*			tc		(&textureCoordinates[0]);
+ 						_::VertexData*	vdp		(&vertexPositions[0]);
+ 						for (size_t i(0); i < _numberOfPoints; ++i) {
+@@ -857,33 +951,42 @@
+ 
+ 							P_STATIC_ASSERT(sizeof(textureCoordinates) == sizeof(textureCoordinates)/sizeof(textureCoordinates[0])*4)
+ 							*tc++ =	static_cast<float>(
+-									_::eq(vx, -80.f/NORMALISING_FACTOR)?
++									_::eq(vx, -80.f)?
+ 										0.f
+-									:_::eq(vx, 80.f/NORMALISING_FACTOR)?
++									:_::eq(vx, 80.f)?
+ 										1.f//width
+ 									:
+ 										0.f
+ 									);
+ 							*tc++ = static_cast<float>(
+-									_::eq(vz, -60.f/NORMALISING_FACTOR)?
++									_::eq(vz, -60.f)?
+ 										0.f
+-									:_::eq(vz, 60.f/NORMALISING_FACTOR)?
++									:_::eq(vz, 60.f)?
+ 										1.f//height
+ 									:
+ 										0.f
+ 									);
++
++							PASSERT(tc[0] == 0.f)
++							PASSERT(tc[1] == 0.f)
++
+ 							tc += 2;
+ 						}
+ 					}
+ 
+ 					// Back to VAO#0
++					PASSERT(glIsVertexArray(vertexArrayIds[0]) == GL_TRUE)
+ 					glBindVertexArray(vertexArrayIds[0]); __NE()
++
+ 					// Buffer#4: texture coordinates
+ 					glBindBuffer(GL_ARRAY_BUFFER, bufferIds[4]); __NE()
++					PASSERT( glIsBuffer(bufferIds[4]) == GL_TRUE )
++
+ 					glBufferData(GL_ARRAY_BUFFER, sizeof(textureCoordinates), &textureCoordinates[0], GL_STATIC_DRAW); __NE()
+-					glVertexAttribPointer(3, 4, GL_FLOAT, GL_TRUE, 0, 0); __NE()
++
++					glVertexAttribPointer(OpenGL::VAI_TEXCOORD, 4, GL_FLOAT, GL_TRUE, 0, 0); __NE()
+ 					
+-					glEnableVertexAttribArray(3); __NE()
++					glEnableVertexAttribArray(OpenGL::VAI_TEXCOORD); __NE()
+ 				}
+ 				else
+ 					global::logger::Get().Warning(_T("Could not load texture Stone"));
+@@ -897,12 +1000,12 @@
+ 		void cleanup (void*& _drawData) {
+ 			{
+ 				_::DrawData&	drawData				(*static_cast<_::DrawData*>(_drawData));
+-				GLuint			(&vertexArrayIds)[2]	(drawData.vertexArrayIds);
+-				GLuint			(&bufferIds)[5]			(drawData.bufferIds);
++				GLuint			(&vertexArrayIds)[3]	(drawData.vertexArrayIds);
++				GLuint			(&bufferIds)[6]			(drawData.bufferIds);
+ 				GLuint			(&textureIds)[1]		(drawData.textureIds);
+ 
+-				P_STATIC_ASSERT(sizeof(vertexArrayIds)/sizeof(vertexArrayIds[0]) == 2)
+-				P_STATIC_ASSERT(sizeof(bufferIds)/sizeof(bufferIds[0]) == 5)
++				P_STATIC_ASSERT(sizeof(vertexArrayIds)/sizeof(vertexArrayIds[0]) == 3)
++				P_STATIC_ASSERT(sizeof(bufferIds)/sizeof(bufferIds[0]) == 6)
+ 
+ 				glDeleteBuffers(sizeof(bufferIds)/sizeof(bufferIds[0]), &bufferIds[0]); __NE()
+ 				glDeleteVertexArrays(sizeof(bufferIds)/sizeof(bufferIds[0]), &vertexArrayIds[0]); __NE()
