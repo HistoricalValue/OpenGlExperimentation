@@ -131,6 +131,7 @@
     <ClInclude Include="Include\my\gl\shapes\Vertex_inl.h" />
     <ClInclude Include="Include\my\gl\textures\TextureObject.h" />
     <ClInclude Include="Include\my\gl\textures\TextureObjectManager.h" />
+    <ClInclude Include="Include\my\gl\textures\TextureObject_inl.h" />
     <ClInclude Include="Include\my\gl\textures\TextureUnit.h" />
     <ClInclude Include="Include\my\gl\textures\TextureUnitManager.h" />
     <ClInclude Include="Include\my\gl\textures\TextureUnitManager_fwd.h" />
@@ -146,6 +147,7 @@
     <ClCompile Include="Source\my\gl\shapes\Plane.cpp">
       <FileType>CppCode</FileType>
     </ClCompile>
+    <ClInclude Include="Include\my\gl\textures\TextureData.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dllmain.cpp">
@@ -179,6 +181,8 @@
     <ClCompile Include="Source\my\gl\shapes\Triangle.cpp" />
     <ClCompile Include="Source\my\gl\shapes\Vertex.cpp" />
     <ClCompile Include="Source\my\gl\shapes\VertexData.cpp" />
+    <ClCompile Include="Source\my\gl\textures\TextureObject.cpp" />
+    <ClCompile Include="Source\my\gl\textures\TextureObjectManager.cpp" />
     <ClCompile Include="Source\my\gl\textures\TextureUnit.cpp" />
     <ClCompile Include="Source\my\gl\textures\TextureUnitManager.cpp" />
     <ClCompile Include="Source\my\gl\textures\TextureUnitUtil.cpp" />

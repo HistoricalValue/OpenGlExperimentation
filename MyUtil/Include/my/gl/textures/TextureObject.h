@@ -3,6 +3,7 @@
 
 #include "MyUtil.h"
 #include "my/gl/textures/TextureUnit.h"
+#include "my/gl/textures/TextureData.h"
 
 namespace my { namespace gl { namespace textures {
 
@@ -12,23 +13,20 @@ namespace my { namespace gl { namespace textures {
 	public:
 		typedef GLuint									Id;
 
-														TextureObject (Id const&, void* data);
-														TextureObject (TextureObject const&);
-		void											operator = (TextureObject const&);
-														~TextureObject (void);
+		P_INLINE										TextureObject (TextureObject const&);
+		P_INLINE void									operator = (TextureObject const&);
+		P_INLINE 										~TextureObject (void);
 
-		void											Bind (TextureUnit const&);
-		void											Upload (void);
+		P_INLINE void									Upload (TextureUnit const& to, TextureData const&);
 
-		void											Release (void (*memfree) (void*));
+		P_INLINE bool									IsUploaded (void) const;
 
 	private:
+		P_INLINE 										TextureObject (Id const&);
+		friend void										TextureObject_Create (TextureObject* placeIn, Id const&);
+
 		Id												id;
-		TextureUnitId									boundTo;
-		bool											isBound;
 		bool											isUploaded;
-		bool											isDataAllocated;
-		void* const										data;
 	}; // class TextureObject
 
 }}} // namespace my::gl::textures

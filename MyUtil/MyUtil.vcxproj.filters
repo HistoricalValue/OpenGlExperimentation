@@ -231,6 +231,12 @@
     <ClInclude Include="Include\my\gl\textures\TextureObjectManager.h">
       <Filter>Header Files\my\gl\textures</Filter>
     </ClInclude>
+    <ClInclude Include="Include\my\gl\textures\TextureObject_inl.h">
+      <Filter>Header Files\my\gl\textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\textures\TextureData.h">
+      <Filter>Header Files\my\gl\textures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\MyLogger.cpp">
@@ -325,6 +331,12 @@
     </ClCompile>
     <ClCompile Include="Source\my\gl\shapes\Plane.cpp">
       <Filter>Source Files\my\gl\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\textures\TextureObjectManager.cpp">
+      <Filter>Source Files\my\gl\textures</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\textures\TextureObject.cpp">
+      <Filter>Source Files\my\gl\textures</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

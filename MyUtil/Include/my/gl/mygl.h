@@ -26,6 +26,8 @@
 
 #include "my/gl/extensions/ExtensionManager.h"
 
+#include "my/gl/textures/TextureObject.h"
+#include "my/gl/textures/TextureObjectManager.h"
 #include "my/gl/textures/TextureUnit.h"
 #include "my/gl/textures/TextureUnitManager.h"
 #include "my/gl/textures/textureUnitUtil.h"

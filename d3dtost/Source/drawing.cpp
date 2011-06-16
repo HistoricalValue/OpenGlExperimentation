@@ -6,7 +6,8 @@
 #include "my/gl/textures/TextureUnit_inl.h"
 
 
-#define DONT if (false)
+#define DONT	if (false)
+#define DO		if (true)
 
 #define __NE()  PASSERT(!my::openglutil::GlErrorsHandled(&_::errorHandler))
 
@@ -246,6 +247,7 @@ namespace my {
 			
 
 
+			// Shapes
 			{
 				using namespace my::gl::shapes;
 				using namespace my::gl::math;
@@ -351,6 +353,20 @@ namespace my {
 				}
 			}
 
+
+			// Textures
+			{
+				using namespace gl::textures;
+
+				TextureUnit tu(TextureUnitManager::GetUnit(GL_TEXTURE1));
+				tu.Activate();
+
+				codeshare::Placeholder<TextureObject> toph;
+				TextureObjectManager::Create(toph.GetInternal(), toph.SizeOfValue());
+				TextureObject& to(*toph.GetInternal());
+
+
+			}
 
 			// Load teh stonet
 			GLbyte* textureData(NULL); {

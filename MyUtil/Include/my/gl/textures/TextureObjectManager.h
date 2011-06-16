@@ -11,7 +11,7 @@ namespace my { namespace gl { namespace textures {
 		MYUTIL_API void									CleanUp (void);
 
 
-		void											LoadFromTGA (TextureObject* placeIn, size_t bytesize, char const* path);
+		MYUTIL_API void									Create (TextureObject* placeIn, size_t bytesize);
 
 	} // namespace TextureObjectManager
 

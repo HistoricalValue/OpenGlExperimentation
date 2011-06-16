@@ -22,9 +22,9 @@ namespace my { namespace gl { namespace textures {
 		P_INLINE bool									IsActive (void) const;
 		
 		P_INLINE void									Activate (void);
-		P_INLINE void									ActivateIfInactive (void);
+		P_INLINE void									ActivateIfInactive (void); // TODO: refactor: make utility (uses public API) - nm 2011/06/15
 		P_INLINE void									Deactivate (void);
-		P_INLINE void									DeactivateIfActive (void);
+		P_INLINE void									DeactivateIfActive (void); // TODO: refactor: make utility (uses public API) - nm 2011/06/15
 
 		P_INLINE TextureUnitId							GetId (void) const;
 
