@@ -135,6 +135,7 @@
     <ClInclude Include="Include\my\gl\textures\TextureUnit.h" />
     <ClInclude Include="Include\my\gl\textures\TextureUnitManager.h" />
     <ClInclude Include="Include\my\gl\textures\TextureUnitManager_fwd.h" />
+    <ClInclude Include="Include\my\gl\textures\TextureUnitManager_inl.h" />
     <ClInclude Include="Include\my\gl\textures\TextureUnitWrapper.h" />
     <ClInclude Include="Include\my\gl\textures\TextureUnitWrapper_inl.h" />
     <ClInclude Include="Include\my\gl\textures\TextureUnit_fwd.h" />

@@ -15,18 +15,16 @@
 
 namespace my { namespace gl { namespace textures {
 
-	// TODO
-	// declare inlines and move definitions to an _inl header
 	using TextureUnitWrapper::TextureUnitId;
 	class MYUTIL_API TextureUnitManager {
 	public:
-														TextureUnitManager (void);
-														~TextureUnitManager (void);
+		P_INLINE										TextureUnitManager (void);
+		P_INLINE										~TextureUnitManager (void);
 
-		bool											IsValidId (TextureUnitId const&) const;
+		P_INLINE bool									IsValidId (TextureUnitId const&) const;
 
-		TextureUnit*									GetUnit (TextureUnitId const&);
-		TextureUnit*									GetActiveUnit (void);
+		P_INLINE TextureUnit*							GetUnit (TextureUnitId const&);
+		P_INLINE TextureUnit*							GetActiveUnit (void);
 		
 	private:
 		struct TextureUnitEntry {
@@ -44,11 +42,11 @@ namespace my { namespace gl { namespace textures {
 #pragma warning( disable: 4251 ) // Placeholder<> (for "entries") needs to have dll-linkage for clients of TextureUnitManager 
 		Entries											entries;
 		
-		void											BlankOutEntries (void);
-		void											ConstructEntry (size_t, TextureUnitId const&);
-		void											DestructEntry (size_t);
-		TextureUnitEntry&								GetEntry (size_t);
-		bool											IsValidEntryIndex (size_t) const;
+		P_INLINE void									BlankOutEntries (void);
+		P_INLINE void									ConstructEntry (size_t, TextureUnitId const&);
+		P_INLINE void									DestructEntry (size_t);
+		P_INLINE TextureUnitEntry&						GetEntry (size_t);
+		P_INLINE bool									IsValidEntryIndex (size_t) const;
 	}; // class TextureUnitManager
 
 }}} // namespace my::gl::textures

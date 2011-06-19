@@ -237,6 +237,9 @@
     <ClInclude Include="Include\my\gl\textures\TextureUnitWrapper_inl.h">
       <Filter>Header Files\my\gl\textures</Filter>
     </ClInclude>
+    <ClInclude Include="Include\my\gl\textures\TextureUnitManager_inl.h">
+      <Filter>Header Files\my\gl\textures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\MyLogger.cpp">

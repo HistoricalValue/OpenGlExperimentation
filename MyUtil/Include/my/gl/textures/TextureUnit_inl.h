@@ -2,7 +2,7 @@
 #define __MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_INL__H__
 
 #include "my/gl/textures/TextureUnit.h"
-#include "my/gl/textures/TextureUnitWrapper.h"
+#include "my/gl/textures/TextureUnitWrapper_inl.h"
 
 #include "PConfigurations.h"
 #include "PStaticAssert.h"

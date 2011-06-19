@@ -4,6 +4,7 @@
 #include "my/gl/shapes/Nothing_inl.h"
 #include "my/gl/textures/TextureUnitWrapper_inl.h"
 #include "my/gl/textures/TextureUnit_inl.h"
+#include "my/gl/textures/TextureUnitManager_inl.h"
 
 
 #define DONT	if (false)
