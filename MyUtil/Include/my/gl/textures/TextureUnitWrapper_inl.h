@@ -1,13 +1,13 @@
 #ifndef __MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL_INL__H__
 #define __MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL_INL__H__
 
-#include "my/gl/textures/TextureUnitUtil.h"
+#include "my/gl/textures/TextureUnitWrapper.h"
 
 #include "PConfigurations.h"
 #include "PAssert.h"
 
 namespace my { namespace gl { namespace textures {
-	namespace TextureUnitUtil {
+	namespace TextureUnitWrapper {
 
 		using extensions::ExtensionManager::glActiveTexture;
 
@@ -82,7 +82,7 @@ namespace my { namespace gl { namespace textures {
 
 #endif
 
-	} // namespace TextureUnitUtil
+	} // namespace TextureUnitWrapper
 }}} // namespace my::gl::texture
 
 #endif // __MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL_INL__H__

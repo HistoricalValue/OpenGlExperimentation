@@ -2,7 +2,7 @@
 
 #include "PPlaceholder_inl.h"
 #include "my/gl/shapes/Nothing_inl.h"
-#include "my/gl/textures/TextureUnitUtil_inl.h"
+#include "my/gl/textures/TextureUnitWrapper_inl.h"
 #include "my/gl/textures/TextureUnit_inl.h"
 
 
@@ -178,7 +178,7 @@ namespace my {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		
-			unsigned long int const _currtime(codeshare::GetATimestamp());
+			unsigned long int const _currtime(codeshare::utilities::GetATimestamp());
 			PASSERT(_currtime >= dd.prevtime);
 			unsigned long int const dt(_currtime - dd.prevtime);
 			float const angle(_::GetRotationAngle(dt));
@@ -231,7 +231,7 @@ namespace my {
 			unsigned long int&	prevtime					(drawData.prevtime);
 			
 
-			startingTime									= codeshare::GetATimestamp();
+			startingTime									= codeshare::utilities::GetATimestamp();
 			prevtime										= startingTime;
 
 			// Gen VAOs
@@ -358,10 +358,12 @@ namespace my {
 			{
 				using namespace gl::textures;
 
-				TextureUnit tu(TextureUnitManager::GetUnit(GL_TEXTURE1));
+				TextureUnitManager tum;
+
+				TextureUnit& tu(*tum.GetUnit(GL_TEXTURE1));
 				tu.Activate();
 
-				codeshare::Placeholder<TextureObject> toph;
+				codeshare::utilities::Placeholder<TextureObject> toph;
 				TextureObjectManager::Create(toph.GetInternal(), toph.SizeOfValue());
 				TextureObject& to(*toph.GetInternal());
 
@@ -419,7 +421,7 @@ namespace my {
 					glPixelStorei(GL_UNPACK_SKIP_ROWS, 0); __NE()
 					glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0); __NE()
 
-					// Link texture to texture unit
+					// Upload texture to texture unit
 					glTexImage2D(
 							GL_TEXTURE_2D,
 							0,					// mipmap level

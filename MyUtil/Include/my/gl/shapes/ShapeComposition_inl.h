@@ -10,7 +10,7 @@
 
 namespace my { namespace gl { namespace shapes {
 
-	using namespace codeshare::types;
+	using namespace codeshare::utilities::types;
 
 
 	P_INLINE

@@ -23,9 +23,22 @@ namespace my {
 		} // namespace logger
 
 		namespace errorHandler {
-			typedef codeshare::ErrorHolder				Value;
-			__TRIVIAL_IMPLEMENTATION
+			typedef ErrorHandler						Value;
+
+			static Value								value(NULL);
+			void Set (Value const _value) {
+				value = _value;
+			}
+
+			Value Get (void) {
+				return value;
+			}
 		} // namesace errorHandler
+
+		namespace errorHolder {
+			typedef codeshare::utilities::ErrorHolder	Value;
+			__TRIVIAL_IMPLEMENTATION
+		} // namespace errorHolder
 
 	} // namespace global
 

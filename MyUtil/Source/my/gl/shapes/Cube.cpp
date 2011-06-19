@@ -6,7 +6,7 @@
 #include "my/gl/shapes/Colour_inl.h"
 
 #define OFFSETS_STATIC_CHECKS																	\
-		using codeshare::pointer_utilities::offset;												\
+		using codeshare::utilities::pointer_utilities::offset;									\
 		size_t const off00(offsetof(Cube, line00));												\
 		size_t const off11(offsetof(Cube, line11));												\
 		size_t const minOff(off00<off11? off00 : off11);										\

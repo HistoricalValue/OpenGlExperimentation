@@ -198,12 +198,6 @@
     <ClInclude Include="Include\my\gl\textures\TextureUnit_inl.h">
       <Filter>Header Files\my\gl\textures</Filter>
     </ClInclude>
-    <ClInclude Include="Include\my\gl\textures\TextureUnitUtil.h">
-      <Filter>Header Files\my\gl\textures</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\my\gl\textures\TextureUnitUtil_inl.h">
-      <Filter>Header Files\my\gl\textures</Filter>
-    </ClInclude>
     <ClInclude Include="Include\my\gl\mygl.h">
       <Filter>Header Files\my\gl</Filter>
     </ClInclude>
@@ -235,6 +229,12 @@
       <Filter>Header Files\my\gl\textures</Filter>
     </ClInclude>
     <ClInclude Include="Include\my\gl\textures\TextureData.h">
+      <Filter>Header Files\my\gl\textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\textures\TextureUnitWrapper.h">
+      <Filter>Header Files\my\gl\textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\textures\TextureUnitWrapper_inl.h">
       <Filter>Header Files\my\gl\textures</Filter>
     </ClInclude>
   </ItemGroup>
@@ -323,9 +323,6 @@
     <ClCompile Include="Source\my\gl\textures\TextureUnit.cpp">
       <Filter>Source Files\my\gl\textures</Filter>
     </ClCompile>
-    <ClCompile Include="Source\my\gl\textures\TextureUnitUtil.cpp">
-      <Filter>Source Files\my\gl\textures</Filter>
-    </ClCompile>
     <ClCompile Include="Source\my\gl\textures\TextureUnitManager.cpp">
       <Filter>Source Files\my\gl\textures</Filter>
     </ClCompile>
@@ -336,6 +333,9 @@
       <Filter>Source Files\my\gl\textures</Filter>
     </ClCompile>
     <ClCompile Include="Source\my\gl\textures\TextureObject.cpp">
+      <Filter>Source Files\my\gl\textures</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\textures\TextureUnitWrapper.cpp">
       <Filter>Source Files\my\gl\textures</Filter>
     </ClCompile>
   </ItemGroup>

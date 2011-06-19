@@ -27,7 +27,8 @@ namespace my {
 		void											LogImpl (String const&);
 	private:
 		
-		typedef codeshare::DefaultAllocator<String>		StringAllocator;
+		typedef codeshare::utilities::DefaultAllocator<String>
+														StringAllocator;
 		typedef ProtectiveList<String,StringAllocator>	UnPMessages;
 		typedef P_PROTECTED_CLASS(UnPMessages)			PMessages;
 		typedef LOGGER__MESSAGES						Messages;

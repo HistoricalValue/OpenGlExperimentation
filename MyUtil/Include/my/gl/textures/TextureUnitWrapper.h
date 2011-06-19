@@ -12,7 +12,7 @@
 
 namespace my { namespace gl { namespace textures {
 
-	namespace TextureUnitUtil {
+	namespace TextureUnitWrapper {
 
 		typedef GLenum									TextureUnitId;
 	
@@ -37,7 +37,7 @@ namespace my { namespace gl { namespace textures {
 		__MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL__LINKAGE
 		void											DeactivateIfActive (TextureUnitId textureUnit);
 		
-	} // namespace TextureUnitUtil
+	} // namespace TextureUnitWrapper
 
 }}} // namespace my::gl::texture
 

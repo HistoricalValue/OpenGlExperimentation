@@ -1,16 +1,21 @@
+#ifdef __MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT__H__CYCLIC_INCLUSION_ERROR
+#	error "Cyclic inclusion error"
+#endif
+#define __MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT__H__CYCLIC_INCLUSION_ERROR
+
 #ifndef __MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT__H__
 #define __MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT__H__
 
 #include "my/gl/textures/TextureUnit_fwd.h"
 #include "MyOpenGLUtils.h"
-#include "my/gl/textures/TextureUnitUtil.h"
-#include "my/gl/textures/TextureUnitManager.h"
+#include "my/gl/textures/TextureUnitWrapper.h"
+#include "my/gl/textures/TextureUnitManager_fwd.h"
 
 #include "PConfigurations.h"
 
 namespace my { namespace gl { namespace textures {
 
-	using TextureUnitUtil::TextureUnitId;
+	using TextureUnitWrapper::TextureUnitId;
 
 	class MYUTIL_API TextureUnit {
 	public:
@@ -29,7 +34,7 @@ namespace my { namespace gl { namespace textures {
 		P_INLINE TextureUnitId							GetId (void) const;
 
 	private:
-		friend TextureUnit& TextureUnitManager::GetUnit (TextureUnitId const&);
+		friend class TextureUnitManager;
 
 		P_INLINE										TextureUnit (TextureUnitId const& textureUnit);
 		P_INLINE void									operator = (TextureUnit const&);
@@ -40,3 +45,5 @@ namespace my { namespace gl { namespace textures {
 }}} // namespace my::gl::texture
 
 #endif // __MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT__H__
+
+#undef __MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT__H__CYCLIC_INCLUSION_ERROR

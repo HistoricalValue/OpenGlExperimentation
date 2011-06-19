@@ -18,7 +18,7 @@ namespace my { namespace gl { namespace shapes {
 		virtual											~Axes (void);
 
 	private:
-		typedef codeshare::Placeholder<Line>			LinePlaceholder;
+		typedef codeshare::utilities::Placeholder<Line>	LinePlaceholder;
 		typedef LinePlaceholder							LinePlaceholders[3 * MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION];
 #pragma warning( push )
 #pragma warning( disable: 4251 ) // Placeholder needs to have dll interface

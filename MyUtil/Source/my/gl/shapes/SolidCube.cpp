@@ -3,7 +3,7 @@
 #include "PPointerUtilities_inl.h"
 
 #define OFFSETS_STATIC_CHECKS																					\
-		using codeshare::pointer_utilities::offset;																\
+		using codeshare::utilities::pointer_utilities::offset;													\
 		size_t const off00(offsetof(SolidCube, triangle00));													\
 		size_t const off11(offsetof(SolidCube, triangle11));													\
 		size_t const minOff(off00<off11? off00 : off11);														\
@@ -137,7 +137,7 @@ namespace my { namespace gl { namespace shapes {
 			Colour const	colour3(ColourFactory::Brighter(colour1));
 
 			for (size_t i(0u); i < _::numberOfTriangles; ++i) {
-				PASSERT(&result[i+2] < codeshare::pointer_utilities::offset(result, bytesize))
+				PASSERT(&result[i+2] < codeshare::utilities::pointer_utilities::offset(result, bytesize))
 
 				Triangle const&	triangle(triangles[i]);	
 				

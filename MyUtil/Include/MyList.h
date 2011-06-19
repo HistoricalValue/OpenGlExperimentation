@@ -108,7 +108,7 @@ namespace my {
 #endif
 														}
 	private:
-		codeshare::Byte									elements[sizeof(Element) * (MY_LIST_CAPACITY + 2)];
+		codeshare::utilities::Byte						elements[sizeof(Element) * (MY_LIST_CAPACITY + 2)];
 		unsigned int									i;
 		Allocator										allocator;
 		Element const									(&valueview)[MY_LIST_CAPACITY + 2];

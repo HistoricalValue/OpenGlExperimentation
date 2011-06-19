@@ -51,7 +51,7 @@ namespace my {
 			char buf[1<<17]; // 128KiB
 			size_t off(0);
 			for(GLint i = 0; i < nNumExtensions && off < sizeof(buf)/sizeof(buf[0]); i++)
-				buf[(off += codeshare::csconcat(
+				buf[(off += codeshare::utilities::csconcat(
 							&buf[off],
 							sizeof(buf)/sizeof(buf[0]) - off, 
 							reinterpret_cast<char const* const>(glGetStringi(GL_EXTENSIONS, i))

@@ -10,21 +10,23 @@
 
 namespace d3dtost {
 
-	static codeshare::ErrorHolder*	pErrorHolder(NULL);
-	static char						ErrorHolder_mem[sizeof(*pErrorHolder)];
+	using codeshare::utilities::ErrorHolder;
+
+	static ErrorHolder*	pErrorHolder(NULL);
+	static char			ErrorHolder_mem[sizeof(*pErrorHolder)];
 	namespace { namespace _ {
 
-		static void ErrorHolder_Set (codeshare::ErrorHolder* _pErrorHolder) {
+		static void ErrorHolder_Set (codeshare::utilities::ErrorHolder* _pErrorHolder) {
 			pErrorHolder = _pErrorHolder;
-			my::global::errorHandler::Set(_pErrorHolder);
+			my::global::errorHolder::Set(_pErrorHolder);
 		}
 
 		static void ErrorHolder_Initialise (void){
-			ErrorHolder_Set(new(&ErrorHolder_mem[0]) codeshare::ErrorHolder());
+			ErrorHolder_Set(new(&ErrorHolder_mem[0]) ErrorHolder());
 		}
 
 		static void ErrorHolder_CleanUp (void) {
-			codeshare::ErrorHolder* erho = pErrorHolder;
+			ErrorHolder* erho = pErrorHolder;
 			ErrorHolder_Set(NULL);
 			erho->~ErrorHolder();
 			memset(erho, 0x00, sizeof(*pErrorHolder));

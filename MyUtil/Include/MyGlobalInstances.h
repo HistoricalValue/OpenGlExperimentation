@@ -13,16 +13,23 @@ namespace my {
 
 
 		namespace errorHandler {
-			MYUTIL_API codeshare::ErrorHolder&			Get (void);
-			MYUTIL_API void								Set (codeshare::ErrorHolder*);
+			typedef void (*ErrorHandler) (LPCTSTR msg);
+
+			MYUTIL_API ErrorHandler						Get (void);
+			MYUTIL_API void								Set (ErrorHandler);
+		}
+
+		namespace errorHolder {
+			using codeshare::utilities::ErrorHolder;
+
+			MYUTIL_API ErrorHolder&						Get (void);
+			MYUTIL_API void								Set (ErrorHolder*);
 		}
 
 		namespace logger {
 			MYUTIL_API GenericLogger&					Get (void);
 			MYUTIL_API void								Set (GenericLogger*);
 		}
-
-
 
 	} // namespace global
 } // namespace my

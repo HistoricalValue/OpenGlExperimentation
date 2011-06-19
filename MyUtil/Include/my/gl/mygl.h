@@ -30,7 +30,7 @@
 #include "my/gl/textures/TextureObjectManager.h"
 #include "my/gl/textures/TextureUnit.h"
 #include "my/gl/textures/TextureUnitManager.h"
-#include "my/gl/textures/textureUnitUtil.h"
+#include "my/gl/textures/textureUnitWrapper.h"
 
 
 #endif // __MY_UTIL__MY__GL__MY_GL__H__

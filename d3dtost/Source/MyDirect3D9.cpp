@@ -1,10 +1,10 @@
 #include "stdafx.h"
 
 #define __NEW_ERROR(MSG) \
-		(new ::codeshare::Error(__FILE__, __LINE__, codeshare::String(MSG)))
+		(new ::codeshare::utilities::Error(_T(__FILE__), __LINE__, codeshare::utilities::String(_T(MSG))))
 
 #define __POST_PRIMARY(MSG) \
-	( my::global::errorHandler::Get().PostPrimary(__NEW_ERROR(MSG)) )
+	( my::global::errorHolder::Get().PostPrimary(__NEW_ERROR(MSG)) )
 
 #define __POST_PRIMARY_UNLESS(COND, MSG) \
 		if (!(COND)) __POST_PRIMARY(MSG); else{}
@@ -13,7 +13,7 @@
 		__POST_PRIMARY_UNLESS(!(COND), MSG)
 
 #define __IS_ERROR_POSTED \
-		(my::global::errorHandler::Get().IsErrorPosted())
+		(my::global::errorHolder::Get().IsErrorPosted())
 
 namespace my {
 

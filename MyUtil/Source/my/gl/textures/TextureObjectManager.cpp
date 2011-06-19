@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#define __NGLE()	PASSERT(!my::openglutil::GlErrorsHandled(::my::global::errorHandler::Get()))
+
 namespace my { namespace gl { namespace textures {
 
 	P_INLINE void TextureObject_Create (TextureObject* const placeIn, TextureObject::Id const& id) {
@@ -23,8 +25,7 @@ namespace my { namespace gl { namespace textures {
 		void Create (TextureObject* const placeIn, size_t const bytesize) {
 
 			TextureObject::Id textureId(0xffffffff); {
-				glGenTextures(1, &textureId);
-				PASSERT(glIsTexture(textureId) == GL_TRUE)
+				glGenTextures(1, &textureId); __NGLE()
 			}
 
 			size_t const requiredBytesize(sizeof(*placeIn));

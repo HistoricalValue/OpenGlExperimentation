@@ -35,7 +35,7 @@ namespace my { namespace gl { namespace shapes {
 		Nothing* result(NULL);
 
 		if (bytesize >= sizeof(*this)) {
-			result = codeshare::pointer_utilities::reinterpret_assign(result, memory);
+			result = codeshare::utilities::pointer_utilities::reinterpret_assign(result, memory);
 			new(result) Nothing(*this);
 		}
 		

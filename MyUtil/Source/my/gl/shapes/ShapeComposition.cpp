@@ -32,8 +32,8 @@ namespace my { namespace gl { namespace shapes {
 
 	// Shape
 	VertexData* ShapeComposition::GetVertexData (void* memory, size_t bytesize) const {
-		using codeshare::pointer_utilities::reinterpret_assign;
-		using codeshare::pointer_utilities::offset;
+		using codeshare::utilities::pointer_utilities::reinterpret_assign;
+		using codeshare::utilities::pointer_utilities::offset;
 
 		size_t count				(GetNumberOfVertices());
 		size_t const requiredSize	(count * sizeof(VertexData));
@@ -55,8 +55,8 @@ namespace my { namespace gl { namespace shapes {
 	}
 
 	ShapeComposition* ShapeComposition::Clone (void* memory, size_t bytesize) const {
-		using codeshare::pointer_utilities::reinterpret_assign;
-		using codeshare::pointer_utilities::offset;
+		using codeshare::utilities::pointer_utilities::reinterpret_assign;
+		using codeshare::utilities::pointer_utilities::offset;
 
 		size_t const requiredSize(GetSizeOf());
 

@@ -43,7 +43,7 @@ namespace my { namespace gl { namespace shaders {
 		static void DefaultGlErrorHandler (LPCTSTR);
 		static bool CreateProgramAndLinkShaders (GLuint const program, GLuint vertexShader, GLuint fragmentShader, ErrorMessage);
 
-		using codeshare::csconcat;
+		using codeshare::utilities::csconcat;
 	} // namespace O_O
 
 
@@ -203,7 +203,7 @@ namespace my { namespace gl { namespace shaders {
 				else {
 					shader = shaderCompiler.GetShader();
 					size_t available(sizeof(ProgramBuilder::SourceText)/sizeof(infoLog[0]) - infoLogHead);
-					infoLogHead += codeshare::csconcat(infoLog, available, myShaderType, " log:\n", shaderCompiler.GetErrorMessage().c_str(), "\n");
+					infoLogHead += codeshare::utilities::csconcat(infoLog, available, myShaderType, " log:\n", shaderCompiler.GetErrorMessage().c_str(), "\n");
 					PASSERT(infoLogHead <= sizeof(ProgramBuilder::SourceText)/sizeof(infoLog[0]))
 				}
 			}

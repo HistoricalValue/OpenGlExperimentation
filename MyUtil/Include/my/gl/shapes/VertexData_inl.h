@@ -42,12 +42,12 @@ namespace my { namespace gl { namespace shapes {
 
 	P_INLINE
 	void* VertexData::PositionOffsetPointer (void) {
-		return codeshare::pointer_utilities::offset(PositionOffset());
+		return codeshare::utilities::pointer_utilities::offset(PositionOffset());
 	}
 
 	P_INLINE
 	void* VertexData::ColourOffsetPointer (void) {
-		return codeshare::pointer_utilities::offset(ColourOffset());
+		return codeshare::utilities::pointer_utilities::offset(ColourOffset());
 	}
 
 }}} // namespace my::gl::shapes

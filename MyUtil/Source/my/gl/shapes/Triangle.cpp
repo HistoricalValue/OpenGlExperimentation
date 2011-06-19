@@ -35,7 +35,7 @@ namespace my { namespace gl { namespace shapes {
 	}
 
 	VertexData* Triangle::GetVertexData (void* const memory, size_t const bytesize) const {
-		using			codeshare::pointer_utilities::reinterpret_assign;
+		using			codeshare::utilities::pointer_utilities::reinterpret_assign;
 		VertexData*		result				(NULL);
 		size_t const	requiredBytesize	(3 * sizeof(VertexData));
 

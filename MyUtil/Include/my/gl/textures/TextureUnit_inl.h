@@ -2,7 +2,7 @@
 #define __MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_INL__H__
 
 #include "my/gl/textures/TextureUnit.h"
-#include "my/gl/textures/TextureUnitUtil.h"
+#include "my/gl/textures/TextureUnitWrapper.h"
 
 #include "PConfigurations.h"
 #include "PStaticAssert.h"
@@ -28,32 +28,32 @@ namespace my { namespace gl { namespace textures {
 	
 	P_INLINE
 	bool TextureUnit::IsValid (void) const {
-		return TextureUnitUtil::IsValid(textureUnit);
+		return TextureUnitWrapper::IsValid(textureUnit);
 	}
 	
 	P_INLINE
 	bool TextureUnit::IsActive (void) const {
-		return TextureUnitUtil::IsActive(textureUnit);
+		return TextureUnitWrapper::IsActive(textureUnit);
 	}
 	
 	P_INLINE
 	void TextureUnit::Activate (void) {
-		TextureUnitUtil::Activate(textureUnit);
+		TextureUnitWrapper::Activate(textureUnit);
 	}
 	
 	P_INLINE
 	void TextureUnit::ActivateIfInactive (void) {
-		TextureUnitUtil::ActivateIfInactive(textureUnit);
+		TextureUnitWrapper::ActivateIfInactive(textureUnit);
 	}
 	
 	P_INLINE
 	void TextureUnit::Deactivate (void) {
-		TextureUnitUtil::Deactivate(textureUnit);
+		TextureUnitWrapper::Deactivate(textureUnit);
 	}
 	
 	P_INLINE
 	void TextureUnit::DeactivateIfActive (void) {
-		TextureUnitUtil::DeactivateIfActive(textureUnit);
+		TextureUnitWrapper::DeactivateIfActive(textureUnit);
 	}
 	
 	P_INLINE
