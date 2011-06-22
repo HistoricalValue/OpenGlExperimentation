@@ -11,6 +11,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Utilities", "Codeshare\isi_
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "ToastSetaup", "ToastSetaup\ToastSetaup.vdproj", "{25699BA0-10FE-4469-A646-B2F2E8CCEEDF}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenGLAdapter", "OpenGLAdapter\Project\VS2010\OpenGLAdapter.vcxproj", "{C68380A0-4F4E-430D-BA8A-EFA28BE39D57}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MiniUtil", "MiniUtil\Project\VS2010\MiniUtil.vcxproj", "{2BE89E52-35FE-45FD-9DA6-7FD4A8E0FDB8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -63,6 +67,24 @@ Global
 		{25699BA0-10FE-4469-A646-B2F2E8CCEEDF}.Profile|x64.ActiveCfg = Release
 		{25699BA0-10FE-4469-A646-B2F2E8CCEEDF}.Release|Win32.ActiveCfg = Release
 		{25699BA0-10FE-4469-A646-B2F2E8CCEEDF}.Release|x64.ActiveCfg = Release
+		{C68380A0-4F4E-430D-BA8A-EFA28BE39D57}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C68380A0-4F4E-430D-BA8A-EFA28BE39D57}.Debug|Win32.Build.0 = Debug|Win32
+		{C68380A0-4F4E-430D-BA8A-EFA28BE39D57}.Debug|x64.ActiveCfg = Debug|Win32
+		{C68380A0-4F4E-430D-BA8A-EFA28BE39D57}.Profile|Win32.ActiveCfg = Release|Win32
+		{C68380A0-4F4E-430D-BA8A-EFA28BE39D57}.Profile|Win32.Build.0 = Release|Win32
+		{C68380A0-4F4E-430D-BA8A-EFA28BE39D57}.Profile|x64.ActiveCfg = Release|Win32
+		{C68380A0-4F4E-430D-BA8A-EFA28BE39D57}.Release|Win32.ActiveCfg = Release|Win32
+		{C68380A0-4F4E-430D-BA8A-EFA28BE39D57}.Release|Win32.Build.0 = Release|Win32
+		{C68380A0-4F4E-430D-BA8A-EFA28BE39D57}.Release|x64.ActiveCfg = Release|Win32
+		{2BE89E52-35FE-45FD-9DA6-7FD4A8E0FDB8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2BE89E52-35FE-45FD-9DA6-7FD4A8E0FDB8}.Debug|Win32.Build.0 = Debug|Win32
+		{2BE89E52-35FE-45FD-9DA6-7FD4A8E0FDB8}.Debug|x64.ActiveCfg = Debug|Win32
+		{2BE89E52-35FE-45FD-9DA6-7FD4A8E0FDB8}.Profile|Win32.ActiveCfg = Release|Win32
+		{2BE89E52-35FE-45FD-9DA6-7FD4A8E0FDB8}.Profile|Win32.Build.0 = Release|Win32
+		{2BE89E52-35FE-45FD-9DA6-7FD4A8E0FDB8}.Profile|x64.ActiveCfg = Release|Win32
+		{2BE89E52-35FE-45FD-9DA6-7FD4A8E0FDB8}.Release|Win32.ActiveCfg = Release|Win32
+		{2BE89E52-35FE-45FD-9DA6-7FD4A8E0FDB8}.Release|Win32.Build.0 = Release|Win32
+		{2BE89E52-35FE-45FD-9DA6-7FD4A8E0FDB8}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

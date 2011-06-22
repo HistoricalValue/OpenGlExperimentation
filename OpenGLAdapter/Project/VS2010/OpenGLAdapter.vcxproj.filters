@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Private">
+      <UniqueIdentifier>{a0ddbd5a-257d-415d-8b57-40dc14f384de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Include\ankh::opengl::adapter">
+      <UniqueIdentifier>{4efe7303-4b06-466f-a1ee-0d4f66cf8922}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\ankh">
+      <UniqueIdentifier>{1c312e4d-08dc-48cb-adc5-b65c90100653}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ankh::opengl::adapter">
+      <UniqueIdentifier>{b893c831-a2d1-4356-8ae5-f5e18ef25106}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Private\dllmain.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Private\stdafx.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\ankh\opengl\adapter\Context.cpp">
+      <Filter>Source\ankh::opengl::adapter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\ankh\opengl\adapter\NativeWindow.cpp">
+      <Filter>Source\ankh::opengl::adapter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\ankh\opengl\adapter\ContextOptions.cpp">
+      <Filter>Source\ankh::opengl::adapter</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Private\stdafx.h">
+      <Filter>Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Private\targetver.h">
+      <Filter>Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\ankh\opengl\adapter\Context.h">
+      <Filter>Include\ankh::opengl::adapter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\ankh\OpenGlAdapterDSO.h">
+      <Filter>Include\ankh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\ankh\opengl\adapter\NativeWindow.h">
+      <Filter>Include\ankh::opengl::adapter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\ankh\opengl\adapter\ContextOptions.h">
+      <Filter>Include\ankh::opengl::adapter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\ankh\config.h">
+      <Filter>Include\ankh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Private\glext.h">
+      <Filter>Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Private\wglext.h">
+      <Filter>Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Private\opengl.h">
+      <Filter>Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\ankh\opengl\adapter\Context_fwd.h">
+      <Filter>Include\ankh::opengl::adapter</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

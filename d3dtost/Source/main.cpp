@@ -63,7 +63,7 @@ namespace my { namespace global {
 }} // namespace my::global
 
 namespace my {
-	int APIENTRY WinMain(
+	int APIENTRY WinMain (
 			HINSTANCE hInstance,
 			HINSTANCE hPrevInstance,
 			LPTSTR    lpCmdLine,
@@ -71,11 +71,14 @@ namespace my {
 		d3dtost::Initialise();
 
 		{
+
 			my::Window		window(hInstance);
 			my::Direct3D9	direct3d;
 			my::OpenGL		opengl(window);
 			_::Console		console;
 			_::info_console = &console;
+
+
 
 			if (true
 					&& window.IsValid()
@@ -106,6 +109,8 @@ namespace my {
 
 		return 0;
 	}
+
+
 }
 
 int APIENTRY _tWinMain(
