@@ -2,6 +2,7 @@
 #define __MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL_INL__H__
 
 #include "my/gl/textures/TextureUnitWrapper.h"
+#include "my/gl/extensions/ExtensionManager.h"
 
 #include "PConfigurations.h"
 #include "PAssert.h"

@@ -45,7 +45,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>.\Include;..\MyUtil\Include;$(IncludePath)</IncludePath>
+    <IncludePath>.\Include;..\MyUtil\Include;..\..\ankh\Utilities\Include;..\..\ankh\ImageLoader\Include;..\..\ankh\TextureManager\Include;$(DELTA)UtilLib\Include;$(DELTA)DebugLib\Include;$(DELTA)FileReadersLib\Include;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -58,7 +58,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;D3D_DEBUG_INFO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;D3D_DEBUG_INFO;UTILITIES__IMPORTS;TEXTURE_MANAGER__IMPORTS;IMAGE_LOADER__IMPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <ObjectFileName>$(IntDir)</ObjectFileName>
     </ClCompile>
@@ -130,14 +130,20 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Codeshare\isi_branch\Utilities\Project\Utilities.vcxproj">
+    <ProjectReference Include="..\..\ankh\ImageLoader\Project\ImageLoader.vcxproj">
+      <Project>{f3b33fb5-57dc-44cc-8b99-52afa5f087bf}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ankh\TextureManager\Project\TextureManager.vcxproj">
+      <Project>{126c2a20-0584-41bd-8658-164b81c4e8f7}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ankh\Utilities\Project\Utilities.vcxproj">
+      <Project>{37e5a58c-4be8-4620-a48c-61ee4cb2656b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Codeshare\isi_branch\Utilities\Project\Codeshare_Utilities.vcxproj">
       <Project>{cf84d42c-a3c4-4d56-9586-eff4fc3271ed}</Project>
     </ProjectReference>
     <ProjectReference Include="..\MyUtil\MyUtil.vcxproj">
       <Project>{b5b97509-1f26-4d3e-ac89-c3b99ca25e55}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\OpenGLAdapter\Project\VS2010\OpenGLAdapter.vcxproj">
-      <Project>{c68380a0-4f4e-430d-ba8a-efa28be39d57}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

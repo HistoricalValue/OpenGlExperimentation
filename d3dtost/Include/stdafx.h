@@ -28,6 +28,12 @@
 #include "MyGL.h"
 
 
+#include "my/gl/shapes/Nothing_inl.h"
+#include "my/gl/textures/TextureUnitWrapper_inl.h"
+#include "my/gl/textures/TextureUnit_inl.h"
+#include "my/gl/textures/TextureUnitManager_inl.h"
+
+
 #include "my/gl/mygl.h"
 #include "glt.h"
 #include "MyUtil.h"
@@ -51,7 +57,6 @@
 #include "PPointerUtilities.h"
 #include "PCString.h"
 #include "PSingleAllocationBuffer.h"
-#include "PStaticAssert.h"
 #include "PUtilitiesDSO.h"
 #include "Pnewdelete.h"
 #include "PMemory_inl.h"
@@ -59,6 +64,14 @@
 #include "PProtectedClass_inl.h"
 #include "PSystem.h"
 #include "PGlobalSingleAllocationBuffer.h"
+#include "PPlaceholder_inl.h"
+
+#undef P_STATIC_ASSERT
+#undef P_GLOBAL_STATIC_ASSERT
+
+#include "OpenGlExtensionsManager.h"
+
+#include "TextureUnitManager.h"
 
 namespace d3dtost {
 	extern LPWSTR ConvertErrorMessage (char const* const msg);

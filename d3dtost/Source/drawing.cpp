@@ -1,11 +1,5 @@
 #include "stdafx.h"
 
-#include "PPlaceholder_inl.h"
-#include "my/gl/shapes/Nothing_inl.h"
-#include "my/gl/textures/TextureUnitWrapper_inl.h"
-#include "my/gl/textures/TextureUnit_inl.h"
-#include "my/gl/textures/TextureUnitManager_inl.h"
-
 
 #define DONT	if (false)
 #define DO		if (true)
@@ -35,6 +29,7 @@ namespace _ {
 		GLuint				numberOfWorldCubeLineSegments;
 		unsigned long int	startingTime;
 		unsigned long int	prevtime;
+		GLuint				sampler_location;
 	};
 
 
@@ -169,6 +164,7 @@ namespace my {
 		using my::gl::extensions::ExtensionManager::glIsBuffer;
 		using my::gl::extensions::ExtensionManager::glIsVertexArray;
 		using my::gl::extensions::ExtensionManager::glIsTexture;
+		using ::gl::ExtensionsManager::glUniform1i;
 
 
 		// ----------------------------
@@ -230,6 +226,7 @@ namespace my {
 			GLuint&				numberOfWorldCubeLineSegments	(drawData.numberOfWorldCubeLineSegments);
 			unsigned long int&	startingTime				(drawData.startingTime);
 			unsigned long int&	prevtime					(drawData.prevtime);
+			GLuint&				sampler_location			(drawData.sampler_location);
 			
 
 			startingTime									= codeshare::utilities::GetATimestamp();
@@ -330,9 +327,9 @@ namespace my {
 					companion3.SetColour(ColourFactory::LightYellow());
 					companion4.SetColour(ColourFactory::LightPurple());
 
-					Plane plane(ColourFactory::LightTyal());
-					plane.RotateX(M_PI / 2.f);
-					plane.TranslateY(-1.0f);
+					Plane plane(ColourFactory::LightWhite());
+					plane.RotateX((3.f * M_PI) / 2.f);
+					plane.TranslateY(-50.0f);
 					plane.ScaleZ(125.f * 2);
 					plane.ScaleX(125.f * 5);
 					companions.Add(&plane);
@@ -356,12 +353,12 @@ namespace my {
 
 
 			// Textures
-			{
+			DONT {
 				using namespace gl::textures;
 
 				TextureUnitManager tum;
 
-				TextureUnit& tu(*tum.GetUnit(GL_TEXTURE1));
+				TextureUnit& tu(*tum.GetUnit(GL_TEXTURE5));
 				tu.Activate();
 
 				codeshare::utilities::Placeholder<TextureObject> toph;
@@ -369,6 +366,13 @@ namespace my {
 				TextureObject& to(*toph.GetInternal());
 
 
+			}
+
+			// get teh stonet sampler location
+			sampler_location = OpenGL::VUL_SAMPLER3;
+			{	using namespace ankh;
+				textures::TextureUnitManager& tum(textures::TextureUnitManager::GetSingleton());
+				textures::TextureUnit& tu(tum.Get(textures::TextureUnitIds::TEXTURE17));
 			}
 
 			// Load teh stonet

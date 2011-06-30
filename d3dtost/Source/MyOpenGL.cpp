@@ -13,6 +13,11 @@ namespace my {
 		namespace gl {
 			static bool CreateContext (my::OpenGL::DeviceContextHandle& device, my::OpenGL::ResourceContextHandle& context);
 		}
+		static GLuint sampler0location(-1);
+		static GLuint sampler1location(-1);
+		static GLuint sampler2location(-1);
+		static GLuint sampler3location(-1);
+		static GLuint sampler4location(-1);
 
 		static bool InstallShaders (
 				my::gl::shaders::ProgramBuilder&	programBuilder,
@@ -77,7 +82,8 @@ namespace my {
 		if (initialised) {
 			glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 
-			initialised = my::gl::extensions::ExtensionManager::Initialise();
+			initialised = my::gl::extensions::ExtensionManager::Initialise()
+					&& ::gl::ExtensionsManager::Initialise();
 
 			if (initialised) {
 				my::gl::shaders::ShaderManager	shaderManager;
@@ -88,10 +94,16 @@ namespace my {
 				if (initialised) {
 					initialised = programBuilder.Build();
 
+
 					if (initialised) {
 						my::global::log::info(d3dtost::ConvertErrorMessage(programBuilder.GetInfoLog()));
 
 						programBuilder.Use();
+						_::sampler0location = programBuilder.GetUniformLocation("textureUnit0");
+						_::sampler1location = programBuilder.GetUniformLocation("textureUnit1");
+						_::sampler2location = programBuilder.GetUniformLocation("textureUnit2");
+						_::sampler3location = programBuilder.GetUniformLocation("textureUnit3");
+						_::sampler4location = programBuilder.GetUniformLocation("textureUnit4");
 
 						_::InfologAllExtensions();
 					}
@@ -122,6 +134,7 @@ namespace my {
 		PASSERT( wglGetCurrentContext() == context )
 		// destroy shaders
 		my::gl::extensions::ExtensionManager::CleanUp();
+		::gl::ExtensionsManager::CleanUp();
 		wglDeleteContext(context);
 		initialised = false;
 	}
@@ -191,6 +204,38 @@ namespace my {
 	}
 
 
+	OpenGL::_VUL_SAMPLER0 const OpenGL::VUL_SAMPLER0;
+	OpenGL::_VUL_SAMPLER0::operator GLuint (void) const {
+		PASSERT(_::sampler0location != -1)
+		return _::sampler0location;
+	}
+
+	
+	OpenGL::_VUL_SAMPLER1 const OpenGL::VUL_SAMPLER1;
+	OpenGL::_VUL_SAMPLER1::operator GLuint (void) const {
+		PASSERT(_::sampler1location != -1)
+		return _::sampler1location;
+	}
+
+	
+	OpenGL::_VUL_SAMPLER2 const OpenGL::VUL_SAMPLER2;
+	OpenGL::_VUL_SAMPLER2::operator GLuint (void) const {
+		PASSERT(_::sampler2location != -1)
+		return _::sampler2location;
+	}
+
+	
+	OpenGL::_VUL_SAMPLER3 const OpenGL::VUL_SAMPLER3;
+	OpenGL::_VUL_SAMPLER3::operator GLuint (void) const {
+		PASSERT(_::sampler3location != -1)
+		return _::sampler3location;
+	}
+
+	OpenGL::_VUL_SAMPLER4 const OpenGL::VUL_SAMPLER4;
+	OpenGL::_VUL_SAMPLER4::operator GLuint (void) const {
+		PASSERT(_::sampler4location != -1)
+		return _::sampler4location;
+	}
 
 
 

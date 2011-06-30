@@ -3,6 +3,7 @@
 
 #include "MyUtil.h"
 #include "my/gl/shapes/Shape.h"
+#include "PConfigurations.h"
 
 namespace my { namespace gl { namespace shapes {
 

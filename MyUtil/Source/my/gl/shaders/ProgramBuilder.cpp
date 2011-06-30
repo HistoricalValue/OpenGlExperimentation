@@ -25,7 +25,7 @@ namespace my { namespace gl { namespace shaders {
 	using extensions::ExtensionManager::glDeleteShader;
 	using extensions::ExtensionManager::glBindAttribLocation;
 	using extensions::ExtensionManager::glUseProgram;
-
+	using ::gl::ExtensionsManager::glGetUniformLocation;
 
 	// --------------------------------
 	// Local functions
@@ -156,6 +156,15 @@ namespace my { namespace gl { namespace shaders {
 		PASSERT(HasBeenBuilt() && IsBuildSuccessful())
 		glUseProgram(program);
 		__UNLESS_GL_ERROR {}
+	}
+
+	GLuint ProgramBuilder::GetUniformLocation (char const* const name) const {
+		GLuint result(glGetUniformLocation(program, name));
+		__UNLESS_GL_ERROR {
+		}
+		else
+			result = -1;
+		return result;
 	}
 
 	char const* ProgramBuilder::GetInfoLog (void) const {
