@@ -140,7 +140,7 @@ namespace my { namespace gl { namespace shaders {
 		return hasBeenBuilt;
 	}
 
-	bool ProgramBuilder::IsBuildSuccessful (void) const { 
+	bool ProgramBuilder::IsBuildSuccessful (void) const {
 		return buildSuccessful;
 	}
 

@@ -37,7 +37,6 @@ namespace _ {
 		}
 	}
 
-
 #define WITH_CONSOLE
 #ifdef WITH_CONSOLE
 	typedef my::Console	ConsoleBase;
@@ -50,7 +49,17 @@ namespace _ {
 	struct Console: public ConsoleBase {};
 
 	Console* info_console(NULL);
+
+
+	// support for util and ddebug
+	namespace ddebug {
+		void onError (char const* str) {
+			info_console->WriteToOutputStreamA(str);
+		}
+	}
+
 }
+
 
 // implement global instances
 namespace my { namespace global {
@@ -78,6 +87,7 @@ namespace my {
 			_::Console		console;
 			_::info_console = &console;
 
+			dinit(&_::ddebug::onError);
 
 
 			if (true
@@ -102,6 +112,8 @@ namespace my {
 				my::drawing::cleanup(drawData.Get());
 			}
 
+			dclose();
+			system("pause");
 			_::info_console = NULL;
 		}
 

@@ -36,6 +36,21 @@ namespace my {
 				;
 	}
 
+	void Console::WriteToOutputStreamA (char const* const str) {
+		PASSERT(IsValid())
+		DWORD const	charsToWrite	(strlen(str));
+		DWORD		charsWritten	(0);
+		BOOL const	worked(WriteConsoleA(outProxy, &str[0], charsToWrite, &charsWritten, NULL));
+		PASSERT(worked == FALSE || charsToWrite == charsWritten)
+		if (worked == FALSE) {
+			DWORD const		error		(GetLastError());
+			LPTSTR const	errorstring	(my::winutil::ErrorToString(error));
+			my::global::logger::Get().Error(errorstring);
+			my::winutil::ReleaseErrorString(errorstring);
+		}
+		PASSERT(worked == TRUE)
+	}
+
 	void Console::WriteToOutputStream (LPCTSTR const str) {
 		PASSERT(IsValid())
 		DWORD const	charsToWrite	(_tcsclen(str));

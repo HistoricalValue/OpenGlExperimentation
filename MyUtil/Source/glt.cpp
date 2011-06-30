@@ -1,5 +1,35 @@
 #include "stdafx.h"
 
+// TGADecoder
+namespace glt {
+
+static ankh::images::ImageFormatId const handledFormat("tga");
+
+ankh::images::Image* TGADecoder::Decode (
+		ankh::images::GenericReader&			r,
+		ankh::images::ImageId const&			imgid,
+		ankh::images::ImageFormatId const&		fmt,
+		ankh::images::ImageSourceType const&	src) {
+	DASSERT(!"Unimplemented");
+	return NULL;
+}
+
+ankh::images::ImageFormatId const& TGADecoder::GetFormatId (void) const {
+	return handledFormat;
+}
+
+bool TGADecoder::CanHandleFormat (ankh::images::ImageFormatId const& fmt) const {
+	return handledFormat == fmt;
+}
+
+TGADecoder::TGADecoder (void):
+	ankh::images::ImageDecoder("TGA Decoder")
+{}
+
+TGADecoder::~TGADecoder (void) {}
+
+} // namespace glt
+
 namespace glt {
 
 // Define targa header. This is only used locally.

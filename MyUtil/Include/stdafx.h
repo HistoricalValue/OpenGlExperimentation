@@ -39,6 +39,10 @@
 #include "MyOpenGLUtils.h"
 #include "MyGlobalInstances.h"
 
+#include "OpenGlExtensionsManager.h"
+#undef P_STATIC_ASSERT
+#undef P_GLOBAL_STATIC_ASSERT
+
 
 #include "PStaticAssert.h"
 #include "PProtectedClass_inl.h"
@@ -51,8 +55,6 @@
 #include "PStaticCString_inl.h"
 #include "PPointerUtilities.h"
 #include "PConfigurations.h"
-
-#include "OpenGlExtensionsManager.h"
 
 #define M_E        static_cast<float>(2.71828182845904523536)
 #define M_LOG2E    static_cast<float>(1.44269504088896340736)

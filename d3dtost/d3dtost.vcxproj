@@ -47,6 +47,7 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>.\Include;..\MyUtil\Include;..\..\ankh\Utilities\Include;..\..\ankh\ImageLoader\Include;..\..\ankh\TextureManager\Include;$(DELTA)UtilLib\Include;$(DELTA)DebugLib\Include;$(DELTA)FileReadersLib\Include;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <LibraryPath>$(UTIL_AND_DHEAP_DLLS_DIR)debug\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -65,7 +66,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Opengl32.lib;$(UTIL_AND_DHEAP_DLL_BASENAME)D.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
       <ShowProgress>true</ShowProgress>

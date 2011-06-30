@@ -13,6 +13,7 @@ namespace my {
 													~Console (void);
 
 	void											WriteToOutputStream (LPCTSTR);
+	void											WriteToOutputStreamA (char const*);
 	void											WriteToErrorStream (LPCTSTR);
 
 	bool											IsValid (void) const;

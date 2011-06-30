@@ -30,6 +30,7 @@ namespace _ {
 		unsigned long int	startingTime;
 		unsigned long int	prevtime;
 		GLuint				sampler_location;
+		ankh::images::ImageDecoder*		tgadecoder;
 	};
 
 
@@ -218,15 +219,16 @@ namespace my {
 			using				_::VBOs;
 			using				_::VTOs;
 
-			_::DrawData&		drawData					(*new _::DrawData);
-			GLuint				(&vertexArrayIds)[VAOs]		(drawData.vertexArrayIds);
-			GLuint				(&bufferIds)[VBOs]			(drawData.bufferIds);
-			GLuint				(&textureIds)[VTOs]			(drawData.textureIds);
-			GLuint&				numberOfPoints				(drawData.numberOfPoints);
+			_::DrawData&		drawData						(*DNEW(_::DrawData));
+			GLuint				(&vertexArrayIds)[VAOs]			(drawData.vertexArrayIds);
+			GLuint				(&bufferIds)[VBOs]				(drawData.bufferIds);
+			GLuint				(&textureIds)[VTOs]				(drawData.textureIds);
+			GLuint&				numberOfPoints					(drawData.numberOfPoints);
 			GLuint&				numberOfWorldCubeLineSegments	(drawData.numberOfWorldCubeLineSegments);
-			unsigned long int&	startingTime				(drawData.startingTime);
-			unsigned long int&	prevtime					(drawData.prevtime);
-			GLuint&				sampler_location			(drawData.sampler_location);
+			unsigned long int&	startingTime					(drawData.startingTime);
+			unsigned long int&	prevtime						(drawData.prevtime);
+			GLuint&				sampler_location				(drawData.sampler_location);
+			ankh::images::ImageDecoder*&	tgadecoder			= (drawData.tgadecoder); // stupid microsoft
 			
 
 			startingTime									= codeshare::utilities::GetATimestamp();
@@ -368,11 +370,78 @@ namespace my {
 
 			}
 
+			{ // initialise Textures lib
+				bool const success(ankh::textures::Initialise());
+				PASSERT(success)
+			}
+
 			// get teh stonet sampler location
-			sampler_location = OpenGL::VUL_SAMPLER3;
-			{	using namespace ankh;
+			sampler_location = OpenGL::VUL_SAMPLER4;
+			{
+				using namespace ankh;
 				textures::TextureUnitManager& tum(textures::TextureUnitManager::GetSingleton());
-				textures::TextureUnit& tu(tum.Get(textures::TextureUnitIds::TEXTURE17));
+
+				textures::TextureUnit& tu00(tum.Get(textures::TextureUnitIds::TEXTURE0 ));
+				textures::TextureUnit& tu17(tum.Get(textures::TextureUnitIds::TEXTURE17));
+				textures::TextureUnit& tu23(tum.Get(textures::TextureUnitIds::TEXTURE23));
+				textures::TextureUnit& tu30(tum.Get(textures::TextureUnitIds::TEXTURE30));
+				// Error
+			//	textures::TextureUnit& tu37(tum.Get(textures::TextureUnitId(37)));
+				
+				tu17.Activate();
+				DASSERT(!tu23.IsActive());
+
+				tu30.Activate();
+				DASSERT(!tu17.IsActive());
+
+				tu23.Activate();
+				DASSERT(!tu17.IsActive());
+				DASSERT(!tu30.IsActive());
+
+				tu23.Deactivate();
+				DASSERT(!tu23.IsActive());
+
+				tu17.Activate();
+				DASSERT(!tu23.IsActive());
+
+				tu30.Activate();
+				DASSERT(!tu17.IsActive());
+
+				tu23.Activate();
+				DASSERT(!tu17.IsActive());
+				DASSERT(!tu30.IsActive());
+				// Error
+			//	tu17.Deactivate();
+
+				tu23.Deactivate();
+				DASSERT(tu00.IsActive());
+				// active-by-default texture ID can be deactivated as many times
+				// as one wants -- it will still be active.
+				tu00.Deactivate();
+				tu00.Deactivate();
+				tu00.Deactivate();
+				DASSERT(tu00.IsActive());
+			//	tu00.Activate();
+				tu17.Activate();
+				tu00.Activate();
+				tu00.Deactivate();
+
+
+				glUniform1i(sampler_location, tum.GetActiveUnitIndex());
+			}
+
+			// Install image decoders
+			{
+				ankh::images::ImageLoader& il(ankh::images::ImageLoader::GetSingleton());
+
+				il.InstallDecoder(tgadecoder = DNEW(glt::TGADecoder));
+			}
+
+			// Load teh stonet cooly
+			{
+				ankh::textures::TextureManager& tm(ankh::textures::TextureManager::GetSingleton());
+
+				ankh::textures::Texture* const stone(tm.New("../textures/stone.tga"));
 			}
 
 			// Load teh stonet
@@ -466,10 +535,14 @@ namespace my {
 				glDeleteVertexArrays(sizeof(bufferIds)/sizeof(bufferIds[0]), &vertexArrayIds[0]); __NE()
 
 				glDeleteTextures(sizeof(textureIds)/sizeof(textureIds[0]), &textureIds[0]); __NE()
-			}
 
-			delete _drawData;
+				udelete(drawData.tgadecoder);
+
+				DDELETE(&drawData);
+			}
 			_drawData = NULL;
+
+			ankh::textures::CleanUp();
 		}
 
 	} // namespace drawing

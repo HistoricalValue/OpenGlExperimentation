@@ -1,5 +1,21 @@
 #include "MyWindows.h"
 
+
+#include "OpenGlExtensionsManager.h"
+
+#include "TextureUnitManager_inl.h"
+#include "ImageDecoder_inl.h"
+#include "TextureManager.h"
+#include "ImageLoader.h"
+
+#undef P_STATIC_ASSERT
+#undef P_GLOBAL_STATIC_ASSERT
+
+
+
+
+
+
 // C RunTime Header Files
 #include <stdlib.h>
 #include <malloc.h>
@@ -54,6 +70,8 @@
 
 #include "resource.h"
 
+
+
 #include "PPointerUtilities.h"
 #include "PCString.h"
 #include "PSingleAllocationBuffer.h"
@@ -66,12 +84,6 @@
 #include "PGlobalSingleAllocationBuffer.h"
 #include "PPlaceholder_inl.h"
 
-#undef P_STATIC_ASSERT
-#undef P_GLOBAL_STATIC_ASSERT
-
-#include "OpenGlExtensionsManager.h"
-
-#include "TextureUnitManager.h"
 
 namespace d3dtost {
 	extern LPWSTR ConvertErrorMessage (char const* const msg);

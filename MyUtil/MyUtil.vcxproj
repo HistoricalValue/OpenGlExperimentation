@@ -35,6 +35,7 @@
     <Import Project="..\Bloost.props" />
     <Import Project="..\OpenGL.props" />
     <Import Project="..\..\ankh\UtilitiesAndDefensiveHeap.props" />
+    <Import Project="..\..\ankh\UtilitiesAndDefensiveHeapDebugLink.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -45,7 +46,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>.\Include;..\..\ankh\Utilities\Include;$(DELTA)UtilLib\Include;$(DELTA)DebugLib\Include$(IncludePath)</IncludePath>
+    <IncludePath>.\Include;..\..\ankh\Utilities\Include;$(DELTA)UtilLib\Include;..\..\ankh\ImageLoader\Include;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -58,7 +59,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;MYUTIL_EXPORTS;UTILITIES__IMPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;MYUTIL_EXPORTS;UTILITIES__IMPORTS;IMAGE_LOADER__IMPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
     </ClCompile>
     <Link>
@@ -195,6 +196,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\ankh\ImageLoader\Project\ImageLoader.vcxproj">
+      <Project>{f3b33fb5-57dc-44cc-8b99-52afa5f087bf}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\ankh\Utilities\Project\Utilities.vcxproj">
       <Project>{37e5a58c-4be8-4620-a48c-61ee4cb2656b}</Project>
     </ProjectReference>
