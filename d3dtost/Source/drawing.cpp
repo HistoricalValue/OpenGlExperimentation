@@ -370,9 +370,11 @@ namespace my {
 
 			}
 
-			{ // initialise Textures lib
-				bool const success(ankh::textures::Initialise());
-				PASSERT(success)
+			{ // initialise Images and Textures lib
+				{	bool const success(ankh::textures::Initialise());
+					PASSERT(success) }
+				{	bool const success(ankh::images::Initialise());
+					PASSERT(success) }
 			}
 
 			// get teh stonet sampler location
@@ -445,7 +447,7 @@ namespace my {
 			}
 
 			// Load teh stonet
-			GLbyte* textureData(NULL); {
+			GLbyte* textureData(NULL); DONT {
 				using namespace gl::textures;
 
 				__ASSERT_GL_IS_TEXTURE(textureIds[0])
