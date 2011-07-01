@@ -1,10 +1,6 @@
 #include "stdafx.h"
 
 
-// TODO remove
-#include <sstream>
-#include <fstream>
-
 #ifdef LOGGER_WITH_PROTECTED_LIST
 #	define LOGGER__GET_MESSAGES_VAL_INTO(INTO)			{ P_PROTECTED_CLASS_VAL(messages, INTO) }
 #	define LOGGER__MESSAGES_PUSH_BACK(MSG)				{ P_PROTECTED_CLASS_OP(messages, push_back((MSG))) }

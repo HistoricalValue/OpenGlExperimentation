@@ -228,7 +228,7 @@ namespace my {
 			unsigned long int&	startingTime					(drawData.startingTime);
 			unsigned long int&	prevtime						(drawData.prevtime);
 			GLuint&				sampler_location				(drawData.sampler_location);
-			ankh::images::ImageDecoder*&	tgadecoder			= (drawData.tgadecoder); // stupid microsoft
+			ankh::images::ImageDecoder*&	tgadecoder			= (drawData.tgadecoder); // stupid microsoft (and their inability to initialise references to pointers)
 			
 
 			startingTime									= codeshare::utilities::GetATimestamp();
@@ -444,77 +444,35 @@ namespace my {
 				ankh::textures::TextureManager& tm(ankh::textures::TextureManager::GetSingleton());
 
 				ankh::textures::Texture* const stone(tm.New("../textures/stone.tga"));
+
+				ankh::textures::TextureUnit& tu15(ankh::textures::TextureUnitManager::GetSingleton().Get(15));
+				stone->BindTo(tu15);
+				tu15.Deactivate();
+
+				glUniform1i(sampler_location, tu15.GetIndex());
 			}
 
 			// Load teh stonet
-			GLbyte* textureData(NULL); DONT {
-				using namespace gl::textures;
-
-				__ASSERT_GL_IS_TEXTURE(textureIds[0])
-				glBindTexture(GL_TEXTURE_2D, textureIds[0]); __NE()
-
-				GLint width(0), height(0), internalFormat(0);
-				GLenum format(0);
-				GLshort depth(0);
-				GLuint imageSize(0);
-
-				textureData = (glt::ReadTGABits(
-						"../textures/stone.tga",
-						&_::AllocateSingleAllocationBufferMemory, &_::DeallocateSingleAllocationBufferMemory,
-						&format, &width, &height,
-						&depth, &imageSize,
-						&internalFormat
-						));
-
-				openglutil::GlConst _format(openglutil::ToGlConst(format));
-				openglutil::GlConst _components(openglutil::ToGlConst(internalFormat));
-
-
-				if (textureData) {
-					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, 
-							GL_CLAMP_TO_EDGE
-						//	GL_CLAMP_TO_BORDER
-						//	GL_MIRRORED_REPEAT
-						//	GL_REPEAT
-							); __NE()
-					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, 
-							GL_CLAMP_TO_EDGE
-						//	GL_CLAMP_TO_BORDER
-						//	GL_MIRRORED_REPEAT
-						//	GL_REPEAT
-							); __NE()
-					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-						//	GL_LINEAR
-							GL_NEAREST
-							); __NE()
-					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-						//	GL_LINEAR
-							GL_NEAREST
-							); __NE()
-
-					glPixelStorei(GL_UNPACK_ALIGNMENT, 1); __NE()
-					glPixelStorei(GL_UNPACK_ROW_LENGTH, 0); __NE()
-					glPixelStorei(GL_UNPACK_SKIP_ROWS, 0); __NE()
-					glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0); __NE()
-
-					// Upload texture to texture unit
-					glTexImage2D(
-							GL_TEXTURE_2D,
-							0,					// mipmap level
-							internalFormat,		// internal format
-							width,
-							height,
-							0,					// border -- must be 0
-							format,				// data format
-							GL_UNSIGNED_BYTE,	// data type
-							textureData); __NE()
-
-					_::DeallocateSingleAllocationBufferMemory(textureData);
-					{ void* n = _::AllocateSingleAllocationBufferMemory(12); _::DeallocateSingleAllocationBufferMemory(n); }
-				}
-				else
-					global::logger::Get().Warning(_T("Could not load texture Stone"));
-			}
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, 
+					GL_CLAMP_TO_EDGE
+				//	GL_CLAMP_TO_BORDER
+				//	GL_MIRRORED_REPEAT
+				//	GL_REPEAT
+					); __NE()
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, 
+					GL_CLAMP_TO_EDGE
+				//	GL_CLAMP_TO_BORDER
+				//	GL_MIRRORED_REPEAT
+				//	GL_REPEAT
+					); __NE()
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+				//	GL_LINEAR
+					GL_NEAREST
+					); __NE()
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+				//	GL_LINEAR
+					GL_NEAREST
+					); __NE()
 
 			
 			glEnable(GL_DEPTH_TEST); __NE()
@@ -545,6 +503,7 @@ namespace my {
 			_drawData = NULL;
 
 			ankh::textures::CleanUp();
+			ankh::images::CleanUp();
 		}
 
 	} // namespace drawing
