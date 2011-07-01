@@ -166,6 +166,7 @@ namespace my {
 		using my::gl::extensions::ExtensionManager::glIsVertexArray;
 		using my::gl::extensions::ExtensionManager::glIsTexture;
 		using ::gl::ExtensionsManager::glUniform1i;
+		using ::gl::ExtensionsManager::glActiveTexture;
 
 
 		// ----------------------------
@@ -447,7 +448,8 @@ namespace my {
 
 				ankh::textures::TextureUnit& tu15(ankh::textures::TextureUnitManager::GetSingleton().Get(15));
 				stone->BindTo(tu15);
-				tu15.Deactivate();
+
+				tu15.Activate();
 
 				glUniform1i(sampler_location, tu15.GetIndex());
 			}
