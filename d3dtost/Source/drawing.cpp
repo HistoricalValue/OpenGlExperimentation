@@ -17,7 +17,7 @@
 namespace _ {
 	const static float WW(2000.f);
 
-	const static size_t VAOs(3);
+	const static size_t VAOs(4);
 	const static size_t VBOs(6);
 	const static size_t VTOs(1);
 
@@ -31,6 +31,7 @@ namespace _ {
 		unsigned long int	prevtime;
 		GLuint				sampler_location;
 		ankh::images::ImageDecoder*		tgadecoder;
+		GLuint				numberOfTexturedSegments;
 	};
 
 
@@ -101,7 +102,8 @@ namespace _ {
 		GLuint const					vao,
 		GLuint const					vbo,
 		my::gl::shapes::Shape const&	shape,
-		GLboolean const					normalised)
+		GLboolean const					normalised,
+		bool const						textured)
 	{
 		using namespace	my::gl::shapes;
 		using namespace	my::gl::math;
@@ -114,22 +116,27 @@ namespace _ {
 		glBindBuffer(GL_ARRAY_BUFFER, vbo); __NE()
 		PASSERT(glIsBuffer(vbo) == GL_TRUE)
 
-		size_t const count		(shape.GetNumberOfVertices());
-		size_t const bytesize	(std::max(count * sizeof(VertexData), 1u));
-		void* const _data		(_::AllocateSingleAllocationBufferMemory(bytesize));
+		size_t const	count		(shape.GetNumberOfVertices());
+		size_t const	bytesize	(std::max(count * sizeof(VertexData), 1u));
+		void* const		_data		(_::AllocateSingleAllocationBufferMemory(bytesize));
 
-		VertexData* const data	(shape.GetVertexData(_data, bytesize));
+		typedef void*	voidp;
+		void* const		data		(textured? voidp(shape.GetTexturedVertexData(_data, bytesize)) : voidp(shape.GetVertexData(_data, bytesize)));
 		PASSERT(data != NULL)
+		size_t const	stride		(textured? TexturedVertexData::Stride() : VertexData::Stride());
+		voidp const		attr1off	(textured? TexturedVertexData::PositionOffsetPointer() : VertexData::PositionOffsetPointer());
+		voidp const		attr2off	(textured? TexturedVertexData::TextureCoordinatesOffsetPointer() : VertexData::ColourOffsetPointer());
+		GLuint const	attr2index	(textured? GLuint(OpenGL::VAI_TEXCOORD) : GLuint(OpenGL::VAI_COLOUR));
 
 		glBufferData(GL_ARRAY_BUFFER, bytesize, data, GL_STATIC_DRAW); __NE()
 
 		_::DeallocateSingleAllocationBufferMemory(_data);
 
-		glVertexAttribPointer(OpenGL::VAI_POSITION, 4, GL_FLOAT, normalised, VertexData::Stride(), VertexData::PositionOffsetPointer()); __NE()
-		glVertexAttribPointer(OpenGL::VAI_COLOUR, 4, GL_FLOAT, normalised, VertexData::Stride(), VertexData::ColourOffsetPointer()); __NE()
+		glVertexAttribPointer(OpenGL::VAI_POSITION,	4,	GL_FLOAT,	normalised,	stride,	attr1off); __NE()
+		glVertexAttribPointer(attr2index,			4,	GL_FLOAT,	normalised,	stride,	attr2off); __NE()
 
 		glEnableVertexAttribArray(OpenGL::VAI_POSITION); __NE()
-		glEnableVertexAttribArray(OpenGL::VAI_COLOUR); __NE()
+		glEnableVertexAttribArray(attr2index); __NE()
 	}
 
 
@@ -208,6 +215,18 @@ namespace my {
 						cam); __NE()
 				glDrawArrays(GL_TRIANGLES, 0, dd.numberOfWorldCubeLineSegments); __NE()
 			}
+
+			// and textured triangles too
+			{
+				PASSERT(glIsVertexArray(dd.vertexArrayIds[3]) == GL_TRUE)
+				glBindVertexArray(dd.vertexArrayIds[3]); __NE()
+				glVertexAttrib4f(OpenGL::VAI_AXYC,
+						angle,
+						-0.0f,
+						0.0f,
+						cam); __NE()
+				glDrawArrays(GL_TRIANGLES, 0, dd.numberOfTexturedSegments); __NE()
+			}
 		
 
 			(*bufferSwapper)(bufferSwapperClosure);
@@ -230,13 +249,14 @@ namespace my {
 			unsigned long int&	prevtime						(drawData.prevtime);
 			GLuint&				sampler_location				(drawData.sampler_location);
 			ankh::images::ImageDecoder*&	tgadecoder			= (drawData.tgadecoder); // stupid microsoft (and their inability to initialise references to pointers)
+			GLuint&				numberOfTexturedSegments		(drawData.numberOfTexturedSegments);
 			
 
 			startingTime									= codeshare::utilities::GetATimestamp();
 			prevtime										= startingTime;
 
 			// Gen VAOs
-			P_STATIC_ASSERT(sizeof(vertexArrayIds)/sizeof(vertexArrayIds[0]) == 3)
+			P_STATIC_ASSERT(sizeof(vertexArrayIds)/sizeof(vertexArrayIds[0]) == 4)
 			glGenVertexArrays(sizeof(vertexArrayIds)/sizeof(vertexArrayIds[0]), &vertexArrayIds[0]); __NE()
 			
 			// Gen VBOs
@@ -286,7 +306,7 @@ namespace my {
 						
 						shape.Scale(500.f);
 						_::ApplyCamera(shape);
-						_::SetAttribute(vertexArrayIds[1], bufferIds[3], shape, POINTS_NORMALISED);
+						_::SetAttribute(vertexArrayIds[1], bufferIds[3], shape, POINTS_NORMALISED, false);
 						numberOfPoints = shape.GetNumberOfVertices();
 					}
 				}
@@ -330,13 +350,6 @@ namespace my {
 					companion3.SetColour(ColourFactory::LightYellow());
 					companion4.SetColour(ColourFactory::LightPurple());
 
-					Plane plane(ColourFactory::LightWhite());
-					plane.RotateX((3.f * M_PI) / 2.f);
-					plane.TranslateY(-50.0f);
-					plane.ScaleZ(125.f * 2);
-					plane.ScaleX(125.f * 5);
-					companions.Add(&plane);
-
 					Nothing								nothing;
 					{
 						Shape& shape(
@@ -348,28 +361,30 @@ namespace my {
 
 					//	shape.Scale(_::WW / 10.f);
 						_::ApplyCamera(shape);
-						_::SetAttribute(vertexArrayIds[2], bufferIds[5], shape, POINTS_NORMALISED);
+						_::SetAttribute(vertexArrayIds[2], bufferIds[5], shape, POINTS_NORMALISED, false);
 						numberOfWorldCubeLineSegments = shape.GetNumberOfVertices();
+					}
+				}
+
+				///////////////////////////
+				// VAO#3: Textured triangle objects
+				// (buffer #2 )
+				{
+					Plane plane(ColourFactory::LightYellow());
+					plane.RotateX((3.f * M_PI) / 2.f);
+					plane.TranslateY(-50.0f);
+					plane.ScaleZ(125.f * 2);
+					plane.ScaleX(125.f * 5);
+					// Upload plane as textured, buffer 2
+					{
+						Shape& shape(plane);
+						_::ApplyCamera(shape);
+						_::SetAttribute(vertexArrayIds[2], bufferIds[2], shape, POINTS_NORMALISED, true);
+						numberOfTexturedSegments = shape.GetNumberOfVertices();
 					}
 				}
 			}
 
-
-			// Textures
-			DONT {
-				using namespace gl::textures;
-
-				TextureUnitManager tum;
-
-				TextureUnit& tu(*tum.GetUnit(GL_TEXTURE5));
-				tu.Activate();
-
-				codeshare::utilities::Placeholder<TextureObject> toph;
-				TextureObjectManager::Create(toph.GetInternal(), toph.SizeOfValue());
-				TextureObject& to(*toph.GetInternal());
-
-
-			}
 
 			{ // initialise Images and Textures lib
 				{	bool const success(ankh::textures::Initialise());
@@ -379,8 +394,8 @@ namespace my {
 			}
 
 			// get teh stonet sampler location
-			sampler_location = OpenGL::VUL_SAMPLER4;
-			{
+		//	sampler_location = OpenGL::VUL_SAMPLER4;
+			DONT {
 				using namespace ankh;
 				textures::TextureUnitManager& tum(textures::TextureUnitManager::GetSingleton());
 
@@ -442,19 +457,25 @@ namespace my {
 
 			// Load teh stonet cooly
 			{
-				ankh::textures::TextureManager& tm(ankh::textures::TextureManager::GetSingleton());
+				using namespace ankh::textures;
 
-				ankh::textures::Texture* const stone(tm.New("../textures/stone.tga"));
-
-				ankh::textures::TextureUnit& tu15(ankh::textures::TextureUnitManager::GetSingleton().Get(15));
-				stone->BindTo(tu15);
+				TextureUnitManager& tum(TextureUnitManager::GetSingleton());
+				TextureUnit& tu15(tum.Get(15));
 
 				tu15.Activate();
 
-				glUniform1i(sampler_location, tu15.GetIndex());
+				TextureManager& tm(ankh::textures::TextureManager::GetSingleton());
+				Texture* const stone(tm.New("../textures/stone.tga"));
+
+				{
+					TextureUnit& bindTo(tum.Get(TextureUnitIds::TEXTURE0));
+					stone->BindTo(bindTo);
+				//	bindTo.Activate();
+				}
+
+		//		glUniform1i(sampler_location, tum.GetActiveUnitIndex());
 			}
 
-			// Load teh stonet
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, 
 					GL_CLAMP_TO_EDGE
 				//	GL_CLAMP_TO_BORDER
@@ -468,17 +489,17 @@ namespace my {
 				//	GL_REPEAT
 					); __NE()
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-				//	GL_LINEAR
-					GL_NEAREST
+					GL_LINEAR
+				//	GL_NEAREST
 					); __NE()
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-				//	GL_LINEAR
-					GL_NEAREST
+					GL_LINEAR
+				//	GL_NEAREST
 					); __NE()
 
 			
 			glEnable(GL_DEPTH_TEST); __NE()
-			glEnable(GL_CULL_FACE); __NE()
+		//	glEnable(GL_CULL_FACE); __NE()
 
 			return &drawData;
 		}
@@ -486,11 +507,11 @@ namespace my {
 		void cleanup (void*& _drawData) {
 			{
 				_::DrawData&	drawData				(*static_cast<_::DrawData*>(_drawData));
-				GLuint			(&vertexArrayIds)[3]	(drawData.vertexArrayIds);
+				GLuint			(&vertexArrayIds)[4]	(drawData.vertexArrayIds);
 				GLuint			(&bufferIds)[6]			(drawData.bufferIds);
 				GLuint			(&textureIds)[1]		(drawData.textureIds);
 
-				P_STATIC_ASSERT(sizeof(vertexArrayIds)/sizeof(vertexArrayIds[0]) == 3)
+				P_STATIC_ASSERT(sizeof(vertexArrayIds)/sizeof(vertexArrayIds[0]) == 4)
 				P_STATIC_ASSERT(sizeof(bufferIds)/sizeof(bufferIds[0]) == 6)
 
 				glDeleteBuffers(sizeof(bufferIds)/sizeof(bufferIds[0]), &bufferIds[0]); __NE()

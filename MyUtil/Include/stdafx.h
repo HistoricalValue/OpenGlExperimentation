@@ -54,7 +54,7 @@
 #include "PGlobalSingleAllocationBuffer.h"
 #include "PCString.h"
 #include "PStaticCString_inl.h"
-#include "PPointerUtilities.h"
+#include "PPointerUtilities_inl.h"
 #include "PConfigurations.h"
 
 #define M_E        static_cast<float>(2.71828182845904523536)

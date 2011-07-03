@@ -10,5 +10,5 @@ uniform	sampler2D	textureUnit4;
 out		vec4		fragColor;
 
 void main (void) {
-	fragColor =  interpolatedColour * texture2D(textureUnit4, textureCoordinate.xy);
+	fragColor =  texture2D(textureUnit4, textureCoordinate.xy);
 }

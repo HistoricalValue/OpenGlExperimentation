@@ -9,9 +9,11 @@ namespace my { namespace gl { namespace shapes {
 
 	class MYUTIL_API Plane: public ShapeComposition {
 	public:
+
+		virtual TexturedVertexData*						GetTexturedVertexData (void* memory, size_t bytesize) const;
+
 														Plane (Colour const&);
 		virtual											~Plane (void);
-
 	private:
 		Triangle										down;
 		Triangle										up;

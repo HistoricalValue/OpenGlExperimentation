@@ -29,6 +29,24 @@ namespace my { namespace gl { namespace shapes {
 		static size_t									Offset (size_t);
 	}; // class VertexData
 
+	class MYUTIL_API TexturedVertexData {
+	public:
+		static size_t									PositionOffset (void);
+		static size_t									TextureCoordinatesOffset (void);
+		static void*									PositionOffsetPointer (void);
+		static void*									TextureCoordinatesOffsetPointer (void);
+		static size_t									Stride (void);
+
+														TexturedVertexData (math::Vector4 const& pos, math::Vector4 const& textCoords);
+														~TexturedVertexData (void);
+	private:
+														TexturedVertexData (TexturedVertexData const&);
+		void											operator () (TexturedVertexData const&);
+
+		math::Vector4 const								position;
+		math::Vector4 const								textureCoordinate;
+	};
+
 }}} // namespace my::gl::shapes
 
 #endif // __MY_UTIL__MY__GL__SHAPES__VERTEX_DATA__H__

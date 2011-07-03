@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+// notes: http://www.youtube.com/watch?v=6RbT0zWTb8g&feature=player_embedded
+
 namespace my {
 	namespace drawing {
 		extern void draw (void* drawData, void (*bufferSwapper) (void*), void* bufferSwapperClosure);

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "PConfigurations.h"
+#include "PPointerUtilities_inl.h"
 
 #ifndef P_INLINING
 #	define __MY_UTIL__MY__GL__SHAPES__VERTEX_DATA__DEFINING
@@ -46,6 +47,32 @@ namespace my { namespace gl { namespace shapes {
 		return Offset(__ColourOffset);
 	}
 
+
+
+	TexturedVertexData::TexturedVertexData (math::Vector4 const& _position, math::Vector4 const& _textureCoordinate):
+		position			(_position),
+		textureCoordinate	(_textureCoordinate)
+		{}
+
+	void* TexturedVertexData::TextureCoordinatesOffsetPointer (void) {
+		return codeshare::utilities::pointer_utilities::offset(TextureCoordinatesOffset());
+	}
+
+	size_t TexturedVertexData::TextureCoordinatesOffset (void) {
+		return offsetof(TexturedVertexData, textureCoordinate);
+	}
+
+	size_t TexturedVertexData::Stride (void) {
+		return sizeof(TexturedVertexData);
+	}
+
+	void* TexturedVertexData::PositionOffsetPointer (void) {
+		return codeshare::utilities::pointer_utilities::offset(PositionOffset());
+	}
+
+	size_t TexturedVertexData::PositionOffset (void) {
+		return offsetof(TexturedVertexData, position);
+	}
 
 }}} // namespace my::gl::shapes
 
