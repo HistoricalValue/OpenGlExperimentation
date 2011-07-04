@@ -20,6 +20,8 @@ namespace _ {
 	const static size_t VAOs(4);
 	const static size_t VBOs(6);
 	const static size_t VTOs(1);
+	const static size_t TEXTURES_NUM(3);
+	const static size_t IMAGES_NUM(3);
 
 	struct DrawData {
 		GLuint				vertexArrayIds[VAOs];
@@ -31,6 +33,8 @@ namespace _ {
 		unsigned long int	prevtime;
 		GLuint				sampler_location;
 		ankh::images::ImageDecoder*		tgadecoder;
+		ankh::textures::Texture*		textures[TEXTURES_NUM];
+		ankh::images::Image*			images[IMAGES_NUM];
 		GLuint				numberOfTexturedSegments;
 	};
 
@@ -238,6 +242,8 @@ namespace my {
 			using				_::VAOs;
 			using				_::VBOs;
 			using				_::VTOs;
+			using				_::TEXTURES_NUM;
+			using				_::IMAGES_NUM;
 
 			_::DrawData&		drawData						(*DNEW(_::DrawData));
 			GLuint				(&vertexArrayIds)[VAOs]			(drawData.vertexArrayIds);
@@ -249,6 +255,8 @@ namespace my {
 			unsigned long int&	prevtime						(drawData.prevtime);
 			GLuint&				sampler_location				(drawData.sampler_location);
 			ankh::images::ImageDecoder*&	tgadecoder			= (drawData.tgadecoder); // stupid microsoft (and their inability to initialise references to pointers)
+			ankh::textures::Texture*		(&textures)[TEXTURES_NUM]	(drawData.textures);
+			ankh::images::Image*			(&images)[IMAGES_NUM]		(drawData.images);
 			GLuint&				numberOfTexturedSegments		(drawData.numberOfTexturedSegments);
 			
 
@@ -458,19 +466,35 @@ namespace my {
 			// Load teh stonet cooly
 			{
 				using namespace ankh::textures;
+				using namespace ankh::images;
 
-				TextureUnitManager& tum(TextureUnitManager::GetSingleton());
+				ImageLoader&		il	(ImageLoader		::GetSingleton());
+				TextureUnitManager&	tum	(TextureUnitManager	::GetSingleton());
+				TextureManager&		tm	(TextureManager		::GetSingleton());
+				
+				images[0] = il.LoadFromPath("../textures/brick.tga");
+				images[1] = il.LoadFromPath("../textures/CoolTexture.tga");
+				{
+					FILE* const fp(utilities::openfile("../textures/IceMoon.tga", "r"));
+					PortableBinFileReader reader(fp);
+					images[2] = il.LoadFromData("IceMoon", "tga", reader);
+					utilities::closefile(fp);
+				}
+				
+				textures[0] = (tm.New("../textures/stone.tga"));
+				textures[1] = (tm.New("Brick", images[0]));
+				{
+					FILE* const fp(utilities::openfile("../textures/ceiling.tga", "r"));
+					PortableBinFileReader reader(fp);
+					textures[2] = (tm.New("Ceiling", "tga", reader));
+					utilities::closefile(fp);
+				}
+				
 				TextureUnit& tu15(tum.Get(15));
 
-				tu15.Activate();
-
-				TextureManager& tm(ankh::textures::TextureManager::GetSingleton());
-				Texture* const stone(tm.New("../textures/stone.tga"));
-				Texture* const brick(tm.New("../textures/brick.tga"));
-				Texture* const ceiling(tm.New("../textures/ceiling.tga"));
 				{
-					Texture& tex(*brick);
-					TextureUnit& bindTo(tu15);
+					Texture&		tex		(*textures[2]);
+					TextureUnit&	bindTo	(tu15);
 
 					tex.BindTo(bindTo);
 					bindTo.Activate();
