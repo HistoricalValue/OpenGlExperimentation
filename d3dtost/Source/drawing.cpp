@@ -372,7 +372,7 @@ namespace my {
 				{
 					Plane plane(ColourFactory::LightYellow());
 					plane.RotateX((3.f * M_PI) / 2.f);
-					plane.TranslateY(-50.0f);
+				//	plane.TranslateY(-50.0f);
 					plane.ScaleZ(125.f * 2);
 					plane.ScaleX(125.f * 5);
 					// Upload plane as textured, buffer 2
@@ -394,7 +394,7 @@ namespace my {
 			}
 
 			// get teh stonet sampler location
-		//	sampler_location = OpenGL::VUL_SAMPLER4;
+			sampler_location = OpenGL::VUL_SAMPLER4;
 			DONT {
 				using namespace ankh;
 				textures::TextureUnitManager& tum(textures::TextureUnitManager::GetSingleton());
@@ -466,14 +466,17 @@ namespace my {
 
 				TextureManager& tm(ankh::textures::TextureManager::GetSingleton());
 				Texture* const stone(tm.New("../textures/stone.tga"));
-
+				Texture* const brick(tm.New("../textures/brick.tga"));
+				Texture* const ceiling(tm.New("../textures/ceiling.tga"));
 				{
-					TextureUnit& bindTo(tum.Get(TextureUnitIds::TEXTURE0));
-					stone->BindTo(bindTo);
-				//	bindTo.Activate();
+					Texture& tex(*brick);
+					TextureUnit& bindTo(tu15);
+
+					tex.BindTo(bindTo);
+					bindTo.Activate();
 				}
 
-		//		glUniform1i(sampler_location, tum.GetActiveUnitIndex());
+				glUniform1i(sampler_location, tum.GetActiveUnitIndex()); __NE()
 			}
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, 
