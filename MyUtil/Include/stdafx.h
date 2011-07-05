@@ -40,7 +40,7 @@
 #include "MyOpenGLUtils.h"
 #include "MyGlobalInstances.h"
 
-#include "OpenGlExtensionsManager.h"
+#include "OpenGlExtensionManager.h"
 #undef P_STATIC_ASSERT
 #undef P_GLOBAL_STATIC_ASSERT
 

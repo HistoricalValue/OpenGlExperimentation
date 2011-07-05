@@ -83,7 +83,7 @@ namespace my {
 			glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 
 			initialised = my::gl::extensions::ExtensionManager::Initialise()
-					&& ::gl::ExtensionsManager::Initialise();
+					&& ::gl::ext::Initialise();
 
 			if (initialised) {
 				my::gl::shaders::ShaderManager	shaderManager;
@@ -134,7 +134,7 @@ namespace my {
 		PASSERT( wglGetCurrentContext() == context )
 		// destroy shaders
 		my::gl::extensions::ExtensionManager::CleanUp();
-		::gl::ExtensionsManager::CleanUp();
+		::gl::ext::CleanUp();
 		wglDeleteContext(context);
 		initialised = false;
 	}

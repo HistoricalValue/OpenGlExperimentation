@@ -176,8 +176,8 @@ namespace my {
 		using my::gl::extensions::ExtensionManager::glIsBuffer;
 		using my::gl::extensions::ExtensionManager::glIsVertexArray;
 		using my::gl::extensions::ExtensionManager::glIsTexture;
-		using ::gl::ExtensionsManager::glUniform1i;
-		using ::gl::ExtensionsManager::glActiveTexture;
+		using ::gl::ext::glUniform1i;
+		using ::gl::ext::glActiveTexture;
 
 
 		// ----------------------------

@@ -1,7 +1,7 @@
 #include "MyWindows.h"
 
 
-#include "OpenGlExtensionsManager.h"
+#include "OpenGlExtensionManager.h"
 
 #include "TextureUnitManager_inl.h"
 #include "ImageDecoder_inl.h"

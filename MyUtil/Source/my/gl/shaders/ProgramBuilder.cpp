@@ -25,7 +25,7 @@ namespace my { namespace gl { namespace shaders {
 	using extensions::ExtensionManager::glDeleteShader;
 	using extensions::ExtensionManager::glBindAttribLocation;
 	using extensions::ExtensionManager::glUseProgram;
-	using ::gl::ExtensionsManager::glGetUniformLocation;
+	using ::gl::ext::glGetUniformLocation;
 
 	// --------------------------------
 	// Local functions
