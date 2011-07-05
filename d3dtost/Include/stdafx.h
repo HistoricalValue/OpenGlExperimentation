@@ -8,6 +8,8 @@
 #include "TextureManager.h"
 #include "ImageLoader.h"
 
+#include "utilities_inl.h"
+
 #undef P_STATIC_ASSERT
 #undef P_GLOBAL_STATIC_ASSERT
 
