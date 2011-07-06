@@ -475,19 +475,19 @@ namespace my {
 				images[0] = il.LoadFromPath("../textures/brick.tga");
 				images[1] = il.LoadFromPath("../textures/CoolTexture.tga");
 				{
-					FILE* const fp(utilities::openfile("../textures/IceMoon.tga", "r"));
+					FILE* const fp(nmutil::openfile("../textures/IceMoon.tga", "r"));
 					PortableBinFileReader reader(fp);
 					images[2] = il.LoadFromData("IceMoon", "tga", reader);
-					utilities::closefile(fp);
+					nmutil::closefile(fp);
 				}
 				
 				textures[0] = (tm.New("../textures/stone.tga"));
 				textures[1] = (tm.New("Brick", images[0]));
 				{
-					FILE* const fp(utilities::openfile("../textures/ceiling.tga", "r"));
+					FILE* const fp(nmutil::openfile("../textures/ceiling.tga", "r"));
 					PortableBinFileReader reader(fp);
 					textures[2] = (tm.New("Ceiling", "tga", reader));
-					utilities::closefile(fp);
+					nmutil::closefile(fp);
 				}
 				
 				TextureUnit& tu15(tum.Get(15));

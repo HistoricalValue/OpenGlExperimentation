@@ -15,7 +15,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImageLoader", "..\ankh\Imag
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TextureManager", "..\ankh\TextureManager\Project\TextureManager.vcxproj", "{126C2A20-0584-41BD-8658-164B81C4E8F7}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Utilities", "..\ankh\Utilities\Project\Utilities.vcxproj", "{37E5A58C-4BE8-4620-A48C-61EE4CB2656B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nmutil", "..\ankh\nmutil\Project\nmutil.vcxproj", "{37E5A58C-4BE8-4620-A48C-61EE4CB2656B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

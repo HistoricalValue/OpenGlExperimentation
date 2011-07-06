@@ -46,12 +46,12 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>.\Include;..\..\ankh\Utilities\Include;$(DELTA)UtilLib\Include;..\..\ankh\ImageLoader\Include;$(IncludePath)</IncludePath>
+    <IncludePath>.\Include;..\..\ankh\nmutil\Include;$(DELTA)UtilLib\Include;..\..\ankh\ImageLoader\Include;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>.\Include;$(IncludePath)</IncludePath>
+    <IncludePath>.\Include;..\..\ankh\nmutil\Include;$(DELTA)UtilLib\Include;..\..\ankh\ImageLoader\Include;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -199,7 +199,7 @@
     <ProjectReference Include="..\..\ankh\ImageLoader\Project\ImageLoader.vcxproj">
       <Project>{f3b33fb5-57dc-44cc-8b99-52afa5f087bf}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\ankh\Utilities\Project\Utilities.vcxproj">
+    <ProjectReference Include="..\..\ankh\nmutil\Project\nmutil.vcxproj">
       <Project>{37e5a58c-4be8-4620-a48c-61ee4cb2656b}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Codeshare\isi_branch\Utilities\Project\Codeshare_Utilities.vcxproj">
