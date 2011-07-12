@@ -11,9 +11,9 @@ Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "ToastSetaup", "ToastSetaup\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Codeshare_Utilities", "Codeshare\isi_branch\Utilities\Project\Codeshare_Utilities.vcxproj", "{CF84D42C-A3C4-4D56-9586-EFF4FC3271ED}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImageLoader", "..\ankh\ImageLoader\Project\ImageLoader.vcxproj", "{F3B33FB5-57DC-44CC-8B99-52AFA5F087BF}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImageLoader", "..\ankh\Images\Project\ImageLoader.vcxproj", "{F3B33FB5-57DC-44CC-8B99-52AFA5F087BF}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TextureManager", "..\ankh\TextureManager\Project\TextureManager.vcxproj", "{126C2A20-0584-41BD-8658-164B81C4E8F7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TextureManager", "..\ankh\Textures\Project\TextureManager.vcxproj", "{126C2A20-0584-41BD-8658-164B81C4E8F7}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nmutil", "..\ankh\nmutil\Project\nmutil.vcxproj", "{37E5A58C-4BE8-4620-A48C-61EE4CB2656B}"
 EndProject

@@ -493,7 +493,7 @@ namespace my {
 				TextureUnit& tu15(tum.Get(15));
 
 				{
-					Texture&		tex		(*textures[2]);
+					Texture&		tex		(*textures[1]);
 					TextureUnit&	bindTo	(tu15);
 
 					tex.BindTo(bindTo);
