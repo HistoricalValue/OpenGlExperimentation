@@ -15,3 +15,4 @@ d3dtost.suo
 *.asm
 *.tga
 d3dtost/dallocstats.txt
+SupportLibs.suo

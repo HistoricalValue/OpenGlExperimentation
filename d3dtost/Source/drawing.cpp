@@ -503,30 +503,31 @@ namespace my {
 				glUniform1i(sampler_location, tum.GetActiveUnitIndex()); __NE()
 			}
 
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, 
+			glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, 
 					GL_CLAMP_TO_EDGE
 				//	GL_CLAMP_TO_BORDER
 				//	GL_MIRRORED_REPEAT
 				//	GL_REPEAT
 					); __NE()
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, 
+			glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, 
 					GL_CLAMP_TO_EDGE
 				//	GL_CLAMP_TO_BORDER
 				//	GL_MIRRORED_REPEAT
 				//	GL_REPEAT
 					); __NE()
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+			glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER,
 					GL_LINEAR
 				//	GL_NEAREST
 					); __NE()
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+			glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER,
 					GL_LINEAR
 				//	GL_NEAREST
 					); __NE()
 
 			
 			glEnable(GL_DEPTH_TEST); __NE()
-		//	glEnable(GL_CULL_FACE); __NE()
+			glEnable(GL_CULL_FACE); __NE()
+			glEnable(GL_TEXTURE_3D); __NE()
 
 			return &drawData;
 		}

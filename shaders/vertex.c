@@ -73,6 +73,8 @@ void main (void) {
 	interpolatedColour = colour;
 
 	textureCoordinate = texcoord;
+	textureCoordinate.p = 0;
+	textureCoordinate.q = 1;
 }
 
 

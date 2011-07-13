@@ -116,6 +116,7 @@ namespace my {
 				else {
 					wglDeleteContext(context);
 					my::gl::extensions::ExtensionManager::CleanUp();
+					// error reported in _::InstallShaders()
 				}
 			}
 			else {

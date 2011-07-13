@@ -95,10 +95,11 @@ ankh::images::Image* TGADecoder::Decode (
 		default:
 			DASSERT(!"Invalid program state");
 	}
+	DASSERT(ankh::images::PixelFormats::Bytesize(pixelFormat) == depth);
 
 	using ankh::images::Image;
 	// Allocate an image
-	Image* image(DNEWCLASS(Image, (width, height, depth, imgid, fmt, pixelFormat, src)));
+	Image* image(DNEWCLASS(Image, (width, height, 1, imgid, fmt, pixelFormat, src)));
 	DASSERT(DPTR(image)->GetBytesize() == width * height * depth);
 
 	// Read in the bits

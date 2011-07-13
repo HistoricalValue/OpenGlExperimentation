@@ -7,6 +7,8 @@
 
 #include "MyWindows.h"
 
+#include "ImageLoaderTraits_inl.h"
+
 // C RunTime Header Files
 #include <stdlib.h>
 #include <malloc.h>
