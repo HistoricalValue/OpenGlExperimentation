@@ -5,6 +5,8 @@ in vec4		colour;
 in vec4		axyc;
 in vec4		texcoord;
 
+uniform int	textureZ;
+
 out vec4	interpolatedColour;
 out	vec4	textureCoordinate;
 
@@ -73,7 +75,7 @@ void main (void) {
 	interpolatedColour = colour;
 
 	textureCoordinate = texcoord;
-	textureCoordinate.p = 0;
+	textureCoordinate.p = textureZ;
 	textureCoordinate.q = 1;
 }
 

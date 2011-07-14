@@ -18,6 +18,7 @@ namespace my {
 		static GLuint sampler2location(-1);
 		static GLuint sampler3location(-1);
 		static GLuint sampler4location(-1);
+		static GLuint textureZLocation(-1);
 
 		static bool InstallShaders (
 				my::gl::shaders::ProgramBuilder&	programBuilder,
@@ -104,6 +105,7 @@ namespace my {
 						_::sampler2location = programBuilder.GetUniformLocation("textureUnit2");
 						_::sampler3location = programBuilder.GetUniformLocation("textureUnit3");
 						_::sampler4location = programBuilder.GetUniformLocation("textureUnit4");
+						_::textureZLocation = programBuilder.GetUniformLocation("textureZ");
 
 						_::InfologAllExtensions();
 					}
@@ -238,6 +240,11 @@ namespace my {
 		return _::sampler4location;
 	}
 
+	OpenGL::_VUL_TEXTUREZ const OpenGL::VUL_TEXTUREZ;
+	OpenGL::_VUL_TEXTUREZ::operator GLuint (void) const {
+		PASSERT(_::textureZLocation != -1)
+		return _::textureZLocation;
+	}
 
 
 

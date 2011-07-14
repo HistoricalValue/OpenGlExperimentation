@@ -43,6 +43,8 @@ namespace my {
 		static struct _VUL_SAMPLER3	{ operator GLuint (void) const; } const VUL_SAMPLER3;
 		static struct _VUL_SAMPLER4	{ operator GLuint (void) const; } const VUL_SAMPLER4;
 
+		static struct _VUL_TEXTUREZ { operator GLuint (void) const; } const VUL_TEXTUREZ;
+
 	private:
 		DeviceContextHandle								device;
 		ResourceContextHandle							context;

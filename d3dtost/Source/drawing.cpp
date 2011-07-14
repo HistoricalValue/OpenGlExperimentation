@@ -54,6 +54,13 @@ namespace _ {
 		return result - floorf(result/360.f)*360.f;
 	}
 
+	P_INLINE
+	static GLuint GetTextureZ (unsigned long int const dt_milli) {
+		// we want a change every second, total changes = 3
+		// 0~1, 1~2, 2~3
+		return (dt_milli % 3000ul) / 1000ul;
+	}
+
 	static void* __last_static_buffer_allocation(NULL);
 	static size_t __last_static_buffer_allocation_size(0);
 	P_INLINE
@@ -194,6 +201,7 @@ namespace my {
 			float const angle(_::GetRotationAngle(dt));
 			float const cam(30.f);
 		
+			glUniform1i(OpenGL::VUL_TEXTUREZ, _::GetTextureZ(_currtime - dd.prevtime)); __NE()
 		
 			// Draw lines
 			{
@@ -472,7 +480,7 @@ namespace my {
 				TextureUnitManager&	tum	(TextureUnitManager	::GetSingleton());
 				TextureManager&		tm	(TextureManager		::GetSingleton());
 				
-				images[0] = il.LoadFromPath("../textures/brick.tga");
+				images[0] = il.LoadFromPaths("../textures/brick", 3, "tga");
 				images[1] = il.LoadFromPath("../textures/CoolTexture.tga");
 				{
 					FILE* const fp(nmutil::openfile("../textures/IceMoon.tga", "r"));
@@ -503,7 +511,7 @@ namespace my {
 				glUniform1i(sampler_location, tum.GetActiveUnitIndex()); __NE()
 			}
 
-			glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, 
+			glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S,
 					GL_CLAMP_TO_EDGE
 				//	GL_CLAMP_TO_BORDER
 				//	GL_MIRRORED_REPEAT

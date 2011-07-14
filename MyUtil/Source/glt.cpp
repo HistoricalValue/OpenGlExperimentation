@@ -76,7 +76,7 @@ ankh::images::Image* TGADecoder::Decode (
 	
 	// Put some validity checks here. Very simply, I only understand
 	// or care about 8, 24, or 32 bit targa's.
-	if(depth != 1 && depth != 2 && depth != 3)
+	if(depth != 1 && depth != 3 && depth != 4)
 		return NULL;
 
 	// Set OpenGL format expected
