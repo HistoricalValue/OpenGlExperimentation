@@ -25,9 +25,11 @@ CMyUtil::CMyUtil()
 namespace my {
 
 	void Initialise (void) {
+		ilInit();
 	}
 
 	void CleanUp (void) {
+		// ilCleanup()
 	}
 
 } // namespace my

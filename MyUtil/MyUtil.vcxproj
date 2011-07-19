@@ -46,13 +46,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>.\Include;..\..\ankh\nmutil\Include;$(DELTA)UtilLib\Include;..\..\ankh\Images\Include;$(IncludePath)</IncludePath>
+    <IncludePath>.\Include;..\..\ankh\nmutil\Include;$(DELTA)UtilLib\Include;..\..\ankh\Images\Include;..\DevIL-SDK-x86-1.7.8\include;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <LibraryPath>..\DevIL-SDK-x86-1.7.8\lib;$(UTIL_AND_DHEAP_DLLS_DIR)\debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>.\Include;..\..\ankh\nmutil\Include;$(DELTA)UtilLib\Include;..\..\ankh\Images\Include;$(IncludePath)</IncludePath>
+    <IncludePath>.\Include;..\..\ankh\nmutil\Include;$(DELTA)UtilLib\Include;..\..\ankh\Images\Include;..\DevIL-SDK-x86-1.7.8\include;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <LibraryPath>..\DevIL-SDK-x86-1.7.8\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -65,6 +67,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>DevIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -82,6 +85,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>DevIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -143,6 +147,7 @@
     <ClInclude Include="Include\my\gl\textures\TextureUnitWrapper_inl.h" />
     <ClInclude Include="Include\my\gl\textures\TextureUnit_fwd.h" />
     <ClInclude Include="Include\my\gl\textures\TextureUnit_inl.h" />
+    <ClInclude Include="Include\my\image_decoders\DevilImageDecoder.h" />
     <ClInclude Include="Include\stdafx.h" />
     <ClInclude Include="Include\targetver.h" />
     <ClInclude Include="Include\my\gl\extensions\ExtensionManager.h" />
@@ -190,6 +195,7 @@
     <ClCompile Include="Source\my\gl\textures\TextureUnit.cpp" />
     <ClCompile Include="Source\my\gl\textures\TextureUnitManager.cpp" />
     <ClCompile Include="Source\my\gl\textures\TextureUnitWrapper.cpp" />
+    <ClCompile Include="Source\my\image_decoders\DevilImageDecoder.cpp" />
     <ClCompile Include="Source\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

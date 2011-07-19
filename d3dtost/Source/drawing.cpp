@@ -32,7 +32,7 @@ namespace _ {
 		unsigned long int	startingTime;
 		unsigned long int	prevtime;
 		GLuint				sampler_location;
-		ankh::images::ImageDecoder*		tgadecoder;
+		ankh::images::ImageDecoder*		devil;
 		ankh::textures::Texture*		textures[TEXTURES_NUM];
 		ankh::images::Image*			images[IMAGES_NUM];
 		GLuint				numberOfTexturedSegments;
@@ -262,7 +262,7 @@ namespace my {
 			unsigned long int&	startingTime					(drawData.startingTime);
 			unsigned long int&	prevtime						(drawData.prevtime);
 			GLuint&				sampler_location				(drawData.sampler_location);
-			ankh::images::ImageDecoder*&	tgadecoder			= (drawData.tgadecoder); // stupid microsoft (and their inability to initialise references to pointers)
+			ankh::images::ImageDecoder*&	devil				= (drawData.devil); // stupid microsoft (and their inability to initialise references to pointers)
 			ankh::textures::Texture*		(&textures)[TEXTURES_NUM]	(drawData.textures);
 			ankh::images::Image*			(&images)[IMAGES_NUM]		(drawData.images);
 			GLuint&				numberOfTexturedSegments		(drawData.numberOfTexturedSegments);
@@ -468,7 +468,7 @@ namespace my {
 			{
 				ankh::images::ImageLoader& il(ankh::images::ImageLoader::GetSingleton());
 
-				il.InstallDecoder(tgadecoder = DNEW(glt::TGADecoder));
+				il.InstallDecoder(devil = DNEW(my::image_decoders::DevilImageDecoder));
 			}
 
 			// Load teh stonet cooly
@@ -555,7 +555,7 @@ namespace my {
 
 				glDeleteTextures(sizeof(textureIds)/sizeof(textureIds[0]), &textureIds[0]); __NE()
 
-				udelete(drawData.tgadecoder);
+				udelete(drawData.devil);
 
 				DDELETE(&drawData);
 			}

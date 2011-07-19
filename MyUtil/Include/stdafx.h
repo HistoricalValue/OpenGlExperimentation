@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "my/image_decoders/DevilImageDecoder.h"
+
 #include "MyWindows.h"
 
 #include "ImageLoaderTraits_inl.h"
@@ -73,3 +75,4 @@
 #define M_SQRT2    static_cast<float>(1.41421356237309504880)
 #define M_SQRT1_2  static_cast<float>(0.707106781186547524401)
 
+#include "IL/il.h"

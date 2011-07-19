@@ -58,6 +58,15 @@
     <Filter Include="Source Files\my\gl\textures">
       <UniqueIdentifier>{903b6379-abd0-4dda-bda4-8dc9dd532ece}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Image Decoders">
+      <UniqueIdentifier>{377c4fc1-067b-4346-abeb-89c339617ccf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Image Decoders\Source">
+      <UniqueIdentifier>{ec63e0d4-ad59-4d14-ab84-a9731069d8cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Image Decoders\Include - my::image_decoders">
+      <UniqueIdentifier>{e3f16146-0a13-424c-9053-cb88c304b8b2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -240,6 +249,9 @@
     <ClInclude Include="Include\my\gl\textures\TextureUnitManager_inl.h">
       <Filter>Header Files\my\gl\textures</Filter>
     </ClInclude>
+    <ClInclude Include="Include\my\image_decoders\DevilImageDecoder.h">
+      <Filter>Image Decoders\Include - my::image_decoders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\MyLogger.cpp">
@@ -340,6 +352,9 @@
     </ClCompile>
     <ClCompile Include="Source\my\gl\textures\TextureUnitWrapper.cpp">
       <Filter>Source Files\my\gl\textures</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\image_decoders\DevilImageDecoder.cpp">
+      <Filter>Image Decoders\Source</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
