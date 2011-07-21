@@ -26,9 +26,11 @@ namespace my {
 
 	void Initialise (void) {
 		ilInit();
+		image_decoders::DevilImageDecoder::Initialise();
 	}
 
 	void CleanUp (void) {
+		image_decoders::DevilImageDecoder::CleanUp();
 		// ilCleanup()
 	}
 

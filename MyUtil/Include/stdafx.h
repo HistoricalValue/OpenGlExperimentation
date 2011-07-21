@@ -31,6 +31,8 @@
 #include <map>
 #include <fstream>
 
+#include <functional>
+
 
 #include <sstream>
 
@@ -60,6 +62,8 @@
 #include "PStaticCString_inl.h"
 #include "PPointerUtilities_inl.h"
 #include "PConfigurations.h"
+
+#include "nmutil_inl.h"
 
 #define M_E        static_cast<float>(2.71828182845904523536)
 #define M_LOG2E    static_cast<float>(1.44269504088896340736)
