@@ -482,15 +482,20 @@ namespace my {
 				
 				images[0] = il.LoadFromPaths("../textures/brick", 3, "tga");
 				images[1] = il.LoadFromPath("../textures/CoolTexture.tga");
-				{
-					FILE* const fp(nmutil::openfile("../textures/IceMoon.tga", "r"));
+				DONT {
+					FILE* const fp(nmutil::openfile("../textures/paccy.png", "r"));
 					PortableBinFileReader reader(fp);
-					images[2] = il.LoadFromData("IceMoon", "tga", reader);
+					images[2] = il.LoadFromData("IceMoon", "png", reader);
 					nmutil::closefile(fp);
 				}
+				else {
+					images[2] = il.Load3DFromPath(32, "../textures/paccy.png");
+				}
 				
+				Image* const textureImage(images[2]);
+
 				textures[0] = (tm.New("../textures/stone.tga"));
-				textures[1] = (tm.New("Brick", images[0]));
+				textures[1] = (tm.New("Brick", textureImage));
 				{
 					FILE* const fp(nmutil::openfile("../textures/ceiling.tga", "r"));
 					PortableBinFileReader reader(fp);

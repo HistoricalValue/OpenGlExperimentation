@@ -39,7 +39,7 @@ namespace _ {
 		DASSERT( (I) < _::NumberOfFormats);	\
 		_::Format& fmt(_::Formats[(I)]);	\
 		fmt.il = IL;						\
-		fmt.str = strdup(STR);				\
+		fmt.str = _strdup(STR);				\
 	}										\
 
 
