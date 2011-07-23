@@ -25,6 +25,7 @@ namespace my { namespace gl { namespace shapes {
 
 		// Shape
 		VertexData*										GetVertexData (void* memory, size_t bytesize) const;
+		TexturedVertexData*								GetTexturedVertexData (void* memory, size_t bytesize) const;
 		SolidCube*										Clone (void* memory, size_t bytesize) const;
 		size_t											GetNumberOfVertices (void) const
 															{ return GetSolidCubeNumberOfVertices(); }

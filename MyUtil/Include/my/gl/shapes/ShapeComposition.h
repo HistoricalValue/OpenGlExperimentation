@@ -18,6 +18,7 @@ namespace my { namespace gl { namespace shapes {
 
 		// Shape
 		VertexData*										GetVertexData (void* memory, size_t bytesize) const;
+		TexturedVertexData*								GetTexturedVertexData (void* memory, size_t bytesize) const;
 		ShapeComposition*								Clone (void* memory, size_t bytesize) const;
 		size_t											GetNumberOfVertices (void) const;
 		size_t											GetSizeOf (void) const;

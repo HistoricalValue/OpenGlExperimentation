@@ -49,7 +49,8 @@ void main (void) {
 						0,					0,	0,				1) ;
 
 	vec4 pos = position;
-	pos *=  rotx * mat4(
+	pos *=  rotx *
+			mat4(
 				cos(radians(30.f)),	0.f,	-sin(radians(30.f)),		0.f,
 				0.f,	1.f,	0.f,		0.f,
 				sin(radians(30.f)),	0.f,	cos(radians(30.f)),		0.f,

@@ -137,13 +137,52 @@ namespace my { namespace gl { namespace shapes {
 			Colour const	colour3(ColourFactory::Brighter(colour1));
 
 			for (size_t i(0u); i < _::numberOfTriangles; ++i) {
-				PASSERT(&result[i+2] < codeshare::utilities::pointer_utilities::offset(result, bytesize))
+				PASSERT(&result[3*i+2] < codeshare::utilities::pointer_utilities::offset(result, bytesize))
 
 				Triangle const&	triangle(triangles[i]);	
 				
 				new(&result[3*i]  ) VertexData(triangle.GetA().xyzw(), colour1);
 				new(&result[3*i+1]) VertexData(triangle.GetB().xyzw(), colour2);
 				new(&result[3*i+2]) VertexData(triangle.GetC().xyzw(), colour3);
+			}
+		}
+
+		return result;
+	}
+
+	TexturedVertexData* SolidCube::GetTexturedVertexData (void* const memory, size_t const bytesize) const {
+		PASSERT(Triangle::GetTriangleNumberOfVertices() == _::numberOfVerticesPerTriangle)
+		size_t const numberOfElements	(_::numberOfTriangles * _::numberOfVerticesPerTriangle);
+		size_t const requiredSize		(numberOfElements * sizeof(TexturedVertexData));
+		
+		TexturedVertexData* result		(NULL);
+		Triangle const* const triangles	(GetConstTriangles());
+
+		P_STATIC_ASSERT(_::numberOfVerticesPerTriangle == 3)
+		if (bytesize >= requiredSize) {
+			codeshare::utilities::pointer_utilities::reinterpret_assign(result, memory);
+
+			// downside triangle A B C textcoords
+			math::Vector4 const downA(math::Vector4::New( 0,  0, 0, 1));
+			math::Vector4 const downB(math::Vector4::New( 1,  0, 0, 1));
+			math::Vector4 const downC(math::Vector4::New( 0,  1, 0, 1));
+
+			math::Vector4 const upA(math::Vector4::New( 1,  1, 0, 1));
+			math::Vector4 const upB(math::Vector4::New( 0,  1, 0, 1));
+			math::Vector4 const upC(math::Vector4::New( 1,  0, 0, 1));
+
+			int triangleParity(0);
+
+			for (size_t i(0u); i < _::numberOfTriangles; ++i) {
+				PASSERT(&result[3*i+2] < codeshare::utilities::pointer_utilities::offset(result, bytesize))
+
+				Triangle const&	triangle(triangles[i]);	
+				
+				new(&result[3*i]  ) TexturedVertexData(triangle.GetA().xyzw(), triangleParity%2? downA : upA);
+				new(&result[3*i+1]) TexturedVertexData(triangle.GetB().xyzw(), triangleParity%2? downB : upB);
+				new(&result[3*i+2]) TexturedVertexData(triangle.GetC().xyzw(), triangleParity%2? downC : upC);
+
+				++triangleParity;
 			}
 		}
 

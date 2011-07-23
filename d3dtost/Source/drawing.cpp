@@ -56,9 +56,9 @@ namespace _ {
 
 	P_INLINE
 	static GLuint GetTextureZ (unsigned long int const dt_milli) {
-		// we want a change every second, total changes = 3
-		// 0~1, 1~2, 2~3
-		return (dt_milli % 3000ul) / 1000ul;
+		// we want a change every second/8, total changes = 32
+		// 0~1, 1~2, 2~3, ...
+		return ((dt_milli*8) % 32000ul) / 1000ul;
 	}
 
 	static void* __last_static_buffer_allocation(NULL);
@@ -330,6 +330,26 @@ namespace my {
 				// VAO#2: Triangle objects
 				// (buffer #5)
 				{
+					Nothing								nothing;
+					{
+						Shape& shape(
+							nothing
+						//	companions
+						//	companion0
+						//	plane
+							);
+
+					//	shape.Scale(_::WW / 10.f);
+						_::ApplyCamera(shape);
+						_::SetAttribute(vertexArrayIds[2], bufferIds[5], shape, POINTS_NORMALISED, false);
+						numberOfWorldCubeLineSegments = shape.GetNumberOfVertices();
+					}
+				}
+
+				///////////////////////////
+				// VAO#3: Textured triangle objects
+				// (buffer #2 )
+				{
 					PASSERT(SolidCube::GetSolidCubeNumberOfVertices() == 36u)
 					
 					Shape*								shapesArray[7];
@@ -366,36 +386,26 @@ namespace my {
 					companion3.SetColour(ColourFactory::LightYellow());
 					companion4.SetColour(ColourFactory::LightPurple());
 
-					Nothing								nothing;
-					{
-						Shape& shape(
-						//	nothing
-							companions
-						//	companion0
-						//	plane
-							);
+				/////////////
 
-					//	shape.Scale(_::WW / 10.f);
-						_::ApplyCamera(shape);
-						_::SetAttribute(vertexArrayIds[2], bufferIds[5], shape, POINTS_NORMALISED, false);
-						numberOfWorldCubeLineSegments = shape.GetNumberOfVertices();
-					}
-				}
-
-				///////////////////////////
-				// VAO#3: Textured triangle objects
-				// (buffer #2 )
-				{
 					Plane plane(ColourFactory::LightYellow());
-					plane.RotateX((3.f * M_PI) / 2.f);
-				//	plane.TranslateY(-50.0f);
-					plane.ScaleZ(125.f * 2);
-					plane.ScaleX(125.f * 5);
-					// Upload plane as textured, buffer 2
+				//	plane.RotateX((3.f * M_PI) / 2.f);
+				//	plane.TranslateY(50.0f);
+				 	plane.Scale(250.f);
+					
+
+				/////////////
+
+					Shape* sceneryShapesArray[2];
+					ShapeComposition scenery(&sceneryShapesArray[0], sizeof(sceneryShapesArray));
+					scenery.Add(&companions);
+					scenery.Add(&plane);
+
+					// Upload shape as textured, buffer 2
 					{
-						Shape& shape(plane);
+						Shape& shape(scenery);
 						_::ApplyCamera(shape);
-						_::SetAttribute(vertexArrayIds[2], bufferIds[2], shape, POINTS_NORMALISED, true);
+						_::SetAttribute(vertexArrayIds[3], bufferIds[2], shape, POINTS_NORMALISED, true);
 						numberOfTexturedSegments = shape.GetNumberOfVertices();
 					}
 				}

@@ -31,7 +31,7 @@ namespace my { namespace gl { namespace shapes {
 	}
 
 	// Shape
-	VertexData* ShapeComposition::GetVertexData (void* memory, size_t bytesize) const {
+	VertexData* ShapeComposition::GetVertexData (void* const memory, size_t const bytesize) const {
 		using codeshare::utilities::pointer_utilities::reinterpret_assign;
 		using codeshare::utilities::pointer_utilities::offset;
 
@@ -47,6 +47,29 @@ namespace my { namespace gl { namespace shapes {
 				VertexData* const subresult((*shape)->GetVertexData(offset(result, write_offset), bytesize-write_offset));
 				PASSERT(subresult != NULL)
 				write_offset += (*shape)->GetNumberOfVertices() * sizeof(VertexData);
+			}
+			PASSERT(write_offset == requiredSize);
+		}
+
+		return result;
+	}
+
+	TexturedVertexData* ShapeComposition::GetTexturedVertexData (void* const memory, size_t const bytesize) const {
+		using codeshare::utilities::pointer_utilities::reinterpret_assign;
+		using codeshare::utilities::pointer_utilities::offset;
+
+		size_t count				(GetNumberOfVertices());
+		size_t const requiredSize	(count * sizeof(TexturedVertexData));
+		TexturedVertexData* result	(NULL);
+
+		if (bytesize >= requiredSize) {
+			reinterpret_assign(result, memory);
+			size_t write_offset(0u);
+
+			for (Shape const* const* shape = &shapes[0]; shape < &shapes[i]; ++shape) {
+				TexturedVertexData* const subresult((*shape)->GetTexturedVertexData(offset(result, write_offset), bytesize-write_offset));
+				PASSERT(subresult != NULL)
+				write_offset += (*shape)->GetNumberOfVertices() * sizeof(TexturedVertexData);
 			}
 			PASSERT(write_offset == requiredSize);
 		}
