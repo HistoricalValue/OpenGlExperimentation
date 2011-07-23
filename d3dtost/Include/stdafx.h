@@ -1,17 +1,12 @@
 #include "MyWindows.h"
 
 
-#include "OpenGlExtensionManager.h"
+#include "nmutil/OpenGlExtensionManager.h"
 
 #include "TextureUnitManager_inl.h"
 #include "ImageDecoder_inl.h"
 #include "TextureManager.h"
 #include "ImageLoader.h"
-
-#include "nmutil_inl.h"
-
-#undef P_STATIC_ASSERT
-#undef P_GLOBAL_STATIC_ASSERT
 
 
 

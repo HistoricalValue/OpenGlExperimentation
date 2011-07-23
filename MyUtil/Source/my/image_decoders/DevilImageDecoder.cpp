@@ -1,5 +1,9 @@
 #include "stdafx.h"
 
+// TODO
+// make all types of image decoders wih DevIL
+
+
 namespace _ {
 	
 	// Types
@@ -44,7 +48,11 @@ namespace _ {
 
 
 // static
-void my::image_decoders::DevilImageDecoder::Initialise (void) {
+
+namespace my				{
+namespace image_decoders	{
+
+void DevilImageDecoder::Initialise (void) {
 	DASSERT(!_::initialised);
 
 	new(_::_formatId_memory) ankh::images::ImageFormatId("");
@@ -55,7 +63,7 @@ void my::image_decoders::DevilImageDecoder::Initialise (void) {
 	_::initialised = true;
 }
 
-void my::image_decoders::DevilImageDecoder::CleanUp (void) {
+void DevilImageDecoder::CleanUp (void) {
 	DASSERT(_::initialised);
 
 	FOREACH_FORMAT {
@@ -68,53 +76,45 @@ void my::image_decoders::DevilImageDecoder::CleanUp (void) {
 	_::initialised = false;
 }
 
-my::image_decoders::DevilImageDecoder::DevilImageDecoder (void):
-	ankh::images::ImageDecoder("Devil Image Decoder")
+DevilImageDecoder::DevilImageDecoder (void):
+	ankh::images::FilePointerImageDecoder("[ImageDecoder/Devil//FilePointer]")
 	{ }
 
-my::image_decoders::DevilImageDecoder::~DevilImageDecoder (void) {
+DevilImageDecoder::~DevilImageDecoder (void) {
 }
 
 ankh::images::ImageFormatId const& my::image_decoders::DevilImageDecoder::GetFormatId (void) const {
 	return _::formatId;
 }
 
-bool my::image_decoders::DevilImageDecoder::CanHandleFormat (ankh::images::ImageFormatId const& fmt) const {
+bool DevilImageDecoder::CanHandleFormat (ankh::images::ImageFormatId const& fmt) const {
 	FOREACH_FORMAT
 		if (strcmp(fmt.c_str(), i->str) == 0)
 			return true;
 	return false;
 }
 
-ankh::images::Image* my::image_decoders::DevilImageDecoder::Decode(
-		ankh::images::GenericReader&			r,
-		ankh::images::ImageId const&			imgid,
-		ankh::images::ImageFormatId const&		fmtid,
-		ankh::images::ImageSourceType const&	src) {
-
-	void* buf(NULL);
-	size_t bufLength(0);
-	nmutil::ReadBuffer(r, std::ptr_fun(&nmutil::dmemalloc), buf, bufLength);
-	
+ankh::images::Image* DevilImageDecoder::Decode (FILE* const fp, ankh::images::ImageCharacteristics const& imgchar) {
 	// decoder image with DevIL
 	ankh::images::Image* image(NULL);
 	{
 		ILuint ilImage(ilGenImage());
 		ilBindImage(ilImage);
-		ILboolean ilImageLoaded(ilLoadL(_::TranslateFormat(fmtid.c_str()), buf, bufLength));
+		ILboolean ilImageLoaded(ilLoadF(_::TranslateFormat(imgchar.fmt.c_str()), fp));
 		DASSERT(ilImageLoaded == IL_TRUE);
 
 		ILuint width(ilGetInteger(IL_IMAGE_WIDTH));
 		ILuint height(ilGetInteger(IL_IMAGE_HEIGHT));
 
-		image = (DNEWCLASS(ankh::images::Image, (width, height, 1, imgid, fmtid, ankh::images::PixelFormats::RGB, src)));
+		image = (DNEWCLASS(ankh::images::Image, (width, height, 1, imgchar.id, imgchar.fmt, ankh::images::PixelFormats::RGB, imgchar.src)));
 
 		ilCopyPixels(0, 0, 0, width, height, 1, IL_RGB, IL_UNSIGNED_BYTE, image->GetBytes());
 
 		ilDeleteImage(ilImage);
 	}
 
-	nmutil::dfree(buf);
-
 	return image;
 }
+
+}	// image_decoders
+}	// my

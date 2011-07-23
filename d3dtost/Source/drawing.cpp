@@ -468,7 +468,9 @@ namespace my {
 			{
 				ankh::images::ImageLoader& il(ankh::images::ImageLoader::GetSingleton());
 
-				il.InstallDecoder(devil = DNEW(my::image_decoders::DevilImageDecoder));
+				ankh::images::FilePointerImageDecoder* const _devil(DNEW(my::image_decoders::DevilImageDecoder));
+				il.InstallDecoder(_devil);
+				devil = _devil;
 			}
 
 			// Load teh stonet cooly
@@ -483,10 +485,10 @@ namespace my {
 				images[0] = il.LoadFromPaths("../textures/brick", 3, "tga");
 				images[1] = il.LoadFromPath("../textures/CoolTexture.tga");
 				DONT {
-					FILE* const fp(nmutil::openfile("../textures/paccy.png", "r"));
+					FILE* const fp(ubinaryfileopen("../textures/paccy.png", "r"));
 					PortableBinFileReader reader(fp);
 					images[2] = il.LoadFromData("IceMoon", "png", reader);
-					nmutil::closefile(fp);
+					fclose(fp);
 				}
 				else {
 					images[2] = il.Load3DFromPath(32, "../textures/paccy.png");
@@ -496,12 +498,7 @@ namespace my {
 
 				textures[0] = (tm.New("../textures/stone.tga"));
 				textures[1] = (tm.New("Brick", textureImage));
-				{
-					FILE* const fp(nmutil::openfile("../textures/ceiling.tga", "r"));
-					PortableBinFileReader reader(fp);
-					textures[2] = (tm.New("Ceiling", "tga", reader));
-					nmutil::closefile(fp);
-				}
+				textures[2] = (tm.New("Ceiling", images[1]));
 				
 				TextureUnit& tu15(tum.Get(15));
 

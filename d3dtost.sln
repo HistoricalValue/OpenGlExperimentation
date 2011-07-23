@@ -15,7 +15,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImageLoader", "..\ankh\Imag
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TextureManager", "..\ankh\Textures\Project\TextureManager.vcxproj", "{126C2A20-0584-41BD-8658-164B81C4E8F7}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nmutil", "..\ankh\nmutil\Project\nmutil.vcxproj", "{37E5A58C-4BE8-4620-A48C-61EE4CB2656B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IL Unicode", "DevIL\DevIL\src-IL\msvc9\IL Unicode.vcxproj", "{B46B180B-6079-4CE6-8647-A7D712774255}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -87,15 +87,17 @@ Global
 		{126C2A20-0584-41BD-8658-164B81C4E8F7}.Release|Win32.ActiveCfg = Release|Win32
 		{126C2A20-0584-41BD-8658-164B81C4E8F7}.Release|Win32.Build.0 = Release|Win32
 		{126C2A20-0584-41BD-8658-164B81C4E8F7}.Release|x64.ActiveCfg = Release|Win32
-		{37E5A58C-4BE8-4620-A48C-61EE4CB2656B}.Debug|Win32.ActiveCfg = Debug|Win32
-		{37E5A58C-4BE8-4620-A48C-61EE4CB2656B}.Debug|Win32.Build.0 = Debug|Win32
-		{37E5A58C-4BE8-4620-A48C-61EE4CB2656B}.Debug|x64.ActiveCfg = Debug|Win32
-		{37E5A58C-4BE8-4620-A48C-61EE4CB2656B}.Profile|Win32.ActiveCfg = Release|Win32
-		{37E5A58C-4BE8-4620-A48C-61EE4CB2656B}.Profile|Win32.Build.0 = Release|Win32
-		{37E5A58C-4BE8-4620-A48C-61EE4CB2656B}.Profile|x64.ActiveCfg = Release|Win32
-		{37E5A58C-4BE8-4620-A48C-61EE4CB2656B}.Release|Win32.ActiveCfg = Release|Win32
-		{37E5A58C-4BE8-4620-A48C-61EE4CB2656B}.Release|Win32.Build.0 = Release|Win32
-		{37E5A58C-4BE8-4620-A48C-61EE4CB2656B}.Release|x64.ActiveCfg = Release|Win32
+		{B46B180B-6079-4CE6-8647-A7D712774255}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B46B180B-6079-4CE6-8647-A7D712774255}.Debug|Win32.Build.0 = Debug|Win32
+		{B46B180B-6079-4CE6-8647-A7D712774255}.Debug|x64.ActiveCfg = Debug|x64
+		{B46B180B-6079-4CE6-8647-A7D712774255}.Debug|x64.Build.0 = Debug|x64
+		{B46B180B-6079-4CE6-8647-A7D712774255}.Profile|Win32.ActiveCfg = Release|x64
+		{B46B180B-6079-4CE6-8647-A7D712774255}.Profile|x64.ActiveCfg = Release|x64
+		{B46B180B-6079-4CE6-8647-A7D712774255}.Profile|x64.Build.0 = Release|x64
+		{B46B180B-6079-4CE6-8647-A7D712774255}.Release|Win32.ActiveCfg = Release|Win32
+		{B46B180B-6079-4CE6-8647-A7D712774255}.Release|Win32.Build.0 = Release|Win32
+		{B46B180B-6079-4CE6-8647-A7D712774255}.Release|x64.ActiveCfg = Release|x64
+		{B46B180B-6079-4CE6-8647-A7D712774255}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

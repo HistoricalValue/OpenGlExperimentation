@@ -45,13 +45,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>.\Include;..\MyUtil\Include;..\..\ankh\nmutil\Include;..\..\ankh\Images\Include;..\..\ankh\Textures\Include;$(DELTA)UtilLib\Include;$(DELTA)DebugLib\Include;$(DELTA)FileReadersLib\Include;$(IncludePath)</IncludePath>
+    <IncludePath>.\Include;..\MyUtil\Include;..\..\ankh\Images\Include;..\..\ankh\Textures\Include;$(DELTA)UtilLib\Include;$(DELTA)DebugLib\Include;$(DELTA)FileReadersLib\Include;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <LibraryPath>$(UTIL_AND_DHEAP_DLLS_DIR)debug\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>.\Include;..\MyUtil\Include;..\..\ankh\nmutil\Include;..\..\ankh\Images\Include;..\..\ankh\Textures\Include;$(DELTA)UtilLib\Include;$(DELTA)DebugLib\Include;$(DELTA)FileReadersLib\Include;$(IncludePath)</IncludePath>
+    <IncludePath>.\Include;..\MyUtil\Include;..\..\ankh\Images\Include;..\..\ankh\Textures\Include;$(DELTA)UtilLib\Include;$(DELTA)DebugLib\Include;$(DELTA)FileReadersLib\Include;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <LibraryPath>$(UTIL_AND_DHEAP_DLLS_DIR)release\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
@@ -134,9 +134,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\ankh\Images\Project\ImageLoader.vcxproj">
       <Project>{f3b33fb5-57dc-44cc-8b99-52afa5f087bf}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ankh\nmutil\Project\nmutil.vcxproj">
-      <Project>{37e5a58c-4be8-4620-a48c-61ee4cb2656b}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\ankh\Textures\Project\TextureManager.vcxproj">
       <Project>{126c2a20-0584-41bd-8658-164b81c4e8f7}</Project>

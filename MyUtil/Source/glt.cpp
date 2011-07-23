@@ -29,13 +29,13 @@ namespace glt {
 static ankh::images::ImageFormatId const handledFormat("tga");
 
 template <typename T>
-static ANKH_INLINE bool successful_whole_read (GenericReader& r, T& obj) {
+static inline bool successful_whole_read (GenericReader& r, T& obj) {
 	bool const readprecice(r.read(&obj, sizeof(T)));
 	DASSERT(readprecice);
 	return readprecice;
 }
 
-static ANKH_INLINE bool successful_whole_read (GenericReader& r, void* const buf, size_t const bufbytesize) {
+static inline bool successful_whole_read (GenericReader& r, void* const buf, size_t const bufbytesize) {
 	bool const readprecice(r.read(buf, bufbytesize));
 	DASSERT(readprecice);
 	return readprecice;
