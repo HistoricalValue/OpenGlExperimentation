@@ -79,6 +79,13 @@ namespace my {
 			HINSTANCE hPrevInstance,
 			LPTSTR    lpCmdLine,
 			int       nCmdShow) {
+
+		_::Console		console;
+		PASSERT(console.IsValid())
+
+		_::info_console = &console;
+
+		dinit(&_::ddebug::onError);
 		d3dtost::Initialise();
 
 		{
@@ -86,10 +93,6 @@ namespace my {
 			my::Window		window(hInstance);
 			my::Direct3D9	direct3d;
 			my::OpenGL		opengl(window);
-			_::Console		console;
-			_::info_console = &console;
-
-			dinit(&_::ddebug::onError);
 
 
 			if (true
@@ -97,9 +100,8 @@ namespace my {
 					&& direct3d.IsValid()
 					&& opengl.Initialise()
 					&& opengl.IsValid()
-					&& console.IsValid()
 				) {
-				console << _T("Hello comrades");// << std::endl;
+				console << _T("Hello comrades\n");// << std::endl;
 
 				_::DrawData drawData;
 				drawData.Set(my::drawing::setup());
@@ -113,13 +115,12 @@ namespace my {
 
 				my::drawing::cleanup(drawData.Get());
 			}
-
-			dclose();
-			system("pause");
-			_::info_console = NULL;
 		}
 
 		d3dtost::CleanUp();
+		dclose();
+		system("pause");
+		_::info_console = NULL;
 
 		return 0;
 	}

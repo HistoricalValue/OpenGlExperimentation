@@ -178,9 +178,9 @@ namespace my { namespace gl { namespace shapes {
 
 				Triangle const&	triangle(triangles[i]);	
 				
-				new(&result[3*i]  ) TexturedVertexData(triangle.GetA().xyzw(), triangleParity%2? downA : upA);
-				new(&result[3*i+1]) TexturedVertexData(triangle.GetB().xyzw(), triangleParity%2? downB : upB);
-				new(&result[3*i+2]) TexturedVertexData(triangle.GetC().xyzw(), triangleParity%2? downC : upC);
+				new(&result[3*i]  ) TexturedVertexData(triangle.GetA().xyzw(), triangleParity%2? upA : downA);
+				new(&result[3*i+1]) TexturedVertexData(triangle.GetB().xyzw(), triangleParity%2? upB : downB);
+				new(&result[3*i+2]) TexturedVertexData(triangle.GetC().xyzw(), triangleParity%2? upC : downC);
 
 				++triangleParity;
 			}

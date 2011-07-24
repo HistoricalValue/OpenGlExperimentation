@@ -21,7 +21,7 @@ namespace _ {
 	const static size_t VBOs(6);
 	const static size_t VTOs(1);
 	const static size_t TEXTURES_NUM(3);
-	const static size_t IMAGES_NUM(3);
+	const static size_t IMAGES_NUM(4);
 
 	struct DrawData {
 		GLuint				vertexArrayIds[VAOs];
@@ -33,6 +33,7 @@ namespace _ {
 		unsigned long int	prevtime;
 		GLuint				sampler_location;
 		ankh::images::ImageDecoder*		devil;
+		ankh::images::ImageDecoder*		targa;
 		ankh::textures::Texture*		textures[TEXTURES_NUM];
 		ankh::images::Image*			images[IMAGES_NUM];
 		GLuint				numberOfTexturedSegments;
@@ -263,6 +264,7 @@ namespace my {
 			unsigned long int&	prevtime						(drawData.prevtime);
 			GLuint&				sampler_location				(drawData.sampler_location);
 			ankh::images::ImageDecoder*&	devil				= (drawData.devil); // stupid microsoft (and their inability to initialise references to pointers)
+			ankh::images::ImageDecoder*&	targa				= (drawData.targa);
 			ankh::textures::Texture*		(&textures)[TEXTURES_NUM]	(drawData.textures);
 			ankh::images::Image*			(&images)[IMAGES_NUM]		(drawData.images);
 			GLuint&				numberOfTexturedSegments		(drawData.numberOfTexturedSegments);
@@ -394,6 +396,8 @@ namespace my {
 				 	plane.Scale(250.f);
 					
 
+					SolidCube compos;
+					compos.Scale(250.f);
 				/////////////
 
 					Shape* sceneryShapesArray[2];
@@ -403,7 +407,10 @@ namespace my {
 
 					// Upload shape as textured, buffer 2
 					{
-						Shape& shape(scenery);
+						Shape& shape(
+							scenery
+							// compos
+							);
 						_::ApplyCamera(shape);
 						_::SetAttribute(vertexArrayIds[3], bufferIds[2], shape, POINTS_NORMALISED, true);
 						numberOfTexturedSegments = shape.GetNumberOfVertices();
@@ -421,7 +428,7 @@ namespace my {
 
 			// get teh stonet sampler location
 			sampler_location = OpenGL::VUL_SAMPLER4;
-			DONT {
+			DO {
 				using namespace ankh;
 				textures::TextureUnitManager& tum(textures::TextureUnitManager::GetSingleton());
 
@@ -481,6 +488,10 @@ namespace my {
 				ankh::images::FilePointerImageDecoder* const _devil(DNEW(my::image_decoders::DevilImageDecoder));
 				il.InstallDecoder(_devil);
 				devil = _devil;
+
+				ankh::images::GenericReaderImageDecoder* const _targa(DNEW(glt::TGADecoder));
+				il.InstallDecoder(_targa);
+				targa = _targa;
 			}
 
 			// Load teh stonet cooly
@@ -492,17 +503,15 @@ namespace my {
 				TextureUnitManager&	tum	(TextureUnitManager	::GetSingleton());
 				TextureManager&		tm	(TextureManager		::GetSingleton());
 				
-				images[0] = il.LoadFromPaths("../textures/brick", 3, "tga");
-				images[1] = il.LoadFromPath("../textures/CoolTexture.tga");
-				DONT {
-					FILE* const fp(ubinaryfileopen("../textures/paccy.png", "r"));
+				images[0] = il.LoadFromPaths("../textures/brick", 3, "tga");	// gets loaded with Devil
+				images[1] = il.LoadFromPath("../textures/taliatela.jpg");
+				{
+					FILE* const fp(ubinaryfileopen("../textures/CoolTexture.tga", "r"));
 					PortableBinFileReader reader(fp);
-					images[2] = il.LoadFromData("IceMoon", "png", reader);
+					images[2] = il.LoadFromData("CoolTexture", "tga", reader);	// gets loaded with Targa
 					fclose(fp);
 				}
-				else {
-					images[2] = il.Load3DFromPath(32, "../textures/paccy.png");
-				}
+				images[3] = il.Load3DFromPath(32, "../textures/paccy.png");
 				
 				Image* const textureImage(images[2]);
 
@@ -568,6 +577,7 @@ namespace my {
 				glDeleteTextures(sizeof(textureIds)/sizeof(textureIds[0]), &textureIds[0]); __NE()
 
 				udelete(drawData.devil);
+				udelete(drawData.targa);
 
 				DDELETE(&drawData);
 			}

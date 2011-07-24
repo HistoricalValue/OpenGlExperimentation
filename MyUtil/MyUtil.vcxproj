@@ -42,13 +42,13 @@
     <Import Project="..\Bloost.props" />
     <Import Project="..\OpenGL.props" />
     <Import Project="..\..\ankh\UtilitiesAndDefensiveHeap.props" />
+    <Import Project="..\..\ankh\UtilitiesAndDefensiveHeapReleaseLink.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>.\Include;$(DELTA)UtilLib\Include;..\..\ankh\Images\Include;..\DevIL\DevIL\include;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <LibraryPath>$(UTIL_AND_DHEAP_DLLS_DIR)\debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>

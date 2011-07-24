@@ -20,14 +20,12 @@ namespace glt {
 
 
 
-	class MYUTIL_API TGADecoder: public ankh::images::ImageDecoder {
+	class MYUTIL_API TGADecoder: public ankh::images::GenericReaderImageDecoder {
 	public:
 
 		virtual ankh::images::Image* Decode (
-				ankh::images::GenericReader&			r,
-				ankh::images::ImageId const&			imgid,
-				ankh::images::ImageFormatId const&		fmt,
-				ankh::images::ImageSourceType const&	src);
+				ankh::images::GenericReader&,
+				ankh::images::ImageCharacteristics const&);
 		virtual ankh::images::ImageFormatId const& GetFormatId (void) const;
 		virtual bool CanHandleFormat (ankh::images::ImageFormatId const& fmt) const;
 		TGADecoder (void);

@@ -42,11 +42,9 @@ static inline bool successful_whole_read (GenericReader& r, void* const buf, siz
 }
 
 ankh::images::Image* TGADecoder::Decode (
-		ankh::images::GenericReader&			reader,
-		ankh::images::ImageId const&			imgid,
-		ankh::images::ImageFormatId const&		fmt,
-		ankh::images::ImageSourceType const&	src) {
-	DASSERT(fmt == handledFormat);
+		ankh::images::GenericReader&				reader,
+		ankh::images::ImageCharacteristics const&	imgchar) {
+	DASSERT(imgchar.fmt == handledFormat);
 
 	TGAHEADER					tgaHeader;		// TGA file header
 	short						depth;			// Pixel depth;
@@ -99,7 +97,7 @@ ankh::images::Image* TGADecoder::Decode (
 
 	using ankh::images::Image;
 	// Allocate an image
-	Image* image(DNEWCLASS(Image, (width, height, 1, imgid, fmt, pixelFormat, src)));
+	Image* image(DNEWCLASS(Image, (width, height, 1, imgchar, pixelFormat)));
 	DASSERT(DPTR(image)->GetBytesize() == width * height * depth);
 
 	// Read in the bits
@@ -117,7 +115,7 @@ bool TGADecoder::CanHandleFormat (ankh::images::ImageFormatId const& fmt) const 
 }
 
 TGADecoder::TGADecoder (void):
-	ankh::images::ImageDecoder("TGA Decoder")
+	ankh::images::GenericReaderImageDecoder("[ImageDecoder/Superbible TGA/tga/Generic Reader]")
 {}
 
 TGADecoder::~TGADecoder (void) {}

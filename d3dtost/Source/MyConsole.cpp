@@ -36,6 +36,7 @@ namespace my {
 				;
 	}
 
+	#ifdef _UNICODE
 	void Console::WriteToOutputStreamA (char const* const str) {
 		PASSERT(IsValid())
 		DWORD const	charsToWrite	(strlen(str));
@@ -50,6 +51,7 @@ namespace my {
 		}
 		PASSERT(worked == TRUE)
 	}
+	#endif
 
 	void Console::WriteToOutputStream (LPCTSTR const str) {
 		PASSERT(IsValid())

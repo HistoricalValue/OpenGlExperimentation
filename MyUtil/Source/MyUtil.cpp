@@ -26,6 +26,9 @@ namespace my {
 
 	void Initialise (void) {
 		ilInit();
+		ilEnable(IL_ORIGIN_SET);
+		ilSetInteger(IL_ORIGIN_MODE, IL_ORIGIN_LOWER_LEFT);
+
 		image_decoders::DevilImageDecoder::Initialise();
 	}
 
