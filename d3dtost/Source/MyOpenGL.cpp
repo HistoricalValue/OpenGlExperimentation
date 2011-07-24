@@ -51,11 +51,21 @@ namespace my {
 		static void InfologAllExtensions (void) {
 			using my::gl::extensions::ExtensionManager::glGetStringi;
 
+			char buf[1<<17]; // 128KiB
+			size_t off(0);
+
+			{ // first log number of texture units
+				GLint iUnits;
+				glGetIntegerv(GL_MAX_TEXTURE_UNITS, &iUnits);
+				
+				int result(_snprintf_s(&buf[off], sizeof(buf) - off * sizeof(buf[0]), 30, "number of texture units: %d\n", iUnits));
+				PASSERT(result > 26)
+				off += result;
+			}
+
 			GLint nNumExtensions;
 			glGetIntegerv(GL_NUM_EXTENSIONS, &nNumExtensions);
 
-			char buf[1<<17]; // 128KiB
-			size_t off(0);
 			for(GLint i = 0; i < nNumExtensions && off < sizeof(buf)/sizeof(buf[0]); i++)
 				buf[(off += codeshare::utilities::csconcat(
 							&buf[off],

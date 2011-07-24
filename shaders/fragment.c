@@ -6,9 +6,18 @@ uniform	sampler2DArray	textureUnit0;
 uniform	sampler2DArray	textureUnit1;
 uniform	sampler2DArray	textureUnit2;
 uniform	sampler2DArray	textureUnit3;
-uniform	sampler2DArray	textureUnit4;
+uniform	int				textureUnit4;
 out		vec4			fragColor;
 
 void main (void) {
-	fragColor =  texture(textureUnit4, textureCoordinate.stp);
+	if (textureUnit4 == 0)
+		fragColor =  texture(textureUnit1, textureCoordinate.stp);
+	else
+	if (textureUnit4 == 1)
+		fragColor =  texture(textureUnit2, textureCoordinate.stp);
+	else
+	if (textureUnit4 == 2)
+		fragColor =  texture(textureUnit3, textureCoordinate.stp);
+	else
+		fragColor =	 texture(textureUnit0, textureCoordinate.stp);
 }

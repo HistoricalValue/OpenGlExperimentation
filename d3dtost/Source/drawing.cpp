@@ -37,6 +37,7 @@ namespace _ {
 		ankh::textures::Texture*		textures[TEXTURES_NUM];
 		ankh::images::Image*			images[IMAGES_NUM];
 		GLuint				numberOfTexturedSegments;
+		size_t				previousTextureIndex;
 	};
 
 
@@ -60,6 +61,12 @@ namespace _ {
 		// we want a change every second/8, total changes = 32
 		// 0~1, 1~2, 2~3, ...
 		return ((dt_milli*8) % 32000ul) / 1000ul;
+	}
+
+	P_INLINE
+	static size_t GetTextureIndex (unsigned long int const dt_milli) {
+		// there are TEXTURES_NUM textures and we want to keep each one for 3 seconds
+		return ((dt_milli/2) % (TEXTURES_NUM * 1000)) / 1000ul;
 	}
 
 	static void* __last_static_buffer_allocation(NULL);
@@ -201,6 +208,18 @@ namespace my {
 			unsigned long int const dt(_currtime - dd.prevtime);
 			float const angle(_::GetRotationAngle(dt));
 			float const cam(30.f);
+
+			// activate the right texture
+			DO {
+				using namespace ankh::textures;
+				size_t const i(_::GetTextureIndex(dt));
+				PASSERT(i < _::TEXTURES_NUM)
+			//	size_t const i(1);
+				if (i != dd.previousTextureIndex)
+					dd.previousTextureIndex = i;
+
+				glUniform1i(dd.sampler_location, i); __NE()
+			}
 		
 			glUniform1i(OpenGL::VUL_TEXTUREZ, _::GetTextureZ(_currtime - dd.prevtime)); __NE()
 		
@@ -515,21 +534,32 @@ namespace my {
 				
 				Image* const textureImage(images[2]);
 
-				textures[0] = (tm.New("../textures/stone.tga"));
-				textures[1] = (tm.New("Brick", textureImage));
+				tum.Get(1).Activate();
+
+
+				textures[1] = (tm.New("../textures/stone.tga"));
+				textures[0] = (tm.New("Brick", textureImage));
 				textures[2] = (tm.New("Ceiling", images[1]));
 				
 				TextureUnit& tu15(tum.Get(15));
 
 				{
-					Texture&		tex		(*textures[1]);
+					Texture&		tex		(*textures[2]);
 					TextureUnit&	bindTo	(tu15);
 
 					tex.BindTo(bindTo);
+					textures[0]->BindTo(tum.Get(TextureUnitIds::TEXTURE16));
+					textures[1]->BindTo(tum.Get(TextureUnitIds::TEXTURE17));
+					textures[2]->BindTo(tum.Get(TextureUnitIds::TEXTURE18));
 					bindTo.Activate();
+					tum.Get(TextureUnitIds::TEXTURE17).Activate();
+
+					glUniform1i(OpenGL::VUL_SAMPLER1, 16); __NE()
+					glUniform1i(OpenGL::VUL_SAMPLER2, 17); __NE()
+					glUniform1i(OpenGL::VUL_SAMPLER3, 18); __NE()
 				}
 
-				glUniform1i(sampler_location, tum.GetActiveUnitIndex()); __NE()
+				drawData.previousTextureIndex = 0;
 			}
 
 			glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S,
