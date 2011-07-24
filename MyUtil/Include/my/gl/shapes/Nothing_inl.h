@@ -6,6 +6,7 @@
 #include "PConfigurations.h"
 #include "PStaticAssert.h"
 #include "PPointerUtilities_inl.h"
+#include "my/gl/shapes/ColourFactory.h"
 
 namespace my { namespace gl { namespace shapes {
 
