@@ -6,9 +6,18 @@
 #define WGL_CONTEXT_CORE_PROFILE_BIT_ARB 0x00000001
 
 
+#define __NE()	PASSERT(!my::openglutil::GlErrorsHandled(&_::GlErrorHandler))
+
 namespace my {
 
 	namespace _ {
+		///////////////////////////////////
+		static _T_STR GlErrorMessage;
+		static inline void GlErrorHandler (LPCTSTR const msg) {
+			GlErrorMessage = msg;
+		}
+
+		///////////////////////////////////
 		static void DrawChar (TCHAR c, GLfloat x, GLfloat y);
 		namespace gl {
 			static bool CreateContext (my::OpenGL::DeviceContextHandle& device, my::OpenGL::ResourceContextHandle& context);
@@ -55,16 +64,18 @@ namespace my {
 			size_t off(0);
 
 			{ // first log number of texture units
-				GLint iUnits;
-				glGetIntegerv(GL_MAX_TEXTURE_UNITS, &iUnits);
+				GLint iCombinedUnits(-1);
+				GLint iUnits(-1);
+				glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &iCombinedUnits); __NE()
 				
-				int result(_snprintf_s(&buf[off], sizeof(buf) - off * sizeof(buf[0]), 30, "number of texture units: %d\n", iUnits));
-				PASSERT(result > 26)
+				int result(_snprintf_s(&buf[off], sizeof(buf) - off * sizeof(buf[0]), 70,
+						"number of texture units: %d\nnumber of combined texture unuts: %d\n", iUnits, iCombinedUnits));
+				PASSERT(result >= 64)
 				off += result;
 			}
 
 			GLint nNumExtensions;
-			glGetIntegerv(GL_NUM_EXTENSIONS, &nNumExtensions);
+			glGetIntegerv(GL_NUM_EXTENSIONS, &nNumExtensions); __NE()
 
 			for(GLint i = 0; i < nNumExtensions && off < sizeof(buf)/sizeof(buf[0]); i++)
 				buf[(off += codeshare::utilities::csconcat(
@@ -73,6 +84,7 @@ namespace my {
 							reinterpret_cast<char const* const>(glGetStringi(GL_EXTENSIONS, i))
 						) + 1) - 1] = '\n';
 
+			__NE()
 			my::global::logger::Get().Info(d3dtost::ConvertErrorMessage(buf));
 		}
 	}
@@ -91,7 +103,7 @@ namespace my {
 		initialised = _::gl::CreateContext(device, context);
 
 		if (initialised) {
-			glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
+			glClearColor(0.3f, 0.3f, 0.3f, 1.0f);  __NE()
 
 			initialised = my::gl::extensions::ExtensionManager::Initialise()
 					&& ::gl::ext::Initialise();
@@ -120,7 +132,7 @@ namespace my {
 						_::InfologAllExtensions();
 					}
 					else {
-						wglDeleteContext(context);
+						wglDeleteContext(context); 
 						my::gl::extensions::ExtensionManager::CleanUp();
 						my::global::logger::Get().Error(d3dtost::ConvertErrorMessage(programBuilder.GetErrorMessage()));
 					}
