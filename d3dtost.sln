@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TextureManager", "..\ankh\T
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IL Unicode", "DevIL\DevIL\src-IL\msvc9\IL Unicode.vcxproj", "{B46B180B-6079-4CE6-8647-A7D712774255}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "freeglut", "..\ankh_superold\freeglut-2.6.0\VisualStudio2008\freeglut.vcxproj", "{1AE4E979-0D35-4747-BF8E-DD60358F49DB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -98,6 +100,15 @@ Global
 		{B46B180B-6079-4CE6-8647-A7D712774255}.Release|Win32.Build.0 = Release|Win32
 		{B46B180B-6079-4CE6-8647-A7D712774255}.Release|x64.ActiveCfg = Release|x64
 		{B46B180B-6079-4CE6-8647-A7D712774255}.Release|x64.Build.0 = Release|x64
+		{1AE4E979-0D35-4747-BF8E-DD60358F49DB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1AE4E979-0D35-4747-BF8E-DD60358F49DB}.Debug|Win32.Build.0 = Debug|Win32
+		{1AE4E979-0D35-4747-BF8E-DD60358F49DB}.Debug|x64.ActiveCfg = Debug|Win32
+		{1AE4E979-0D35-4747-BF8E-DD60358F49DB}.Profile|Win32.ActiveCfg = Release|Win32
+		{1AE4E979-0D35-4747-BF8E-DD60358F49DB}.Profile|Win32.Build.0 = Release|Win32
+		{1AE4E979-0D35-4747-BF8E-DD60358F49DB}.Profile|x64.ActiveCfg = Release|Win32
+		{1AE4E979-0D35-4747-BF8E-DD60358F49DB}.Release|Win32.ActiveCfg = Release|Win32
+		{1AE4E979-0D35-4747-BF8E-DD60358F49DB}.Release|Win32.Build.0 = Release|Win32
+		{1AE4E979-0D35-4747-BF8E-DD60358F49DB}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

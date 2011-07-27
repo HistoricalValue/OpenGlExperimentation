@@ -19,6 +19,16 @@ float sine = sin(radians(axyc[0]));
 float cosine = cos(radians(axyc[0]));
 
 void main (void) {
+	gl_Position = position;
+
+	interpolatedColour = colour;
+
+	textureCoordinate = texcoord;
+	textureCoordinate.p = textureZ;
+	textureCoordinate.q = 1;
+}
+
+void main0 (void) {
 	vec4 angles = vec4(
 			radians(axyc[0] + 90.0f),
 			radians(axyc[3] + 90.0f),
@@ -79,5 +89,4 @@ void main (void) {
 	textureCoordinate.p = textureZ;
 	textureCoordinate.q = 1;
 }
-
 

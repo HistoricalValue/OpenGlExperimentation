@@ -1,6 +1,6 @@
 #include "MyWindows.h"
 
-
+#include "nmutil/OpenGlUtilities_inl.h"
 #include "nmutil/OpenGlExtensionManager.h"
 
 #include "TextureUnitManager_inl.h"
@@ -82,6 +82,8 @@
 #include "PGlobalSingleAllocationBuffer.h"
 #include "PPlaceholder_inl.h"
 
+#define FREEGLUT_LIB_PRAGMAS 0
+#include <GL/glut.h>
 
 namespace d3dtost {
 	extern LPWSTR ConvertErrorMessage (char const* const msg);

@@ -90,6 +90,15 @@ namespace my {
 	}
 
 
+	OpenGL::OpenGL (void):
+		device(NULL),
+		context(NULL),
+		x(0),
+		y(0),
+		initialised(false)
+		{ }
+
+
 	OpenGL::OpenGL (Window const& window):
 		device(GetDC(window.window)),
 		context(),
@@ -98,9 +107,10 @@ namespace my {
 		initialised(false)
 		{ PASSERT(device != NULL) }
 
+
 	bool OpenGL::Initialise (void) {
 		PASSERT(!initialised)
-		initialised = _::gl::CreateContext(device, context);
+		initialised = device && _::gl::CreateContext(device, context) || true;
 
 		if (initialised) {
 			glClearColor(0.3f, 0.3f, 0.3f, 1.0f);  __NE()
@@ -132,19 +142,22 @@ namespace my {
 						_::InfologAllExtensions();
 					}
 					else {
-						wglDeleteContext(context); 
+						if (context)
+							wglDeleteContext(context); 
 						my::gl::extensions::ExtensionManager::CleanUp();
 						my::global::logger::Get().Error(d3dtost::ConvertErrorMessage(programBuilder.GetErrorMessage()));
 					}
 				}
 				else {
-					wglDeleteContext(context);
+					if (context)
+						wglDeleteContext(context);
 					my::gl::extensions::ExtensionManager::CleanUp();
 					// error reported in _::InstallShaders()
 				}
 			}
 			else {
-				wglDeleteContext(context);
+				if (context)
+					wglDeleteContext(context);
 			}
 		}
 
@@ -160,7 +173,8 @@ namespace my {
 		// destroy shaders
 		my::gl::extensions::ExtensionManager::CleanUp();
 		::gl::ext::CleanUp();
-		wglDeleteContext(context);
+		if (context)
+			wglDeleteContext(context);
 		initialised = false;
 	}
 

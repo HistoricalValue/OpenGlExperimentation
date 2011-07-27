@@ -45,13 +45,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>.\Include;..\MyUtil\Include;..\..\ankh\Images\Include;..\..\ankh\Textures\Include;$(DELTA)UtilLib\Include;$(DELTA)DebugLib\Include;$(DELTA)FileReadersLib\Include;$(IncludePath)</IncludePath>
+    <IncludePath>.\Include;..\MyUtil\Include;..\..\ankh\Images\Include;..\..\ankh\Textures\Include;$(DELTA)UtilLib\Include;$(DELTA)DebugLib\Include;$(DELTA)FileReadersLib\Include;..\..\ankh_superold\oglsuperbible5\freeglut-2.6.0\include;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <LibraryPath>$(UTIL_AND_DHEAP_DLLS_DIR)debug\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>.\Include;..\MyUtil\Include;..\..\ankh\Images\Include;..\..\ankh\Textures\Include;$(DELTA)UtilLib\Include;$(DELTA)DebugLib\Include;$(DELTA)FileReadersLib\Include;$(IncludePath)</IncludePath>
+    <IncludePath>.\Include;..\MyUtil\Include;..\..\ankh\Images\Include;..\..\ankh\Textures\Include;$(DELTA)UtilLib\Include;$(DELTA)DebugLib\Include;$(DELTA)FileReadersLib\Include;..\..\ankh_superold\oglsuperbible5\freeglut-2.6.0\include;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <LibraryPath>$(UTIL_AND_DHEAP_DLLS_DIR)release\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
@@ -103,7 +103,11 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Source\drawing.cpp" />
+    <ClCompile Include="drawing_small.cpp" />
+    <ClCompile Include="Source\drawing.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Source\MyConsole.cpp" />
     <ClCompile Include="Source\MyDirect3D9.cpp" />
     <ClCompile Include="Source\MyOpenGl.cpp" />
@@ -137,6 +141,9 @@
     </ProjectReference>
     <ProjectReference Include="..\..\ankh\Textures\Project\TextureManager.vcxproj">
       <Project>{126c2a20-0584-41bd-8658-164b81c4e8f7}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ankh_superold\freeglut-2.6.0\VisualStudio2008\freeglut.vcxproj">
+      <Project>{1ae4e979-0d35-4747-bf8e-dd60358f49db}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Codeshare\isi_branch\Utilities\Project\Codeshare_Utilities.vcxproj">
       <Project>{cf84d42c-a3c4-4d56-9586-eff4fc3271ed}</Project>

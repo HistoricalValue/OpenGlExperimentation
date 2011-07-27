@@ -2,22 +2,37 @@
 
 in		vec4			interpolatedColour;
 in		vec4			textureCoordinate;
-uniform	sampler2DArray	textureUnit0;
-uniform	sampler2DArray	textureUnit1;
-uniform	sampler2DArray	textureUnit2;
-uniform	sampler2DArray	textureUnit3;
+uniform	isampler2D		textureUnit0;
+uniform	isampler2D		textureUnit1;
+uniform	isampler2D		textureUnit2;
+uniform	isampler2D		textureUnit3;
 uniform	int				textureUnit4;
 out		vec4			fragColor;
 
 void main (void) {
-	if (textureUnit4 == 0)
-		fragColor =  texture(textureUnit1, textureCoordinate.stp);
+	int a = 15;
+	int b = 30;
+	int c = 0;
+	int never = 9023490;
+
+	vec2 texcoord = textureCoordinate.st;
+
+	if (textureUnit4 == 0 + a)
+		fragColor =  texture(textureUnit1, texcoord);
 	else
-	if (textureUnit4 == 1)
-		fragColor =  texture(textureUnit2, textureCoordinate.stp);
+	if (textureUnit4 == 1 + a)
+		fragColor =  texture(textureUnit2, texcoord);
 	else
-	if (textureUnit4 == 2)
-		fragColor =  texture(textureUnit3, textureCoordinate.stp);
+	if (textureUnit4 == 2 + a)
+		fragColor =  texture(textureUnit3, texcoord);
 	else
-		fragColor =	 texture(textureUnit0, textureCoordinate.stp);
+	if (textureUnit4 == never + 1)
+		fragColor =  texture(textureUnit0, texcoord) ; // use TU0
+	if (textureUnit4 == 1000) // coloured fragments
+		fragColor =  interpolatedColour;
+	else
+		fragColor =	 texture(textureUnit0, texcoord);
 }
+
+
+// 62010006282296

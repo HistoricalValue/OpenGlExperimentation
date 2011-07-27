@@ -41,6 +41,9 @@
     </ClCompile>
     <ClCompile Include="..\shaders\vertex.c" />
     <ClCompile Include="..\shaders\fragment.c" />
+    <ClCompile Include="drawing_small.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\stdafx.h">

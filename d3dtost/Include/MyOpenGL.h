@@ -16,6 +16,7 @@ namespace my {
 		typedef HGLRC									ResourceContextHandle;
 		typedef HDC										DeviceContextHandle;
 
+		explicit										OpenGL (void);
 		explicit										OpenGL (Window const&);
 														~OpenGL (void);
 
