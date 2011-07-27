@@ -17,6 +17,7 @@
 
 namespace my {
 
+// TODO remove all -- they have been moved to nmutil:: in ImageLoader
 	namespace openglutil {
 		enum GlConst {
 			MY_GL_ALPHA_TEST		= GL_ALPHA_TEST,
