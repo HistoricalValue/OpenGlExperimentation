@@ -43,7 +43,7 @@ namespace _ {
 	typedef GLboolean									(APIENTRY * glIsVertexArrayFunc) (GLuint arrayId);
 	typedef GLboolean									(APIENTRY * glIsTextureFunc) (GLuint textureId);
 	typedef void										(APIENTRY * glActiveTextureFunc) (GLenum textureUnit);
-	
+
 
 	// pointers
 	static glCreateProgramFunc							glCreateProgram				(NULL);
@@ -94,7 +94,7 @@ namespace _ {
 			ptr = src;
 		else
 			my::global::logger::Get().Warning(my::String(buf));
-			
+
 		return result;
 	}
 } // namespace _
@@ -222,7 +222,7 @@ namespace my { namespace gl { namespace extensions {
 			PASSERT(IsInitialised())
 			(*_::glCompileShader)(shader);
 		}
-		
+
 		void glGetShaderiv (GLuint const shader, GLenum const propertyName, GLint* const parameters) {
 			PASSERT(IsInitialised())
 			(*_::glGetShaderiv)(shader, propertyName, parameters);

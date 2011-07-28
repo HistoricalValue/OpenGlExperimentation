@@ -9,7 +9,7 @@ void dfree (T** const ptr) {
 		T* const	inst(*ptr);
 		void* const	mem(POFFS(inst, -DDEBUG_USERSIZE_BYTES));
 
-		DASSERT(!*((util_ui32*) mem));		
+		DASSERT(!*((util_ui32*) mem));
 		DASSERT(dprivatememsize(mem) >= DDEBUG_USERSIZE_BYTES + sizeof(*inst));
 
 		//inst->~T();

@@ -115,8 +115,8 @@ namespace my {
 
 		dinit(&_::ddebug::onError);
 		d3dtost::Initialise();
-	
-		{	
+
+		{
 			my::OpenGL opengl;
 
 			if (opengl.Initialise() && opengl.IsValid()) {

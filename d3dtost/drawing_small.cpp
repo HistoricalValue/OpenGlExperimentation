@@ -179,13 +179,13 @@ void draw (void* const drawingData, void (* const bufferSwapper) (void*), void* 
 	_::DD* const dd(reinterpret_cast<_::DD* const>(drawingData));
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+
 	glUniform1i(OpenGL::VUL_SAMPLER4, 4); __NE()
 	glUniform1i(OpenGL::VUL_SAMPLER0, 0); __NE()
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, dd->textureid); __NE()
 	glDrawArrays(GL_TRIANGLES, 0, 3); __NE()
-		
+
 	(*bufferSwapper)(bufferSwapperClosure);
 }
 

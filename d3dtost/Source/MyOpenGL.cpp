@@ -40,7 +40,7 @@ namespace my {
 			if (result) {
 				programBuilder.SetVertexShaderSource(shaderManager.GetVertexShaderSource());
 				programBuilder.SetFragmentShaderSource(shaderManager.GetFragmentShaderSource());
-			
+
 				my::gl::shaders::ProgramBuilder::VertexAttributeBindings bindings;
 				bindings.push_back(std::make_pair(OpenGL::VAI_POSITION, VAN_POSITION));
 				bindings.push_back(std::make_pair(OpenGL::VAI_COLOUR, VAN_COLOUR));
@@ -67,7 +67,7 @@ namespace my {
 				GLint iCombinedUnits(-1);
 				GLint iUnits(-1);
 				glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &iCombinedUnits); __NE()
-				
+
 				int result(_snprintf_s(&buf[off], sizeof(buf) - off * sizeof(buf[0]), 70,
 						"number of texture units: %d\nnumber of combined texture unuts: %d\n", iUnits, iCombinedUnits));
 				PASSERT(result >= 64)
@@ -80,7 +80,7 @@ namespace my {
 			for(GLint i = 0; i < nNumExtensions && off < sizeof(buf)/sizeof(buf[0]); i++)
 				buf[(off += codeshare::utilities::csconcat(
 							&buf[off],
-							sizeof(buf)/sizeof(buf[0]) - off, 
+							sizeof(buf)/sizeof(buf[0]) - off,
 							reinterpret_cast<char const* const>(glGetStringi(GL_EXTENSIONS, i))
 						) + 1) - 1] = '\n';
 
@@ -121,7 +121,7 @@ namespace my {
 			if (initialised) {
 				my::gl::shaders::ShaderManager	shaderManager;
 				my::gl::shaders::ProgramBuilder	programBuilder;
-				
+
 				initialised = _::InstallShaders(programBuilder, shaderManager);
 
 				if (initialised) {
@@ -143,7 +143,7 @@ namespace my {
 					}
 					else {
 						if (context)
-							wglDeleteContext(context); 
+							wglDeleteContext(context);
 						my::gl::extensions::ExtensionManager::CleanUp();
 						my::global::logger::Get().Error(d3dtost::ConvertErrorMessage(programBuilder.GetErrorMessage()));
 					}
@@ -166,7 +166,7 @@ namespace my {
 		return initialised;
 	}
 
-	
+
 	void OpenGL::CleanUp (void) {
 		PASSERT(IsInitialised())
 		PASSERT( wglGetCurrentContext() == context )
@@ -249,21 +249,21 @@ namespace my {
 		return _::sampler0location;
 	}
 
-	
+
 	OpenGL::_VUL_SAMPLER1 const OpenGL::VUL_SAMPLER1;
 	OpenGL::_VUL_SAMPLER1::operator GLuint (void) const {
 		PASSERT(_::sampler1location != -1)
 		return _::sampler1location;
 	}
 
-	
+
 	OpenGL::_VUL_SAMPLER2 const OpenGL::VUL_SAMPLER2;
 	OpenGL::_VUL_SAMPLER2::operator GLuint (void) const {
 		PASSERT(_::sampler2location != -1)
 		return _::sampler2location;
 	}
 
-	
+
 	OpenGL::_VUL_SAMPLER3 const OpenGL::VUL_SAMPLER3;
 	OpenGL::_VUL_SAMPLER3::operator GLuint (void) const {
 		PASSERT(_::sampler3location != -1)
@@ -304,34 +304,34 @@ namespace my {
 		namespace gl {
 
 			static bool CreateContext (my::OpenGL::DeviceContextHandle& device, my::OpenGL::ResourceContextHandle& context) {
-				PIXELFORMATDESCRIPTOR pfd = { 
-					sizeof(PIXELFORMATDESCRIPTOR),   // size of this pfd  
-					1,                     // version number  
-					PFD_DRAW_TO_WINDOW |   // support window  
-						PFD_SUPPORT_OPENGL |   // support OpenGL  
-						PFD_DOUBLEBUFFER,      // double buffered  
-					PFD_TYPE_RGBA,         // RGBA type  
-					24,                    // 24-bit color depth  
-					0, 0, 0, 0, 0, 0,      // color bits ignored  
-					0,                     // no alpha buffer  
-					0,                     // shift bit ignored  
-					0,                     // no accumulation buffer  
-					0, 0, 0, 0,            // accum bits ignored  
+				PIXELFORMATDESCRIPTOR pfd = {
+					sizeof(PIXELFORMATDESCRIPTOR),   // size of this pfd
+					1,                     // version number
+					PFD_DRAW_TO_WINDOW |   // support window
+						PFD_SUPPORT_OPENGL |   // support OpenGL
+						PFD_DOUBLEBUFFER,      // double buffered
+					PFD_TYPE_RGBA,         // RGBA type
+					24,                    // 24-bit color depth
+					0, 0, 0, 0, 0, 0,      // color bits ignored
+					0,                     // no alpha buffer
+					0,                     // shift bit ignored
+					0,                     // no accumulation buffer
+					0, 0, 0, 0,            // accum bits ignored
 					32,                    // 32-bit z-buffer					// !!! GLUT_DEPTH  (used for depth testing)
-					0,                     // no stencil buffer  
-					0,                     // no auxiliary buffer  
-					PFD_MAIN_PLANE,        // main layer  
-					0,                     // reserved  
-					0, 0, 0                // layer masks ignored  
-				}; 
+					0,                     // no stencil buffer
+					0,                     // no auxiliary buffer
+					PFD_MAIN_PLANE,        // main layer
+					0,                     // reserved
+					0, 0, 0                // layer masks ignored
+				};
 				int  iPixelFormat;
 				BOOL bresult;
 
-				// get the best available match of pixel format for the device context   
-				iPixelFormat = ChoosePixelFormat(device, &pfd); 
- 
+				// get the best available match of pixel format for the device context
+				iPixelFormat = ChoosePixelFormat(device, &pfd);
 
-				// make that the pixel format of the device context  
+
+				// make that the pixel format of the device context
 				bresult = SetPixelFormat(device, iPixelFormat, &pfd);
 				{ LPTSTR msg = my::winutil::ErrorToString(GetLastError());
 					my::winutil::ReleaseErrorString(msg); }
@@ -343,7 +343,7 @@ namespace my {
 				typedef HGLRC (*wglCreateContextAttribsARB_func)(HDC hDC, HGLRC hShareContext, const int *attribLis);
 				wglCreateContextAttribsARB_func wglCreateContextAttribsARB(reinterpret_cast<wglCreateContextAttribsARB_func>(
 							wglGetProcAddress("wglCreateContextAttribsARB")));
-		
+
 				context = wglCreateContext(device);
 				if (wglCreateContextAttribsARB) {
 					int attribs[] = {WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB, 0};
@@ -406,7 +406,7 @@ namespace my {
 
 			glVertex2f(x + 9.f, y - 10.f);
 			glVertex2f(x + 9.f, y - 5.f);
-				
+
 			glVertex2f(x + 9.f, y - 5.f);
 			glVertex2f(x + 1.f, y - 5.f);
 

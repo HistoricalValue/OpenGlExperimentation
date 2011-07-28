@@ -25,7 +25,7 @@ namespace my { namespace gl { namespace textures {
 
 		P_INLINE TextureUnit*							GetUnit (TextureUnitId const&);
 		P_INLINE TextureUnit*							GetActiveUnit (void);
-		
+
 	private:
 		struct TextureUnitEntry {
 			TextureUnit									unit;
@@ -37,11 +37,11 @@ namespace my { namespace gl { namespace textures {
 		typedef codeshare::utilities::types::ArrayOf<TextureUnitEntryPlaceholder, GL__TEXUTRE_UNIT_MANAGER__MAX_TEXTURE_UNITS>::Array
 														TextureUnitEntryPlaceholdersArray;
 		typedef TextureUnitEntryPlaceholdersArray		Entries;
-		
+
 #pragma warning( push )
-#pragma warning( disable: 4251 ) // Placeholder<> (for "entries") needs to have dll-linkage for clients of TextureUnitManager 
+#pragma warning( disable: 4251 ) // Placeholder<> (for "entries") needs to have dll-linkage for clients of TextureUnitManager
 		Entries											entries;
-		
+
 		P_INLINE void									BlankOutEntries (void);
 		P_INLINE void									ConstructEntry (size_t, TextureUnitId const&);
 		P_INLINE void									DestructEntry (size_t);

@@ -36,7 +36,7 @@ namespace my { namespace gl { namespace textures {
 				|| textureUnit == GL_TEXTURE30	|| textureUnit == GL_TEXTURE31
 				;
 		}
-		
+
 		P_INLINE
 		bool IsActive (TextureUnitId const textureUnit) {
 			PASSERT(IsValid(textureUnit))
@@ -47,33 +47,33 @@ namespace my { namespace gl { namespace textures {
 		P_INLINE
 		TextureUnitId GetActive (void) {
 			GLint activeTextureUnit(0xffffffff);
-			
+
 			glGetIntegerv(GL_ACTIVE_TEXTURE, &activeTextureUnit);
-			
+
 			PASSERT(activeTextureUnit != 0xffffffff);
 			PASSERT(IsValid(activeTextureUnit));
 
 			return activeTextureUnit;
 		}
-		
+
 		P_INLINE
 		void Activate (TextureUnitId const textureUnit) {
 			PASSERT(!IsActive(textureUnit)) // -> IsValid
 			glActiveTexture(textureUnit);
 		}
-		
+
 		P_INLINE
 		void ActivateIfInactive (TextureUnitId const textureUnit) {
 			if (!IsActive(textureUnit)) // -> IsValid
 				glActiveTexture(textureUnit);
 		}
-		
+
 		P_INLINE
 		void Deactivate (TextureUnitId const textureUnit) {
 			PASSERT(IsActive(textureUnit)) // -> IsValid
 			glActiveTexture(GL_TEXTURE0);
 		}
-		
+
 		P_INLINE
 		void DeactivateIfActive (TextureUnitId const textureUnit) {
 			if (IsActive(textureUnit)) // -> IsValid

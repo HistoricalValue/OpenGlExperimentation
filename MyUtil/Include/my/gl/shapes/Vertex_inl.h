@@ -21,7 +21,7 @@ namespace my { namespace gl { namespace shapes {
 		Transformable(other),
 		vec(other.vec)
 		{ P_STATIC_ASSERT(sizeof(Vertex) == sizeof(Transformable) + sizeof(vec)) }
-		
+
 	P_INLINE
 	Vertex::~Vertex (void) {
 	}
@@ -61,13 +61,13 @@ namespace my { namespace gl { namespace shapes {
 	void Vertex::Adjust (math::Vector4 const& off) {
 		vec = vec + off;
 	}
-	
+
 	P_INLINE
 	void Vertex::operator = (Vertex const& other) {
 		this->~Vertex();
 		new(this) Vertex(other);
 	}
-	
+
 	P_INLINE
 	Vertex Vertex::operator + (Vertex const& other) const {
 		return Vertex(vec - other.vec);

@@ -26,7 +26,7 @@ namespace my { namespace gl { namespace shapes {
 			+ sizeof(shapesBytesize)
 			+ sizeof(i))
 	}
-	
+
 	ShapeComposition::~ShapeComposition (void) {
 	}
 

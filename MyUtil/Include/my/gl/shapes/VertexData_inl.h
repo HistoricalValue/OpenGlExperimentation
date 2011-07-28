@@ -18,7 +18,7 @@ namespace my { namespace gl { namespace shapes {
 	P_INLINE
 	VertexData::VertexData (VertexData const& other):
 		position(other.position),
-		colour(other.colour) 
+		colour(other.colour)
 		{ P_STATIC_ASSERT(sizeof(VertexData) == sizeof(position) + sizeof(colour)) }
 
 	P_INLINE

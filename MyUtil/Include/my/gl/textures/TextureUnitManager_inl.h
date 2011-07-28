@@ -66,17 +66,17 @@ namespace my { namespace gl { namespace textures {
 		}
 		P_STATIC_ASSERT(30u < GL__TEXUTRE_UNIT_MANAGER__MAX_TEXTURE_UNITS)
 	}
-	
+
 	P_INLINE
 	bool TextureUnitManager::IsValidEntryIndex (size_t const i) const {
 		return i < sizeof(entries)/sizeof(entries[0]);
 	}
-	
+
 	P_INLINE
 	bool TextureUnitManager::IsValidId (TextureUnitId const& textureUnitId) const {
 		return IsValidEntryIndex(TranslateIndex(textureUnitId));
 	}
-	
+
 	P_INLINE
 	TextureUnitManager::TextureUnitEntry& TextureUnitManager::GetEntry (size_t const entryIndex) {
 		PASSERT(IsValidEntryIndex(entryIndex))
@@ -84,10 +84,10 @@ namespace my { namespace gl { namespace textures {
 		TextureUnitEntryPlaceholder& entry_plc(entries[entryIndex]);
 		TextureUnitEntry& entry(*entry_plc.GetInternal());
 		PASSERT(entry.index == &entry_plc - &entries[0])
-		
+
 		return entry;
 	}
-	
+
 	P_INLINE
 	void TextureUnitManager::ConstructEntry (size_t const entryIndex, TextureUnitId const& textureUnitId) {
 		TextureUnitEntry& entry(GetEntry(entryIndex));
@@ -117,9 +117,9 @@ namespace my { namespace gl { namespace textures {
 #pragma warning( disable: 4351 ) // elements of "entries" will be default initialised
 		entries() {
 #pragma warning( pop )
-		
+
 		BlankOutEntries();
-		
+
 		FOR_EACH_ENTRY {
 			entry->initialised = false;
 			entry->index = entry_plc - &entries[0];

@@ -6,7 +6,7 @@
 
 
 namespace _ {
-	
+
 	// Types
 	struct Format {
 		ILenum	il;
@@ -15,7 +15,7 @@ namespace _ {
 
 	// Constants
 	static const unsigned int NumberOfFormats(3);
-	
+
 	// State
 	static bool							initialised(false);
 	//
@@ -115,7 +115,7 @@ ankh::images::Image* DevilImageDecoder::Decode (FILE* const fp, ankh::images::Im
 	{
 		ILuint ilImage(ilGenImage());
 		ilBindImage(ilImage);
-		
+
 		ILenum const	ilFmt(_::TranslateFormat(imgchar.fmt.c_str()));
 		ILboolean		ilImageLoaded(ilLoadF(ilFmt, fp));
 		DASSERT(ilImageLoaded == IL_TRUE);

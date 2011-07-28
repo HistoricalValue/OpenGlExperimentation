@@ -25,7 +25,7 @@ namespace _ {
 		PASSERT(result != GLenum(-1))
 		return result;
 	}
-	
+
 } // namespace _
 
 namespace my { namespace gl { namespace shaders {
@@ -62,7 +62,7 @@ namespace my { namespace gl { namespace shaders {
 						}
 						else {
 							// Get compilation error reason
-							GLint _infologLength(0);	
+							GLint _infologLength(0);
 							glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &_infologLength);
 							__UNLESS_GL_ERROR {
 								PASSERT(_infologLength > 0)
@@ -94,7 +94,7 @@ namespace my { namespace gl { namespace shaders {
 		return hasCompiled;
 	}
 
-	GLuint ShaderCompiler::GetShader (void) const { 
+	GLuint ShaderCompiler::GetShader (void) const {
 		PASSERT(HasCompiled())
 		PASSERT(IsCompilationSuccessful())
 		PASSERT(glIsShader(shader))

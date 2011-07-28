@@ -24,7 +24,7 @@ namespace my { namespace gl { namespace shapes {
 		size_t const N				(_::numberOfVertices);
 		size_t const requiredSize	(sizeof(VertexData) * N);
 		VertexData* result			(NULL);
-			
+
 		if (bytesize >= requiredSize) {
 			result					= reinterpret_cast<VertexData* const>(memory);
 			Colour const dim	(ColourFactory::Dimmer(colour));

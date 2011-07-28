@@ -19,7 +19,7 @@ namespace my { namespace gl { namespace shapes {
 		// Shape
 		VertexData*										GetVertexData (void* memory, size_t bytesize) const;
 		Triangle*										Clone (void* memory, size_t bytesize) const;
-		size_t											GetNumberOfVertices (void) const 
+		size_t											GetNumberOfVertices (void) const
 															{ return GetTriangleNumberOfVertices(); }
 		size_t											GetSizeOf (void) const
 															{ return GetTriangleSizeOf(); }

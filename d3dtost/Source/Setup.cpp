@@ -116,7 +116,7 @@ namespace d3dtost {
 
 		LPWSTR result(reinterpret_cast<LPWSTR>(
 				HeapAlloc(GetProcessHeap(), HEAP_NO_SERIALIZE, sizeof(wchar_t) * msg_length)));
-		
+
 		if (result == NULL)
 			result = COULD_NOT_ALLOCATE_MEMORY_MESSAGE;
 		else

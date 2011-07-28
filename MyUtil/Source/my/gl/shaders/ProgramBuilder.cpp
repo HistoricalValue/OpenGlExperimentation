@@ -99,7 +99,7 @@ namespace my { namespace gl { namespace shaders {
 		PASSERT(!IsBuildSuccessful())
 
 		hasBeenBuilt = true;
-		
+
 		GLuint vertexShader;
 		GLuint fragmentShader;
 
@@ -115,7 +115,7 @@ namespace my { namespace gl { namespace shaders {
 					infoLog,
 					infoLogHead);
 		}
-		
+
 		// Compile fragment shader
 		if (buildSuccessful) {
 			char const fragmentShaderType[9] = "Fragment";

@@ -24,7 +24,7 @@ namespace my { namespace gl { namespace shapes {
 															{ return GetCubeNumberOfVertices(); }
 	size_t												GetSizeOf (void) const
 															{ return GetCubeSizeOf(); }
-	
+
 	// Transformable
 	void												Apply (my::gl::math::Matrix4x4 const&);
 	void												Adjust (math::Vector4 const&);

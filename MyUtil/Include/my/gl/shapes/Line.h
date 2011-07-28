@@ -12,7 +12,7 @@ namespace my { namespace gl { namespace shapes {
 	public:
 														Line (
 																Vertex const& beginning,
-																Vertex const& end, 
+																Vertex const& end,
 																Colour const& beginningColour	= ColourFactory::New(0.6f, 0.6f, 0.6f, 1.f),
 																Colour const& endColour			= ColourFactory::New(0.9f, 0.9f, 0.9f, 1.f));
 														Line (Line const&);

@@ -92,11 +92,11 @@ namespace {
 		//     Windows and Messages/Window Classes/Window Class Reference/Window Class Styles
 		wclass->style = 0x00
 				| CS_DROPSHADOW // Enables the drop shadow effect on a window. The effect is turned on and off through SPI_SETDROPSHADOW. Typically, this is enabled for small, short-lived windows such as menus to emphasize their Z order relationship to other windows.
-				| CS_OWNDC // Allocates a unique device context for each window in the class. 
+				| CS_OWNDC // Allocates a unique device context for each window in the class.
 			//	| CS_HREDRAW // Redraws the entire window if a movement or size adjustment changes the width of the client area.
 			//	| CS_VREDRAW // Redraws the entire window if a movement or size adjustment changes the height of the client area.
 			;
-		wclass->lpfnWndProc = &MyWindowMessageProcessor; // A pointer to the window procedure. 
+		wclass->lpfnWndProc = &MyWindowMessageProcessor; // A pointer to the window procedure.
 		wclass->cbClsExtra = 0; // The number of extra bytes to allocate following the window-class structure.
 		wclass->cbWndExtra = 0; // The number of extra bytes to allocate following the window instance.
 		wclass->hInstance = hInstance;
@@ -111,7 +111,7 @@ namespace {
 	HICON GetApplicationIcon (my::Window::ModuleHandle const& hInstance) {
 		LPTSTR iconId(MAKEINTRESOURCE(IDI_ISILAL));
 		HICON const result(LoadIcon(hInstance, iconId));
-		
+
 		if (result == NULL)
 			my::global::logger::Get().Error(_T("Could not load icon IDI_ISI from resources"));
 		PASSERT(result);
@@ -170,8 +170,8 @@ namespace {
 														| WS_BORDER // The window has a thin-line border.
 														| WS_CLIPCHILDREN // Excludes the area occupied by child windows when drawing occurs within the parent window.
 														| WS_CAPTION // => border: The window has a title bar (includes the WS_BORDER style).
-													//	| WS_MAXIMIZEBOX // req(WS_SYSMENU): The window has a maximize button. Cannot be combined with the WS_EX_CONTEXTHELP style. The WS_SYSMENU style must also be specified. 
-														| WS_MINIMIZEBOX // req(WS_SYSMENU): The window has a minimize button. Cannot be combined with the WS_EX_CONTEXTHELP style. The WS_SYSMENU style must also be specified. 
+													//	| WS_MAXIMIZEBOX // req(WS_SYSMENU): The window has a maximize button. Cannot be combined with the WS_EX_CONTEXTHELP style. The WS_SYSMENU style must also be specified.
+														| WS_MINIMIZEBOX // req(WS_SYSMENU): The window has a minimize button. Cannot be combined with the WS_EX_CONTEXTHELP style. The WS_SYSMENU style must also be specified.
 														| WS_SYSMENU // req(WS_CAPTION): The window has a window menu on its title bar. The WS_CAPTION style must also be specified.
 													//	| WS_VISIBLE // The window is initially visible.
 														); // (WS_OVERLAPPEDWINDOW);
@@ -209,7 +209,7 @@ namespace {
 
 	bool DestroyMyWindow (my::Window::WindowHandle* const window_handle_ptr) {
 		bool result = false;
-		
+
 		{
 			BOOL destroyed(DestroyWindow(*window_handle_ptr));
 			if (destroyed == FALSE)
@@ -256,7 +256,7 @@ namespace my {
 		{
 //			_::DestroyMyWindow(&window);
 //			PASSERT(window == NULL);
-			
+
 			if (!__window_destroyed)
 				__window_destroyed = _::DestroyMyWindow(&window);
 

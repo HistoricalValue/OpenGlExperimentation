@@ -16,7 +16,7 @@ namespace my { namespace gl { namespace shaders {
 		void											SetFragmentShaderSource (char const* source);	// copied
 		bool											HasVertexShaderSourceBeenSet (void) const;
 		bool											HasFragmentShaderSourcebeenSet (void) const;
-		
+
 		typedef	std::pair<GLuint,std::string>			VertexAttributeBinding;
 		typedef std::list<VertexAttributeBinding>		VertexAttributeBindings;
 		void											SetVertexAttributeBindings (VertexAttributeBindings const&);
@@ -33,7 +33,7 @@ namespace my { namespace gl { namespace shaders {
 
 														ProgramBuilder (void);
 														~ProgramBuilder (void);
-		
+
 	private:
 		SourceText										vertexShaderSource;
 		SourceText										fragmentShaderSource;

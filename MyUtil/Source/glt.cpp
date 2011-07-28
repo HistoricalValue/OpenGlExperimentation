@@ -54,7 +54,7 @@ ankh::images::Image* TGADecoder::Decode (
 
 	// Read in header (binary)
 	successful_whole_read(reader, tgaHeader);
-	
+
 	// Do byte swap for big vs little endian
 #ifdef __APPLE__
 	LITTLE_ENDIAN_WORD(&tgaHeader.colorMapStart);
@@ -64,14 +64,14 @@ ankh::images::Image* TGADecoder::Decode (
 	LITTLE_ENDIAN_WORD(&tgaHeader.width);
 	LITTLE_ENDIAN_WORD(&tgaHeader.height);
 #endif
-	
-	
+
+
 	// Get width, height, and depth of texture
 	width = tgaHeader.width;
 	height = tgaHeader.height;
 	depth = tgaHeader.bits / 8;
 	DASSERT(tgaHeader.bits % 8 == 0);
-	
+
 	// Put some validity checks here. Very simply, I only understand
 	// or care about 8, 24, or 32 bit targa's.
 	if(depth != 1 && depth != 3 && depth != 4)
@@ -130,7 +130,7 @@ namespace glt {
 // Call free() on buffer when finished!
 // This only works on pretty vanilla targas... 8, 24, or 32 bit color
 // only, no palettes, no RLE encoding.
-// This function also takes an optional final parameter to preallocated 
+// This function also takes an optional final parameter to preallocated
 // storage for loading in the image data.
 GLbyte *ReadTGABits(
 		const char*	szFileName,
@@ -149,21 +149,21 @@ GLbyte *ReadTGABits(
 	unsigned long lImageSize;		// Size in bytes of image
 	short sDepth;			// Pixel depth;
 	GLbyte	*pBits = NULL;          // Pointer to bits
-	
+
 	// Default/Failed values
 	GLuint iWidth = 0;
 	GLuint iHeight = 0;
 	GLuint iComponents = GL_RGB;
 	GLenum eFormat = GL_RGB;
-	
+
 	// Attempt to open the file
 	errno_t fopen_errno(fopen_s(&pFile, szFileName, "rb"));
 	if(fopen_errno != 0)
 		return NULL;
-	
+
 	// Read in header (binary)
 	fread(&tgaHeader, 18/* sizeof(TGAHEADER)*/, 1, pFile);
-	
+
 	// Do byte swap for big vs little endian
 #ifdef __APPLE__
 	LITTLE_ENDIAN_WORD(&tgaHeader.colorMapStart);
@@ -173,29 +173,29 @@ GLbyte *ReadTGABits(
 	LITTLE_ENDIAN_WORD(&tgaHeader.width);
 	LITTLE_ENDIAN_WORD(&tgaHeader.height);
 #endif
-	
-	
+
+
 	// Get width, height, and depth of texture
 	iWidth = tgaHeader.width;
 	iHeight = tgaHeader.height;
 	sDepth = tgaHeader.bits / 8;
-	
+
 	// Put some validity checks here. Very simply, I only understand
 	// or care about 8, 24, or 32 bit targa's.
 	if(tgaHeader.bits != 8 && tgaHeader.bits != 24 && tgaHeader.bits != 32)
 		return NULL;
-	
+
 	// Calculate size of image buffer
 	lImageSize = tgaHeader.width * tgaHeader.height * sDepth;
-	
+
 	// Allocate memory and check for success
-	if(opt_pData == NULL) 
+	if(opt_pData == NULL)
 		pBits = (GLbyte*)(*memalloc)(lImageSize * sizeof(GLbyte));
-	else 
-		pBits = opt_pData; 
+	else
+		pBits = opt_pData;
 
 	// Read in the bits
-	// Check for read error. This should catch RLE or other 
+	// Check for read error. This should catch RLE or other
 	// weird formats that I don't want to recognize
 	if(fread(pBits, lImageSize, 1, pFile) != 1)
 		{
@@ -203,7 +203,7 @@ GLbyte *ReadTGABits(
 			(*memfree)(pBits);
 		return NULL;
 		}
-	
+
 	// Set OpenGL format expected
 	switch(sDepth)
 		{
@@ -222,7 +222,7 @@ GLbyte *ReadTGABits(
 			iComponents = GL_LUMINANCE;
 			break;
 		default:        // RGB
-			// If on the iPhone, TGA's are BGR, and the iPhone does not 
+			// If on the iPhone, TGA's are BGR, and the iPhone does not
 			// support BGR without alpha, but it does support RGB,
 			// so a simple swizzle of the red and blue bytes will suffice.
 			// For faster iPhone loads however, save your TGA's with an Alpha!
@@ -236,10 +236,10 @@ GLbyte *ReadTGABits(
 #endif
 		break;
 		}
-	
+
 	// Done with File
 	fclose(pFile);
-	
+
 	// Store information to outputs
 	*pWidth = iWidth;
 	*pHeight = iHeight;

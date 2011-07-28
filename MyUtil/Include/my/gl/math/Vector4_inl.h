@@ -6,13 +6,13 @@
 namespace my { namespace gl { namespace math {
 
 	///////////////////////////////////
-	
+
 	template <typename T>
 	Vector4 Vector4::operator / (T const d) const {
 		return Vector4(x()/d, y()/d, z()/d, w()/d);
 	}
-	
-	
+
+
 #if defined(P_INLINING) || defined(__MY_UTIL__MY__GL__MATH__VECTOR_4_DEFINING__)
 
 	// element-by-element multiplication
@@ -43,7 +43,7 @@ namespace my { namespace gl { namespace math {
 	}
 
 	///////////////////////////////////
-	
+
 	P_INLINE
 	// Inner (dot) product
 	float Vector4::operator * (Vector4 const& other) const {
@@ -130,7 +130,7 @@ namespace my { namespace gl { namespace math {
 	///////////////////////////////////
 
 	P_INLINE
-	float Vector4::t (void) const { 
+	float Vector4::t (void) const {
 		return v[1];
 	}
 
@@ -219,7 +219,7 @@ namespace my { namespace gl { namespace math {
 	}
 
 	///////////////////////////////////
-	
+
 	P_INLINE
 	Vector4::Setter Vector4::p (void) {
 		return Setter(v[2]);
@@ -237,7 +237,7 @@ namespace my { namespace gl { namespace math {
 	P_INLINE
 	Vector4::Setter Vector4::operator [] (size_t i) {
 		bool null(i < sizeof(v)/sizeof(v[0]));
-		return Setter(v[i], null);	
+		return Setter(v[i], null);
 	}
 
 	///////////////////////////////////
@@ -261,15 +261,15 @@ namespace my { namespace gl { namespace math {
 	float Vector4::Setter::operator = (float const v) const {
 		return null? static_cast<float>(0xffffffff) : e = v;
 	}
-	
+
 	///////////////////////////////////
-	
+
 	P_INLINE
 	Vector4 Vector4::operator - (Vector4 const& other) const {
 		return Vector4(v[0] - other.v[0], v[1] - other.v[1], v[2] - other.v[2], v[3] - other.v[3]);
-		
+
 	}
-	
+
 	///////////////////////////////////
 
 #endif

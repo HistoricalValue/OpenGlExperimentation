@@ -5,7 +5,7 @@
 
 namespace my { namespace gl { namespace shaders {
 
-	
+
 #pragma warning( push )
 #pragma warning( disable: 4251 ) // std::string<> needs dll-interface for clients of ShaderCompiler
 

@@ -220,10 +220,10 @@ namespace _ {
 	{
 		using namespace my::gl::shapes;
 		using namespace my::gl::math;
-					
+
 		PASSERT(Line::GetLineNumberOfVertices() == 2u)
 
-					
+
 		Line x(Vertex(Vector4::New(-1.f, 0.f, 0.f, 1.f)), Vertex(Vector4::New(1.f, 0.f, 0.f, 1.f)));
 		Line y(Vertex(Vector4::New( 0.f,-1.f, 0.f, 1.f)), Vertex(Vector4::New(0.f, 1.f, 0.f, 1.f)));
 		Line z(Vertex(Vector4::New( 0.f, 0.f,-1.f, 1.f)), Vertex(Vector4::New(0.f, 0.f, 1.f, 1.f)));
@@ -246,7 +246,7 @@ namespace _ {
 				//	axs
 				//	nothing
 				);
-						
+
 			shape.Scale(500.f);
 			ApplyCamera(shape);
 			SetAttribute(vertexArrayId, buffer0Id, shape, POINTS_NORMALISED, false, numberOfPoints);
@@ -289,7 +289,7 @@ namespace _ {
 		using namespace my::gl::math;
 
 		PASSERT(SolidCube::GetSolidCubeNumberOfVertices() == 36u)
-					
+
 		Shape*								shapesArray[7];
 
 		SolidCube							companion0;
@@ -330,7 +330,7 @@ namespace _ {
 	//	plane.RotateX((3.f * M_PI) / 2.f);
 	//	plane.TranslateY(50.0f);
 		plane.Scale(250.f);
-					
+
 
 		SolidCube compos;
 		compos.Scale(250.f);
@@ -384,7 +384,7 @@ namespace _ {
 	}
 
 	static
-	void PlayWithTextureUnitsForTesting (void) 
+	void PlayWithTextureUnitsForTesting (void)
 	{
 		using namespace ankh;
 		textures::TextureUnitManager& tum(textures::TextureUnitManager::GetSingleton());
@@ -395,7 +395,7 @@ namespace _ {
 		textures::TextureUnit& tu30(tum.Get(textures::TextureUnitIds::TEXTURE30));
 		// Error
 	//	textures::TextureUnit& tu37(tum.Get(textures::TextureUnitId(37)));
-				
+
 		tu17.Activate();
 		DASSERT(!tu23.IsActive());
 
@@ -454,7 +454,7 @@ namespace _ {
 		using namespace ankh::images;
 
 		ImageLoader&		il	(ImageLoader		::GetSingleton());
-				
+
 		images[0] = il.LoadFromPath("../textures/paccy.png");
 
 	//	images[0] = il.LoadFromPaths("../textures/brick", 3, "tga");	// gets loaded with Devil
@@ -487,7 +487,7 @@ namespace _ {
 	//	textures[0] = (tm.New("../textures/stone.tga"));
 	//	textures[1] = (tm.New("Taliatela", images[1]));
 	//	textures[2] = (tm.New("Cool", images[2]));
-	//			
+	//
 	//	TextureUnit& tu16(tum.Get(TextureUnitIds::TEXTURE16));
 	//	TextureUnit& tu17(tum.Get(TextureUnitIds::TEXTURE17));
 	//	TextureUnit& tu18(tum.Get(TextureUnitIds::TEXTURE18));
@@ -507,7 +507,7 @@ namespace _ {
 			//	GL_MIRRORED_REPEAT
 			//	GL_REPEAT
 				); __NE()
-		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, 
+		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T,
 				GL_CLAMP_TO_EDGE
 			//	GL_CLAMP_TO_BORDER
 			//	GL_MIRRORED_REPEAT
@@ -522,7 +522,7 @@ namespace _ {
 			//	GL_NEAREST
 				); __NE()
 
-			
+
 		glEnable(GL_DEPTH_TEST); __NE()
 		glEnable(GL_CULL_FACE); __NE()
 		glEnable(GL_TEXTURE_3D); __NE()
@@ -538,10 +538,10 @@ namespace my {
 		void draw (void* drawData, void (*bufferSwapper) (void*), void* bufferSwapperClosure); // stupid microsoft : proper declaration -- needed for linking with main
 		void draw (void* const drawData, void (*const bufferSwapper) (void*), void* const bufferSwapperClosure) {
 			_::DrawData& dd(*static_cast<_::DrawData* const>(drawData));
-		
+
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
-		
+
+
 			unsigned long int const _currtime(codeshare::utilities::GetATimestamp());
 			PASSERT(_currtime >= dd.prevtime);
 			unsigned long int const dt(_currtime - dd.prevtime);
@@ -559,10 +559,10 @@ namespace my {
 		//
 		//		glUniform1i(dd.sampler_location, i); __NE()
 		//	}
-		
+
 		//	glUniform1i(OpenGL::VUL_TEXTUREZ, _::GetTextureZ(_currtime - dd.prevtime)); __NE()
 			glUniform1i(OpenGL::VUL_TEXTUREZ, 0); __NE()
-		
+
 			// Draw lines
 			{
 				PASSERT(glIsVertexArray(dd.vertexArrayIds[1]) == GL_TRUE)
@@ -575,7 +575,7 @@ namespace my {
 				glUniform1i(OpenGL::VUL_SAMPLER4, _::COLOURED_FRAGMENT); __NE()
 				glDrawArrays(GL_LINES, 0, dd.numberOfPoints); __NE()
 			}
-		
+
 			// Draw Triangles
 		//	DONT
 			{
@@ -603,7 +603,7 @@ namespace my {
 				glUniform1i(OpenGL::VUL_SAMPLER0, 0); __NE()
 				glDrawArrays(GL_TRIANGLES, 0, dd.numberOfTexturedSegments); __NE()
 			}
-		
+
 
 			(*bufferSwapper)(bufferSwapperClosure);
 		}
@@ -630,7 +630,7 @@ namespace my {
 			_::TexturesArray&				textures			(drawData.textures);
 			_::ImagesArray&					images				(drawData.images);
 			GLuint&				numberOfTexturedSegments		(drawData.numberOfTexturedSegments);
-			
+
 
 			startingTime									= codeshare::utilities::GetATimestamp();
 			prevtime										= startingTime;
@@ -638,11 +638,11 @@ namespace my {
 			// Gen VAOs
 			P_STATIC_ASSERT(sizeof(vertexArrayIds)/sizeof(vertexArrayIds[0]) == 4)
 			glGenVertexArrays(sizeof(vertexArrayIds)/sizeof(vertexArrayIds[0]), &vertexArrayIds[0]); __NE()
-			
+
 			// Gen VBOs
 			P_STATIC_ASSERT(sizeof(bufferIds)/sizeof(bufferIds[0]) == 6)
 			glGenBuffers(sizeof(bufferIds)/sizeof(bufferIds[0]), &bufferIds[0]); __NE()
-			
+
 
 			///////////////////////////
 			// VAO#1: Line objects

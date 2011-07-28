@@ -68,7 +68,7 @@ namespace my { namespace gl { namespace shapes {
 		return result;
 	}
 
-	
+
 	void Triangle::Apply (math::Matrix4x4 const& mat4) {
 		a.Apply(mat4);
 		b.Apply(mat4);

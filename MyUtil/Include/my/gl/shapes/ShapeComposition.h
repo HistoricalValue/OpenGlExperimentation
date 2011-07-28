@@ -14,7 +14,7 @@ namespace my { namespace gl { namespace shapes {
 
 		bool											IsFull (void) const;
 		void											Add (Shape*);
-		
+
 
 		// Shape
 		VertexData*										GetVertexData (void* memory, size_t bytesize) const;
@@ -31,7 +31,7 @@ namespace my { namespace gl { namespace shapes {
 		Shape** const									shapes;
 		size_t const									shapesBytesize;
 		size_t											i;
-		
+
 														ShapeComposition (ShapeComposition const&);
 		void											operator = (ShapeComposition const&);
 	}; // class ShapeComposition

@@ -11,7 +11,7 @@ namespace my { namespace gl { namespace shapes {
 		explicit										Vertex (math::Vector4 const& position);
 														Vertex (Vertex const&);
 		virtual											~Vertex (void);
-														
+
 		void											operator = (Vertex const&);
 		Vertex											operator + (Vertex const&) const;
 

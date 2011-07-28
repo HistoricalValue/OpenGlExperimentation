@@ -47,7 +47,7 @@ namespace my { namespace gl { namespace shapes {
 		line09(Vertex(math::Vector4::New(-1,-1, 1,   1)), Vertex(math::Vector4::New(-1, 1, 1,   1))),
 		line10(Vertex(math::Vector4::New( 1,-1, 1,   1)), Vertex(math::Vector4::New( 1, 1, 1,   1))),
 		line11(Vertex(math::Vector4::New( 1,-1,-1,   1)), Vertex(math::Vector4::New( 1, 1,-1,   1))) {
-		
+
 		P_STATIC_ASSERT(
 				sizeof(Cube) == 0
 					+ sizeof(Shape)
@@ -100,7 +100,7 @@ namespace my { namespace gl { namespace shapes {
 		size_t const numberOfVertexDataElements		(_::numberOfLines * _::numberOfVerticesPerLine);
 		size_t const sizeofResult					(numberOfVertexDataElements * sizeof(VertexData));
 		VertexData* result							(NULL);
-		
+
 		if (bytesize >= sizeofResult) {
 			result									= reinterpret_cast<VertexData* const>(memory);
 			Line const* const lines					(GetConstLines());
@@ -144,7 +144,7 @@ namespace my { namespace gl { namespace shapes {
 		for (size_t i(0); i < _::numberOfLines; ++i)
 			lines[i].Adjust(vec4);
 	}
-	
+
 	size_t Cube::GetCubeNumberOfVertices (void) {
 		PASSERT(_::numberOfVerticesPerLine == Line::GetLineNumberOfVertices())
 		return _::numberOfLines * _::numberOfVerticesPerLine;

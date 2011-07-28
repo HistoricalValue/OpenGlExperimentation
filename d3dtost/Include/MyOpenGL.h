@@ -37,7 +37,7 @@ namespace my {
 		static struct _VAI_COLOUR	{ operator GLuint (void) const; } const	VAI_COLOUR;
 		static struct _VAI_AXYC		{ operator GLuint (void) const; } const	VAI_AXYC;
 		static struct _VAI_TEXCOORD	{ operator GLuint (void) const; } const	VAI_TEXCOORD;
-		
+
 		static struct _VUL_SAMPLER0	{ operator GLuint (void) const; } const VUL_SAMPLER0;
 		static struct _VUL_SAMPLER1	{ operator GLuint (void) const; } const VUL_SAMPLER1;
 		static struct _VUL_SAMPLER2	{ operator GLuint (void) const; } const VUL_SAMPLER2;

@@ -57,22 +57,22 @@ namespace my { namespace gl { namespace shapes {
 		Vertex const& Line::GetEnd (void) const {
 			return end;
 		}
-		
+
 		P_INLINE
 		void Line::SetBeginningColour (Colour const& colour) {
 			beginningColour = colour;
 		}
-		
+
 		P_INLINE
 		void Line::SetEndColour (Colour const& colour) {
 			endColour = colour;
 		}
-		
+
 		P_INLINE
 		Colour const& Line::GetBeginningColour (void) const {
 			return beginningColour;
 		}
-		
+
 		P_INLINE
 		Colour const& Line::GetEndColour (void) const {
 			return endColour;

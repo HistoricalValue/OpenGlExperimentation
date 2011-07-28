@@ -19,13 +19,13 @@ namespace my { namespace gl { namespace shapes {
 		float											GetAlpha (void) const;
 
 		Colour											operator * (math::Vector4 const& mod) const;
-		
+
 		math::Vector4									operator - (Colour const&) const;
 		Colour											operator + (math::Vector4 const&) const;
 		bool											operator < (Colour const&) const;
 		bool											operator == (Colour const&) const;
-		
-		
+
+
 	private:
 
 		math::Vector4									colour;

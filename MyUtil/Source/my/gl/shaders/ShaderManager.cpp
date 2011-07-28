@@ -11,7 +11,7 @@ namespace my { namespace gl { namespace shaders {
 				char const* const				shaderSourceFilePath,
 				ShaderManager::SourceText&		shaderSource,
 				ShaderManager::SourceText&		loadingErrorMessage
-			) { 
+			) {
 			bool result(false);
 
 			{
@@ -54,7 +54,7 @@ namespace my { namespace gl { namespace shaders {
 			return result;
 		}
 	} // namespace _
-	
+
 	///////////////////////////////////////////////////////////////////////////
 	// -- Public
 	///////////////////////////////////////////////////////////////////////////
@@ -77,7 +77,7 @@ namespace my { namespace gl { namespace shaders {
 
 	//-------------------------------------------------------------------------
 	// -- Modifiers
-	
+
 	bool ShaderManager::LoadShadersSources (void) {
 		bool result(true
 			&& _::LoadSource("../shaders/vertex.c", vertexShaderSource, loadingErrorMessage)
@@ -128,4 +128,3 @@ namespace my { namespace gl { namespace shaders {
 	}
 
 }}} // namespace my::gl::shaders
-	

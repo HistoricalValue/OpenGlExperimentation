@@ -18,7 +18,7 @@ namespace my { namespace gl { namespace shapes {
 		P_INLINE size_t									GetSizeOf (void) const;
 		P_INLINE size_t									GetNumberOfVertices (void) const;
 		P_INLINE void									Apply (math::Matrix4x4 const&);
-		P_INLINE void									Adjust (math::Vector4 const&);	
+		P_INLINE void									Adjust (math::Vector4 const&);
 	}; // class Nothing
 
 }}} // namespace my::gl::shapes

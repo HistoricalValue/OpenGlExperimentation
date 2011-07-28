@@ -50,7 +50,7 @@ namespace my { namespace gl { namespace shapes {
 	float Colour::GetAlpha (void) const {
 		return colour.a();
 	}
-	
+
 	///////////////////////////////////
 
 	P_INLINE
@@ -69,32 +69,32 @@ namespace my { namespace gl { namespace shapes {
 
 	P_INLINE
 	Colour const& Shape::GetColour (void) const {
-		return colour; 
+		return colour;
 	}
 
 	///////////////////////////////////
-	
+
 	P_INLINE
 	math::Vector4 Colour::operator - (Colour const& other) const {
 		return colour - other.colour;
 	}
-	
+
 	///////////////////////////////////
-	
+
 	P_INLINE
 	Colour Colour::operator + (math::Vector4 const& d) const {
 		return Colour(colour + d);
 	}
-	
+
 	///////////////////////////////////
-	
+
 	P_INLINE
 	bool Colour::operator < (Colour const& other) const {
-		return 
+		return
 				(colour.r() + colour.g() + colour.b()) * colour.a() <
 				(other.colour.r() + other.colour.g() + other.colour.b()) * other.colour.a();
 	}
-	
+
 	///////////////////////////////////
 
 }}} // namespace my::gl::shapes

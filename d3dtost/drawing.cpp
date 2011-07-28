@@ -155,7 +155,7 @@ namespace my {
 //				glDrawArrays(GL_TRIANGLES, 0, dd.numberOfPoints); __NE()
 //				glEnable(GL_DEPTH_TEST); __NE()
 
-	
+
 
 				glBindVertexArray(dd.vertexArrayIds[0]); __NE()
 				glVertexAttrib4f(2,
@@ -187,7 +187,7 @@ namespace my {
 
 
 
-				
+
 				//////////////////////////////////
 				//////////////////////////////////
 				//////////////////////////////////
@@ -264,7 +264,7 @@ namespace my {
 //				glDrawArrays(GL_TRIANGLES, 0, dd.numberOfPoints); __NE()
 //				glEnable(GL_DEPTH_TEST); __NE()
 
-	
+
 
 				glBindVertexArray(dd.vertexArrayIds[0]); __NE()
 				glVertexAttrib4f(2,
@@ -296,7 +296,7 @@ namespace my {
 
 
 
-				
+
 				//////////////////////////////////
 				//////////////////////////////////
 				//////////////////////////////////
@@ -375,7 +375,7 @@ namespace my {
 //				glDrawArrays(GL_TRIANGLES, 0, dd.numberOfPoints); __NE()
 //				glEnable(GL_DEPTH_TEST); __NE()
 
-	
+
 
 				glBindVertexArray(dd.vertexArrayIds[0]); __NE()
 				glVertexAttrib4f(2,
@@ -407,7 +407,7 @@ namespace my {
 
 
 
-				
+
 				//////////////////////////////////
 				//////////////////////////////////
 				//////////////////////////////////
@@ -580,7 +580,7 @@ namespace my {
 				{ { P3(-70, 45, 80) }, { RGB(0,8,6) } },
 #endif
 
-			
+
 #undef WHITE
 #define WHITE		RGB(9,9,9)
 #define COL1_WHITE
@@ -624,7 +624,7 @@ namespace my {
 				POSCOL(	-80,	 0,	 60,		COL1),
 				POSCOL(	-80,	 0,	-60,		COL2),
 				POSCOL(	 80,	 0,	-60,		COL3),
-				//				 
+				//
 				POSCOL(	 80,	 0,	-59,		COL1),
 				POSCOL(	 80,	 0,	 60,		COL2),
 				POSCOL(	-79,	 0,  60,		COL3),
@@ -642,7 +642,7 @@ namespace my {
 				POSCOL(	 40,	 0,	-40,		COL8),
 				POSCOL(	 40,	 0,	 40,		COL7),
 				POSCOL(	 40,	80,	-40,		COL9),
-				// 
+				//
 				POSCOL(	 40,	80,	-39,		COL7),
 				POSCOL(	 40,	 0,	 40,		COL9),
 				POSCOL(	 40,	80,	 40,		COL8),
@@ -678,7 +678,7 @@ namespace my {
 
 			// Gen VAOs
 			glGenVertexArrays(sizeof(vertexArrayIds)/sizeof(vertexArrayIds[0]), &vertexArrayIds[0]); __NE()
-			
+
 			// Gen VBOs
 			glGenBuffers(sizeof(bufferIds)/sizeof(bufferIds[0]), &bufferIds[0]); __NE()
 
@@ -803,13 +803,13 @@ namespace my {
 
 
 				if (textureData) {
-					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, 
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
 							GL_CLAMP_TO_EDGE
 						//	GL_CLAMP_TO_BORDER
 						//	GL_MIRRORED_REPEAT
 						//	GL_REPEAT
 							); __NE()
-					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, 
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
 							GL_CLAMP_TO_EDGE
 						//	GL_CLAMP_TO_BORDER
 						//	GL_MIRRORED_REPEAT
@@ -882,12 +882,12 @@ namespace my {
 					glBindBuffer(GL_ARRAY_BUFFER, bufferIds[4]); __NE()
 					glBufferData(GL_ARRAY_BUFFER, sizeof(textureCoordinates), &textureCoordinates[0], GL_STATIC_DRAW); __NE()
 					glVertexAttribPointer(3, 4, GL_FLOAT, GL_TRUE, 0, 0); __NE()
-					
+
 					glEnableVertexAttribArray(3); __NE()
 				}
 				else
 					global::logger::Get().Warning(_T("Could not load texture Stone"));
-			
+
 			}
 
 

@@ -70,7 +70,7 @@ namespace my { namespace gl { namespace shapes {
 
 		// build cube
 		triangle01.RotateZ(M_PI);
-		
+
 
 		triangle02.RotateX(-M_PI / 2.f);
 		//
@@ -124,7 +124,7 @@ namespace my { namespace gl { namespace shapes {
 		PASSERT(Triangle::GetTriangleNumberOfVertices() == _::numberOfVerticesPerTriangle)
 		size_t const numberOfElements	(_::numberOfTriangles * _::numberOfVerticesPerTriangle);
 		size_t const requiredSize		(numberOfElements * sizeof(VertexData));
-		
+
 		VertexData* result				(NULL);
 		Triangle const* const triangles	(GetConstTriangles());
 
@@ -139,8 +139,8 @@ namespace my { namespace gl { namespace shapes {
 			for (size_t i(0u); i < _::numberOfTriangles; ++i) {
 				PASSERT(&result[3*i+2] < codeshare::utilities::pointer_utilities::offset(result, bytesize))
 
-				Triangle const&	triangle(triangles[i]);	
-				
+				Triangle const&	triangle(triangles[i]);
+
 				new(&result[3*i]  ) VertexData(triangle.GetA().xyzw(), colour1);
 				new(&result[3*i+1]) VertexData(triangle.GetB().xyzw(), colour2);
 				new(&result[3*i+2]) VertexData(triangle.GetC().xyzw(), colour3);
@@ -154,7 +154,7 @@ namespace my { namespace gl { namespace shapes {
 		PASSERT(Triangle::GetTriangleNumberOfVertices() == _::numberOfVerticesPerTriangle)
 		size_t const numberOfElements	(_::numberOfTriangles * _::numberOfVerticesPerTriangle);
 		size_t const requiredSize		(numberOfElements * sizeof(TexturedVertexData));
-		
+
 		TexturedVertexData* result		(NULL);
 		Triangle const* const triangles	(GetConstTriangles());
 
@@ -176,8 +176,8 @@ namespace my { namespace gl { namespace shapes {
 			for (size_t i(0u); i < _::numberOfTriangles; ++i) {
 				PASSERT(&result[3*i+2] < codeshare::utilities::pointer_utilities::offset(result, bytesize))
 
-				Triangle const&	triangle(triangles[i]);	
-				
+				Triangle const&	triangle(triangles[i]);
+
 				new(&result[3*i]  ) TexturedVertexData(triangle.GetA().xyzw(), triangleParity%2? upA : downA);
 				new(&result[3*i+1]) TexturedVertexData(triangle.GetB().xyzw(), triangleParity%2? upB : downB);
 				new(&result[3*i+2]) TexturedVertexData(triangle.GetC().xyzw(), triangleParity%2? upC : downC);

@@ -21,7 +21,7 @@ namespace my { namespace gl { namespace shapes {
 		const size_t sVector4		(sizeof(math::Vector4 const));
 		const size_t sPosition		(sVector4);
 		const size_t sFloat4		(sizeof(float[4]));
-		
+
 		P_STATIC_ASSERT(sVertexData == sPosition + sColour)
 		P_STATIC_ASSERT(sPosition == sVector4)
 		P_STATIC_ASSERT(sColour == sVector4)

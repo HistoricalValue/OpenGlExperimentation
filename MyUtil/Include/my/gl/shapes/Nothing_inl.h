@@ -25,7 +25,7 @@ namespace my { namespace gl { namespace shapes {
 	P_INLINE
 	Nothing::~Nothing (void) {
 	}
-	
+
 	P_INLINE
 	VertexData* Nothing::GetVertexData (void* const memory, size_t const bytesize) const {
 		return reinterpret_cast<VertexData* const>(memory);
@@ -39,7 +39,7 @@ namespace my { namespace gl { namespace shapes {
 			result = codeshare::utilities::pointer_utilities::reinterpret_assign(result, memory);
 			new(result) Nothing(*this);
 		}
-		
+
 		return result;
 	}
 

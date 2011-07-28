@@ -27,7 +27,7 @@ namespace my { namespace gl { namespace shapes {
 		virtual											~Transformable (void);
 
 		virtual void									Apply (math::Matrix4x4 const&) = 0;
-		virtual void									Adjust (math::Vector4 const&) = 0;	
+		virtual void									Adjust (math::Vector4 const&) = 0;
 
 	protected:
 														Transformable (void);

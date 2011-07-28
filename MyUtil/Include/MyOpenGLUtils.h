@@ -29,10 +29,10 @@ namespace my {
 			MY_GL_BGRA				= GL_BGRA,
 			MY_GL_LUMINANCE			= GL_LUMINANCE
 		};
-		
+
 		P_INLINE
 		MYUTIL_API enum GlConst ToGlConst (GLenum const&);
-	
+
 		MYUTIL_API LPCTSTR GlConstString (enum GlConst const& k);
 
 		template <enum GlConst const K>
@@ -48,9 +48,9 @@ namespace my {
 			MY_GL_STACK_UNDERFLOW	= GL_STACK_UNDERFLOW,	// This function would cause a stack underflow. The offending function is ignored, having no side effect other than to set the error flag.
 			MY_GL_OUT_OF_MEMORY		= GL_OUT_OF_MEMORY		// There is not enough memory left to execute the function. The state of OpenGL is undefined, except for the state of the error flags, after this error is recorded.
 		};
-	
+
 		MYUTIL_API LPCTSTR GlErrorString (enum GlError const& e);
-	
+
 		template <enum GlError const E>
 		__MY_OPEN_GL_UTILS__CONST_STRING_LINKING LPCTSTR GlErrorString (void);
 
@@ -66,7 +66,7 @@ namespace my {
 
 
 		// ----------------------------
-		
+
 		MYUTIL_API GLchar* GetProgramInfoLog (GLuint program);
 		MYUTIL_API GLchar* GetShaderInfoLog (GLuint shader);
 

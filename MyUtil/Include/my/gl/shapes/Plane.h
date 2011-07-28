@@ -5,7 +5,7 @@
 #include "my/gl/shapes/ShapeComposition.h"
 #include "PTypes.h"
 
-namespace my { namespace gl { namespace shapes { 
+namespace my { namespace gl { namespace shapes {
 
 	class MYUTIL_API Plane: public ShapeComposition {
 	public:

@@ -23,7 +23,7 @@ namespace my { namespace gl { namespace textures {
 		this->~TextureObject();
 		new(this) TextureObject(other);
 	}
-	
+
 	P_INLINE
 	TextureObject::~TextureObject (void) {
 	}

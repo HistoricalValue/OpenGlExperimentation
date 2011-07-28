@@ -22,10 +22,10 @@ namespace my { namespace gl { namespace textures {
 
 		P_INLINE										TextureUnit (TextureUnit const&);
 		P_INLINE										~TextureUnit (void);
-														
+
 		P_INLINE bool									IsValid (void) const;
 		P_INLINE bool									IsActive (void) const;
-		
+
 		P_INLINE void									Activate (void);
 		P_INLINE void									ActivateIfInactive (void); // TODO: refactor: make utility (uses public API) - nm 2011/06/15
 		P_INLINE void									Deactivate (void);
@@ -38,7 +38,7 @@ namespace my { namespace gl { namespace textures {
 
 		P_INLINE										TextureUnit (TextureUnitId const& textureUnit);
 		P_INLINE void									operator = (TextureUnit const&);
-		
+
 		enum openglutil::GlConst const					textureUnit;
 	}; // class TextureUnit
 

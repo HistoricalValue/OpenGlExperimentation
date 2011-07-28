@@ -16,27 +16,27 @@ namespace _ {
 
 namespace my { namespace gl { namespace shapes {
 
-	
+
 	Colour ColourFactory::New (float const r, float const g, float const b, float const a) {
 		return Colour(math::Vector4::New(r, g, b, a));
 	}
-	
-	
+
+
 	math::Vector4 ColourFactory::DimmingFactor (void) {
 		return math::Vector4::New(.6f, .6f, .6f, 1.f);
 	}
-	
-	
+
+
 	Colour ColourFactory::Red (void) {
 		return New(1.f, 0.f, 0.f);
 	}
 
-	
+
 	Colour ColourFactory::Green (void) {
 		return New(0.f, 1.f, 0.f);
 	}
 
-	
+
 	Colour ColourFactory::Blue (void) {
 		return New(0.f, 0.f, 1.f);
 	}
@@ -56,7 +56,7 @@ namespace my { namespace gl { namespace shapes {
 	Colour ColourFactory::White (void) {
 		return New(1.f, 1.f, 1.f);
 	}
-	
+
 	Colour ColourFactory::Black(void) {
 		return New(0.f, 0.f, 0.f);
 	}
@@ -64,12 +64,12 @@ namespace my { namespace gl { namespace shapes {
 		return Red() * DimmingFactor();
 	}
 
-	
+
 	Colour ColourFactory::LightGreen (void) {
 		return Green() * DimmingFactor();
 	}
 
-	
+
 	Colour ColourFactory::LightBlue (void) {
 		return Blue() * DimmingFactor();
 	}

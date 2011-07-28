@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 
-namespace my { namespace gl { namespace shapes { 
+namespace my { namespace gl { namespace shapes {
 
 	TexturedVertexData* Plane::GetTexturedVertexData (void* const memory, size_t const bytesize) const {
 		using				codeshare::utilities::pointer_utilities::reinterpret_assign;
