@@ -91,7 +91,7 @@ namespace my { namespace global {
 }} // namespace my::global
 
 namespace my {
-	int APIENTRY WinMain (
+	int APIENTRY WinMain0 (
 			HINSTANCE hInstance,
 			HINSTANCE hPrevInstance,
 			LPTSTR    lpCmdLine,
@@ -142,7 +142,7 @@ namespace my {
 		return 0;
 	}
 
-	int APIENTRY WinMain0 (
+	int APIENTRY WinMain (
 			HINSTANCE hInstance,
 			HINSTANCE hPrevInstance,
 			LPTSTR    lpCmdLine,

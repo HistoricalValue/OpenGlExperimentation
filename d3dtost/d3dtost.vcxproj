@@ -103,11 +103,11 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="drawing_small.cpp" />
-    <ClCompile Include="Source\drawing.cpp">
+    <ClCompile Include="drawing_small.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Source\drawing.cpp" />
     <ClCompile Include="Source\MyConsole.cpp" />
     <ClCompile Include="Source\MyDirect3D9.cpp" />
     <ClCompile Include="Source\MyOpenGl.cpp" />

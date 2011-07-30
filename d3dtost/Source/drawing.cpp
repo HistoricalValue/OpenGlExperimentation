@@ -32,6 +32,7 @@ using my::gl::extensions::ExtensionManager::glIsVertexArray;
 using my::gl::extensions::ExtensionManager::glIsTexture;
 using ::gl::ext::glUniform1i;
 using ::gl::ext::glActiveTexture;
+using ::gl::ext::glUniform1ui;
 
 namespace _ {
 	const static float WW(2000.f);
@@ -42,10 +43,11 @@ namespace _ {
 	const static size_t TEXTURES_NUM(1);
 	const static size_t IMAGES_NUM(1);
 
+	const GLuint COLOUR_WITH_COLOUR(0);
+	const GLuint COLOUR_WITH_TEXTURE(1);
+
 	typedef ankh::images::Image*		ImagesArray[IMAGES_NUM];
 	typedef ankh::textures::Texture*	TexturesArray[TEXTURES_NUM];
-
-	const int COLOURED_FRAGMENT(1000);
 
 	struct DrawData {
 		GLuint				vertexArrayIds[VAOs];
@@ -345,7 +347,7 @@ namespace _ {
 		{
 			Shape& shape(
 				scenery
-				// compos
+			//	compos
 				);
 			_::ApplyCamera(shape);
 			_::SetAttribute(vertexArrayId, buffer0Id, shape, POINTS_NORMALISED, true, numberOfTexturedSegments);
@@ -476,12 +478,13 @@ namespace _ {
 	{
 		using namespace ankh::textures;
 
-	//	TextureUnitManager&	tum	(TextureUnitManager	::GetSingleton());
+		TextureUnitManager&	tum	(TextureUnitManager	::GetSingleton());
 		TextureManager&		tm	(TextureManager		::GetSingleton());
 
 		textures[0] = tm.New("Pacco", images[0]);
 
-	//	tum.Get(1).Activate();
+		TextureUnit& tu0(tum.Get(TextureUnitIds::TEXTURE0));
+		textures[0]->BindTo(tu0);
 	//
 	//
 	//	textures[0] = (tm.New("../textures/stone.tga"));
@@ -501,28 +504,6 @@ namespace _ {
 
 	static
 	void ConfigureOpenGl (void) {
-	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S,
-		GL_CLAMP_TO_EDGE
-			//	GL_CLAMP_TO_BORDER
-			//	GL_MIRRORED_REPEAT
-			//	GL_REPEAT
-				); __NE()
-		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T,
-				GL_CLAMP_TO_EDGE
-			//	GL_CLAMP_TO_BORDER
-			//	GL_MIRRORED_REPEAT
-			//	GL_REPEAT
-				); __NE()
-		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER,
-				GL_LINEAR
-			//	GL_NEAREST
-				); __NE()
-		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER,
-				GL_LINEAR
-			//	GL_NEAREST
-				); __NE()
-
-
 		glEnable(GL_DEPTH_TEST); __NE()
 		glEnable(GL_CULL_FACE); __NE()
 		glEnable(GL_TEXTURE_3D); __NE()
@@ -548,20 +529,7 @@ namespace my {
 			float const angle(_::GetRotationAngle(dt));
 			float const cam(30.f);
 
-			// activate the right texture
-		//	DONT {
-		//		using namespace ankh::textures;
-		//		size_t const i(_::GetTextureIndex(dt));
-		//		PASSERT(i < _::TEXTURES_NUM)
-		//	//	size_t const i(1);
-		//		if (i != dd.previousTextureIndex)
-		//			dd.previousTextureIndex = i;
-		//
-		//		glUniform1i(dd.sampler_location, i); __NE()
-		//	}
-
-		//	glUniform1i(OpenGL::VUL_TEXTUREZ, _::GetTextureZ(_currtime - dd.prevtime)); __NE()
-			glUniform1i(OpenGL::VUL_TEXTUREZ, 0); __NE()
+			glUniform1ui(OpenGL::VUL_TEXTUREZ, 0); __NE()
 
 			// Draw lines
 			{
@@ -572,7 +540,7 @@ namespace my {
 						-0.0f,
 						0.0f,
 						cam); __NE()
-				glUniform1i(OpenGL::VUL_SAMPLER4, _::COLOURED_FRAGMENT); __NE()
+				glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_COLOUR); __NE()
 				glDrawArrays(GL_LINES, 0, dd.numberOfPoints); __NE()
 			}
 
@@ -586,7 +554,7 @@ namespace my {
 						-0.0f,
 						0.0f,
 						cam); __NE()
-				glUniform1i(OpenGL::VUL_SAMPLER4, _::COLOURED_FRAGMENT); __NE()
+				glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_COLOUR); __NE()
 				glDrawArrays(GL_TRIANGLES, 0, dd.numberOfWorldCubeLineSegments); __NE()
 			}
 
@@ -599,7 +567,7 @@ namespace my {
 						-0.0f,
 						0.0f,
 						cam); __NE()
-				glUniform1i(OpenGL::VUL_SAMPLER4, 4); __NE()
+				glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_TEXTURE); __NE()
 				glUniform1i(OpenGL::VUL_SAMPLER0, 0); __NE()
 				glDrawArrays(GL_TRIANGLES, 0, dd.numberOfTexturedSegments); __NE()
 			}
@@ -660,23 +628,13 @@ namespace my {
 
 			_::InitialiseAnkh();
 
-			sampler_location = OpenGL::VUL_SAMPLER4;
+			sampler_location = OpenGL::VUL_SAMPLER0;
 
 			_::PlayWithTextureUnitsForTesting();
 			_::InstallImageDecoders(devil, targa);
 			_::LoadTehStonets(images);
 		//	_::CreateTextures(images, textures, drawData.previousTextureIndex);
 			_::ConfigureOpenGl();
-
-			{
-				glActiveTexture(GL_TEXTURE0); __NE()
-				glGenTextures(_::TEXTURES_NUM, &dd->texturesIds[0]); __NE()
-				glBindTexture(GL_TEXTURE_2D, dd->texturesIds[0]); __NE();
-				ankh::images::Image const& image(*images[0]);
-				glTexImage2D(
-						GL_TEXTURE_2D, 0, GL_RGB, image.GetWidth(), image.GetHeight(),
-						0, image.GetPixelFormat(), GL_UNSIGNED_BYTE, image.GetBytes()); __NE()
-			}
 
 			return &drawData;
 		}

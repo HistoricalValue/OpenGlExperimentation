@@ -43,6 +43,9 @@ namespace {
 				break;
 			}
 			case my::winutil::MY_WM_PAINT: {
+				if (__main_loop_callback)
+					(*__main_loop_callback)(__main_loop_callback_env);
+
 				result = 0;
 				break;
 			}
@@ -55,9 +58,6 @@ namespace {
 				break;
 			}
 		}
-
-		if (__main_loop_callback)
-				(*__main_loop_callback)(__main_loop_callback_env);
 
 		return result;
 	}

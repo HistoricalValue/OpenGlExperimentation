@@ -42,7 +42,8 @@ namespace my {
 		static struct _VUL_SAMPLER1	{ operator GLuint (void) const; } const VUL_SAMPLER1;
 		static struct _VUL_SAMPLER2	{ operator GLuint (void) const; } const VUL_SAMPLER2;
 		static struct _VUL_SAMPLER3	{ operator GLuint (void) const; } const VUL_SAMPLER3;
-		static struct _VUL_SAMPLER4	{ operator GLuint (void) const; } const VUL_SAMPLER4;
+
+		static struct _VUL_COLSELTR	{ operator GLuint (void) const; } const VUL_COLSELTR;
 
 		static struct _VUL_TEXTUREZ { operator GLuint (void) const; } const VUL_TEXTUREZ;
 

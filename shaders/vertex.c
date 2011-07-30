@@ -1,14 +1,14 @@
 #version 330 core
 
-in vec4		position;
-in vec4		colour;
-in vec4		axyc;
-in vec4		texcoord;
+in vec4			position;
+in vec4			colour;
+in vec4			axyc;
+in vec4			texcoord;
 
-uniform int	textureZ;
+uniform uint	textureZ;
 
-out vec4	interpolatedColour;
-out	vec4	textureCoordinate;
+out vec4		interpolatedColour;
+out	vec4		textureCoordinate;
 
 const float WORLD_WIDTH		= 2000.f;
 const float WW				= WORLD_WIDTH;
@@ -18,7 +18,7 @@ const float near			= WORLD_WIDTH * 4 * 2 * 0.125;
 float sine = sin(radians(axyc[0]));
 float cosine = cos(radians(axyc[0]));
 
-void main (void) {
+void main0 (void) {
 	gl_Position = position;
 
 	interpolatedColour = colour;
@@ -28,7 +28,7 @@ void main (void) {
 	textureCoordinate.q = 1;
 }
 
-void main0 (void) {
+void main (void) {
 	vec4 angles = vec4(
 			radians(axyc[0] + 90.0f),
 			radians(axyc[3] + 90.0f),

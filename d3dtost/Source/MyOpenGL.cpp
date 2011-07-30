@@ -26,7 +26,7 @@ namespace my {
 		static GLuint sampler1location(-1);
 		static GLuint sampler2location(-1);
 		static GLuint sampler3location(-1);
-		static GLuint sampler4location(-1);
+		static GLuint colslctrLocation(-1);
 		static GLuint textureZLocation(-1);
 
 		static bool InstallShaders (
@@ -136,7 +136,7 @@ namespace my {
 						_::sampler1location = programBuilder.GetUniformLocation("textureUnit1");
 						_::sampler2location = programBuilder.GetUniformLocation("textureUnit2");
 						_::sampler3location = programBuilder.GetUniformLocation("textureUnit3");
-						_::sampler4location = programBuilder.GetUniformLocation("textureUnit4");
+						_::colslctrLocation = programBuilder.GetUniformLocation("colouringSelector");
 						_::textureZLocation = programBuilder.GetUniformLocation("textureZ");
 
 						_::InfologAllExtensions();
@@ -270,10 +270,10 @@ namespace my {
 		return _::sampler3location;
 	}
 
-	OpenGL::_VUL_SAMPLER4 const OpenGL::VUL_SAMPLER4;
-	OpenGL::_VUL_SAMPLER4::operator GLuint (void) const {
-		PASSERT(_::sampler4location != -1)
-		return _::sampler4location;
+	OpenGL::_VUL_COLSELTR const OpenGL::VUL_COLSELTR;
+	OpenGL::_VUL_COLSELTR::operator GLuint (void) const {
+		PASSERT(_::colslctrLocation != -1)
+		return _::colslctrLocation;
 	}
 
 	OpenGL::_VUL_TEXTUREZ const OpenGL::VUL_TEXTUREZ;
