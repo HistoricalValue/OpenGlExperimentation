@@ -21,7 +21,7 @@ namespace _ {
 
 	static const GLuint COLOUR_WITH_COLOUR(0);
 	static const GLuint COLOUR_WITH_TEXTURE(1);
-	
+
 	static const GLuint TexturesUnits[TEXTURES_NUM] =
 		{ 12, 23 };
 
@@ -70,7 +70,7 @@ namespace _ {
 	static GLuint GetTextureZ (unsigned long int const dt_milli) {
 		// we want a change every second/8, total changes = 32
 		// 0~1, 1~2, 2~3, ...
-		
+
 #if TEXTURE_TYPE == TEXTURE_TYPE_3D
 		// return (dt_milli / 125) % 16;		// 16 changes over 8 seconds
 		// return (dt_milli / 500) % 3;			// 3 changes over 1.5 seconds
@@ -149,10 +149,10 @@ namespace _ {
 		using namespace	my::gl::math;
 		using			my::OpenGL;
 
-		glBindVertexArray(vao); 
+		glBindVertexArray(vao);
 		PASSERT(glIsVertexArray(vao) == GL_TRUE)
 
-		glBindBuffer(GL_ARRAY_BUFFER, vbo); 
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		PASSERT(glIsBuffer(vbo) == GL_TRUE)
 
 		size_t const	count		(shape.GetNumberOfVertices());
@@ -484,18 +484,18 @@ namespace _ {
 	//	TextureUnit& tu17(tum.Get(TextureUnitIds::TEXTURE17));
 	//	TextureUnit& tu18(tum.Get(TextureUnitIds::TEXTURE18));
 	//
-	//	glUniform1i(my::OpenGL::VUL_SAMPLER1, tu16.GetIndex()); 
-	//	glUniform1i(my::OpenGL::VUL_SAMPLER2, tu17.GetIndex()); 
-	//	glUniform1i(my::OpenGL::VUL_SAMPLER3, tu18.GetIndex()); 
+	//	glUniform1i(my::OpenGL::VUL_SAMPLER1, tu16.GetIndex());
+	//	glUniform1i(my::OpenGL::VUL_SAMPLER2, tu17.GetIndex());
+	//	glUniform1i(my::OpenGL::VUL_SAMPLER3, tu18.GetIndex());
 
 		previousTextureIndex = 0;
 	}
 
 	static
 	void ConfigureOpenGl (void) {
-		glEnable(GL_DEPTH_TEST); 
-	//	glEnable(GL_CULL_FACE); 
-	//	glEnable(GL_TEXTURE_3D); 
+		glEnable(GL_DEPTH_TEST);
+	//	glEnable(GL_CULL_FACE);
+	//	glEnable(GL_TEXTURE_3D);
 	}
 }
 
@@ -520,7 +520,7 @@ namespace my {
 			GLuint const texz(_::GetTextureZ(dt));
 
 			if (texz != dd.previousTextureIndex) {
-				glUniform1ui(OpenGL::VUL_TEXTUREZ, texz); 
+				glUniform1ui(OpenGL::VUL_TEXTUREZ, texz);
 				dd.previousTextureIndex = texz;
 				TCHAR msg[] = _T("Current time ist: 0\n");
 				msg[sizeof(msg)/sizeof(msg[0]) - 3] = _T('0') + texz;
@@ -530,42 +530,42 @@ namespace my {
 			// Draw lines
 			{
 				PASSERT(glIsVertexArray(dd.vertexArrayIds[1]) == GL_TRUE)
-				glBindVertexArray(dd.vertexArrayIds[1]); 
+				glBindVertexArray(dd.vertexArrayIds[1]);
 				glVertexAttrib4f(OpenGL::VAI_AXYC,
 						angle,
 						-0.0f,
 						0.0f,
-						cam); 
-				glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_COLOUR); 
-				glDrawArrays(GL_LINES, 0, dd.numberOfPoints); 
+						cam);
+				glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_COLOUR);
+				glDrawArrays(GL_LINES, 0, dd.numberOfPoints);
 			}
 
 			// Draw Triangles
 		//	DONT
 			{
 				PASSERT(glIsVertexArray(dd.vertexArrayIds[2]) == GL_TRUE)
-				glBindVertexArray(dd.vertexArrayIds[2]); 
+				glBindVertexArray(dd.vertexArrayIds[2]);
 				glVertexAttrib4f(OpenGL::VAI_AXYC,
 						angle,
 						-0.0f,
 						0.0f,
-						cam); 
-				glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_COLOUR); 
-				glDrawArrays(GL_TRIANGLES, 0, dd.numberOfWorldCubeLineSegments); 
+						cam);
+				glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_COLOUR);
+				glDrawArrays(GL_TRIANGLES, 0, dd.numberOfWorldCubeLineSegments);
 			}
 
 			// and textured triangles too
 			{
 				PASSERT(glIsVertexArray(dd.vertexArrayIds[3]) == GL_TRUE)
-				glBindVertexArray(dd.vertexArrayIds[3]); 
+				glBindVertexArray(dd.vertexArrayIds[3]);
 				glVertexAttrib4f(OpenGL::VAI_AXYC,
 						angle,
 						-0.0f,
 						0.0f,
-						cam); 
-				glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_TEXTURE); 
-				glUniform1i(OpenGL::VUL_SAMPLER0, _::GetTextureIndex(dt)); 
-				glDrawArrays(GL_TRIANGLES, 0, dd.numberOfTexturedSegments); 
+						cam);
+				glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_TEXTURE);
+				glUniform1i(OpenGL::VUL_SAMPLER0, _::GetTextureIndex(dt));
+				glDrawArrays(GL_TRIANGLES, 0, dd.numberOfTexturedSegments);
 			}
 
 
@@ -601,11 +601,11 @@ namespace my {
 
 			// Gen VAOs
 			P_STATIC_ASSERT(sizeof(vertexArrayIds)/sizeof(vertexArrayIds[0]) == 4)
-			glGenVertexArrays(sizeof(vertexArrayIds)/sizeof(vertexArrayIds[0]), &vertexArrayIds[0]); 
+			glGenVertexArrays(sizeof(vertexArrayIds)/sizeof(vertexArrayIds[0]), &vertexArrayIds[0]);
 
 			// Gen VBOs
 			P_STATIC_ASSERT(sizeof(bufferIds)/sizeof(bufferIds[0]) == 6)
-			glGenBuffers(sizeof(bufferIds)/sizeof(bufferIds[0]), &bufferIds[0]); 
+			glGenBuffers(sizeof(bufferIds)/sizeof(bufferIds[0]), &bufferIds[0]);
 
 
 			///////////////////////////
@@ -644,8 +644,8 @@ namespace my {
 				P_STATIC_ASSERT(sizeof(vertexArrayIds)/sizeof(vertexArrayIds[0]) == 4)
 				P_STATIC_ASSERT(sizeof(bufferIds)/sizeof(bufferIds[0]) == 6)
 
-				glDeleteBuffers(sizeof(bufferIds)/sizeof(bufferIds[0]), &bufferIds[0]); 
-				glDeleteVertexArrays(sizeof(bufferIds)/sizeof(bufferIds[0]), &vertexArrayIds[0]); 
+				glDeleteBuffers(sizeof(bufferIds)/sizeof(bufferIds[0]), &bufferIds[0]);
+				glDeleteVertexArrays(sizeof(bufferIds)/sizeof(bufferIds[0]), &vertexArrayIds[0]);
 
 				udelete(drawData.devil);
 				udelete(drawData.targa);
