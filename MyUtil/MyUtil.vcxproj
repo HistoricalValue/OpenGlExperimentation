@@ -151,7 +151,6 @@
     <ClInclude Include="Include\my\image_decoders\DevilImageDecoder.h" />
     <ClInclude Include="Include\stdafx.h" />
     <ClInclude Include="Include\targetver.h" />
-    <ClInclude Include="Include\my\gl\extensions\ExtensionManager.h" />
     <ClCompile Include="Source\my\gl\shapes\Axes.cpp" />
     <ClCompile Include="Source\my\gl\shapes\ColourFactory.cpp" />
     <ClCompile Include="Source\my\gl\shapes\Plane.cpp">
@@ -174,7 +173,6 @@
     <ClCompile Include="Source\MyUtil.cpp" />
     <ClCompile Include="Source\MyLogger.cpp" />
     <ClCompile Include="Source\MyWinUtils.cpp" />
-    <ClCompile Include="Source\my\gl\extensions\ExtensionManager.cpp" />
     <ClCompile Include="Source\my\gl\math\Matrix4x4.cpp" />
     <ClCompile Include="Source\my\gl\math\Vector4.cpp" />
     <ClCompile Include="Source\my\gl\shaders\ProgramBuilder.cpp" />

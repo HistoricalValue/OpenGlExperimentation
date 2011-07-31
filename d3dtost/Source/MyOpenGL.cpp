@@ -58,7 +58,7 @@ namespace my {
 		}
 
 		static void InfologAllExtensions (void) {
-			using my::gl::extensions::ExtensionManager::glGetStringi;
+			using ::gl::ext::glGetStringi;
 
 			char buf[1<<17]; // 128KiB
 			size_t off(0);
@@ -115,8 +115,7 @@ namespace my {
 		if (initialised) {
 			glClearColor(0.3f, 0.3f, 0.3f, 1.0f);  __NE()
 
-			initialised = my::gl::extensions::ExtensionManager::Initialise()
-					&& ::gl::ext::Initialise();
+			initialised = ::gl::ext::Initialise();
 
 			if (initialised) {
 				my::gl::shaders::ShaderManager	shaderManager;
@@ -144,14 +143,12 @@ namespace my {
 					else {
 						if (context)
 							wglDeleteContext(context);
-						my::gl::extensions::ExtensionManager::CleanUp();
 						my::global::logger::Get().Error(d3dtost::ConvertErrorMessage(programBuilder.GetErrorMessage()));
 					}
 				}
 				else {
 					if (context)
 						wglDeleteContext(context);
-					my::gl::extensions::ExtensionManager::CleanUp();
 					// error reported in _::InstallShaders()
 				}
 			}
@@ -171,7 +168,6 @@ namespace my {
 		PASSERT(IsInitialised())
 		PASSERT( wglGetCurrentContext() == context )
 		// destroy shaders
-		my::gl::extensions::ExtensionManager::CleanUp();
 		::gl::ext::CleanUp();
 		if (context)
 			wglDeleteContext(context);

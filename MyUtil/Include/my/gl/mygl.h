@@ -24,8 +24,6 @@
 #include <my/gl/shaders/ShaderCompiler.h>
 #include <my/gl/shaders/ProgramBuilder.h>
 
-#include <my/gl/extensions/ExtensionManager.h>
-
 #include <my/gl/textures/TextureObject.h>
 #include <my/gl/textures/TextureObjectManager.h>
 #include <my/gl/textures/TextureUnit.h>

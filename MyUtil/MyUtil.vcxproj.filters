@@ -31,12 +31,6 @@
     <Filter Include="Source Files\my\gl\shaders">
       <UniqueIdentifier>{6b537636-30b0-41fa-ab72-f3934165b03a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\my\gl\extensions">
-      <UniqueIdentifier>{b3f5374c-06d1-4efa-af13-0f9e21daf978}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\my\gl\extensions">
-      <UniqueIdentifier>{7beea7c8-26e0-4219-bc74-eb57771a9fd5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\gl">
       <UniqueIdentifier>{268c4981-68b8-4b2c-8030-b87f927a052c}</UniqueIdentifier>
     </Filter>
@@ -113,9 +107,6 @@
     </ClInclude>
     <ClInclude Include="Include\my\gl\shaders\ShaderCompiler.h">
       <Filter>Header Files\my\gl\shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\my\gl\extensions\ExtensionManager.h">
-      <Filter>Header Files\my\gl\extensions</Filter>
     </ClInclude>
     <ClInclude Include="Include\MyGlobalInstances.h">
       <Filter>Header Files</Filter>
@@ -271,9 +262,6 @@
     </ClCompile>
     <ClCompile Include="Source\my\gl\shaders\ShaderCompiler.cpp">
       <Filter>Source Files\my\gl\shaders</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\my\gl\extensions\ExtensionManager.cpp">
-      <Filter>Source Files\my\gl\extensions</Filter>
     </ClCompile>
     <ClCompile Include="Source\MyGlobalInstances.cpp">
       <Filter>Source Files</Filter>

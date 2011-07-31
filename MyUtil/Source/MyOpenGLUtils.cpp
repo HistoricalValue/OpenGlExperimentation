@@ -9,10 +9,10 @@
 
 namespace my { namespace openglutil {
 
-	using gl::extensions::ExtensionManager::glGetProgramiv;
-	using gl::extensions::ExtensionManager::glGetProgramInfoLog;
-	using gl::extensions::ExtensionManager::glGetShaderiv;
-	using gl::extensions::ExtensionManager::glGetShaderInfoLog;
+	using ::gl::ext::glGetProgramiv;
+	using ::gl::ext::glGetProgramInfoLog;
+	using ::gl::ext::glGetShaderiv;
+	using ::gl::ext::glGetShaderInfoLog;
 
 #define __GL_CONST_CASE(KONST) case MY_##KONST: return GlConstString<MY_##KONST>();
 

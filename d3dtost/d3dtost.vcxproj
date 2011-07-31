@@ -34,13 +34,13 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\Bloost.props" />
     <Import Project="..\D3D.props" />
-    <Import Project="..\OpenGlAdapter.props" />
+    <Import Project="..\GLUTLinkDebug.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\Bloost.props" />
     <Import Project="..\D3D.props" />
-    <Import Project="..\OpenGlAdapter.props" />
+    <Import Project="..\GLUTLinkRelease.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -141,9 +141,6 @@
     </ProjectReference>
     <ProjectReference Include="..\..\ankh\Textures\Project\TextureManager.vcxproj">
       <Project>{126c2a20-0584-41bd-8658-164b81c4e8f7}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ankh_superold\freeglut-2.6.0\VisualStudio2008\freeglut.vcxproj">
-      <Project>{1ae4e979-0d35-4747-bf8e-dd60358f49db}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Codeshare\isi_branch\Utilities\Project\Codeshare_Utilities.vcxproj">
       <Project>{cf84d42c-a3c4-4d56-9586-eff4fc3271ed}</Project>

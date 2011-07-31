@@ -31,12 +31,12 @@ namespace _ {
 namespace my { namespace gl { namespace shaders {
 
 
-	using my::gl::extensions::ExtensionManager::glCreateShader;
-	using my::gl::extensions::ExtensionManager::glCompileShader;
-	using my::gl::extensions::ExtensionManager::glGetShaderiv;
-	using my::gl::extensions::ExtensionManager::glGetShaderInfoLog;
-	using my::gl::extensions::ExtensionManager::glIsShader;
-	using my::gl::extensions::ExtensionManager::glShaderSource;
+	using ::gl::ext::glCreateShader;
+	using ::gl::ext::glCompileShader;
+	using ::gl::ext::glGetShaderiv;
+	using ::gl::ext::glGetShaderInfoLog;
+	using ::gl::ext::glIsShader;
+	using ::gl::ext::glShaderSource;
 
 	bool ShaderCompiler::Compile (char const* source, ShaderType const type) {
 		PASSERT(!HasCompiled())

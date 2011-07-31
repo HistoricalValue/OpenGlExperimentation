@@ -4,47 +4,26 @@
 #define DONT	if (false)
 #define DO		if (true)
 
-#define __NE()  PASSERT(!my::openglutil::GlErrorsHandled(&_::errorHandler))
+#define TEXTURE_TYPE_2D		0x00
+#define TEXTURE_TYPE_3D		0x01
+#define TEXTURE_TYPE		TEXTURE_TYPE_3D
 
-// #define __WITH_GL_IS_TEXTURE
-
-#ifdef __WITH_GL_IS_TEXTURE
-#	define __ASSERT_GL_IS_TEXTURE(TEX_ID)	PASSERT(glIsTexture((TEX_ID)) == GL_TRUE)
-#else
-#	define __ASSERT_GL_IS_TEXTURE(TEX_ID)
-#endif
-
-using my::gl::extensions::ExtensionManager::glGenVertexArrays;
-using my::gl::extensions::ExtensionManager::glBindVertexArray;
-using my::gl::extensions::ExtensionManager::glDeleteVertexArrays;
-using my::gl::extensions::ExtensionManager::glGenBuffers;
-using my::gl::extensions::ExtensionManager::glDeleteBuffers;
-using my::gl::extensions::ExtensionManager::glBindBuffer;
-using my::gl::extensions::ExtensionManager::glBufferData;
-using my::gl::extensions::ExtensionManager::glVertexAttribPointer;
-using my::gl::extensions::ExtensionManager::glEnableVertexAttribArray;
-using my::gl::extensions::ExtensionManager::glDisableVertexAttribArray;
-using my::gl::extensions::ExtensionManager::glVertexAttrib1f;
-using my::gl::extensions::ExtensionManager::glVertexAttrib4f;
-using my::gl::extensions::ExtensionManager::glDepthRangef;
-using my::gl::extensions::ExtensionManager::glIsBuffer;
-using my::gl::extensions::ExtensionManager::glIsVertexArray;
-using my::gl::extensions::ExtensionManager::glIsTexture;
-using ::gl::ext::glUniform1i;
-using ::gl::ext::glActiveTexture;
-using ::gl::ext::glUniform1ui;
+using namespace ::gl::ext;
 
 namespace _ {
-	const static float WW(2000.f);
+	static const float WW(2000.f);
 
-	const static size_t VAOs(4);
-	const static size_t VBOs(6);
-	const static size_t VTOs(1);
-	const static size_t TEXTURES_NUM(1);
-	const static size_t IMAGES_NUM(1);
+	static const size_t VAOs(4);
+	static const size_t VBOs(6);
+	static const size_t VTOs(1);
+	static const size_t TEXTURES_NUM(2);
+	static const size_t IMAGES_NUM(2);
 
-	const GLuint COLOUR_WITH_COLOUR(0);
-	const GLuint COLOUR_WITH_TEXTURE(1);
+	static const GLuint COLOUR_WITH_COLOUR(0);
+	static const GLuint COLOUR_WITH_TEXTURE(1);
+	
+	static const GLuint TexturesUnits[TEXTURES_NUM] =
+		{ 12, 23 };
 
 	typedef ankh::images::Image*		ImagesArray[IMAGES_NUM];
 	typedef ankh::textures::Texture*	TexturesArray[TEXTURES_NUM];
@@ -91,13 +70,23 @@ namespace _ {
 	static GLuint GetTextureZ (unsigned long int const dt_milli) {
 		// we want a change every second/8, total changes = 32
 		// 0~1, 1~2, 2~3, ...
-		return ((dt_milli*8) % 32000ul) / 1000ul;
+		
+#if TEXTURE_TYPE == TEXTURE_TYPE_3D
+		// return (dt_milli / 125) % 16;		// 16 changes over 8 seconds
+		// return (dt_milli / 500) % 3;			// 3 changes over 1.5 seconds
+		return (dt_milli / 250) % 11;			// 10 changes over 2.5 seconds
+#elif TEXTURE_TYPE == TEXTURE_TYPE_2D
+		return 0;
+#else
+#	error ""
+#endif
 	}
 
 	P_INLINE
 	static size_t GetTextureIndex (unsigned long int const dt_milli) {
 		// there are TEXTURES_NUM textures and we want to keep each one for 3 seconds
-		return ((dt_milli/2) % (TEXTURES_NUM * 1000)) / 1000ul;
+		UCOMPILECHECK(_::TEXTURES_NUM == sizeof(_::TexturesUnits)/sizeof(_::TexturesUnits[0]))
+		return _::TexturesUnits[(dt_milli / ((3 * 1000) / _::TEXTURES_NUM )) % _::TEXTURES_NUM];
 	}
 
 	static void* __last_static_buffer_allocation(NULL);
@@ -158,13 +147,12 @@ namespace _ {
 	{
 		using namespace	my::gl::shapes;
 		using namespace	my::gl::math;
-		using namespace	my::gl::extensions::ExtensionManager;
 		using			my::OpenGL;
 
-		glBindVertexArray(vao); __NE()
+		glBindVertexArray(vao); 
 		PASSERT(glIsVertexArray(vao) == GL_TRUE)
 
-		glBindBuffer(GL_ARRAY_BUFFER, vbo); __NE()
+		glBindBuffer(GL_ARRAY_BUFFER, vbo); 
 		PASSERT(glIsBuffer(vbo) == GL_TRUE)
 
 		size_t const	count		(shape.GetNumberOfVertices());
@@ -182,15 +170,15 @@ namespace _ {
 		voidp const		attr2off	(textured? TexturedVertexData::TextureCoordinatesOffsetPointer() : VertexData::ColourOffsetPointer());
 		GLuint const	attr2index	(textured? GLuint(OpenGL::VAI_TEXCOORD) : GLuint(OpenGL::VAI_COLOUR));
 
-		glBufferData(GL_ARRAY_BUFFER, bytesize, data, GL_STATIC_DRAW); __NE()
+		glBufferData(GL_ARRAY_BUFFER, bytesize, data, GL_STATIC_DRAW);
 
 		_::DeallocateSingleAllocationBufferMemory(_data);
 
-		glVertexAttribPointer(OpenGL::VAI_POSITION,	4,	GL_FLOAT,	normalised,	stride,	attr1off); __NE()
-		glVertexAttribPointer(attr2index,			4,	GL_FLOAT,	normalised,	stride,	attr2off); __NE()
+		glVertexAttribPointer(OpenGL::VAI_POSITION,	4,	GL_FLOAT,	normalised,	stride,	attr1off);
+		glVertexAttribPointer(attr2index,			4,	GL_FLOAT,	normalised,	stride,	attr2off);
 
-		glEnableVertexAttribArray(OpenGL::VAI_POSITION); __NE()
-		glEnableVertexAttribArray(attr2index); __NE()
+		glEnableVertexAttribArray(OpenGL::VAI_POSITION);
+		glEnableVertexAttribArray(attr2index);
 
 		numberOfPoints = count;
 	}
@@ -457,9 +445,9 @@ namespace _ {
 
 		ImageLoader&		il	(ImageLoader		::GetSingleton());
 
-		images[0] = il.LoadFromPath("../textures/paccy.png");
+	//	images[0] = il.LoadFromPath("../textures/paccy.png");
 
-	//	images[0] = il.LoadFromPaths("../textures/brick", 3, "tga");	// gets loaded with Devil
+		images[0] = il.LoadFromPaths("../textures/digitframes", 11, "png");	// gets loaded with Devil
 	//	images[1] = il.LoadFromPath("../textures/taliatela.jpg");
 	//	{
 	//		FILE* const fp(ubinaryfileopen("../textures/CoolTexture.tga", "r"));
@@ -467,7 +455,7 @@ namespace _ {
 	//		images[2] = il.LoadFromData("CoolTexture", "tga", reader);	// gets loaded with Targa
 	//		fclose(fp);
 	//	}
-	//	images[3] = il.Load3DFromPath(32, "../textures/paccy.png");
+		images[1] = il.Load3DFromPath(32, "../textures/paccy.png");
 	}
 
 	static
@@ -481,10 +469,11 @@ namespace _ {
 		TextureUnitManager&	tum	(TextureUnitManager	::GetSingleton());
 		TextureManager&		tm	(TextureManager		::GetSingleton());
 
-		textures[0] = tm.New("Pacco", images[0]);
+		textures[0] = tm.New("Numberwng", images[0]);
+		textures[1] = tm.New("Pacco", images[1]);
 
-		TextureUnit& tu0(tum.Get(TextureUnitIds::TEXTURE0));
-		textures[0]->BindTo(tu0);
+		textures[0]->BindTo(tum.Get(_::TexturesUnits[0]));
+		textures[1]->BindTo(tum.Get(_::TexturesUnits[1]));
 	//
 	//
 	//	textures[0] = (tm.New("../textures/stone.tga"));
@@ -495,18 +484,18 @@ namespace _ {
 	//	TextureUnit& tu17(tum.Get(TextureUnitIds::TEXTURE17));
 	//	TextureUnit& tu18(tum.Get(TextureUnitIds::TEXTURE18));
 	//
-	//	glUniform1i(my::OpenGL::VUL_SAMPLER1, tu16.GetIndex()); __NE()
-	//	glUniform1i(my::OpenGL::VUL_SAMPLER2, tu17.GetIndex()); __NE()
-	//	glUniform1i(my::OpenGL::VUL_SAMPLER3, tu18.GetIndex()); __NE()
+	//	glUniform1i(my::OpenGL::VUL_SAMPLER1, tu16.GetIndex()); 
+	//	glUniform1i(my::OpenGL::VUL_SAMPLER2, tu17.GetIndex()); 
+	//	glUniform1i(my::OpenGL::VUL_SAMPLER3, tu18.GetIndex()); 
 
 		previousTextureIndex = 0;
 	}
 
 	static
 	void ConfigureOpenGl (void) {
-		glEnable(GL_DEPTH_TEST); __NE()
-		glEnable(GL_CULL_FACE); __NE()
-		glEnable(GL_TEXTURE_3D); __NE()
+		glEnable(GL_DEPTH_TEST); 
+	//	glEnable(GL_CULL_FACE); 
+	//	glEnable(GL_TEXTURE_3D); 
 	}
 }
 
@@ -528,48 +517,55 @@ namespace my {
 			unsigned long int const dt(_currtime - dd.prevtime);
 			float const angle(_::GetRotationAngle(dt));
 			float const cam(30.f);
+			GLuint const texz(_::GetTextureZ(dt));
 
-			glUniform1ui(OpenGL::VUL_TEXTUREZ, 0); __NE()
+			if (texz != dd.previousTextureIndex) {
+				glUniform1ui(OpenGL::VUL_TEXTUREZ, texz); 
+				dd.previousTextureIndex = texz;
+				TCHAR msg[] = _T("Current time ist: 0\n");
+				msg[sizeof(msg)/sizeof(msg[0]) - 3] = _T('0') + texz;
+				my::global::log::info(&msg[0]);
+			}
 
 			// Draw lines
 			{
 				PASSERT(glIsVertexArray(dd.vertexArrayIds[1]) == GL_TRUE)
-				glBindVertexArray(dd.vertexArrayIds[1]); __NE()
+				glBindVertexArray(dd.vertexArrayIds[1]); 
 				glVertexAttrib4f(OpenGL::VAI_AXYC,
 						angle,
 						-0.0f,
 						0.0f,
-						cam); __NE()
-				glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_COLOUR); __NE()
-				glDrawArrays(GL_LINES, 0, dd.numberOfPoints); __NE()
+						cam); 
+				glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_COLOUR); 
+				glDrawArrays(GL_LINES, 0, dd.numberOfPoints); 
 			}
 
 			// Draw Triangles
 		//	DONT
 			{
 				PASSERT(glIsVertexArray(dd.vertexArrayIds[2]) == GL_TRUE)
-				glBindVertexArray(dd.vertexArrayIds[2]); __NE()
+				glBindVertexArray(dd.vertexArrayIds[2]); 
 				glVertexAttrib4f(OpenGL::VAI_AXYC,
 						angle,
 						-0.0f,
 						0.0f,
-						cam); __NE()
-				glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_COLOUR); __NE()
-				glDrawArrays(GL_TRIANGLES, 0, dd.numberOfWorldCubeLineSegments); __NE()
+						cam); 
+				glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_COLOUR); 
+				glDrawArrays(GL_TRIANGLES, 0, dd.numberOfWorldCubeLineSegments); 
 			}
 
 			// and textured triangles too
 			{
 				PASSERT(glIsVertexArray(dd.vertexArrayIds[3]) == GL_TRUE)
-				glBindVertexArray(dd.vertexArrayIds[3]); __NE()
+				glBindVertexArray(dd.vertexArrayIds[3]); 
 				glVertexAttrib4f(OpenGL::VAI_AXYC,
 						angle,
 						-0.0f,
 						0.0f,
-						cam); __NE()
-				glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_TEXTURE); __NE()
-				glUniform1i(OpenGL::VUL_SAMPLER0, 0); __NE()
-				glDrawArrays(GL_TRIANGLES, 0, dd.numberOfTexturedSegments); __NE()
+						cam); 
+				glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_TEXTURE); 
+				glUniform1i(OpenGL::VUL_SAMPLER0, _::GetTextureIndex(dt)); 
+				glDrawArrays(GL_TRIANGLES, 0, dd.numberOfTexturedSegments); 
 			}
 
 
@@ -605,11 +601,11 @@ namespace my {
 
 			// Gen VAOs
 			P_STATIC_ASSERT(sizeof(vertexArrayIds)/sizeof(vertexArrayIds[0]) == 4)
-			glGenVertexArrays(sizeof(vertexArrayIds)/sizeof(vertexArrayIds[0]), &vertexArrayIds[0]); __NE()
+			glGenVertexArrays(sizeof(vertexArrayIds)/sizeof(vertexArrayIds[0]), &vertexArrayIds[0]); 
 
 			// Gen VBOs
 			P_STATIC_ASSERT(sizeof(bufferIds)/sizeof(bufferIds[0]) == 6)
-			glGenBuffers(sizeof(bufferIds)/sizeof(bufferIds[0]), &bufferIds[0]); __NE()
+			glGenBuffers(sizeof(bufferIds)/sizeof(bufferIds[0]), &bufferIds[0]); 
 
 
 			///////////////////////////
@@ -633,7 +629,7 @@ namespace my {
 			_::PlayWithTextureUnitsForTesting();
 			_::InstallImageDecoders(devil, targa);
 			_::LoadTehStonets(images);
-		//	_::CreateTextures(images, textures, drawData.previousTextureIndex);
+			_::CreateTextures(images, textures, drawData.previousTextureIndex);
 			_::ConfigureOpenGl();
 
 			return &drawData;
@@ -648,16 +644,16 @@ namespace my {
 				P_STATIC_ASSERT(sizeof(vertexArrayIds)/sizeof(vertexArrayIds[0]) == 4)
 				P_STATIC_ASSERT(sizeof(bufferIds)/sizeof(bufferIds[0]) == 6)
 
-				glDeleteBuffers(sizeof(bufferIds)/sizeof(bufferIds[0]), &bufferIds[0]); __NE()
-				glDeleteVertexArrays(sizeof(bufferIds)/sizeof(bufferIds[0]), &vertexArrayIds[0]); __NE()
+				glDeleteBuffers(sizeof(bufferIds)/sizeof(bufferIds[0]), &bufferIds[0]); 
+				glDeleteVertexArrays(sizeof(bufferIds)/sizeof(bufferIds[0]), &vertexArrayIds[0]); 
 
 				udelete(drawData.devil);
 				udelete(drawData.targa);
 
 				for (ankh::images::Image* const* i = &drawData.images[0]; i < &drawData.images[sizeof(drawData.images)/sizeof(drawData.images[0])]; ++i)
 					ankh::images::ImageLoader::GetSingleton().Unload(*i);
-			//	for (ankh::textures::Texture* const* i = &drawData.textures[0]; i < &drawData.textures[sizeof(drawData.textures)/sizeof(drawData.textures[0])]; ++i)
-			//		ankh::textures::TextureManager::GetSingleton().Delete(*i);
+				for (ankh::textures::Texture* const* i = &drawData.textures[0]; i < &drawData.textures[sizeof(drawData.textures)/sizeof(drawData.textures[0])]; ++i)
+					ankh::textures::TextureManager::GetSingleton().Delete(*i);
 
 				DDELETE(&drawData);
 			}

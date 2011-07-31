@@ -17,14 +17,14 @@ namespace my { namespace gl { namespace shaders {
 
 
 	// --------------------------------
-	using extensions::ExtensionManager::glCreateProgram;
-	using extensions::ExtensionManager::glAttachShader;
-	using extensions::ExtensionManager::glLinkProgram;
-	using extensions::ExtensionManager::glGetProgramiv;
-	using extensions::ExtensionManager::glDetachShader;
-	using extensions::ExtensionManager::glDeleteShader;
-	using extensions::ExtensionManager::glBindAttribLocation;
-	using extensions::ExtensionManager::glUseProgram;
+	using ::gl::ext::glCreateProgram;
+	using ::gl::ext::glAttachShader;
+	using ::gl::ext::glLinkProgram;
+	using ::gl::ext::glGetProgramiv;
+	using ::gl::ext::glDetachShader;
+	using ::gl::ext::glDeleteShader;
+	using ::gl::ext::glBindAttribLocation;
+	using ::gl::ext::glUseProgram;
 	using ::gl::ext::glGetUniformLocation;
 
 	// --------------------------------
