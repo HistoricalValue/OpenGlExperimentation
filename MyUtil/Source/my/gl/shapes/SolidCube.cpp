@@ -1,6 +1,6 @@
-#include "stdafx.h"
+#include <stdafx.h>
 
-#include "PPointerUtilities_inl.h"
+#include <PPointerUtilities_inl.h>
 
 #define OFFSETS_STATIC_CHECKS																					\
 		using codeshare::utilities::pointer_utilities::offset;													\

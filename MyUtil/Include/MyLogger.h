@@ -1,11 +1,11 @@
 #ifndef __MY_LOGGER_H__
 #define __MY_LOGGER_H__
 
-#include "MyUtil.h"
-#include "MyString.h"
-#include "MyList.h"
+#include <MyUtil.h>
+#include <MyString.h>
+#include <MyList.h>
 
-#include "PProtectedClass.h"
+#include <PProtectedClass.h>
 
 #define LOGGER_WITH_PROTECTED_LIST
 

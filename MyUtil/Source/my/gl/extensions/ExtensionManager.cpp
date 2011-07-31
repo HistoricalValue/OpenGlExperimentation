@@ -1,7 +1,6 @@
-#include "stdafx.h"
+#include <stdafx.h>
 
 #define __WITH_GL_DEPTH_RANGE
-//#define __WITH_GL_IS_TEXTURE
 
 // Convention:
 //   GL function "glSomething" is of type "glSomethingFunc" (-"Func" prefix)
@@ -150,9 +149,6 @@ namespace my { namespace gl { namespace extensions {
 					__GET_FUNC_AND_IS_SUCCESS(glGetStringi)
 					__GET_FUNC_AND_IS_SUCCESS(glIsBuffer)
 					__GET_FUNC_AND_IS_SUCCESS(glIsVertexArray)
-#ifdef __WITH_GL_IS_TEXTURE
-					__GET_FUNC_AND_IS_SUCCESS(glIsTexture)
-#endif
 					__GET_FUNC_AND_IS_SUCCESS(glActiveTexture)
 					;
 
@@ -364,13 +360,6 @@ namespace my { namespace gl { namespace extensions {
 			PASSERT(IsInitialised())
 			return (*_::glIsVertexArray)(arrayId);
 		}
-
-#ifdef __WITH_GL_IS_TEXTURE
-		GLboolean glIsTexture (GLuint const textureId) {
-			PASSERT(IsInitialised())
-			return (*_::glIsTexture)(textureId);
-		}
-#endif
 
 		void glActiveTexture (GLenum const textureUnit) {
 			PASSERT(IsInitialised())

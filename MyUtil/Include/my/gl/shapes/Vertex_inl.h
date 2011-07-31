@@ -1,9 +1,9 @@
 #ifndef __MY_UTIL__MY__GL__SHAPES__VERTEX_INL__H__
 #define __MY_UTIL__MY__GL__SHAPES__VERTEX_INL__H__
 
-#include "my/gl/shapes/Vertex.h"
-#include "PConfigurations.h"
-#include "my/gl/math/Vector4_inl.h"
+#include <my/gl/shapes/Vertex.h>
+#include <PConfigurations.h>
+#include <my/gl/math/Vector4_inl.h>
 
 #if defined(P_INLINING) || defined(__MY_UTIL__MY__GL__SHAPES__VERTEX__DEFINING)
 

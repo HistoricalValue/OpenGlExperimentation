@@ -1,10 +1,10 @@
 #ifndef __MY_UTIL__MY__GL__TEXTURES__TEXTURE_OBJECT__H__
 #define __MY_UTIL__MY__GL__TEXTURES__TEXTURE_OBJECT__H__
 
-#include "MyUtil.h"
-#include "my/gl/textures/TextureUnitWrapper.h"
-#include "my/gl/textures/TextureUnit.h"
-#include "my/gl/textures/TextureData.h"
+#include <MyUtil.h>
+#include <my/gl/textures/TextureUnitWrapper.h>
+#include <my/gl/textures/TextureUnit.h>
+#include <my/gl/textures/TextureData.h>
 
 namespace my { namespace gl { namespace textures {
 

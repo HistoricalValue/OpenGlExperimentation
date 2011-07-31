@@ -1,8 +1,8 @@
 #ifndef __MY_UTIL__MY__GL__SHAPES__COLOUR_FACTORY__H__
 #define __MY_UTIL__MY__GL__SHAPES__COLOUR_FACTORY__H__
 
-#include "MyUtil.h"
-#include "my/gl/shapes/Colour.h"
+#include <MyUtil.h>
+#include <my/gl/shapes/Colour.h>
 
 namespace my { namespace gl { namespace shapes {
 

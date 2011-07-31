@@ -1,7 +1,7 @@
 #ifndef __MY_UTIL__MY__GL__SHAPES__TEXTURABLE__H__
 #define __MY_UTIL__MY__GL__SHAPES__TEXTURABLE__H__
 
-#include "MyUtil.h"
+#include <MyUtil.h>
 
 namespace my { namespace gl { namespace shape {
 

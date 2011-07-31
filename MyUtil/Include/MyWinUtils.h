@@ -1,7 +1,7 @@
 #pragma once
 
-#include "MyUtil.h"
-#include "MyWindows.h"
+#include <MyUtil.h>
+#include <MyWindows.h>
 
 namespace my {
 

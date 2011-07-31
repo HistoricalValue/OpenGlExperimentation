@@ -1,11 +1,11 @@
 #ifndef __MY__LIST__H__
 #define __MY__LIST__H__
 
-#include "MyUtil.h"
-#include "PPlaceholder.h"
-#include "PAssert.h"
-#include "PProtectedClass.h"
-#include "PTypes.h"
+#include <MyUtil.h>
+#include <PPlaceholder.h>
+#include <PAssert.h>
+#include <PProtectedClass.h>
+#include <PTypes.h>
 
 #define MY_LIST_CAPACITY 1
 

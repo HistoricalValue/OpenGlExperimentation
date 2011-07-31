@@ -1,9 +1,9 @@
 #ifndef __MY_UTIL__GLT__H__
 #define __MY_UTIL__GLT__H__
 
-#include "MyUtil.h"
-#include "MyGL.h"
-#include "ImageDecoder.h"
+#include <MyUtil.h>
+#include <MyGL.h>
+#include <ImageDecoder.h>
 
 namespace glt {
 	extern MYUTIL_API GLbyte *ReadTGABits(

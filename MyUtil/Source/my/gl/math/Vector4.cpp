@@ -1,7 +1,7 @@
-#include "stdafx.h"
+#include <stdafx.h>
 
 #define __MY_UTIL__MY__GL__MATH__VECTOR_4_DEFINING__
-#include "my/gl/math/Vector4_inl.h"
+#include <my/gl/math/Vector4_inl.h>
 
 namespace my { namespace gl { namespace math {
 

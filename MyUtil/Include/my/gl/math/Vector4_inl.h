@@ -1,7 +1,7 @@
 #ifndef __MY_UTIL__MY__GL__MATH__VECTOR_4_INL__H__
 #define __MY_UTIL__MY__GL__MATH__VECTOR_4_INL__H__
 
-#include "my/gl/math/Vector4.h"
+#include <my/gl/math/Vector4.h>
 
 namespace my { namespace gl { namespace math {
 

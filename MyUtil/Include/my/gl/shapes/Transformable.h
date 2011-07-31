@@ -1,9 +1,9 @@
 #ifndef __MY_UTIL__MY__GL__SHAPES__TRANSFORMABLE__H__
 #define __MY_UTIL__MY__GL__SHAPES__TRANSFORMABLE__H__
 
-#include "MyUtil.h"
-#include "my/gl/math/Matrix4x4.h"
-#include "my/gl/math/Vector4.h"
+#include <MyUtil.h>
+#include <my/gl/math/Matrix4x4.h>
+#include <my/gl/math/Vector4.h>
 
 namespace my { namespace gl { namespace shapes {
 

@@ -5,11 +5,11 @@
 
 #pragma once
 
-#include "my/image_decoders/DevilImageDecoder.h"
+#include <my/image_decoders/DevilImageDecoder.h>
 
-#include "MyWindows.h"
+#include <MyWindows.h>
 
-#include "ImageLoaderTraits_inl.h"
+#include <ImageLoaderTraits_inl.h>
 
 // C RunTime Header Files
 #include <stdlib.h>
@@ -36,31 +36,31 @@
 
 #include <sstream>
 
-#include "MyGL.h"
+#include <MyGL.h>
 
-#include "my/gl/mygl.h"
-#include "glt.h"
-#include "MyUtil.h"
-#include "MyLogger.h"
-#include "MyWinUtils.h"
-#include "MyOpenGLUtils.h"
-#include "MyGlobalInstances.h"
+#include <my/gl/mygl.h>
+#include <glt.h>
+#include <MyUtil.h>
+#include <MyLogger.h>
+#include <MyWinUtils.h>
+#include <MyOpenGLUtils.h>
+#include <MyGlobalInstances.h>
 
-#include "nmutil/OpenGlExtensionManager.h"
-#include "nmutil/Functional.h"
+#include <nmutil/OpenGlExtensionManager.h>
+#include <nmutil/Functional.h>
 
 
-#include "PStaticAssert.h"
-#include "PProtectedClass_inl.h"
-#include "PAllocators_inl.h"
-#include "PFunctors_inl.h"
-#include "PError.h"
-#include "PSingleAllocationBuffer.h"
-#include "PGlobalSingleAllocationBuffer.h"
-#include "PCString.h"
-#include "PStaticCString_inl.h"
-#include "PPointerUtilities_inl.h"
-#include "PConfigurations.h"
+#include <PStaticAssert.h>
+#include <PProtectedClass_inl.h>
+#include <PAllocators_inl.h>
+#include <PFunctors_inl.h>
+#include <PError.h>
+#include <PSingleAllocationBuffer.h>
+#include <PGlobalSingleAllocationBuffer.h>
+#include <PCString.h>
+#include <PStaticCString_inl.h>
+#include <PPointerUtilities_inl.h>
+#include <PConfigurations.h>
 
 
 #define M_E        static_cast<float>(2.71828182845904523536)
@@ -77,4 +77,4 @@
 #define M_SQRT2    static_cast<float>(1.41421356237309504880)
 #define M_SQRT1_2  static_cast<float>(0.707106781186547524401)
 
-#include "IL/il.h"
+#include <IL/il.h>

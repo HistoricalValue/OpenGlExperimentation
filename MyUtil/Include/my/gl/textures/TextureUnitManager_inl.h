@@ -1,13 +1,13 @@
 #ifndef __MY_UTIL__MY__GL__TEXTURES__TEXTURE_UNIT_MANAGER_INL__H__
 #define __MY_UTIL__MY__GL__TEXTURES__TEXTURE_UNIT_MANAGER_INL__H__
 
-#include "PConfigurations.h"
+#include <PConfigurations.h>
 
 #if defined(P_INLINING) || defined(__MY_UTIL__MY__GL__TEXTURES__TEXTURE_UNIT_MANAGER__DEFINING)
 
 
-#include "my/gl/textures/TextureUnitManager.h"
-#include "PPointerUtilities_inl.h"
+#include <my/gl/textures/TextureUnitManager.h>
+#include <PPointerUtilities_inl.h>
 
 #define FOR_EACH_ENTRY															\
 			for (																\

@@ -1,6 +1,6 @@
-#include "stdafx.h"
+#include <stdafx.h>
 
-#include "my/gl/textures/TextureObject_inl.h"
+#include <my/gl/textures/TextureObject_inl.h>
 
 #define __NGLE()	PASSERT(!my::openglutil::GlErrorsHandled(::my::global::errorHandler::Get()))
 

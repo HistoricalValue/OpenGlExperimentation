@@ -1,10 +1,10 @@
 #ifndef __MY__GL__SHADER_MANAGER__H__
 #define __MY__GL__SHADER_MANAGER__H__
 
-#include "MyUtil.h"
-#include "ProgramBuilder.h"
+#include <MyUtil.h>
+#include <my/gl/shaders/ProgramBuilder.h>
 
-#include "PStaticCString.h"
+#include <PStaticCString.h>
 
 namespace my { namespace gl { namespace shaders {
 

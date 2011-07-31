@@ -1,7 +1,7 @@
 // MyUtil.cpp : Defines the exported functions for the DLL application.
 //
 
-#include "stdafx.h"
+#include <stdafx.h>
 
 
 // This is an example of an exported variable

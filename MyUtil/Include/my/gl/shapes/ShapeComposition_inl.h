@@ -4,9 +4,9 @@
 
 #if defined(P_INLINING) || defined(__MY_UTIL__MY__GL__SHAPE__SHAPE_COMPOSITION__DEFINING)
 
-#include "my/gl/shapes/ShapeComposition.h"
-#include "PConfigurations.h"
-#include "PTypes.h"
+#include <my/gl/shapes/ShapeComposition.h>
+#include <PConfigurations.h>
+#include <PTypes.h>
 
 namespace my { namespace gl { namespace shapes {
 

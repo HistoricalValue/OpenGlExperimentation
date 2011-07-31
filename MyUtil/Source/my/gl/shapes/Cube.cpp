@@ -1,9 +1,9 @@
-#include "stdafx.h"
+#include <stdafx.h>
 
-#include "PPointerUtilities_inl.h"
-#include "my/gl/shapes/Line_inl.h"
-#include "my/gl/shapes/VertexData_inl.h"
-#include "my/gl/shapes/Colour_inl.h"
+#include <PPointerUtilities_inl.h>
+#include <my/gl/shapes/Line_inl.h>
+#include <my/gl/shapes/VertexData_inl.h>
+#include <my/gl/shapes/Colour_inl.h>
 
 #define OFFSETS_STATIC_CHECKS																	\
 		using codeshare::utilities::pointer_utilities::offset;									\

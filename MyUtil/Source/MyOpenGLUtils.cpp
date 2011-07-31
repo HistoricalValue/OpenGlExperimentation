@@ -1,11 +1,11 @@
-#include "stdafx.h"
+#include <stdafx.h>
 
 
 #ifndef P_INLINING
 #	define __MY_OPEN_GL_UTILS__DEFINING_CONST_STRINGS
 #endif
 
-#include "MyOpenGLUtils_inl.h"
+#include <MyOpenGLUtils_inl.h>
 
 namespace my { namespace openglutil {
 

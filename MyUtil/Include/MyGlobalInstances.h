@@ -1,9 +1,9 @@
 #ifndef __MY__GLOBAL_INSTANCES__H__
 #define __MY__GLOBAL_INSTANCES__H__
 
-#include "PError.h"
-#include "MyLogger.h"
-#include "MyUtil.h"
+#include <PError.h>
+#include <MyLogger.h>
+#include <MyUtil.h>
 
 
 MYUTIL_API extern int n;

@@ -1,9 +1,9 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
-#include "stdafx.h"
+#include <stdafx.h>
 
 // define inlined virtual methods for some classes
-#include "my/gl/shapes/ShapeComposition_inl.h"
-#include "my/gl/shapes/Colour_inl.h"
+#include <my/gl/shapes/ShapeComposition_inl.h>
+#include <my/gl/shapes/Colour_inl.h>
 
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,

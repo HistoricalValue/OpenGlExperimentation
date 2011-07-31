@@ -1,9 +1,9 @@
 #ifndef __MY_UTIL__MY__GL__SHAPES__PLANE__H__
 #define __MY_UTIL__MY__GL__SHAPES__PLANE__H__
 
-#include "MyUtil.h"
-#include "my/gl/shapes/ShapeComposition.h"
-#include "PTypes.h"
+#include <MyUtil.h>
+#include <my/gl/shapes/ShapeComposition.h>
+#include <PTypes.h>
 
 namespace my { namespace gl { namespace shapes {
 

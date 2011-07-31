@@ -1,7 +1,7 @@
 #ifndef __DMALLOC_H__
 #define __DMALLOC_H__
 
-#include "DDebug.h"
+#include <DDebug.h>
 
 template <typename T>
 void dfree (T** const ptr) {

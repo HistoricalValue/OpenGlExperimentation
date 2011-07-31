@@ -1,9 +1,9 @@
 #ifndef __MY_UTIL__MY__GL__SHAPES__NOTHING__H__
 #define __MY_UTIL__MY__GL__SHAPES__NOTHING__H__
 
-#include "MyUtil.h"
-#include "my/gl/shapes/Shape.h"
-#include "PConfigurations.h"
+#include <MyUtil.h>
+#include <my/gl/shapes/Shape.h>
+#include <PConfigurations.h>
 
 namespace my { namespace gl { namespace shapes {
 

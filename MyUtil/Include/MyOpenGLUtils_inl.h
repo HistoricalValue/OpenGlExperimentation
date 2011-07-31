@@ -1,8 +1,8 @@
 #ifndef __MY_UTIL__MY_OPEN_GL_UTILS_INL__H__
 #define __MY_UTIL__MY_OPEN_GL_UTILS_INL__H__
 
-#include "MyOpenGLUtils.h"
-#include "MyUtil.h"
+#include <MyOpenGLUtils.h>
+#include <MyUtil.h>
 
 namespace my {
 

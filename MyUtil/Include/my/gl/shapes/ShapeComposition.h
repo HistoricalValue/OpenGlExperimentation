@@ -2,8 +2,8 @@
 #define __MY_UTIL__MY__GL__SHAPE__SHAPE_COMPOSITION__H__
 
 
-#include "MyUtil.h"
-#include "my/gl/shapes/Shape.h"
+#include <MyUtil.h>
+#include <my/gl/shapes/Shape.h>
 
 namespace my { namespace gl { namespace shapes {
 

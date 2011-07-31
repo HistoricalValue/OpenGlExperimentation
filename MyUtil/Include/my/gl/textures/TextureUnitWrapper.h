@@ -1,8 +1,8 @@
 #ifndef __MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL__H__
 #define __MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL__H__
 
-#include "MyUtil.h"
-#include "PConfigurations.h"
+#include <MyUtil.h>
+#include <PConfigurations.h>
 
 #ifdef P_INLINING
 #	define __MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL__LINKAGE	P_INLINE

@@ -1,7 +1,7 @@
 #ifndef __MY__GL__EXTENSIONS__EXTENSION_MANAGER__H__
 #define __MY__GL__EXTENSIONS__EXTENSION_MANAGER__H__
 
-#include "MyUtil.h"
+#include <MyUtil.h>
 
 // Guard against macros
 #if defined( glCreateProgram )

@@ -1,8 +1,8 @@
 #ifndef __MY_UTIL__MY__GL__SHAPES__TRIANGLE__H__
 #define __MY_UTIL__MY__GL__SHAPES__TRIANGLE__H__
 
-#include "MyUtil.h"
-#include "my/gl/shapes/Shape.h"
+#include <MyUtil.h>
+#include <my/gl/shapes/Shape.h>
 
 namespace my { namespace gl { namespace shapes {
 

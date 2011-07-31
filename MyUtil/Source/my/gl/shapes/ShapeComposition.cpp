@@ -1,11 +1,11 @@
-#include "stdafx.h"
+#include <stdafx.h>
 
-#include "PPointerUtilities_inl.h"
+#include <PPointerUtilities_inl.h>
 
-#include "PConfigurations.h"
+#include <PConfigurations.h>
 #ifndef P_INLINING
 #	define __MY_UTIL__MY__GL__SHAPE__SHAPE_COMPOSITION__DEFINING
-#	include "my/gl/shapes/ShapeComposition_inl.h"
+#	include <my/gl/shapes/ShapeComposition_inl.h>
 #endif
 
 namespace my { namespace gl { namespace shapes {

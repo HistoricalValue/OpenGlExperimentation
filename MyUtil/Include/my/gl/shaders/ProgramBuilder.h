@@ -1,8 +1,8 @@
 #ifndef __MY__GL__SHADERS__PROGRAM_BUILDER__H__
 #define __MY__GL__SHADERS__PROGRAM_BUILDER__H__
 
-#include "MyUtil.h"
-#include "MyGL.h"
+#include <MyUtil.h>
+#include <MyGL.h>
 
 #define MY__GL__SHADERS__PROGRAM_BUILDER__MAX_SOURCE_TEXT_LENGTH	4095
 

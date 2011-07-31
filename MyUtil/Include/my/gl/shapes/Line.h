@@ -1,10 +1,10 @@
 #ifndef __MY_UTIL__MY__GL__SHAPES__LINE__H__
 #define __MY_UTIL__MY__GL__SHAPES__LINE__H__
 
-#include "MyUtil.h"
-#include "my/gl/shapes/Vertex.h"
-#include "my/gl/shapes/Shape.h"
-#include "my/gl/shapes/ColourFactory.h"
+#include <MyUtil.h>
+#include <my/gl/shapes/Vertex.h>
+#include <my/gl/shapes/Shape.h>
+#include <my/gl/shapes/ColourFactory.h>
 
 namespace my { namespace gl { namespace shapes {
 

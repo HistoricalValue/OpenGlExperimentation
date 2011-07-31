@@ -1,10 +1,10 @@
 #ifndef __MY_UTIL__MY_OPEN_GL_UTIL__H__
 #define __MY_UTIL__MY_OPEN_GL_UTIL__H__
 
-#include "MyUtil.h"
-#include "MyWindows.h"
+#include <MyUtil.h>
+#include <MyWindows.h>
 
-#include "PConfigurations.h"
+#include <PConfigurations.h>
 
 #include <gl/GL.h>
 #include <gl/GLU.h>

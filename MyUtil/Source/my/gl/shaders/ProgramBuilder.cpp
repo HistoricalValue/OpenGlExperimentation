@@ -1,5 +1,5 @@
-#include "stdafx.h"
-#include "PCString_inl.h"
+#include <stdafx.h>
+#include <PCString_inl.h>
 
 namespace my { namespace gl { namespace shaders {
 

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include <stdafx.h>
 
 
 #ifdef LOGGER_WITH_PROTECTED_LIST

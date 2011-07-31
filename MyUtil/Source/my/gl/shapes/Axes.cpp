@@ -1,6 +1,6 @@
-#include "stdafx.h"
+#include <stdafx.h>
 
-#include "my/gl/math/Vector4_inl.h"
+#include <my/gl/math/Vector4_inl.h>
 
 namespace _ {
 	using namespace my::gl::shapes;

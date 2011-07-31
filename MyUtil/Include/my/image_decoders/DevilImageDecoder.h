@@ -1,8 +1,8 @@
 #ifndef __DEVIL_IMAGE_DECODER__H__
 #define __DEVIL_IMAGE_DECODER__H__
 
-#include "ImageDecoder.h"
-#include "MyUtil.h"
+#include <ImageDecoder.h>
+#include <MyUtil.h>
 
 namespace my				{
 namespace image_decoders	{

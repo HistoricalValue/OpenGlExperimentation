@@ -2,11 +2,11 @@
 #define __MY_UTIL__MY__GL__SHAPES__SOLID_CUBE__H__
 
 
-#include "MyUtil.h"
-#include "my/gl/shapes/Shape.h"
-#include "MyWindows.h"
-#include "my/gl/shapes/Colour.h"
-#include "my/gl/shapes/Triangle.h"
+#include <MyUtil.h>
+#include <my/gl/shapes/Shape.h>
+#include <MyWindows.h>
+#include <my/gl/shapes/Colour.h>
+#include <my/gl/shapes/Triangle.h>
 
 namespace my { namespace gl { namespace shapes {
 

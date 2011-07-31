@@ -19,3 +19,9 @@ SupportLibs.suo
 DevIL-SDK-x86-1.7.8
 .svn
 DevIL
+ExtraLibs-Debug
+ExtraLibs-Release
+freeglut-2.6.0
+*.png
+*.jpg
+CopyUtilAndDefensiveHeapDLLs.bat

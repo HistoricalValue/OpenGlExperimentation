@@ -1,6 +1,6 @@
-#include "stdafx.h"
+#include <stdafx.h>
 
-#include "PPointerUtilities_inl.h"
+#include <PPointerUtilities_inl.h>
 
 namespace _ {
 	static const size_t numberOfVertices(0x3u);

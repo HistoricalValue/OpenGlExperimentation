@@ -1,12 +1,12 @@
 #ifndef __MY_UTIL__MY__GL__SHAPES__AXES__H__
 #define __MY_UTIL__MY__GL__SHAPES__AXES__H__
 
-#include "MyUtil.h"
-#include "my/gl/shapes/Shape.h"
-#include "my/gl/shapes/Line.h"
-#include "my/gl/shapes/ShapeComposition.h"
+#include <MyUtil.h>
+#include <my/gl/shapes/Shape.h>
+#include <my/gl/shapes/Line.h>
+#include <my/gl/shapes/ShapeComposition.h>
 
-#include "PPlaceholder.h"
+#include <PPlaceholder.h>
 
 #define MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION		(100)
 

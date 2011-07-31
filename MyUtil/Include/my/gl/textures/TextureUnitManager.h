@@ -1,15 +1,15 @@
 #ifndef __MY_UTIL__MY__GL__TEXTURES__TEXTURE_UNIT_MANAGER__H__
 #define __MY_UTIL__MY__GL__TEXTURES__TEXTURE_UNIT_MANAGER__H__
 
-#include "my/gl/textures/TextureUnitManager_fwd.h"
+#include <my/gl/textures/TextureUnitManager_fwd.h>
 
-#include "PConfigurations.h"					// P_INLINE
+#include <PConfigurations.h>					// P_INLINE
 
-#include "my/gl/textures/TextureUnitWrapper.h"	// TextureUnitId
-#include "my/gl/textures/TextureUnit.h"			// TextureUnit
+#include <my/gl/textures/TextureUnitWrapper.h>	// TextureUnitId
+#include <my/gl/textures/TextureUnit.h>			// TextureUnit
 
-#include "PPlaceholder.h"
-#include "PTypes.h"								// ArrayOf
+#include <PPlaceholder.h>
+#include <PTypes.h>								// ArrayOf
 
 #define GL__TEXUTRE_UNIT_MANAGER__MAX_TEXTURE_UNITS		31u
 

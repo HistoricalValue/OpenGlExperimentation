@@ -1,7 +1,7 @@
 #ifndef __MY__GL__SHADRES__SHADER_COMPILER__H__
 #define __MY__GL__SHADRES__SHADER_COMPILER__H__
 
-#include "MyUtil.h"
+#include <MyUtil.h>
 
 namespace my { namespace gl { namespace shaders {
 

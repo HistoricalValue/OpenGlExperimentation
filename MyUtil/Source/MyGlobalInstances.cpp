@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include <stdafx.h>
 
 
 #define __TRIVIAL_IMPLEMENTATION												\
