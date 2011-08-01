@@ -85,7 +85,7 @@ void DevilImageDecoder::CleanUp (void) {
 		memset(&(*i), 0x00, sizeof(_::Format));
 	}
 
-	nmutil::Destruct(_::formatId);
+	ucalldestructor(_::formatId);
 	uzeromemory(&_::formatId);
 
 	_::initialised = false;

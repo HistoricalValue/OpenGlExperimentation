@@ -18,16 +18,6 @@ const float near			= WORLD_WIDTH * 4 * 2 * 0.125;
 float sine = sin(radians(axyc[0]));
 float cosine = cos(radians(axyc[0]));
 
-void main0 (void) {
-	gl_Position = position;
-
-	interpolatedColour = colour;
-
-	textureCoordinate = texcoord;
-	textureCoordinate.p = textureZ;
-	textureCoordinate.q = 1;
-}
-
 void main (void) {
 	vec4 angles = vec4(
 			radians(axyc[0] + 90.0f),
@@ -82,6 +72,16 @@ void main (void) {
 //	pos.w = width;
 	gl_Position = pos;
 
+
+	interpolatedColour = colour;
+
+	textureCoordinate = texcoord;
+	textureCoordinate.p = textureZ;
+	textureCoordinate.q = 1;
+}
+
+void main0 (void) {
+	gl_Position = position;
 
 	interpolatedColour = colour;
 

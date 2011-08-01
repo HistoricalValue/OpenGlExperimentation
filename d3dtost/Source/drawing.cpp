@@ -367,9 +367,9 @@ namespace _ {
 	static
 	void InitialiseAnkh (void) {
 	// initialise Images and Textures lib
-		{	bool const success(ankh::textures::Initialise());
-			PASSERT(success) }
 		{	bool const success(ankh::images::Initialise());
+			PASSERT(success) }
+		{	bool const success(ankh::textures::Initialise());
 			PASSERT(success) }
 	}
 

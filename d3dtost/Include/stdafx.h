@@ -1,6 +1,5 @@
 #include "MyWindows.h"
 
-#include "nmutil/OpenGlUtilities_inl.h"
 #include "nmutil/OpenGlExtensionManager.h"
 
 #include "TextureUnitManager_inl.h"
