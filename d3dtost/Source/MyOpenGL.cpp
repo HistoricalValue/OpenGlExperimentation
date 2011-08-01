@@ -141,12 +141,14 @@ namespace my {
 						_::InfologAllExtensions();
 					}
 					else {
+						::gl::ext::CleanUp();
 						if (context)
 							wglDeleteContext(context);
 						my::global::logger::Get().Error(d3dtost::ConvertErrorMessage(programBuilder.GetErrorMessage()));
 					}
 				}
 				else {
+					::gl::ext::CleanUp();
 					if (context)
 						wglDeleteContext(context);
 					// error reported in _::InstallShaders()
