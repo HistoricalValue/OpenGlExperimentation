@@ -47,7 +47,6 @@
 #include <MyGlobalInstances.h>
 
 #include <nmutil/OpenGlExtensionManager.h>
-#include <nmutil/Functional.h>
 
 
 #include <PStaticAssert.h>
