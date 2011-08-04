@@ -1,6 +1,5 @@
 #include <stdafx.h>
 
-
 // TODO
 // make all types of image decoders wih DevIL
 
@@ -14,18 +13,22 @@ namespace _ {
 	};
 
 	// Constants
-	static const unsigned int NumberOfFormats(3);
+	static const unsigned int				NumberOfFormats		(3);
+	static const char* const				DevilDecoderId		("[ImageDecoder/DevIL & NM//File Pointer]");
+	static const char* const				SupportedFormatId	("");
 
 	// State
-	static bool							initialised(false);
+	static bool								initialised(false);
+
+	// Utils
+	static ankh::images::ImageFormatId*		formatId(NULL);
+	static ankh::images::ImageDecoderId*	devilDecoderId(NULL);
 	//
-	static char							_formatId_memory[sizeof(ankh::images::ImageFormatId)];
-	static ankh::images::ImageFormatId&	formatId(*reinterpret_cast<ankh::images::ImageFormatId* const>(_formatId_memory));
+	static Format							Formats[NumberOfFormats];
 	//
-	static char							_Formats_memory[sizeof(Format) * NumberOfFormats];
-	static Format						(&Formats)[NumberOfFormats](reinterpret_cast<Format (&)[NumberOfFormats]>(_Formats_memory));
+#	define FOREACH_FORMAT					for (_::Format* i(&_::Formats[0]); i < &_::Formats[_::NumberOfFormats]; ++i)
 	//
-#	define FOREACH_FORMAT				for (_::Format* i(&_::Formats[0]); i < &_::Formats[_::NumberOfFormats]; ++i)
+	ucmpstringfunc							streql;
 
 	// Functions
 	static inline
@@ -35,6 +38,7 @@ namespace _ {
 		FOREACH_FORMAT
 			if (strcmp(fmt, i->str) == 0)
 				return i->il;
+
 		DASSERT(false);
 		return ILenum(-1);
 	}
@@ -49,6 +53,62 @@ namespace _ {
 		}
 	}
 
+	static inline
+	ILenum IlPixelFormatFor (ankh::images::PixelFormat const fmt) {
+		switch (fmt) {
+			case ankh::images::PixelFormats::RGB:	return	IL_RGB;
+			default:								DASSERT(false); return GLenum(-1);
+		}
+	}
+
+	template <typename T>
+	static inline
+	void eradicate (T*& ptr) {
+		uzeromemory(ptr);
+		ucalldestructor(ptr);
+		DDELETE(ptr);
+		unullify(ptr);
+	}
+
+	template <typename _IlLoder>
+	static inline
+	ankh::images::Image* LoadImageFromIlImage (
+			ankh::images::ImageCharacteristics const&	imgchar,
+			_IlLoder									loader) {
+		using ankh::images::PixelFormat;
+		using ankh::images::Image;
+
+		ILuint const		ilImage(ilGenImage());
+		ILenum const		ilfmt(TranslateFormat(imgchar.fmt.c_str()));
+
+		ilBindImage(ilImage);
+		ILboolean const ilImageLoaded(loader(ilfmt));
+		DASSERT(ilImageLoaded == IL_TRUE);
+
+		ILuint const		width	(ilGetInteger(IL_IMAGE_WIDTH));
+		ILuint const		height	(ilGetInteger(IL_IMAGE_HEIGHT));
+		PixelFormat const	pxlfmt	(PixelFormatFor(ilfmt));			// Ankh image pixel format
+		ILenum const		ilpxlfmt(IlPixelFormatFor(pxlfmt));			// IL image pixel format
+
+		Image* const image(DNEWCLASS(Image, (width, height, 1, imgchar.id, imgchar.fmt, pxlfmt, imgchar.src)));
+		DASSERT(image);
+
+		ilCopyPixels(0, 0, 0, width, height, 1, ilpxlfmt, IL_UNSIGNED_BYTE, DPTR(image)->GetBytes());
+
+		ilDeleteImage(ilImage);
+
+		return DPTR(image);
+	}
+
+	static inline
+	ILboolean LoadF (ILenum const ilfmt, FILE* const fp) {
+		return ilLoadF(ilfmt, fp);
+	}
+
+	static inline
+	ILboolean LoadL (ILenum const ilfmt, void* const buf, ILuint const bytesize) {
+		return ilLoadL(ilfmt, buf, bytesize);
+	}
 } // namespace _
 
 #define FORMAT_INIT(I,IL,STR)				\
@@ -68,7 +128,8 @@ namespace image_decoders	{
 void DevilImageDecoder::Initialise (void) {
 	DASSERT(!_::initialised);
 
-	new(_::_formatId_memory) ankh::images::ImageFormatId("");
+	_::formatId = DNEWCLASS(ankh::images::ImageFormatId, (""));
+	_::devilDecoderId = DNEWCLASS(ankh::images::ImageDecoderId, (_::DevilDecoderId));
 
 	FORMAT_INIT(0, IL_TGA, "tga")
 	FORMAT_INIT(1, IL_PNG, "png")
@@ -85,53 +146,45 @@ void DevilImageDecoder::CleanUp (void) {
 		memset(&(*i), 0x00, sizeof(_::Format));
 	}
 
-	ucalldestructor(_::formatId);
-	uzeromemory(&_::formatId);
+	_::eradicate(_::devilDecoderId);
+	_::eradicate(_::formatId);
 
 	_::initialised = false;
 }
 
 DevilImageDecoder::DevilImageDecoder (void):
-	ankh::images::FilePointerImageDecoder("[ImageDecoder/DevIL & NM//File Pointer]")
+	ankh::images::ImageDecoder(*DPTR(_::devilDecoderId)),
+	ankh::images::FilePointerImageDecoder(*DPTR(_::devilDecoderId)),
+	ankh::images::BufferImageDecoder(*DPTR(_::devilDecoderId))
 	{ }
 
 DevilImageDecoder::~DevilImageDecoder (void) {
+	DASSERTPTR(_::devilDecoderId);
+	DASSERTPTR(_::formatId);
 }
 
 ankh::images::ImageFormatId const& DevilImageDecoder::GetFormatId (void) const {
-	return _::formatId;
+	return *DPTR(_::formatId);
 }
 
 bool DevilImageDecoder::CanHandleFormat (ankh::images::ImageFormatId const& fmt) const {
 	FOREACH_FORMAT
-		if (strcmp(fmt.c_str(), DPTR(i->str)) == 0)
+		if (_::streql(fmt.c_str(), DPTR(i->str)))
 			return true;
 	return false;
 }
 
+
 ankh::images::Image* DevilImageDecoder::Decode (FILE* const fp, ankh::images::ImageCharacteristics const& imgchar) {
-	// decoder image with DevIL
-	ankh::images::Image* image(NULL);
-	{
-		ILuint ilImage(ilGenImage());
-		ilBindImage(ilImage);
-
-		ILenum const	ilFmt(_::TranslateFormat(imgchar.fmt.c_str()));
-		ILboolean		ilImageLoaded(ilLoadF(ilFmt, fp));
-		DASSERT(ilImageLoaded == IL_TRUE);
-
-		ILuint width(ilGetInteger(IL_IMAGE_WIDTH));
-		ILuint height(ilGetInteger(IL_IMAGE_HEIGHT));
-
-		image = (DNEWCLASS(ankh::images::Image, (width, height, 1, imgchar.id, imgchar.fmt, _::PixelFormatFor(ilFmt), imgchar.src)));
-
-		ilCopyPixels(0, 0, 0, width, height, 1, IL_RGB, IL_UNSIGNED_BYTE, image->GetBytes());
-
-		ilDeleteImage(ilImage);
-	}
-
-	return image;
+	return _::LoadImageFromIlImage(imgchar, ubind2nd(uptr_fun(&_::LoadF), fp));
 }
+
+ankh::images::Image* DevilImageDecoder::Decode (void* const buf, size_t const bytesize, ankh::images::ImageCharacteristics const& imgchar) {
+	std::string sig(upig( uptr_fun(&_::LoadL) ) );
+
+	return _::LoadImageFromIlImage(imgchar, ubind2nd(ubind2nd(uptr_fun(&_::LoadL), buf), bytesize));
+}
+
 
 }	// image_decoders
 }	// my

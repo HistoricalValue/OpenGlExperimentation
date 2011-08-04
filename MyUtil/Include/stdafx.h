@@ -48,6 +48,9 @@
 
 #include <nmutil/OpenGlExtensionManager.h>
 
+#include <ufunctors.h>
+#include <usig.h>
+
 
 #include <PStaticAssert.h>
 #include <PProtectedClass_inl.h>

@@ -8,10 +8,14 @@ namespace my				{
 namespace image_decoders	{
 
 
-class MYUTIL_API DevilImageDecoder: public ankh::images::FilePointerImageDecoder {
+class MYUTIL_API DevilImageDecoder:
+	public virtual ankh::images::FilePointerImageDecoder,
+	public virtual ankh::images::BufferImageDecoder
+{
 public:
 	// ImageDecoder
 	ankh::images::Image*				Decode (FILE*, ankh::images::ImageCharacteristics const&);
+	ankh::images::Image*				Decode (void*, size_t, ankh::images::ImageCharacteristics const&);
 
 	ankh::images::ImageFormatId const&	GetFormatId (void) const;
 	bool								CanHandleFormat (ankh::images::ImageFormatId const&) const;

@@ -115,6 +115,7 @@ bool TGADecoder::CanHandleFormat (ankh::images::ImageFormatId const& fmt) const 
 }
 
 TGADecoder::TGADecoder (void):
+	ankh::images::ImageDecoder("[ImageDecoder/Superbible TGA/tga/Generic Reader]"),
 	ankh::images::GenericReaderImageDecoder("[ImageDecoder/Superbible TGA/tga/Generic Reader]")
 {}
 

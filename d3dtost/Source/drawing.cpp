@@ -37,10 +37,10 @@ namespace _ {
 		unsigned long int	startingTime;
 		unsigned long int	prevtime;
 		GLuint				sampler_location;
-		ankh::images::ImageDecoder*		devil;
-		ankh::images::ImageDecoder*		targa;
-		TexturesArray					textures;
-		ImagesArray						images;
+		my::image_decoders::DevilImageDecoder*	devil;
+		glt::TGADecoder*	targa;
+		TexturesArray		textures;
+		ImagesArray			images;
 		GLuint				numberOfTexturedSegments;
 		size_t				previousTextureIndex;
 	};
@@ -426,16 +426,16 @@ namespace _ {
 	}
 
 	static
-	void InstallImageDecoders (ankh::images::ImageDecoder*& devil, ankh::images::ImageDecoder*& targa) {
+	void InstallImageDecoders (
+			my::image_decoders::DevilImageDecoder*&	devil,
+			glt::TGADecoder*&						targa) {
 		ankh::images::ImageLoader& il(ankh::images::ImageLoader::GetSingleton());
 
-		ankh::images::FilePointerImageDecoder* const _devil(DNEW(my::image_decoders::DevilImageDecoder));
-		il.InstallDecoder(_devil);
-		devil = _devil;
+		devil = DNEW(my::image_decoders::DevilImageDecoder);
+		il.InstallDecoder(static_cast<ankh::images::BufferImageDecoder* const>(devil));
+		il.InstallDecoder(static_cast<ankh::images::FilePointerImageDecoder* const>(devil));
 
-		ankh::images::GenericReaderImageDecoder* const _targa(DNEW(glt::TGADecoder));
-		il.InstallDecoder(_targa);
-		targa = _targa;
+		il.InstallDecoder(targa = DNEW(glt::TGADecoder));
 	}
 
 	static
@@ -455,7 +455,9 @@ namespace _ {
 	//		images[2] = il.LoadFromData("CoolTexture", "tga", reader);	// gets loaded with Targa
 	//		fclose(fp);
 	//	}
-		images[1] = il.Load3DFromPath(32, "../textures/paccy.png");
+		size_t bufbytesize;
+		void* const buf(uloadbinaryfile("../textures/paccy.png", &bufbytesize));
+		images[1] = il.Load3DFromData(32, "pacco", "png", buf, bufbytesize);
 	}
 
 	static
@@ -589,10 +591,10 @@ namespace my {
 			unsigned long int&	startingTime					(drawData.startingTime);
 			unsigned long int&	prevtime						(drawData.prevtime);
 			GLuint&				sampler_location				(drawData.sampler_location);
-			ankh::images::ImageDecoder*&	devil				= (drawData.devil); // stupid microsoft (and their inability to initialise references to pointers)
-			ankh::images::ImageDecoder*&	targa				= (drawData.targa);
-			_::TexturesArray&				textures			(drawData.textures);
-			_::ImagesArray&					images				(drawData.images);
+			my::image_decoders::DevilImageDecoder*&	devil		= (drawData.devil); // stupid microsoft (and their inability to initialise references to pointers)
+			glt::TGADecoder*&	targa							= (drawData.targa);
+			_::TexturesArray&	textures						(drawData.textures);
+			_::ImagesArray&		images							(drawData.images);
 			GLuint&				numberOfTexturedSegments		(drawData.numberOfTexturedSegments);
 
 
