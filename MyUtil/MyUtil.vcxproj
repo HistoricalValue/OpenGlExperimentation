@@ -148,7 +148,6 @@
     <ClInclude Include="Include\my\gl\textures\TextureUnitWrapper_inl.h" />
     <ClInclude Include="Include\my\gl\textures\TextureUnit_fwd.h" />
     <ClInclude Include="Include\my\gl\textures\TextureUnit_inl.h" />
-    <ClInclude Include="Include\my\image_decoders\DevilImageDecoder.h" />
     <ClInclude Include="Include\stdafx.h" />
     <ClInclude Include="Include\targetver.h" />
     <ClCompile Include="Source\my\gl\shapes\Axes.cpp" />
@@ -194,7 +193,6 @@
     <ClCompile Include="Source\my\gl\textures\TextureUnit.cpp" />
     <ClCompile Include="Source\my\gl\textures\TextureUnitManager.cpp" />
     <ClCompile Include="Source\my\gl\textures\TextureUnitWrapper.cpp" />
-    <ClCompile Include="Source\my\image_decoders\DevilImageDecoder.cpp" />
     <ClCompile Include="Source\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

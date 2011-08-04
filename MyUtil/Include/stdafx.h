@@ -5,8 +5,6 @@
 
 #pragma once
 
-#include <my/image_decoders/DevilImageDecoder.h>
-
 #include <MyWindows.h>
 
 #include <ImageLoaderTraits_inl.h>

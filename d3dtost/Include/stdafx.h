@@ -54,7 +54,6 @@
 #include "MyList.h"
 #include "MyOpenGLUtils.h"
 #include "MyGlobalInstances.h"
-#include "my/image_decoders/DevilImageDecoder.h"
 
 
 #include "MyWindow.h"

@@ -37,7 +37,6 @@ namespace _ {
 		unsigned long int	startingTime;
 		unsigned long int	prevtime;
 		GLuint				sampler_location;
-		my::image_decoders::DevilImageDecoder*	devil;
 		glt::TGADecoder*	targa;
 		TexturesArray		textures;
 		ImagesArray			images;
@@ -371,6 +370,8 @@ namespace _ {
 			PASSERT(success) }
 		{	bool const success(ankh::textures::Initialise());
 			PASSERT(success) }
+
+		ankh::images::InstallDefaultImageDecoders();
 	}
 
 	static
@@ -426,14 +427,8 @@ namespace _ {
 	}
 
 	static
-	void InstallImageDecoders (
-			my::image_decoders::DevilImageDecoder*&	devil,
-			glt::TGADecoder*&						targa) {
+	void InstallImageDecoders (glt::TGADecoder*& targa) {
 		ankh::images::ImageLoader& il(ankh::images::ImageLoader::GetSingleton());
-
-		devil = DNEW(my::image_decoders::DevilImageDecoder);
-		il.InstallDecoder(static_cast<ankh::images::BufferImageDecoder* const>(devil));
-		il.InstallDecoder(static_cast<ankh::images::FilePointerImageDecoder* const>(devil));
 
 		il.InstallDecoder(targa = DNEW(glt::TGADecoder));
 	}
@@ -591,8 +586,7 @@ namespace my {
 			unsigned long int&	startingTime					(drawData.startingTime);
 			unsigned long int&	prevtime						(drawData.prevtime);
 			GLuint&				sampler_location				(drawData.sampler_location);
-			my::image_decoders::DevilImageDecoder*&	devil		= (drawData.devil); // stupid microsoft (and their inability to initialise references to pointers)
-			glt::TGADecoder*&	targa							= (drawData.targa);
+			glt::TGADecoder*&	targa							= (drawData.targa); // stupid microsoft (and their inability to initialise references to pointers)
 			_::TexturesArray&	textures						(drawData.textures);
 			_::ImagesArray&		images							(drawData.images);
 			GLuint&				numberOfTexturedSegments		(drawData.numberOfTexturedSegments);
@@ -629,7 +623,7 @@ namespace my {
 			sampler_location = OpenGL::VUL_SAMPLER0;
 
 			_::PlayWithTextureUnitsForTesting();
-			_::InstallImageDecoders(devil, targa);
+			_::InstallImageDecoders(targa);
 			_::LoadTehStonets(images);
 			_::CreateTextures(images, textures, drawData.previousTextureIndex);
 			_::ConfigureOpenGl();
@@ -649,7 +643,6 @@ namespace my {
 				glDeleteBuffers(sizeof(bufferIds)/sizeof(bufferIds[0]), &bufferIds[0]);
 				glDeleteVertexArrays(sizeof(bufferIds)/sizeof(bufferIds[0]), &vertexArrayIds[0]);
 
-				udelete(drawData.devil);
 				udelete(drawData.targa);
 
 				for (ankh::images::Image* const* i = &drawData.images[0]; i < &drawData.images[sizeof(drawData.images)/sizeof(drawData.images[0])]; ++i)
