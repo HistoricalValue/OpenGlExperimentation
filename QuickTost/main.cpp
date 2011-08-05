@@ -21,6 +21,9 @@ struct B{
 struct C{};
 
 struct XXX {
+	bool f0 (void) { printf("x=%d\n", x); return true; }
+	bool f0c (void) const { printf("x=%d\n", x); return true; }
+
 	bool f1  (A const & a) { printf("a=%d x=%d\n", a.a, x); return true; }
 	bool f1c (A& a) const { printf("a=%d x=%d\n", a.a, x); return true; }
 
@@ -36,6 +39,9 @@ static inline bool fB (B const&) { return true; }
 static inline bool fAB (A&, B const&) { return true; }
 static inline bool fABC (A&, B const&, C) { return true; }
 
+inline bool f0		(void)								{ puts("f0"); return true; }
+inline bool f1		(A& a)								{ printf("f1: a=%d\n", a.a); return true; }
+inline bool f2		(A& a, B const& b)					{ printf("f2: a=%d b=%d\n", a.a, b.b); return true; }
 inline bool f1ref3	(A&,		B const &,	C		)	{ puts("f1ref [3]"); return true; }
 inline bool f1cref3	(A const&,	B const &,	C		)	{ puts("f1cref[3]"); return true; }
 inline bool f1scal3	(A const,	B const &,	C		)	{ puts("f1scal[3]"); return true; }
@@ -74,6 +80,8 @@ void paraparamain (void) {
 	A a;
 	B b;
 	C c;
+	XXX x;
+	XXX const xx;
 
 	if (false) {
 		uptr_fun(&fA)(a);
@@ -119,24 +127,41 @@ void paraparamain (void) {
 		ubind3rd(uspecific_pointer_to_ternary_function<bool, A&, B const&, C, &f1ref3>(), C())(A(),B());
 	}
 
-	XXX x;
-	ubind1st(umemberfunctionpointer(&XXX::f1), &x)(A());
-	ubind1st(umemberfunctionpointer(&XXX::f1c), &x)(a);
-	ubind2nd(umemberfunctionpointer(&XXX::f1), A())(&x);
-	ubind2nd(umemberfunctionpointer(&XXX::f1c), A())(&x);
+	if (false) {
+		ubind1st(umemberfunctionpointer(&XXX::f1), &x)(A());
+		ubind1st(umemberfunctionpointer(&XXX::f1c), &x)(a);
+		ubind2nd(umemberfunctionpointer(&XXX::f1), A())(&x);
+		ubind2nd(umemberfunctionpointer(&XXX::f1c), A())(&x);
 
-	ubind1st(umemberfunctionpointer(&XXX::f2), &x)(a, B());
-	ubind1st(umemberfunctionpointer(&XXX::f2c), &x)(a, B());
-	ubind2nd(umemberfunctionpointer(&XXX::f2), A())(&x, B());
-	ubind2nd(umemberfunctionpointer(&XXX::f2c), A())(&x, B());
-	ubind3rd(umemberfunctionpointer(&XXX::f2), B())(&x, a);
-	ubind3rd(umemberfunctionpointer(&XXX::f2c), B())(&x, a);
+		ubind1st(umemberfunctionpointer(&XXX::f2), &x)(a, B());
+		ubind1st(umemberfunctionpointer(&XXX::f2c), &x)(a, B());
+		ubind2nd(umemberfunctionpointer(&XXX::f2), A())(&x, B());
+		ubind2nd(umemberfunctionpointer(&XXX::f2c), A())(&x, B());
+		ubind3rd(umemberfunctionpointer(&XXX::f2), B())(&x, a);
+		ubind3rd(umemberfunctionpointer(&XXX::f2c), B())(&x, a);
 
-	ubind2nd(ubind1st(umemberfunctionpointer(&XXX::f2), &x), B())(A());
+		ubind2nd(ubind1st(umemberfunctionpointer(&XXX::f2), &x), B())(A());
 
-	XXX const xx;
-	ubind1st(uspecific_const_mem_fun2<bool,XXX,A&,B const&,&XXX::f2c>(), &xx)(A(),B());
-	ubind3rd(uspecific_mem_fun2<bool,XXX,A&,B const&,&XXX::f2>(), B())(&x, A());
-	ubind2nd(uspecific_const_mem_fun1<bool,XXX,A&,&XXX::f1c>(), A())(&x);
-	ubind1st(uspecific_mem_fun1<bool,XXX,A const&,&XXX::f1>(), &x)(A());
+		XXX const xx;
+		ubind1st(uspecific_const_mem_fun2<bool,XXX,A&,B const&,&XXX::f2c>(), &xx)(A(),B());
+		ubind3rd(uspecific_mem_fun2<bool,XXX,A&,B const&,&XXX::f2>(), B())(&x, A());
+		ubind2nd(uspecific_const_mem_fun1<bool,XXX,A&,&XXX::f1c>(), A())(&x);
+		ubind1st(uspecific_mem_fun1<bool,XXX,A const&,&XXX::f1>(), &x)(A());
+	}
+
+	if (true) {
+		uptr_fun(&f0)();
+		uptr_fun(&f1)(a);
+		ubind1st(uptr_fun(&f1), A(a))();
+
+		ubind1st(ubind2nd(ubind3rd(uptr_fun(&f1ref3), C()), B()), a)();
+
+		ubind1st(umemberfunctionpointer(&XXX::f0), &x)();
+		ubind1st(umemberfunctionpointer(&XXX::f0c), &xx)();
+		umemberfunctionpointer(&XXX::f2c)(&XXX(xx), A(a), B(B()));
+		ubind3rd(umemberfunctionpointer(&XXX::f2c), B(B()))(&XXX(xx), A(a));
+		ubind2nd(ubind3rd(umemberfunctionpointer(&XXX::f2c), B(B())), A(a))(&XXX(xx));
+		ubind1st(ubind2nd(ubind3rd(umemberfunctionpointer(&XXX::f2c), B(B())), A(a)), &XXX(xx))();
+	}
+
 }
