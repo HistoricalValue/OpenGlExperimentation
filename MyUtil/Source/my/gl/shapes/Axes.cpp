@@ -102,7 +102,7 @@ namespace my { namespace gl { namespace shapes {
 
 			for (float curr((-step * MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION) / 2); curr + step < 1.0f; curr += step, ++linep, colx = colx + colxstep, coly = coly + colystep, colz = colz + colzstep) {
 				P_STATIC_ASSERT(MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION <= sizeof(lines)/sizeof(lines[0]))
-				
+
 				PASSERT(linep < &lines[MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION])
 				linep->Construct(Line(Vertex(math::Vector4::New(curr)), Vertex(math::Vector4::New(curr + step)), colx, colx+colxstep));
 				Add(linep->GetInternal());

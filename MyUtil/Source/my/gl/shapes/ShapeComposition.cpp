@@ -89,12 +89,15 @@ namespace my { namespace gl { namespace shapes {
 			reinterpret_assign(result, memory);
 			size_t write_offset(0U);
 
+			CloneSelf(result);
+
 			for (Shape const* const* shape = &shapes[0]; shape < &shapes[i]; ++shape) {
-				Shape* const subclone((*shape)->Clone(offset(result, write_offset), bytesize - write_offset));
+				size_t const subshapeSize((*shape)->GetSizeOf());
+				Shape* const subclone((*shape)->Clone(offset(result, write_offset), subshapeSize));
 				PASSERT(subclone != NULL)
-				write_offset += (*shape)->GetSizeOf();
+				write_offset += subshapeSize;
 			}
-			PASSERT(write_offset == requiredSize)
+			PASSERT(write_offset == shapesBytesize)
 		}
 
 		return result;

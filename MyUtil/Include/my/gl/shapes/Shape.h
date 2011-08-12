@@ -25,6 +25,9 @@ namespace my { namespace gl { namespace shapes {
 		Colour const&									GetColour (void) const;
 
 
+		static void										DisposeClonedShape (Shape*);
+		static Shape*									CloneShape (Shape const&);
+
 	protected:
 														Shape (Colour const& colour);
 														Shape (Shape const&);

@@ -27,5 +27,17 @@ namespace my { namespace gl { namespace shapes {
 		colour = _colour;
 	}
 
+	// static
+	Shape* Shape::CloneShape (Shape const& shape) {
+		size_t const bytesize(shape.GetSizeOf());
+		return _DNOTNULL(shape.Clone(DNEWARR(util_ui8, bytesize), bytesize));
+	}
+
+	// static
+	void Shape::DisposeClonedShape (Shape* const shape) {
+		shape->~Shape();
+		DDELARR(reinterpret_cast<util_ui8* const>(shape));
+	}
+
 }}} // namespace my::gl::shapes
 

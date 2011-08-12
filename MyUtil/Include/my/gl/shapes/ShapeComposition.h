@@ -27,6 +27,13 @@ namespace my { namespace gl { namespace shapes {
 		void											Apply (math::Matrix4x4 const&);
 		void											Adjust (math::Vector4 const&);
 
+	protected:
+		Shape**											GetShapesArray (void) const;
+		size_t											GetCapacity (void) const;
+		size_t											GetNumberOfAddedShapes (void) const;
+
+		virtual void									CloneSelf (void* here) = 0;
+
 	private:
 		Shape** const									shapes;
 		size_t const									shapesBytesize;

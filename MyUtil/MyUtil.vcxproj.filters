@@ -237,6 +237,18 @@
     <ClInclude Include="Include\my\gl\textures\TextureUnitManager_inl.h">
       <Filter>Header Files\my\gl\textures</Filter>
     </ClInclude>
+    <ClInclude Include="Include\my\gl\shapes\ShapeCompositionFactory.h">
+      <Filter>Header Files\my\gl\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\shapes\ShapeCompositionFactory_inl.h">
+      <Filter>Header Files\my\gl\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\shapes\DynamicShapeComposition.h">
+      <Filter>Header Files\my\gl\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\shapes\DynamicShapeComposition_inl.h">
+      <Filter>Header Files\my\gl\shapes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\MyLogger.cpp">
@@ -337,6 +349,12 @@
     </ClCompile>
     <ClCompile Include="Source\ankh\shapes\Buffer.cpp">
       <Filter>Source Files\ankh\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\shapes\ShapeCompositionFactory.cpp">
+      <Filter>Source Files\my\gl\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\shapes\DynamitcShapeComposition.cpp">
+      <Filter>Source Files\my\gl\shapes</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

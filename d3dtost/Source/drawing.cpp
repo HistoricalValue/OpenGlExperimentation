@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include <my/gl/shapes/ShapeCompositionFactory_inl.h>
 
 
 
@@ -286,59 +287,46 @@ namespace _ {
 		using namespace my::gl::shapes;
 		using namespace my::gl::math;
 
-		PASSERT(Line::GetLineNumberOfVertices() == 2u)
-
-
-		Line x(Vertex(Vector4::New(-1.f, 0.f, 0.f, 1.f)), Vertex(Vector4::New(1.f, 0.f, 0.f, 1.f)));
-		Line y(Vertex(Vector4::New( 0.f,-1.f, 0.f, 1.f)), Vertex(Vector4::New(0.f, 1.f, 0.f, 1.f)));
-		Line z(Vertex(Vector4::New( 0.f, 0.f,-1.f, 1.f)), Vertex(Vector4::New(0.f, 0.f, 1.f, 1.f)));
-
-		x.SetColour(ColourFactory::LightBlue());
-		y.SetColour(ColourFactory::LightRed());
-		z.SetColour(ColourFactory::LightGreen());
-
-		Shape* axesArray[3];
-		ShapeComposition axes(&axesArray[0], sizeof(axesArray));
-		axes.Add(&x); PASSERT(!axes.IsFull())
-		axes.Add(&y); PASSERT(!axes.IsFull())
-		axes.Add(&z); PASSERT( axes.IsFull())
-
 		Nothing nothing;
 		Axes axs;
 
+		ShapeCompositionFactory f;
+
+		f.Add(axs);
+
+		DynamicShapeComposition* const dcomp(f.Generate());
+
+
 		{
-			size_t const	BUFLEN(1024);
-			float buf1[BUFLEN];
-			float buf2[BUFLEN];
+			size_t const	buflen(20);
+			float			buf1[buflen];
+			float			buf2[buflen];
 
 			uzeroarray(buf1);
 			uzeroarray(buf2);
-			PASSERT(memcmp(&buf1[0], &buf2[0], BUFLEN) == 0)
+			UCOMPILECHECK(sizeof(buf1) == sizeof(buf2))
+			DASSERT(memcmp(&buf1[0], &buf2[0], sizeof(buf1)) == 0);
 
-			x	.GetVertexData(&buf1[0], sizeof(buf1));
-			axs	.GetVertexData(&buf2[0], sizeof(buf2));
+			axs.GetVertexData(&buf1[0], sizeof(buf1));
+			dcomp->GetVertexData(&buf2[0], sizeof(buf2));
 
-			size_t i(0);
-			for (; i < BUFLEN && buf1[i] == buf2[i]; ++i)
-				{}
-
-			int const diff = memcmp(buf1, buf2, BUFLEN);
-			int const _(diff);
+			int const cmp(memcmp(&buf1[0], &buf2[0], sizeof(buf1)));
+			int const ___(cmp);
 		}
 
 
 		{
 			Shape& shape(
-				//	axes
-					axs
+				//	axs
 				//	nothing
-				//	x
+					*dcomp
 				);
 
-		//	shape.Scale(500.f);
 			ApplyCamera(shape);
 			SetAttribute(vertexArrayId, buffer0Id, shape, POINTS_NORMALISED, false, numberOfPoints);
 		}
+
+		f.Dispose(dcomp);
 	}
 
 	static

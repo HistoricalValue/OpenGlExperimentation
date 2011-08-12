@@ -15,7 +15,7 @@ namespace my { namespace gl { namespace shapes {
 
 	P_INLINE
 	bool ShapeComposition::IsFull (void) const {
-		return i == shapesBytesize/sizeof(shapes[0]);
+		return GetNumberOfAddedShapes() == GetCapacity();
 	}
 
 	P_INLINE
@@ -25,6 +25,20 @@ namespace my { namespace gl { namespace shapes {
 			shapes[i++] = shape;
 	}
 
+	P_INLINE
+	size_t ShapeComposition::GetCapacity (void) const {
+		return shapesBytesize/sizeof(shapes[0]);
+	}
+
+	P_INLINE
+	size_t ShapeComposition::GetNumberOfAddedShapes (void) const {
+		return i;
+	}
+
+	P_INLINE
+	Shape** ShapeComposition::GetShapesArray (void) const {
+		return shapes;
+	}
 
 	// Transformable
 	P_INLINE
