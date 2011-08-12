@@ -32,7 +32,7 @@ namespace my { namespace gl { namespace shapes {
 		size_t											GetCapacity (void) const;
 		size_t											GetNumberOfAddedShapes (void) const;
 
-		virtual void									CloneSelf (void* here) = 0;
+		virtual void									CloneSelf (void* here, size_t bytesize) = 0;
 
 	private:
 		Shape** const									shapes;
