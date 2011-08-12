@@ -49,7 +49,7 @@ void main (void) {
 						0,					0,	0,				1) ;
 
 	vec4 pos = position;
-	pos *=  rotx *
+	pos *= // rotx *
 			mat4(
 				cos(radians(30.f)),	0.f,	-sin(radians(30.f)),		0.f,
 				0.f,	1.f,	0.f,		0.f,
@@ -63,7 +63,7 @@ void main (void) {
 	mat4 proj = mat4(	mod,	0,		0,		0,
 						0,		mod,	0,		0,
 						0,		0,		1,		0,
-						0,		0,		0,		width);
+						0,		0,		0,		(2 * width) / WW);
 
 	pos *= proj;
 //	pos.x = (2*pos.x)/(right-left) + (left+right)/(left-right);

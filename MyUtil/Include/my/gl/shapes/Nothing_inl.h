@@ -32,6 +32,11 @@ namespace my { namespace gl { namespace shapes {
 	}
 
 	P_INLINE
+	TexturedVertexData* Nothing::GetTexturedVertexData (void* const memory, size_t const bytesize) const {
+		return reinterpret_cast<TexturedVertexData* const>(memory);
+	}
+
+	P_INLINE
 	Nothing* Nothing::Clone (void* const memory, size_t const bytesize) const {
 		Nothing* result(NULL);
 

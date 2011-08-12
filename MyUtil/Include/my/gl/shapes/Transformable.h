@@ -14,6 +14,7 @@ namespace my { namespace gl { namespace shapes {
 		void											ScaleX (float factor);
 		void											ScaleY (float factor);
 		void											ScaleZ (float factor);
+		void											ScaleW (float factor);
 
 		void											RotateX (float radians);
 		void											RotateY (float radians);

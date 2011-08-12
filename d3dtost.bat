@@ -1,11 +1,11 @@
 
+ set OPDIR=C:\Users\TURBO_X\Desktop\op\
 
- set SAVIWORK=C:\Users\muhtaris\Documents\Saviwork\
-
- set D3DTOSTDIR=%SAVIWORK%d3dtost\
- set DELTA=%SAVIWORK%Sparrow2010\trunk\Tools\Delta\
+ set D3DTOSTDIR=%OPDIR%d3dtost\
+ set DELTA=%OPDIR%Sparrow2010\trunk\Tools\Delta\
  
  set BLOOST=%D3DTOSTDIR%Codeshare\isi_branch\
+ set GLUT=%D3DTOSTDIR%freeglut-2.6.0\
 
  set UTIL_AND_DHEAP_DLLS_DIR=%DELTA%DLLs\UtilAndDebugLib\lib\
  set UTIL_AND_DHEAP_DLL_BASENAME=UtilAndDefensiveHeap

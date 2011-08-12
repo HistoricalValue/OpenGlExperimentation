@@ -14,6 +14,7 @@ namespace my { namespace gl { namespace shapes {
 		P_INLINE virtual								~Nothing (void);
 
 		P_INLINE VertexData*							GetVertexData (void* memory, size_t bytesize) const;
+		P_INLINE TexturedVertexData*					GetTexturedVertexData (void* memory, size_t bytesize) const;
 		P_INLINE Nothing*								Clone (void* memory, size_t bytesize) const;
 		P_INLINE size_t									GetSizeOf (void) const;
 		P_INLINE size_t									GetNumberOfVertices (void) const;

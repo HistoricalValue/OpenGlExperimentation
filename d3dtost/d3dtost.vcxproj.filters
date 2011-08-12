@@ -72,6 +72,7 @@
     <None Include="Resources\appicon.ico">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\shaders\vertex2.txt" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resources.rc">

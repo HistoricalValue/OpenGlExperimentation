@@ -2,6 +2,17 @@
 
 #include <PCString_inl.h>
 
+namespace _ {
+
+const char* const VERTEX_SHADER_SOURCE_PATH		=	//	"../shaders/vertex.c"
+														"../shaders/vertex2.txt"
+													;
+const char* const FRAGMENT_SHADER_SOURCE_PATH	=		"../shaders/fragment.c"
+													;
+
+}
+
+
 namespace my { namespace gl { namespace shaders {
 	///////////////////////////////////////////////////////////////////////////
 	// -- File private
@@ -80,8 +91,8 @@ namespace my { namespace gl { namespace shaders {
 
 	bool ShaderManager::LoadShadersSources (void) {
 		bool result(true
-			&& _::LoadSource("../shaders/vertex.c", vertexShaderSource, loadingErrorMessage)
-			&& _::LoadSource("../shaders/fragment.c", fragmentShaderSource, loadingErrorMessage)
+			&& _::LoadSource(::_::VERTEX_SHADER_SOURCE_PATH, vertexShaderSource, loadingErrorMessage)
+			&& _::LoadSource(::_::FRAGMENT_SHADER_SOURCE_PATH, fragmentShaderSource, loadingErrorMessage)
 			);
 
 		return result;

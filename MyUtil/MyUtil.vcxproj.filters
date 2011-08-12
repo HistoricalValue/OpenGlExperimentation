@@ -52,6 +52,12 @@
     <Filter Include="Source Files\my\gl\textures">
       <UniqueIdentifier>{903b6379-abd0-4dda-bda4-8dc9dd532ece}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\ankh">
+      <UniqueIdentifier>{556ae17e-3e6a-4a14-a7cc-a731780fa3a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ankh\shapes">
+      <UniqueIdentifier>{035bda67-7f1b-4a78-89e8-0d8037c1fb57}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -328,6 +334,9 @@
     </ClCompile>
     <ClCompile Include="Source\my\gl\textures\TextureUnitWrapper.cpp">
       <Filter>Source Files\my\gl\textures</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ankh\shapes\Buffer.cpp">
+      <Filter>Source Files\ankh\shapes</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

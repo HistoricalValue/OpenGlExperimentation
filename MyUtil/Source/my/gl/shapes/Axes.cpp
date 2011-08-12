@@ -15,6 +15,8 @@ namespace _ {
 
 	const Colour DDDGREEN(ColourFactory::Dimmer(ColourFactory::Dimmer(ColourFactory::Dimmer(ColourFactory::Green()))));
 	const Colour BBBGREEN(ColourFactory::Brighter(ColourFactory::Brighter(ColourFactory::Brighter(ColourFactory::Green()))));
+
+	const float step(2.0f / MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION);
 } // namespace _
 
 namespace my { namespace gl { namespace shapes {
@@ -26,7 +28,9 @@ namespace my { namespace gl { namespace shapes {
 	using _::DDDGREEN;
 	using _::BBBGREEN;
 	using math::Vector4;
+	using _::step;
 
+#if 0 
 	Axes::Axes (void):
 		ShapeComposition(&shapesArray[0], sizeof(shapesArray)),
 		lines(),
@@ -76,6 +80,32 @@ namespace my { namespace gl { namespace shapes {
 			z_colour2	= z_colour2 + z_colourStep;
 		}
 	}
+
+#else
+
+	Axes::Axes (void):
+		ShapeComposition(&shapesArray[0], sizeof(shapesArray[0]) * MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION),
+		lines(),
+#pragma warning( push )
+#pragma warning( disable: 4351 ) // elements of "shapesArray" will be default initialised
+		shapesArray() {
+#pragma warning( pop )
+
+		{
+			LinePlaceholder* linep(&lines[0]);
+			for (float curr((-step * MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION) / 2); curr + step < 1.0f; curr += step, ++linep) {
+				P_STATIC_ASSERT(MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION <= sizeof(lines)/sizeof(lines[0]))
+				PASSERT(linep < &lines[MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION])
+				linep->Construct(Line(Vertex(math::Vector4::New(curr)), Vertex(math::Vector4::New(curr + step)), DDDBLUE, BBBBLUE));
+				Add(linep->GetInternal());
+			}
+		}
+
+		PASSERT(IsFull());
+
+	}
+
+#endif
 
 	Axes::~Axes (void) {
 	}

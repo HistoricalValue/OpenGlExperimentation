@@ -51,6 +51,15 @@ namespace my { namespace gl { namespace shapes {
 			));
 	}
 
+	void Transformable::ScaleW (float const factor) {
+		Apply(my::gl::math::Matrix4x4(
+				1.f, 0.f, 0.f, 0.f,
+				0.f, 1.f, 0.f, 0.f,
+				0.f, 0.f, 1.f, 0.f,
+				0.f, 0.f, 0.f, factor
+			));
+	}
+
 	void Transformable::RotateX (float const radians) {
 		float const cosine(cos(-radians));
 		float const sine(sin(-radians));

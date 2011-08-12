@@ -1,6 +1,81 @@
 #include "stdafx.h"
 
 
+
+
+
+template <typename T>
+struct maker {};
+
+///////////////////////////////////////////////////////////
+namespace _ {
+///////////////////////////////////////////////////////////
+
+size_t SizeOfGlElementType (GLenum const type) {
+	switch (type) {
+		default:
+			DASSERT(false);
+	}
+	return size_t(-1);
+}
+
+///////////////////////////////////////////////////////////
+}
+///////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////
+
+namespace ankh		{
+namespace shapes	{
+
+///////////////////////////////////////////////////////////
+
+struct Attribute {
+public:
+	GLuint		index;
+	void*		data;
+	GLenum		elementType;
+	GLuint		numberOfElements;
+};
+template <>
+struct maker<Attribute> {
+public:
+	Attribute operator() (GLuint const index, void* const data, GLenum const elementType, GLuint const numberOfElements) const {
+		Attribute result;
+		result.index = index;
+		result.data = data;
+		result.elementType = elementType;
+		result.numberOfElements = numberOfElements;
+		return result;
+	}
+};
+
+class Buffer {
+public:
+	void	AddAttribute (GLuint const index, void* const data, GLenum const elementType, GLuint const numberOfElements) {
+				size_t const bytesize(numberOfElements * _::SizeOfGlElementType(elementType));
+				void* const copy(DNEWARR(util_ui8, bytesize));
+				memcpy(copy, data, bytesize);
+				lal.push_back(maker<Attribute>()(index, copy, elementType, numberOfElements));
+			}
+
+private:
+	std::list<Attribute> lal;
+	
+}; // class Buffer
+
+///////////////////////////////////////////////////////////
+
+}	// shapes
+}	// ankh
+
+///////////////////////////////////////////////////////////
+
+
+
+
+
 #define DONT	if (false)
 #define DO		if (true)
 
@@ -188,6 +263,7 @@ namespace _ {
 		using namespace my::gl::shapes;
 		using namespace my::gl::math;
 
+	//	shape.ScaleW(WW / 2);
 	//	shape.TranslateZ( _::WW * 0.125f * 2);
 	//	shape.RotateY(M_PI/6.f);
 	//	shape.RotateX(-M_PI/4.f);
@@ -231,12 +307,13 @@ namespace _ {
 		Axes axs;
 		{
 			Shape& shape(
-					axes
-				//	axs
+				//	axes
+					axs
 				//	nothing
+				//	x
 				);
 
-			shape.Scale(500.f);
+		//	shape.Scale(500.f);
 			ApplyCamera(shape);
 			SetAttribute(vertexArrayId, buffer0Id, shape, POINTS_NORMALISED, false, numberOfPoints);
 		}
@@ -330,11 +407,13 @@ namespace _ {
 		scenery.Add(&companions);
 		scenery.Add(&plane);
 
+		Nothing nothing;
 		// Upload shape as textured, buffer 2
 		{
 			Shape& shape(
-				scenery
+			//	scenery
 			//	compos
+				nothing
 				);
 			_::ApplyCamera(shape);
 			_::SetAttribute(vertexArrayId, buffer0Id, shape, POINTS_NORMALISED, true, numberOfTexturedSegments);
