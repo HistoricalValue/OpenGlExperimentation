@@ -62,7 +62,7 @@ public:
 
 private:
 	std::list<Attribute> lal;
-	
+
 }; // class Buffer
 
 ///////////////////////////////////////////////////////////
@@ -301,10 +301,32 @@ namespace _ {
 		ShapeComposition axes(&axesArray[0], sizeof(axesArray));
 		axes.Add(&x); PASSERT(!axes.IsFull())
 		axes.Add(&y); PASSERT(!axes.IsFull())
-		axes.Add(&z); PASSERT(axes.IsFull())
+		axes.Add(&z); PASSERT( axes.IsFull())
 
 		Nothing nothing;
 		Axes axs;
+
+		{
+			size_t const	BUFLEN(1024);
+			float buf1[BUFLEN];
+			float buf2[BUFLEN];
+
+			uzeroarray(buf1);
+			uzeroarray(buf2);
+			PASSERT(memcmp(&buf1[0], &buf2[0], BUFLEN) == 0)
+
+			x	.GetVertexData(&buf1[0], sizeof(buf1));
+			axs	.GetVertexData(&buf2[0], sizeof(buf2));
+
+			size_t i(0);
+			for (; i < BUFLEN && buf1[i] == buf2[i]; ++i)
+				{}
+
+			int const diff = memcmp(buf1, buf2, BUFLEN);
+			int const _(diff);
+		}
+
+
 		{
 			Shape& shape(
 				//	axes

@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
+#include <stdint.h>
 
 
 #include <d3d9.h>

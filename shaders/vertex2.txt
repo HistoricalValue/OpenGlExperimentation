@@ -1,0 +1,19 @@
+#version 330 core
+
+in vec4			position;
+in vec4			colour;
+in vec4			axyc;
+in vec4			texcoord;
+
+uniform uint	textureZ;
+
+out vec4		interpolatedColour;
+out	vec4		textureCoordinate;
+
+void main (void) {
+
+	gl_Position			= position;
+	textureCoordinate	= vec4(0, 0, 0, textureZ);
+	interpolatedColour	= colour;
+
+}

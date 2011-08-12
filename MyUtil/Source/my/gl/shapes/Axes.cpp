@@ -30,7 +30,7 @@ namespace my { namespace gl { namespace shapes {
 	using math::Vector4;
 	using _::step;
 
-#if 0 
+#if 0
 	Axes::Axes (void):
 		ShapeComposition(&shapesArray[0], sizeof(shapesArray)),
 		lines(),
@@ -84,7 +84,7 @@ namespace my { namespace gl { namespace shapes {
 #else
 
 	Axes::Axes (void):
-		ShapeComposition(&shapesArray[0], sizeof(shapesArray[0]) * MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION),
+		ShapeComposition(&shapesArray[0], sizeof(shapesArray)),
 		lines(),
 #pragma warning( push )
 #pragma warning( disable: 4351 ) // elements of "shapesArray" will be default initialised
@@ -92,17 +92,32 @@ namespace my { namespace gl { namespace shapes {
 #pragma warning( pop )
 
 		{
-			LinePlaceholder* linep(&lines[0]);
-			for (float curr((-step * MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION) / 2); curr + step < 1.0f; curr += step, ++linep) {
+			LinePlaceholder*	linep(&lines[0]);
+			Colour				colx(DDDBLUE);
+			math::Vector4 const	colxstep((BBBBLUE - DDDBLUE) / MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION);
+			Colour				coly(DDDRED);
+			math::Vector4 const	colystep((BBBRED - DDDRED) / MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION);
+			Colour				colz(DDDGREEN);
+			math::Vector4 const	colzstep((BBBGREEN - DDDGREEN) / MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION);
+
+			for (float curr((-step * MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION) / 2); curr + step < 1.0f; curr += step, ++linep, colx = colx + colxstep, coly = coly + colystep, colz = colz + colzstep) {
 				P_STATIC_ASSERT(MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION <= sizeof(lines)/sizeof(lines[0]))
+				
 				PASSERT(linep < &lines[MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION])
-				linep->Construct(Line(Vertex(math::Vector4::New(curr)), Vertex(math::Vector4::New(curr + step)), DDDBLUE, BBBBLUE));
+				linep->Construct(Line(Vertex(math::Vector4::New(curr)), Vertex(math::Vector4::New(curr + step)), colx, colx+colxstep));
 				Add(linep->GetInternal());
+
+				PASSERT(&linep[MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION] < &lines[2 * MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION])
+				linep[MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION].Construct(Line(Vertex(math::Vector4::New(0, curr)), Vertex(math::Vector4::New(0, curr + step)), coly, coly+colystep));
+				Add(linep[MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION].GetInternal());
+
+				PASSERT(&linep[2 * MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION] < &lines[3 * MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION])
+				linep[2 * MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION].Construct(Line(Vertex(math::Vector4::New(0, 0, curr)), Vertex(math::Vector4::New(0, 0, curr + step)), colz, colz+colzstep));
+				Add(linep[2 * MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION].GetInternal());
 			}
 		}
 
 		PASSERT(IsFull());
-
 	}
 
 #endif
