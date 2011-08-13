@@ -17,6 +17,8 @@ namespace my { namespace gl { namespace shapes {
 														Axes (void);
 		virtual											~Axes (void);
 
+		virtual Axes*									Clone (void*, size_t) const;
+
 	private:
 		typedef codeshare::utilities::Placeholder<Line>	LinePlaceholder;
 		typedef LinePlaceholder							LinePlaceholders[3 * MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION];

@@ -8,15 +8,14 @@ namespace my { namespace gl { namespace shapes {
 
 class MYUTIL_API DynamicShapeComposition: public ShapeComposition {
 public:
-	size_t					GetNumberOfShapes (void) const;
+	size_t								GetNumberOfShapes (void) const;
 	template <typename F>
-	void					ForEachShape (F const& f) const;
+	void								ForEachShape (F const& f) const;
 
-							DynamicShapeComposition (size_t numberOfShapes);
-	virtual					~DynamicShapeComposition (void);
+	virtual DynamicShapeComposition*	Clone (void*, size_t) const;
 
-protected:
-	virtual void			CloneSelf (void* here, size_t bytesize);
+										DynamicShapeComposition (size_t numberOfShapes);
+	virtual								~DynamicShapeComposition (void);
 };
 
 }}} // namespace my::gl::shapes

@@ -77,32 +77,6 @@ namespace my { namespace gl { namespace shapes {
 		return result;
 	}
 
-	ShapeComposition* ShapeComposition::Clone (void* memory, size_t bytesize) const {
-		using codeshare::utilities::pointer_utilities::reinterpret_assign;
-		using codeshare::utilities::pointer_utilities::offset;
-
-		size_t const requiredSize(GetSizeOf());
-
-		ShapeComposition* result(NULL);
-
-		if (bytesize >= requiredSize) {
-			reinterpret_assign(result, memory);
-			size_t write_offset(0U);
-
-			CloneSelf(result);
-
-			for (Shape const* const* shape = &shapes[0]; shape < &shapes[i]; ++shape) {
-				size_t const subshapeSize((*shape)->GetSizeOf());
-				Shape* const subclone((*shape)->Clone(offset(result, write_offset), subshapeSize));
-				PASSERT(subclone != NULL)
-				write_offset += subshapeSize;
-			}
-			PASSERT(write_offset == shapesBytesize)
-		}
-
-		return result;
-	}
-
 	P_INLINE
 	size_t ShapeComposition::GetNumberOfVertices (void) const {
 		PASSERT(i <= shapesBytesize/sizeof(shapes[0]))

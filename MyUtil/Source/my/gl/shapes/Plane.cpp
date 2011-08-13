@@ -48,6 +48,12 @@ namespace my { namespace gl { namespace shapes {
 	Plane::~Plane (void) {
 	}
 
+	void Plane::CloneSelf (void* const here, size_t const bytesize) const {
+		PASSERT(bytesize >= sizeof(Plane))
 
+		Plane* const result(new(here) Plane(up.GetColour()));
+		down.~Triangle();
+		up.~Triangle();
+	}
 
 }}} // namespace my::gl::shapes

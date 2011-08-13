@@ -19,7 +19,6 @@ namespace my { namespace gl { namespace shapes {
 		// Shape
 		VertexData*										GetVertexData (void* memory, size_t bytesize) const;
 		TexturedVertexData*								GetTexturedVertexData (void* memory, size_t bytesize) const;
-		ShapeComposition*								Clone (void* memory, size_t bytesize) const;
 		size_t											GetNumberOfVertices (void) const;
 		size_t											GetSizeOf (void) const;
 
@@ -31,8 +30,6 @@ namespace my { namespace gl { namespace shapes {
 		Shape**											GetShapesArray (void) const;
 		size_t											GetCapacity (void) const;
 		size_t											GetNumberOfAddedShapes (void) const;
-
-		virtual void									CloneSelf (void* here, size_t bytesize) = 0;
 
 	private:
 		Shape** const									shapes;

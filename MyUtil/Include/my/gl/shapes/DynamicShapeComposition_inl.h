@@ -37,19 +37,6 @@ DynamicShapeComposition::~DynamicShapeComposition (void) {
 	DDELARR(GetShapesArray());
 }
 
-P_INLINE
-void DynamicShapeComposition::CloneSelf (void* const here, size_t const bytesize) {
-	size_t const capacity(GetCapacity());
-	PASSERT(IsFull())
-	PASSERT(capacity == GetNumberOfAddedShapes())
-
-	size_t const requiredSize(sizeof(DynamicShapeComposition));
-	PASSERT(bytesize >= requiredSize)
-
-	new(here) DynamicShapeComposition(GetCapacity());
-
-	Shape** const shapes = GetShapesArray(); // stupid microsoft: cannot handle c-tor initialisation syntax, even with extra parentheses?
-}
 
 #endif
 

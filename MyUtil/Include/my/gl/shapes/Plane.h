@@ -11,9 +11,14 @@ namespace my { namespace gl { namespace shapes {
 	public:
 
 		virtual TexturedVertexData*						GetTexturedVertexData (void* memory, size_t bytesize) const;
+		virtual Plane*									Clone (void*, size_t) const;
 
 														Plane (Colour const&);
 		virtual											~Plane (void);
+
+	protected:
+		virtual void									CloneSelf (void* here, size_t bytesize) const;
+
 	private:
 		Triangle										down;
 		Triangle										up;

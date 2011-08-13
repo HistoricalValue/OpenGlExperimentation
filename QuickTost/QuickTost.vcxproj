@@ -43,11 +43,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)..\..\ankh\Images\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)..\..\ankh\Images\Include;$(ProjectDir)..\..\ankh\Textures\Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)..\..\ankh\Images\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)..\..\ankh\Images\Include;$(ProjectDir)..\..\ankh\Textures\Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -81,6 +81,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="main0.cpp" />
+    <ClCompile Include="main1.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ankh\Images\Project\ImageLoader.vcxproj">
+      <Project>{f3b33fb5-57dc-44cc-8b99-52afa5f087bf}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
