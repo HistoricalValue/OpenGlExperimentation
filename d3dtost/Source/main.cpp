@@ -1,10 +1,5 @@
 #include "stdafx.h"
 
-static bool BE_A_SHADER_COMPILER =
-		true
-	//	false
-	;
-
 // notes: http://www.youtube.com/watch?v=6RbT0zWTb8g&feature=player_embedded
 
 namespace my {
@@ -81,6 +76,15 @@ namespace _ {
 	static void drawcleanup (void) {
 		my::drawing::cleanup(drawData);
 	}
+
+	struct {
+		operator bool (void) const {
+			std::ifstream ifs("../shaders/vertex2.txt");
+			std::string line0;
+			getline(ifs, line0);
+			return line0 == std::string("// yes");
+		}
+	} BE_A_SHADER_COMPILER;
 
 }
 
@@ -192,7 +196,7 @@ namespace my {
 				
 				extern void TestCompileShaders (void);
 
-				if (BE_A_SHADER_COMPILER)
+				if (_::BE_A_SHADER_COMPILER)
 					TestCompileShaders();
 				else
 					window.MainLoop(lpCmdLine, nCmdShow);

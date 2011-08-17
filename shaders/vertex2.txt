@@ -1,4 +1,21 @@
+// yesss
 #version 330 core
+
+
+#define M_E        (2.71828182845904523536f )
+#define M_LOG2E    (1.44269504088896340736f )
+#define M_LOG10E   (0.434294481903251827651f)
+#define M_LN2      (0.693147180559945309417f)
+#define M_LN10     (2.30258509299404568402f )
+#define M_PI       (3.14159265358979323846f )
+#define M_PI_2     (1.57079632679489661923f )
+#define M_PI_4     (0.785398163397448309616f)
+#define M_1_PI     (0.318309886183790671538f)
+#define M_2_PI     (0.636619772367581343076f)
+#define M_2_SQRTPI (1.12837916709551257390f )
+#define M_SQRT2    (1.41421356237309504880f )
+#define M_SQRT1_2  (0.707106781186547524401f)
+
 
 in vec4			position;
 in vec4			colour;
@@ -10,18 +27,35 @@ uniform uint	textureZ;
 out vec4		interpolatedColour;
 out	vec4		textureCoordinate;
 
-mat4 Trans_Rot (vec4 axis, float rad) {
+mat4 Trans_Id (void) {
+	return mat4(1, 0, 0, 0,
+				0, 1, 0, 0,
+				0, 0, 1, 0,
+				0, 0, 0, 1);
+}
+
+mat4 Trans_Rot (const vec4 axis, const float rad) {
+	const float s 	= sin(rad);
+	const float c 	= cos(rad);
+	const float cc	= (1.0f - c);
+	const vec4  d	= normalize(axis);
+	
 	return mat4(
-		1,			0,			0,			0,
-		0,			1,			0,			0,
-		0,			0,			1,			0,
-		0,			0,			0,			1
+		cc*d.x*d.x + c		, cc*d.y*d.x - s*d.z	, cc*d.z*d.x + s*d.y, 0,
+		cc*d.x*d.y + s*d.z	, cc*d.y*d.y + c		, cc*d.z*d.y - s*d.z, 0,
+		cc*d.x*d.z - s*d.y	, cc*d.y*d.z + s*d.x	, cc*d.z*d.z + c	, 0,
+		0					, 0						, 0					, 1
 	);
 }
 
 void main (void) {
 
+	mat4 trans			= Trans_Id();
+//	trans 				*= Trans_Rot(vec4(1, 1, 0, 1), M_PI_4);
+	
 	gl_Position			= position;
+						//	trans *
+						//	position;
 	textureCoordinate	= vec4(0, 0, 0, textureZ);
 	interpolatedColour	= colour;
 
