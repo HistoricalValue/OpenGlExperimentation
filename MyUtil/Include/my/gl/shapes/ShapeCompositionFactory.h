@@ -4,9 +4,10 @@
 #include <MyUtil.h>
 #include <my/gl/shapes/DynamicShapeComposition.h>
 #include <my/gl/shapes/Shape.h>
-#include <list>
 
 namespace my { namespace gl { namespace shapes {
+
+
 
 class MYUTIL_API ShapeCompositionFactory {
 public:
@@ -20,8 +21,7 @@ public:
 								~ShapeCompositionFactory (void);
 
 private:
-	typedef std::list<Shape*>	ShapesList;
-	ShapesList					shapes;
+	void* const data;
 };
 
 }}} // namespace my::gl::shapes

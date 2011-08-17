@@ -171,9 +171,6 @@
     <ClInclude Include="Include\my\gl\shapes\ShapeComposition.h">
       <Filter>Header Files\my\gl\shapes</Filter>
     </ClInclude>
-    <ClInclude Include="Include\my\gl\shapes\ShapeComposition_inl.h">
-      <Filter>Header Files\my\gl\shapes</Filter>
-    </ClInclude>
     <ClInclude Include="Include\my\gl\shapes\ColourFactory.h">
       <Filter>Header Files\my\gl\shapes</Filter>
     </ClInclude>
@@ -240,13 +237,19 @@
     <ClInclude Include="Include\my\gl\shapes\ShapeCompositionFactory.h">
       <Filter>Header Files\my\gl\shapes</Filter>
     </ClInclude>
-    <ClInclude Include="Include\my\gl\shapes\ShapeCompositionFactory_inl.h">
+    <ClInclude Include="Include\my\gl\shapes\NShapesComposition.h">
+      <Filter>Header Files\my\gl\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\shapes\SpecificNumberOfShapesComposition.h">
       <Filter>Header Files\my\gl\shapes</Filter>
     </ClInclude>
     <ClInclude Include="Include\my\gl\shapes\DynamicShapeComposition.h">
       <Filter>Header Files\my\gl\shapes</Filter>
     </ClInclude>
-    <ClInclude Include="Include\my\gl\shapes\DynamicShapeComposition_inl.h">
+    <ClInclude Include="Include\my\gl\shapes\NShapesComposition_inl.h">
+      <Filter>Header Files\my\gl\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\gl\shapes\ShapeUtilities.h">
       <Filter>Header Files\my\gl\shapes</Filter>
     </ClInclude>
   </ItemGroup>
@@ -354,6 +357,9 @@
       <Filter>Source Files\my\gl\shapes</Filter>
     </ClCompile>
     <ClCompile Include="Source\my\gl\shapes\DynamitcShapeComposition.cpp">
+      <Filter>Source Files\my\gl\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\shapes\SpecificNumberOfShapesComposition.cpp">
       <Filter>Source Files\my\gl\shapes</Filter>
     </ClCompile>
   </ItemGroup>

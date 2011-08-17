@@ -7,37 +7,37 @@
 
 namespace my { namespace gl { namespace shapes {
 
+	// abstract
 	class MYUTIL_API ShapeComposition: public Shape {
 	public:
-														ShapeComposition (Shape** shapesArrayMemory, size_t shapesArrayMemoryBytesize);
-		virtual											~ShapeComposition (void);
+		virtual							~ShapeComposition (void);
 
-		bool											IsFull (void) const;
-		void											Add (Shape*);
-
-
+		virtual	void					Add (Shape*);
 		// Shape
-		VertexData*										GetVertexData (void* memory, size_t bytesize) const;
-		TexturedVertexData*								GetTexturedVertexData (void* memory, size_t bytesize) const;
-		size_t											GetNumberOfVertices (void) const;
-		size_t											GetSizeOf (void) const;
+		virtual VertexData*				GetVertexData (void* memory, size_t bytesize) const;
+		virtual TexturedVertexData*		GetTexturedVertexData (void* memory, size_t bytesize) const;
+		virtual size_t					GetNumberOfVertices (void) const;
 
 		// Transformable
-		void											Apply (math::Matrix4x4 const&);
-		void											Adjust (math::Vector4 const&);
+		virtual void					Apply (math::Matrix4x4 const&);
+		virtual void					Adjust (math::Vector4 const&);
 
 	protected:
-		Shape**											GetShapesArray (void) const;
-		size_t											GetCapacity (void) const;
-		size_t											GetNumberOfAddedShapes (void) const;
+		bool							IsFull (void) const;
+		void							AddShapeToComposition (Shape*);
+		Shape**							GetShapesArray (void) const;
+		size_t							GetCapacity (void) const;
+		size_t							GetNumberOfAddedShapes (void) const;
+										ShapeComposition (Shape** shapesArrayMemory, size_t shapesArrayMemoryBytesize);
 
 	private:
-		Shape** const									shapes;
-		size_t const									shapesBytesize;
-		size_t											i;
-
-														ShapeComposition (ShapeComposition const&);
-		void											operator = (ShapeComposition const&);
+		// State
+		Shape** const					shapes;
+		size_t const					shapesBytesize;
+		size_t							i;
+		// ---
+										ShapeComposition (ShapeComposition const&);
+		void							operator = (ShapeComposition const&);
 	}; // class ShapeComposition
 
 }}} // namespace my::gl::shapes

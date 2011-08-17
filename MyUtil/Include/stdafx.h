@@ -43,12 +43,16 @@
 #include <MyWinUtils.h>
 #include <MyOpenGLUtils.h>
 #include <MyGlobalInstances.h>
+#include <my/gl/shapes/ShapeCompositionFactory.h>
+#include <my/gl/shapes/NShapesComposition_inl.h>
+#include <my/gl/shapes/ShapeUtilities.h>
 
 #include <nmutil/OpenGlExtensionManager.h>
 
 #include <ufunctors.h>
 #include <usig.h>
 #include <utypes.h>
+#include <uptr.h>
 
 
 #include <PStaticAssert.h>
@@ -79,3 +83,4 @@
 #define M_SQRT1_2  static_cast<float>(0.707106781186547524401)
 
 #include <IL/il.h>
+

@@ -10,29 +10,25 @@ namespace my { namespace gl { namespace shapes {
 
 	class MYUTIL_API Shape: public Transformable {
 	public:
-														// memory should be at least as much as NumberOfVertices * sizeof(VertexData)
-		virtual VertexData*								GetVertexData (void* memory, size_t bytesize) const = 0;
-		virtual TexturedVertexData*						GetTexturedVertexData (void* memory, size_t bytesize) const { return NULL; }
-														// memory should be at least GetSizeOf() bytes
-		virtual Shape*									Clone (void* memory, size_t bytesize) const = 0;
+										// memory should be at least as much as NumberOfVertices * sizeof(VertexData)
+		virtual VertexData*				GetVertexData (void* memory, size_t bytesize) const = 0;
+		virtual TexturedVertexData*		GetTexturedVertexData (void* memory, size_t bytesize) const { return NULL; }
+										// memory should be at least GetSizeOf() bytes
+		virtual Shape*					Clone (void* memory, size_t bytesize) const = 0;
 
-		virtual											~Shape (void);
+		virtual							~Shape (void);
 
-		virtual size_t									GetSizeOf (void) const = 0;
-		virtual size_t									GetNumberOfVertices (void) const = 0;
+		virtual size_t					GetSizeOf (void) const = 0;
+		virtual size_t					GetNumberOfVertices (void) const = 0;
 
-		void											SetColour (Colour const&);
-		Colour const&									GetColour (void) const;
-
-
-		static void										DisposeClonedShape (Shape*);
-		static Shape*									CloneShape (Shape const&);
+		void							SetColour (Colour const&);
+		Colour const&					GetColour (void) const;
 
 	protected:
-														Shape (Colour const& colour);
-														Shape (Shape const&);
+										Shape (Colour const& colour);
+										Shape (Shape const&);
 
-		Colour											colour;
+		Colour							colour;
 	}; // class Shape
 
 }}} // namespace my::gl::shapes

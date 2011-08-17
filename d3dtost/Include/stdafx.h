@@ -46,6 +46,7 @@
 #include "my/gl/textures/TextureUnit_inl.h"
 #include "my/gl/textures/TextureUnitManager_inl.h"
 #include <my/gl/shapes/ShapeCompositionFactory.h>
+#include <my/gl/shapes/NShapesComposition_inl.h>
 
 
 #include "my/gl/mygl.h"

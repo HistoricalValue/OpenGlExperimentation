@@ -1,104 +1,167 @@
 #include <stdafx.h>
 
-#include <PPointerUtilities_inl.h>
 
-#include <PConfigurations.h>
-#ifndef P_INLINING
-#	define __MY_UTIL__MY__GL__SHAPE__SHAPE_COMPOSITION__DEFINING
-#	include <my/gl/shapes/ShapeComposition_inl.h>
-#endif
+#define FOR_EACH_SHAPE		for (Shape* const* shape = &shapes[0]; shape < &shapes[i]; ++shape)
+
+
+//////////////////////////////////////////////////////////
 
 namespace my { namespace gl { namespace shapes {
 
+using namespace codeshare::utilities::types;
 
-	ShapeComposition::ShapeComposition (Shape** const shapesArrayMemory, size_t const shapesArrayMemoryBytesize):
-		Shape(Colour(math::Vector4::New(.6f, .6f, .6f, 1.f))),
+//////////////////////////////////////////////////////////
+
+
+//////////////////////////////////////////////////////////
+
+P_INLINE
+bool ShapeComposition::IsFull (void) const {
+	return GetNumberOfAddedShapes() == GetCapacity();
+}
+
+//////////////////////////////////////////////////////////
+
+P_INLINE
+void ShapeComposition::Add (Shape* const shape) {
+	PASSERT(!IsFull())
+	if (!IsFull())
+		shapes[i++] = shape;
+}
+
+//////////////////////////////////////////////////////////
+
+P_INLINE
+size_t ShapeComposition::GetCapacity (void) const {
+	return shapesBytesize/sizeof(shapes[0]);
+}
+
+//////////////////////////////////////////////////////////
+
+P_INLINE
+size_t ShapeComposition::GetNumberOfAddedShapes (void) const {
+	return i;
+}
+
+//////////////////////////////////////////////////////////
+
+P_INLINE
+Shape** ShapeComposition::GetShapesArray (void) const {
+	return shapes;
+}
+
+//////////////////////////////////////////////////////////
+// Transformable
+P_INLINE
+void ShapeComposition::Apply (math::Matrix4x4 const& mat4) {
+	PASSERT(i <= shapesBytesize/sizeof(shapes[0]))
+
+	FOR_EACH_SHAPE
+		(*shape)->Apply(mat4);
+}
+
+//////////////////////////////////////////////////////////
+
+P_INLINE
+void ShapeComposition::Adjust (math::Vector4 const& vec4) {
+	PASSERT(i <= shapesBytesize/sizeof(shapes[0]))
+
+	FOR_EACH_SHAPE
+		(*shape)->Adjust(vec4);
+}
+
+//////////////////////////////////////////////////////////
+
+ShapeComposition::ShapeComposition (Shape** const shapesArrayMemory, size_t const shapesArrayMemoryBytesize):
+	Shape(Colour(math::Vector4::New(.6f, .6f, .6f, 1.f))),
 #pragma warning( push )
 #pragma warning( disable: 4351 ) // elementa of "shapes" will be default initialised
-		shapes(shapesArrayMemory),
-		shapesBytesize(shapesArrayMemoryBytesize),
-		i(0u) {
+	shapes(shapesArrayMemory),
+	shapesBytesize(shapesArrayMemoryBytesize),
+	i(0u) {
 #pragma warning( pop )
-		PASSERT(shapesArrayMemoryBytesize % sizeof(shapes[0]) == 0)
-		P_STATIC_ASSERT(sizeof(ShapeComposition) == 0
-			+ sizeof(Shape)
-			+ sizeof(shapes)
-			+ sizeof(shapesBytesize)
-			+ sizeof(i))
-	}
+	PASSERT(shapesArrayMemoryBytesize % sizeof(shapes[0]) == 0)
+	P_STATIC_ASSERT(sizeof(ShapeComposition) == 0
+		+ sizeof(Shape)
+		+ sizeof(shapes)
+		+ sizeof(shapesBytesize)
+		+ sizeof(i))
+}
 
-	ShapeComposition::~ShapeComposition (void) {
-	}
+//////////////////////////////////////////////////////////
 
-	// Shape
-	VertexData* ShapeComposition::GetVertexData (void* const memory, size_t const bytesize) const {
-		using codeshare::utilities::pointer_utilities::reinterpret_assign;
-		using codeshare::utilities::pointer_utilities::offset;
+ShapeComposition::~ShapeComposition (void) {
+}
 
-		size_t count				(GetNumberOfVertices());
-		size_t const requiredSize	(count * sizeof(VertexData));
-		VertexData* result			(NULL);
+//////////////////////////////////////////////////////////
+// Shape
 
-		if (bytesize >= requiredSize) {
-			reinterpret_assign(result, memory);
-			size_t write_offset(0u);
+VertexData* ShapeComposition::GetVertexData (void* const memory, size_t const bytesize) const {
+	using codeshare::utilities::pointer_utilities::reinterpret_assign;
+	using codeshare::utilities::pointer_utilities::offset;
 
-			for (Shape const* const* shape = &shapes[0]; shape < &shapes[i]; ++shape) {
-				VertexData* const subresult((*shape)->GetVertexData(offset(result, write_offset), bytesize-write_offset));
-				PASSERT(subresult != NULL)
-				write_offset += (*shape)->GetNumberOfVertices() * sizeof(VertexData);
-			}
-			PASSERT(write_offset == requiredSize);
+	size_t count				(GetNumberOfVertices());
+	size_t const requiredSize	(count * sizeof(VertexData));
+	VertexData* result			(NULL);
+
+	if (bytesize >= requiredSize) {
+		reinterpret_assign(result, memory);
+		size_t write_offset(0u);
+
+		FOR_EACH_SHAPE {
+			VertexData* const subresult((*shape)->GetVertexData(offset(result, write_offset), bytesize-write_offset));
+			PASSERT(subresult != NULL)
+			write_offset += (*shape)->GetNumberOfVertices() * sizeof(VertexData);
 		}
-
-		return result;
+		PASSERT(write_offset == requiredSize);
 	}
 
-	TexturedVertexData* ShapeComposition::GetTexturedVertexData (void* const memory, size_t const bytesize) const {
-		using codeshare::utilities::pointer_utilities::reinterpret_assign;
-		using codeshare::utilities::pointer_utilities::offset;
+	return result;
+}
 
-		size_t count				(GetNumberOfVertices());
-		size_t const requiredSize	(count * sizeof(TexturedVertexData));
-		TexturedVertexData* result	(NULL);
+//////////////////////////////////////////////////////////
 
-		if (bytesize >= requiredSize) {
-			reinterpret_assign(result, memory);
-			size_t write_offset(0u);
+TexturedVertexData* ShapeComposition::GetTexturedVertexData (void* const memory, size_t const bytesize) const {
+	using codeshare::utilities::pointer_utilities::reinterpret_assign;
+	using codeshare::utilities::pointer_utilities::offset;
 
-			for (Shape const* const* shape = &shapes[0]; shape < &shapes[i]; ++shape) {
-				TexturedVertexData* const subresult((*shape)->GetTexturedVertexData(offset(result, write_offset), bytesize-write_offset));
-				PASSERT(subresult != NULL)
-				write_offset += (*shape)->GetNumberOfVertices() * sizeof(TexturedVertexData);
-			}
-			PASSERT(write_offset == requiredSize);
+	size_t count				(GetNumberOfVertices());
+	size_t const requiredSize	(count * sizeof(TexturedVertexData));
+	TexturedVertexData* result	(NULL);
+
+	if (bytesize >= requiredSize) {
+		reinterpret_assign(result, memory);
+		size_t write_offset(0u);
+
+		FOR_EACH_SHAPE {
+			TexturedVertexData* const subresult((*shape)->GetTexturedVertexData(offset(result, write_offset), bytesize-write_offset));
+			PASSERT(subresult != NULL)
+			write_offset += (*shape)->GetNumberOfVertices() * sizeof(TexturedVertexData);
 		}
-
-		return result;
+		PASSERT(write_offset == requiredSize);
 	}
 
-	P_INLINE
-	size_t ShapeComposition::GetNumberOfVertices (void) const {
-		PASSERT(i <= shapesBytesize/sizeof(shapes[0]))
+	return result;
+}
 
-		size_t numberOfVertices(0u);
+//////////////////////////////////////////////////////////
 
-		for (Shape const* const* shape = &shapes[0]; shape < &shapes[i]; ++shape)
-			numberOfVertices += (*shape)->GetNumberOfVertices();
+P_INLINE
+size_t ShapeComposition::GetNumberOfVertices (void) const {
+	PASSERT(i <= shapesBytesize/sizeof(shapes[0]))
 
-		return numberOfVertices;
-	}
+	size_t numberOfVertices(0u);
 
-	P_INLINE
-	size_t ShapeComposition::GetSizeOf (void) const {
-		PASSERT(i <= shapesBytesize/sizeof(shapes[0]))
+	for (Shape const* const* shape = &shapes[0]; shape < &shapes[i]; ++shape)
+		numberOfVertices += (*shape)->GetNumberOfVertices();
 
-		size_t sizeOf(0u);
+	return numberOfVertices;
+}
 
-		for (Shape const* const* shape = &shapes[0]; shape < &shapes[i]; ++shape)
-			sizeOf += (*shape)->GetSizeOf();
+//////////////////////////////////////////////////////////
 
-		return sizeOf;
-	}
+//////////////////////////////////////////////////////////
 
 }}} // namespace my::gl::shapes
+
+//////////////////////////////////////////////////////////

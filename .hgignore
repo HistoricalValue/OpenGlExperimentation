@@ -25,3 +25,4 @@ freeglut-2.6.0
 *.png
 *.jpg
 CopyUtilAndDefensiveHeapDLLs.bat
+QuickTost/dallocstats.txt

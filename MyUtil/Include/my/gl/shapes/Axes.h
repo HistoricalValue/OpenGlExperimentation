@@ -4,7 +4,7 @@
 #include <MyUtil.h>
 #include <my/gl/shapes/Shape.h>
 #include <my/gl/shapes/Line.h>
-#include <my/gl/shapes/ShapeComposition.h>
+#include <my/gl/shapes/NShapesComposition.h>
 
 #include <PPlaceholder.h>
 
@@ -12,24 +12,29 @@
 
 namespace my { namespace gl { namespace shapes {
 
-	class MYUTIL_API Axes: public ShapeComposition {
-	public:
-														Axes (void);
-		virtual											~Axes (void);
+class MYUTIL_API Axes: public NShapesComposition<3 * MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION> {
+public:
+													Axes (void);
+	virtual											~Axes (void);
+													Axes (Axes const&);
 
-		virtual Axes*									Clone (void*, size_t) const;
+	virtual Axes*									Clone (void*, size_t) const;
+	virtual size_t									GetSizeOf (void) const;
 
-	private:
-		typedef codeshare::utilities::Placeholder<Line>	LinePlaceholder;
-		typedef LinePlaceholder							LinePlaceholders[3 * MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION];
+private:
+	typedef codeshare::utilities::Placeholder<Line>	LinePlaceholder;
+	typedef LinePlaceholder							LinePlaceholders[3 * MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION];
 #pragma warning( push )
 #pragma warning( disable: 4251 ) // Placeholder needs to have dll interface
-		LinePlaceholders								lines;
+	LinePlaceholders								lines;
 #pragma warning( pop )
-		Shape*											shapesArray[sizeof(LinePlaceholders)/sizeof(LinePlaceholder)];
-														Axes (Axes const&);
-		void											operator = (Axes const&);
-	}; // class Axes
+
+
+	typedef NShapesComposition<3 * MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION>	Base;
+	// No public copying
+													
+	void											operator = (Axes const&);
+}; // class Axes
 
 
 }}} // namespace my::gl::shapes

@@ -27,33 +27,46 @@ namespace my { namespace gl { namespace shapes {
 	}
 
 	Plane::Plane (Colour const& colour):
-		ShapeComposition(shapesArray, sizeof(shapesArray)),
+		Base(),
 		down(colour),
-		up(colour),
-#pragma warning( push )
-#pragma warning( disable: 4351 )
-		shapesArray() {
-#pragma warning( pop )
+		up(colour) {
 		P_STATIC_ASSERT(sizeof(Plane) == 0
-			+ sizeof(ShapeComposition)
+			+ sizeof(Base)
 			+ sizeof(up)
-			+ sizeof(down)
-			+ sizeof(shapesArray))
+			+ sizeof(down))
 
 		Add(&down);
 		up.RotateZ(M_PI);
 		Add(&up);
 	}
 
+	Plane::Plane (Plane const& other):
+		Base(),
+		down(other.down),
+		up(other.up) {
+		P_STATIC_ASSERT(sizeof(Plane) == 0
+			+ sizeof(Base)
+			+ sizeof(up)
+			+ sizeof(down))
+
+		Add(&down);
+		Add(&up);
+	}
+
 	Plane::~Plane (void) {
 	}
 
-	void Plane::CloneSelf (void* const here, size_t const bytesize) const {
-		PASSERT(bytesize >= sizeof(Plane))
+	Plane* Plane::Clone (void* const here, size_t const bytesize) const {
+		Plane* result(NULL);
 
-		Plane* const result(new(here) Plane(up.GetColour()));
-		down.~Triangle();
-		up.~Triangle();
+		if (bytesize >= GetSizeOf())
+			result = new(here) Plane(*this);
+		
+		return result;
+	}
+
+	size_t Plane::GetSizeOf (void) const {
+		return sizeof(Plane);
 	}
 
 }}} // namespace my::gl::shapes

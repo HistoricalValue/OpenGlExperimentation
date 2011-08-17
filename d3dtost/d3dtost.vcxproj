@@ -45,15 +45,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>.\Include;..\MyUtil\Include;..\..\ankh\Images\Include;..\..\ankh\Textures\Include;$(DELTA)UtilLib\Include;$(DELTA)DebugLib\Include;$(DELTA)FileReadersLib\Include;..\..\ankh_superold\oglsuperbible5\freeglut-2.6.0\include;$(IncludePath)</IncludePath>
+    <IncludePath>.\Include;..\MyUtil\Include;..\..\ankh\Images\Include;..\..\ankh\Textures\Include;$(DELTA)UtilLib\Include;$(DELTA)DebugLib\Include;$(DELTA)FileReadersLib\Include;..\freeglut-2.6.0\include;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <LibraryPath>$(UTIL_AND_DHEAP_DLLS_DIR)debug\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>..\ExtraLibs-Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>.\Include;..\MyUtil\Include;..\..\ankh\Images\Include;..\..\ankh\Textures\Include;$(DELTA)UtilLib\Include;$(DELTA)DebugLib\Include;$(DELTA)FileReadersLib\Include;..\..\ankh_superold\oglsuperbible5\freeglut-2.6.0\include;$(IncludePath)</IncludePath>
+    <IncludePath>.\Include;..\MyUtil\Include;..\..\ankh\Images\Include;..\..\ankh\Textures\Include;$(DELTA)UtilLib\Include;$(DELTA)DebugLib\Include;$(DELTA)FileReadersLib\Include;..\freeglut-2.6.0\include;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <LibraryPath>$(UTIL_AND_DHEAP_DLLS_DIR)release\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>..\ExtraLibs-Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

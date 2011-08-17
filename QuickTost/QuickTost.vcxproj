@@ -43,11 +43,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)..\..\ankh\Images\Include;$(ProjectDir)..\..\ankh\Textures\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)..\..\ankh\Images\Include;$(ProjectDir)..\..\ankh\Textures\Include;$(ProjectDir)..\MyUtil\Include;$(ProjectDir)..\Codeshare\isi_branch\Utilities\Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)..\..\ankh\Images\Include;$(ProjectDir)..\..\ankh\Textures\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)..\..\ankh\Images\Include;$(ProjectDir)..\..\ankh\Textures\Include;$(ProjectDir)..\MyUtil\Include;$(ProjectDir)..\Codeshare\isi_branch\Utilities\Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -55,7 +55,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;CODESHARE_UTILITIES_IMPORT;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -70,7 +70,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;CODESHARE_UTILITIES_IMPORT;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -87,6 +87,12 @@
   <ItemGroup>
     <ProjectReference Include="..\..\ankh\Images\Project\ImageLoader.vcxproj">
       <Project>{f3b33fb5-57dc-44cc-8b99-52afa5f087bf}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Codeshare\isi_branch\Utilities\Project\Codeshare_Utilities.vcxproj">
+      <Project>{cf84d42c-a3c4-4d56-9586-eff4fc3271ed}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\MyUtil\MyUtil.vcxproj">
+      <Project>{b5b97509-1f26-4d3e-ac89-c3b99ca25e55}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

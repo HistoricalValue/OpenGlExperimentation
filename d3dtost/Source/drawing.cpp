@@ -1,10 +1,5 @@
 #include "stdafx.h"
 
-#include <my/gl/shapes/ShapeCompositionFactory_inl.h>
-
-
-
-
 template <typename T>
 struct maker {};
 
@@ -289,39 +284,36 @@ namespace _ {
 
 		Nothing nothing;
 		Axes axs;
-
 		ShapeCompositionFactory f;
 
 		f.Add(axs);
-
 		DynamicShapeComposition* const dcomp(f.Generate());
-
 
 		{
 			size_t const	buflen(20);
 			float			buf1[buflen];
 			float			buf2[buflen];
-
+	
 			uzeroarray(buf1);
 			uzeroarray(buf2);
 			UCOMPILECHECK(sizeof(buf1) == sizeof(buf2))
 			DASSERT(memcmp(&buf1[0], &buf2[0], sizeof(buf1)) == 0);
-
+	
 			axs.GetVertexData(&buf1[0], sizeof(buf1));
 			dcomp->GetVertexData(&buf2[0], sizeof(buf2));
-
+	
 			int const cmp(memcmp(&buf1[0], &buf2[0], sizeof(buf1)));
 			int const ___(cmp);
 		}
-
-
+	
+	
 		{
 			Shape& shape(
 				//	axs
 				//	nothing
 					*dcomp
 				);
-
+	
 			ApplyCamera(shape);
 			SetAttribute(vertexArrayId, buffer0Id, shape, POINTS_NORMALISED, false, numberOfPoints);
 		}
@@ -366,25 +358,18 @@ namespace _ {
 
 		PASSERT(SolidCube::GetSolidCubeNumberOfVertices() == 36u)
 
-		Shape*								shapesArray[7];
-
 		SolidCube							companion0;
 		SolidCube							companion1;
 		SolidCube							companion2;
 		SolidCube							companion3;
 		SolidCube							companion4;
 
-		ShapeComposition					companions(&shapesArray[0], sizeof(shapesArray));
+		NShapesComposition<5>				companions;
 		companions.Add(&companion0);
 		companions.Add(&companion1);
 		companions.Add(&companion2);
 		companions.Add(&companion3);
 		companions.Add(&companion4);
-		PASSERT(shapesArray[0] == &companion0)
-		PASSERT(shapesArray[1] == &companion1)
-		PASSERT(shapesArray[2] == &companion2)
-		PASSERT(shapesArray[3] == &companion3)
-		PASSERT(shapesArray[4] == &companion4)
 
 		companions.Scale( 125.f);
 		companion0.Adjust(Vector4::New(-3.f  * 250.f, 0.f, 0.f, 0.f));
@@ -412,8 +397,7 @@ namespace _ {
 		compos.Scale(250.f);
 	/////////////
 
-		Shape* sceneryShapesArray[2];
-		ShapeComposition scenery(&sceneryShapesArray[0], sizeof(sceneryShapesArray));
+		NShapesComposition<2> scenery;
 		scenery.Add(&companions);
 		scenery.Add(&plane);
 

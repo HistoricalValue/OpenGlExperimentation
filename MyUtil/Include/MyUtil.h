@@ -12,6 +12,10 @@
 #define MYUTIL_API __declspec(dllimport)
 #endif
 
+#pragma warning( push, 0 )
+#	include <stdlib.h>
+#pragma warning( pop )
+
 // This class is exported from the MyUtil.dll
 class MYUTIL_API CMyUtil {
 public:
@@ -26,6 +30,6 @@ MYUTIL_API int fnMyUtil(void);
 /////////////////////////////
 
 namespace my {
-	MYUTIL_API void Initialise (void);
-	MYUTIL_API void CleanUp (void);
+	extern MYUTIL_API void Initialise (void);
+	extern MYUTIL_API void CleanUp (void);
 }

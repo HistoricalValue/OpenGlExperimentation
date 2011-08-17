@@ -30,66 +30,9 @@ namespace my { namespace gl { namespace shapes {
 	using math::Vector4;
 	using _::step;
 
-#if 0
 	Axes::Axes (void):
-		ShapeComposition(&shapesArray[0], sizeof(shapesArray)),
-		lines(),
-#pragma warning( push )
-#pragma warning( disable: 4351 ) // elements of "shapesArray" will be default initialised
-		shapesArray() {
-#pragma warning( pop )
-		P_STATIC_ASSERT(sizeof(Axes) == sizeof(ShapeComposition) + sizeof(lines) + sizeof(shapesArray))
-		PASSERT(DDDBLUE < BBBBLUE)
-
-		Vertex const	x_step			(math::Vector4::New(1.f / MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION, 0.f, 0.f, 0.f));
-		Vertex			x_vertex		(math::Vector4::New(-1.f, 0.f, 0.f, 1.f));
-		Colour			x_colour1		(DDDBLUE);
-		Colour			x_colour2		(BBBBLUE);
-		Vector4 const	x_colourStep	((BBBBLUE - DDDBLUE) / MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION);
-
-		Vertex const	y_step			(math::Vector4::New(0.f, 1.f / MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION, 0.f, 0.f));
-		Vertex			y_vertex		(math::Vector4::New(0.f,-1.f, 0.f, 1.f));
-		Colour			y_colour1		(DDDRED);
-		Colour			y_colour2		(BBBRED);
-		Vector4 const	y_colourStep	((BBBRED - DDDRED) / MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION);
-
-		Vertex const	z_step			(math::Vector4::New(0.f, 0.f, 1.f / MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION, 0.f));
-		Vertex			z_vertex		(math::Vector4::New(0.f, 0.f,-1.f, 1.f));
-		Colour			z_colour1		(DDDGREEN);
-		Colour			z_colour2		(BBBGREEN);
-		Vector4 const	z_colourStep	((BBBGREEN - DDDGREEN) / MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION);
-
-		for (LinePlaceholder* placeholder(&lines[0]); placeholder < &lines[(sizeof(lines)/sizeof(lines[0]))/3]; ++placeholder) {
-			Vertex		x_end(x_vertex + x_step);
-			Add(placeholder[0 * MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION].Construct(Line(x_vertex, x_end, x_colour1, x_colour2)));;
-			x_vertex	= x_end;
-			x_colour1	= x_colour1 + x_colourStep;
-			x_colour2	= x_colour2 + x_colourStep;
-
-
-			Vertex		y_end(y_vertex + y_step);
-			Add(placeholder[1 * MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION].Construct(Line(y_vertex, y_end, y_colour1, y_colour2)));
-			y_vertex	= y_end;
-			y_colour1	= y_colour1 + y_colourStep;
-			y_colour2	= y_colour2 + y_colourStep;
-
-			Vertex		z_end(z_vertex + z_step);
-			Add(placeholder[2 * MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION].Construct(Line(z_vertex, z_end, z_colour1, z_colour2)));
-			z_vertex	= z_end;
-			z_colour1	= z_colour1 + z_colourStep;
-			z_colour2	= z_colour2 + z_colourStep;
-		}
-	}
-
-#else
-
-	Axes::Axes (void):
-		ShapeComposition(&shapesArray[0], sizeof(shapesArray)),
-		lines(),
-#pragma warning( push )
-#pragma warning( disable: 4351 ) // elements of "shapesArray" will be default initialised
-		shapesArray() {
-#pragma warning( pop )
+		Base(),
+		lines() {
 
 		{
 			LinePlaceholder*	linep(&lines[0]);
@@ -120,9 +63,48 @@ namespace my { namespace gl { namespace shapes {
 		PASSERT(IsFull());
 	}
 
-#endif
+	Axes::Axes (Axes const& other):
+		Base(),
+		lines() {
+		{
+			LinePlaceholder const*			otherlinep	(&other.lines[0]);
+			LinePlaceholder const* const	end			(&lines[(sizeof(lines)/sizeof(lines[0])) / 3]);
+			for (LinePlaceholder* linep(&lines[0]); linep < end; ++linep, ++otherlinep) {
+				PASSERT(linep < &lines[MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION])
+				PASSERT(otherlinep < &other.lines[MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION])
+				linep->Construct(*otherlinep->GetInternal());
+				Add(linep->GetInternal());
+
+				PASSERT(&linep[MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION] < &lines[2 * MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION])
+				PASSERT(&otherlinep[MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION] < &other.lines[2 * MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION])
+				linep[MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION].Construct(*otherlinep[MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION].GetInternal());
+				Add(linep[MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION].GetInternal());
+
+				PASSERT(&linep[2 * MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION] < &lines[3 * MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION])
+				PASSERT(&otherlinep[2 * MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION] < &other.lines[3 * MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION])
+				linep[2 * MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION].Construct(*otherlinep[2 * MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION].GetInternal());
+				Add(linep[2 * MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION].GetInternal());
+			}
+		}
+
+		PASSERT(IsFull());
+	}
 
 	Axes::~Axes (void) {
+	}
+
+	Axes* Axes::Clone (void* const mem, size_t const bytesize) const {
+		size_t const requiredSize(GetSizeOf());
+
+		Axes* result(NULL);
+		if (bytesize >= requiredSize)
+			result = new(mem) Axes(*this);
+
+		return result;
+	}
+
+	size_t Axes::GetSizeOf (void) const {
+		return sizeof(Axes);
 	}
 
 }}} // namespace my::gl::shapes
