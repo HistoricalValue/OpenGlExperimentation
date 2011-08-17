@@ -10,6 +10,15 @@ uniform uint	textureZ;
 out vec4		interpolatedColour;
 out	vec4		textureCoordinate;
 
+mat4 Trans_Rot (vec4 axis, float rad) {
+	return mat4(
+		1,			0,			0,			0,
+		0,			1,			0,			0,
+		0,			0,			1,			0,
+		0,			0,			0,			1
+	);
+}
+
 void main (void) {
 
 	gl_Position			= position;

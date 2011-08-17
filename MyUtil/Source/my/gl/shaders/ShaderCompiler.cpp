@@ -38,7 +38,7 @@ namespace my { namespace gl { namespace shaders {
 	using ::gl::ext::glIsShader;
 	using ::gl::ext::glShaderSource;
 
-	bool ShaderCompiler::Compile (char const* source, ShaderType const type) {
+	bool ShaderCompiler::Compile (char const* source) {
 		PASSERT(!HasCompiled())
 		hasCompiled = true;
 
@@ -105,18 +105,24 @@ namespace my { namespace gl { namespace shaders {
 		return errorMessage;
 	}
 
-	ShaderCompiler::ShaderCompiler (void):
+	ShaderCompiler::ShaderType ShaderCompiler::GetShaderType (void) const { 
+		return type;
+	}
+
+	ShaderCompiler::ShaderCompiler (ShaderType const _type):
 		errorMessage("Hasn't compiled yet"),
 		compilationSuccessful(false),
 		shader(),
-		hasCompiled(false)
+		hasCompiled(false),
+		type(_type)
 		{ }
 
 	ShaderCompiler::ShaderCompiler (ShaderCompiler const& other):
 		errorMessage(other.errorMessage),
 		compilationSuccessful(other.compilationSuccessful),
 		shader(other.shader),
-		hasCompiled(other.hasCompiled)
+		hasCompiled(other.hasCompiled),
+		type(other.type)
 		{ }
 
 	ShaderCompiler::~ShaderCompiler (void) {

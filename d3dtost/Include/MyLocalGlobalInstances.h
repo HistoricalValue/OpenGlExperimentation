@@ -7,6 +7,7 @@ namespace my {
 
 		namespace log {
 			extern void info (LPCTSTR);
+			extern void infoA (char const*);
 			extern void warning (LPCTSTR);
 			extern void error (LPCTSTR);
 		} // namespace log

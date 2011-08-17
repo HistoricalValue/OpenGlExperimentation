@@ -1,5 +1,10 @@
 #include "stdafx.h"
 
+static bool BE_A_SHADER_COMPILER =
+		true
+	//	false
+	;
+
 // notes: http://www.youtube.com/watch?v=6RbT0zWTb8g&feature=player_embedded
 
 namespace my {
@@ -86,6 +91,11 @@ namespace my { namespace global {
 		void info (LPCTSTR msg) {
 			_::info_console->WriteToOutputStream(_T("[INFO]: "));
 			_::info_console->WriteToOutputStream(msg);
+		}
+
+		void infoA (char const* const msg) {
+			_::info_console->WriteToOutputStreamA("[INFO]: ");
+			_::info_console->WriteToOutputStreamA(msg);
 		}
 	} // namespace log
 }} // namespace my::global
@@ -179,7 +189,13 @@ namespace my {
 				mainLoopClosure.drawData = &drawData;
 
 				window.SetMainLoopCallback(&_::Callbacks::MainLoop, &mainLoopClosure);
-				window.MainLoop(lpCmdLine, nCmdShow);
+				
+				extern void TestCompileShaders (void);
+
+				if (BE_A_SHADER_COMPILER)
+					TestCompileShaders();
+				else
+					window.MainLoop(lpCmdLine, nCmdShow);
 
 				my::drawing::cleanup(drawData.Get());
 			}
@@ -201,7 +217,6 @@ int APIENTRY _tWinMain(
 		HINSTANCE hPrevInstance,
 		LPTSTR    lpCmdLine,
 		int       nCmdShow) {
-
 	// run main twice, so as to ensure clean-up works correctly
 	return
 		my::WinMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow) == 0 &&

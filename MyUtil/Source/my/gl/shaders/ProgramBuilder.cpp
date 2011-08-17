@@ -196,8 +196,8 @@ namespace my { namespace gl { namespace shaders {
 				size_t&						infoLogHead) {
 			bool result(true); // invalidated if needed
 			{
-				ShaderCompiler shaderCompiler;
-				shaderCompiler.Compile(source, shaderType);
+				ShaderCompiler shaderCompiler(shaderType);
+				shaderCompiler.Compile(source);
 				if (!shaderCompiler.IsCompilationSuccessful()) {
 					result = false;
 					char myErrorMessage[] = "         shader failed to compile. Reason: ";

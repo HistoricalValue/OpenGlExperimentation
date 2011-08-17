@@ -2,6 +2,8 @@
 #define __MY__GL__SHADRES__SHADER_COMPILER__H__
 
 #include <MyUtil.h>
+#include <Windows.h>
+#include <GL/gl.h>
 
 namespace my { namespace gl { namespace shaders {
 
@@ -17,13 +19,14 @@ namespace my { namespace gl { namespace shaders {
 
 		bool											HasCompiled (void) const;
 														// => "success?"
-		bool											Compile (char const* source, ShaderType type);
+		bool											Compile (char const* source);
 		bool											IsCompilationSuccessful (void) const;
 		std::string const&								GetErrorMessage (void) const;
 
 		GLuint											GetShader (void) const;
+		ShaderType										GetShaderType (void) const;
 
-														ShaderCompiler (void);
+														ShaderCompiler (ShaderType);
 														ShaderCompiler (ShaderCompiler const&);
 														~ShaderCompiler (void);
 	private:
@@ -31,6 +34,7 @@ namespace my { namespace gl { namespace shaders {
 		bool											compilationSuccessful;
 		GLuint											shader;
 		bool											hasCompiled;
+		ShaderType										type;
 	}; // class ShaderCompiler
 
 #pragma warning( pop ) // 4251

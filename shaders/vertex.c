@@ -49,7 +49,7 @@ void main (void) {
 						0,					0,	0,				1) ;
 
 	vec4 pos = position;
-	pos *= // rotx *
+	pos *=  rotx *
 			mat4(
 				cos(radians(30.f)),	0.f,	-sin(radians(30.f)),		0.f,
 				0.f,	1.f,	0.f,		0.f,
@@ -69,7 +69,7 @@ void main (void) {
 //	pos.x = (2*pos.x)/(right-left) + (left+right)/(left-right);
 //	pos.y = (2*pos.y)/(top-bottom) + (bottom+top)/(bottom-top);
 //	pos.x = (2*pos.x)/(back-front) + (front+back)/(front-back);
-//	pos.w = width;
+	pos.w = width;
 	gl_Position = pos;
 
 

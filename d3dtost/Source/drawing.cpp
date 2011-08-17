@@ -288,23 +288,6 @@ namespace _ {
 
 		f.Add(axs);
 		DynamicShapeComposition* const dcomp(f.Generate());
-
-		{
-			size_t const	buflen(20);
-			float			buf1[buflen];
-			float			buf2[buflen];
-	
-			uzeroarray(buf1);
-			uzeroarray(buf2);
-			UCOMPILECHECK(sizeof(buf1) == sizeof(buf2))
-			DASSERT(memcmp(&buf1[0], &buf2[0], sizeof(buf1)) == 0);
-	
-			axs.GetVertexData(&buf1[0], sizeof(buf1));
-			dcomp->GetVertexData(&buf2[0], sizeof(buf2));
-	
-			int const cmp(memcmp(&buf1[0], &buf2[0], sizeof(buf1)));
-			int const ___(cmp);
-		}
 	
 	
 		{
