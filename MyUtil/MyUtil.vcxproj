@@ -109,6 +109,7 @@
     <ClInclude Include="Include\MyWindows.h" />
     <ClInclude Include="Include\MyWinUtils.h" />
     <ClInclude Include="Include\my\gl\math\Matrix4x4.h" />
+    <ClInclude Include="Include\my\gl\math\Transformations.h" />
     <ClInclude Include="Include\my\gl\math\Vector4.h" />
     <ClInclude Include="Include\my\gl\math\Vector4_inl.h" />
     <ClInclude Include="Include\my\gl\mygl.h" />

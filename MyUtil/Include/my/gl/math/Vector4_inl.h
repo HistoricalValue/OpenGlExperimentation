@@ -15,6 +15,16 @@ namespace my { namespace gl { namespace math {
 
 #if defined(P_INLINING) || defined(__MY_UTIL__MY__GL__MATH__VECTOR_4_DEFINING__)
 
+	///////////////////////////////////
+
+	P_INLINE
+	Vector4 const Vector4::normalised (void) const {
+		float const mag = magnitude();
+		return New(x()/mag, y()/mag, z()/mag, w());
+	}
+
+	///////////////////////////////////
+
 	// element-by-element multiplication
 	P_INLINE
 	Vector4 Vector4::mul (Vector4 const& other) const {

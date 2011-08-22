@@ -17,6 +17,7 @@ namespace my { namespace gl { namespace math {
 
 		Vector4											operator + (Vector4 const& other) const;
 
+		Vector4 const									normalised (void) const;			// magnitude = 1
 		float											magnitude (void) const;				// NOTICE: normalised by "w"
 		float											operator * (Vector4 const&) const;	// inner/dot product (.)				a . b = ||a|| ||b|| cos(a^b) , a.b < ||a|| ||b||
 		Vector4											operator * (float) const;			// scalar multiplication
@@ -31,7 +32,6 @@ namespace my { namespace gl { namespace math {
 	//	Vector4											lhcross (Vector4 const&) const;		// left-hand-system cross-product (x)
 
 		//
-
 		struct Setter {
 			Setter (float&, bool null = false);
 			float operator = (float) const;
@@ -80,6 +80,12 @@ namespace my { namespace gl { namespace math {
 		float											v[4];
 														Vector4 (float x, float y, float z, float w);
 	}; // class Vector4
+
+	typedef Vector4 vec4;
+	inline vec4 const O			(void)	{ return vec4(); }
+	inline vec4 const Axis_X	(void)	{ return vec4(1, 0, 0, 1); }
+	inline vec4 const Axis_Y	(void)	{ return vec4(0, 1, 0, 1); }
+	inline vec4 const Axis_Z	(void)	{ return vec4(0, 0, 1, 1); }
 
 }}} // namespace my::gl::math
 

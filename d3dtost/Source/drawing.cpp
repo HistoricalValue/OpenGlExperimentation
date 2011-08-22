@@ -244,26 +244,13 @@ namespace _ {
 
 		_::DeallocateSingleAllocationBufferMemory(_data);
 
-		glVertexAttribPointer(OpenGL::VAI_POSITION,	4,	GL_FLOAT,	normalised,	stride,	attr1off);
-		glVertexAttribPointer(attr2index,			4,	GL_FLOAT,	normalised,	stride,	attr2off);
+		glVertexAttribPointer(OpenGL::VAI_POSITION,	4,	GL_FLOAT,	!normalised,	stride,	attr1off);
+		glVertexAttribPointer(attr2index,			4,	GL_FLOAT,	!normalised,	stride,	attr2off);
 
 		glEnableVertexAttribArray(OpenGL::VAI_POSITION);
 		glEnableVertexAttribArray(attr2index);
 
 		numberOfPoints = count;
-	}
-
-
-	P_INLINE
-	static void ApplyCamera (my::gl::shapes::Shape& shape) {
-		using namespace my::gl::shapes;
-		using namespace my::gl::math;
-
-	//	shape.ScaleW(WW / 2);
-	//	shape.TranslateZ( _::WW * 0.125f * 2);
-	//	shape.RotateY(M_PI/6.f);
-	//	shape.RotateX(-M_PI/4.f);
-	//	shape.TranslateY(_::WW * 0.125f * 1);
 	}
 
 
@@ -297,7 +284,6 @@ namespace _ {
 					*dcomp
 				);
 	
-			ApplyCamera(shape);
 			SetAttribute(vertexArrayId, buffer0Id, shape, POINTS_NORMALISED, false, numberOfPoints);
 		}
 
@@ -323,8 +309,6 @@ namespace _ {
 			//	plane
 				);
 
-		//	shape.Scale(_::WW / 10.f);
-			_::ApplyCamera(shape);
 			_::SetAttribute(vertexArrayId, buffer0Id, shape, POINTS_NORMALISED, false, numberOfWorldCubeLineSegments);
 		}
 	}
@@ -354,13 +338,13 @@ namespace _ {
 		companions.Add(&companion3);
 		companions.Add(&companion4);
 
-		companions.Scale( 125.f);
-		companion0.Adjust(Vector4::New(-3.f  * 250.f, 0.f, 0.f, 0.f));
-		companion1.Adjust(Vector4::New(-1.5f * 250.f, 0.f, 0.f, 0.f));
-		companion2.Adjust(Vector4::New(-0.f  * 250.f, 0.f, 0.f, 0.f));
-		companion3.Adjust(Vector4::New( 1.5f * 250.f, 0.f, 0.f, 0.f));
-		companion4.Adjust(Vector4::New( 3.f  * 250.f, 0.f, 0.f, 0.f));
-		companions.Adjust(Vector4::New(0.f, 125.f, 0.f, 0.f));
+		companions.Scale( 0.125f);
+		companion0.Adjust(Vector4::New(-3.f  * 0.250f, 0.f, 0.f, 0.f));
+		companion1.Adjust(Vector4::New(-1.5f * 0.250f, 0.f, 0.f, 0.f));
+		companion2.Adjust(Vector4::New(-0.f  * 0.250f, 0.f, 0.f, 0.f));
+		companion3.Adjust(Vector4::New( 1.5f * 0.250f, 0.f, 0.f, 0.f));
+		companion4.Adjust(Vector4::New( 3.f  * 0.250f, 0.f, 0.f, 0.f));
+		companions.Adjust(Vector4::New(0.f, 0.125f, 0.f, 0.f));
 
 		companion0.SetColour(ColourFactory::LightRed());
 		companion1.SetColour(ColourFactory::LightGreen());
@@ -373,11 +357,11 @@ namespace _ {
 		Plane plane(ColourFactory::LightYellow());
 	//	plane.RotateX((3.f * M_PI) / 2.f);
 	//	plane.TranslateY(50.0f);
-		plane.Scale(250.f);
+		plane.Scale(0.250f);
 
 
 		SolidCube compos;
-		compos.Scale(250.f);
+		compos.Scale(0.250f);
 	/////////////
 
 		NShapesComposition<2> scenery;
@@ -388,11 +372,10 @@ namespace _ {
 		// Upload shape as textured, buffer 2
 		{
 			Shape& shape(
-			//	scenery
+				scenery
 			//	compos
-				nothing
+			//	nothing
 				);
-			_::ApplyCamera(shape);
 			_::SetAttribute(vertexArrayId, buffer0Id, shape, POINTS_NORMALISED, true, numberOfTexturedSegments);
 		}
 	}
@@ -417,6 +400,11 @@ namespace _ {
 		SetUpLineShapes(line_vertexArrayId, line_buffer0Id, line_buffer1Id, numberOfPoints);
 		SetUpTriangleObjects(tria_vertexArrayId, tria_buffer0Id, tria_buffer1Id, numberOfWorldCubeLineSegments);
 		SetUpTexturedTriangleObjects(text_vertexArrayId, text_buffer0Id, text_buffer1Id, numberOfTexturedSegment);
+	}
+
+	static inline
+	void SetupCamera (void) {
+		glUniformMatrix4fv(::my::OpenGL::VUL_CAMERA, 1, GL_TRUE, ::my::gl::math::Matrix4x4(1).as_float_array_16());
 	}
 
 	static
@@ -683,6 +671,7 @@ namespace my {
 			_::LoadTehStonets(images);
 			_::CreateTextures(images, textures, drawData.previousTextureIndex);
 			_::ConfigureOpenGl();
+			_::SetupCamera();
 
 			return &drawData;
 		}

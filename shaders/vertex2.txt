@@ -1,6 +1,7 @@
-// yesss
+// no
 #version 330 core
 
+///////////////////////////////////////////////////////////
 
 #define M_E        (2.71828182845904523536f )
 #define M_LOG2E    (1.44269504088896340736f )
@@ -16,6 +17,93 @@
 #define M_SQRT2    (1.41421356237309504880f )
 #define M_SQRT1_2  (0.707106781186547524401f)
 
+const vec3		Axis_X	= vec3(1, 0, 0);
+const vec3		Axis_Y	= vec3(0, 1, 0);
+const vec3		Axis_Z	= vec3(0, 0, 1);
+const vec3		O		= vec3(0);
+const vec4		Axis_W	= vec4(O, 1);
+
+const uint		ColouringSelection_Color 	= 0u;
+const uint		ColouringSelection_Texture	= 1u;
+
+///////////////////////////////////////////////////////////
+
+mat4 AId (void)
+	{ return mat4(1);}
+
+mat4 AAffine (const vec3 x, const vec3 y, const vec3 z, const vec3 u)
+	{ return mat4( vec4(x, 0), vec4(y, 0), vec4(z, 0), vec4(u, 1) ); }
+	
+mat4 ATransform (const vec3 x, const vec3 y, const vec3 z)
+	{ return AAffine(x, y, z, O); }
+	
+mat4 ATranslate (const vec3 u)
+	{ return AAffine(Axis_X, Axis_Y, Axis_Z, u); }
+
+mat4 ATransformX (const vec3 x)
+	{ return ATransform(x, Axis_Y, Axis_Z); }
+	
+mat4 AScaleX (const float f)
+	{ return ATransformX(vec3(f, 0, 0)); }
+
+mat4 ARotate (const vec3 axis, const float rad) {
+	const float s 	= sin(rad); 
+	const float c 	= cos(rad);
+	const float cc	= (1.0f - c);
+	const vec3  d	= normalize(axis);
+	
+	return 	mat4(
+				mat3(
+					vec3(cc*d.x*d.x + c		, cc*d.y*d.x - s*d.z	, cc*d.z*d.x + s*d.y),
+					vec3(cc*d.x*d.y + s*d.z	, cc*d.y*d.y + c		, cc*d.z*d.y - s*d.z),
+					vec3(cc*d.x*d.z - s*d.y	, cc*d.y*d.z + s*d.x	, cc*d.z*d.z + c	)
+				)
+			)
+		;
+}
+
+mat4 AFrustrum (		const float	left,
+						const float right,
+						const float bottom,
+						const float top,
+						const float near,
+						const float far) {
+	const float _2n		= 2.0f*near;
+	const float r_l		= right - left;
+	const float t_b		= top - bottom;
+	const float f_n		= far - near;
+	const float r		= right;
+	const float l		= left;
+	const float	t		= top;
+	const float	b		= bottom;
+	const float n		= near;
+	const float f		= far;
+	
+	const float	d		= f - n;
+	
+	return mat4(	1, 0, 0, 0,
+					0, 1, 0, 0,
+					0, 0, 1, 0,
+					0, 0, 0, 1
+			);
+}
+
+///////////////////////////////////////////////////////////
+
+mat4 ACamera (void) {
+	return		AId()
+			*	ATranslate(vec3(0, 0, 1))
+			*	ARotate(Axis_Y + Axis_X, M_PI_4)
+		;
+}
+
+///////////////////////////////////////////////////////////
+
+vec4 Hom_True (const vec4 pos) {
+	return vec4(pos.x/pos.w, pos.y/pos.w, pos.z/pos.w, 1);
+}
+
+///////////////////////////////////////////////////////////
 
 in vec4			position;
 in vec4			colour;
@@ -23,40 +111,27 @@ in vec4			axyc;
 in vec4			texcoord;
 
 uniform uint	textureZ;
+uniform mat4	camera;
 
 out vec4		interpolatedColour;
 out	vec4		textureCoordinate;
 
-mat4 Trans_Id (void) {
-	return mat4(1, 0, 0, 0,
-				0, 1, 0, 0,
-				0, 0, 1, 0,
-				0, 0, 0, 1);
-}
-
-mat4 Trans_Rot (const vec4 axis, const float rad) {
-	const float s 	= sin(rad);
-	const float c 	= cos(rad);
-	const float cc	= (1.0f - c);
-	const vec4  d	= normalize(axis);
-	
-	return mat4(
-		cc*d.x*d.x + c		, cc*d.y*d.x - s*d.z	, cc*d.z*d.x + s*d.y, 0,
-		cc*d.x*d.y + s*d.z	, cc*d.y*d.y + c		, cc*d.z*d.y - s*d.z, 0,
-		cc*d.x*d.z - s*d.y	, cc*d.y*d.z + s*d.x	, cc*d.z*d.z + c	, 0,
-		0					, 0						, 0					, 1
-	);
-}
+///////////////////////////////////////////////////////////
 
 void main (void) {
 
-	mat4 trans			= Trans_Id();
-//	trans 				*= Trans_Rot(vec4(1, 1, 0, 1), M_PI_4);
-	
-	gl_Position			= position;
-						//	trans *
-						//	position;
-	textureCoordinate	= vec4(0, 0, 0, textureZ);
+	vec4 pos			=	Hom_True(position);
+
+	mat4 trans			=	AId()
+						*	AFrustrum(-0.75f, 0.75f, -0.75f, 0.75f, -0.75f, 0.75f)
+						*	ACamera()
+						;
+						
+	mat4 transtest		=	AId()
+						*	camera;
+						
+	gl_Position			= transtest * pos;
+	textureCoordinate	= vec4(texcoord.st, textureZ, 1);
 	interpolatedColour	= colour;
 
 }

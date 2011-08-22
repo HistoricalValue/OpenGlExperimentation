@@ -4,8 +4,8 @@
 
 namespace _ {
 
-const char* const VERTEX_SHADER_SOURCE_PATH		=		"../shaders/vertex.c"
-													//	"../shaders/vertex2.txt"
+const char* const VERTEX_SHADER_SOURCE_PATH		=	//	"../shaders/vertex.c"
+														"../shaders/vertex2.txt"
 													;
 const char* const FRAGMENT_SHADER_SOURCE_PATH	=		"../shaders/fragment.c"
 													;

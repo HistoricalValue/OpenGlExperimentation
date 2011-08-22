@@ -223,7 +223,7 @@ int APIENTRY _tWinMain(
 		int       nCmdShow) {
 	// run main twice, so as to ensure clean-up works correctly
 	return
-		my::WinMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow) == 0 &&
+	//	my::WinMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow) == 0 &&
 	//	my::WinMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow) == 0 &&
 		my::WinMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
 }

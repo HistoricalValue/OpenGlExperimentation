@@ -252,6 +252,9 @@
     <ClInclude Include="Include\my\gl\shapes\ShapeUtilities.h">
       <Filter>Header Files\my\gl\shapes</Filter>
     </ClInclude>
+    <ClInclude Include="Include\my\gl\math\Transformations.h">
+      <Filter>Header Files\my\gl\math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\MyLogger.cpp">

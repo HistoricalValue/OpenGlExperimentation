@@ -2,6 +2,26 @@
 
 namespace my { namespace gl { namespace math {
 
+	Matrix4x4::Matrix4x4 (float const v):
+		a11(v),
+		a12(0),
+		a13(0),
+		a14(0),
+		a21(0),
+		a22(v),
+		a23(0),
+		a24(0),
+		a31(0),
+		a32(0),
+		a33(v),
+		a34(0),
+		a41(0),
+		a42(0),
+		a43(0),
+		a44(v)
+		{ }
+
+
 	Matrix4x4::Matrix4x4 (
 			float const _a11, float const _a12, float const _a13, float const _a14,
 			float const _a21, float const _a22, float const _a23, float const _a24,
@@ -90,6 +110,32 @@ namespace my { namespace gl { namespace math {
 //		result[3] = a41*w1 + a42*w2 + a43*w3 + a44*w4;
 //	}
 
+	float const* Matrix4x4::as_float_array_16 (void) const {
+		P_STATIC_ASSERT(offsetof(Matrix4x4, a11) == sizeof(float) *  0);
+		P_STATIC_ASSERT(offsetof(Matrix4x4, a12) == sizeof(float) *  1);
+		P_STATIC_ASSERT(offsetof(Matrix4x4, a13) == sizeof(float) *  2);
+		P_STATIC_ASSERT(offsetof(Matrix4x4, a14) == sizeof(float) *  3);
+		//
+		P_STATIC_ASSERT(offsetof(Matrix4x4, a21) == sizeof(float) *  4);
+		P_STATIC_ASSERT(offsetof(Matrix4x4, a22) == sizeof(float) *  5);
+		P_STATIC_ASSERT(offsetof(Matrix4x4, a23) == sizeof(float) *  6);
+		P_STATIC_ASSERT(offsetof(Matrix4x4, a24) == sizeof(float) *  7);
+		//
+		P_STATIC_ASSERT(offsetof(Matrix4x4, a31) == sizeof(float) *  8);
+		P_STATIC_ASSERT(offsetof(Matrix4x4, a32) == sizeof(float) *  9);
+		P_STATIC_ASSERT(offsetof(Matrix4x4, a33) == sizeof(float) * 10);
+		P_STATIC_ASSERT(offsetof(Matrix4x4, a34) == sizeof(float) * 11);
+		//
+		P_STATIC_ASSERT(offsetof(Matrix4x4, a41) == sizeof(float) * 12);
+		P_STATIC_ASSERT(offsetof(Matrix4x4, a42) == sizeof(float) * 13);
+		P_STATIC_ASSERT(offsetof(Matrix4x4, a43) == sizeof(float) * 14);
+		P_STATIC_ASSERT(offsetof(Matrix4x4, a44) == sizeof(float) * 15);
+		//
+		typedef void const* voidp;
+		PASSERT(voidp(this) == voidp(&a11))
+		
+		return reinterpret_cast<float const* const>(this);
+	}
 
 
 }}} // namespace my::gl::math
