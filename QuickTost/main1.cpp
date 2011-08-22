@@ -49,7 +49,7 @@ int main1 (int, char**) {
 
 		Axes* const axes_p = DNEW(Axes);
 		Axes& axes(*axes_p);
-		
+
 		Axes* const caxes_p = ShapeUtilities::CloneShape(axes);
 
 		ShapeUtilities::DisposeClonedShape(caxes_p);

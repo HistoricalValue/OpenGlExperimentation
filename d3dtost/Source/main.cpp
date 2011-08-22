@@ -193,7 +193,7 @@ namespace my {
 				mainLoopClosure.drawData = &drawData;
 
 				window.SetMainLoopCallback(&_::Callbacks::MainLoop, &mainLoopClosure);
-				
+
 				extern void TestCompileShaders (void);
 
 				if (_::BE_A_SHADER_COMPILER)

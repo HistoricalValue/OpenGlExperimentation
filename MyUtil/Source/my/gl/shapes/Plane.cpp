@@ -61,7 +61,7 @@ namespace my { namespace gl { namespace shapes {
 
 		if (bytesize >= GetSizeOf())
 			result = new(here) Plane(*this);
-		
+
 		return result;
 	}
 

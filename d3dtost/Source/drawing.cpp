@@ -275,15 +275,15 @@ namespace _ {
 
 		f.Add(axs);
 		DynamicShapeComposition* const dcomp(f.Generate());
-	
-	
+
+
 		{
 			Shape& shape(
 				//	axs
 				//	nothing
 					*dcomp
 				);
-	
+
 			SetAttribute(vertexArrayId, buffer0Id, shape, POINTS_NORMALISED, false, numberOfPoints);
 		}
 

@@ -28,7 +28,7 @@ DynamicShapeComposition::DynamicShapeComposition (size_t const numberOfShapes):
 DynamicShapeComposition::DynamicShapeComposition (DynamicShapeComposition const& other):
 	SpecificNumberOfShapesComposition(other.GetCapacity()) {
 	PASSERT(other.IsFull())
-	
+
 	Shape const* const* const shapes= (other.GetShapesArray());						// stupid microsoft -- cannot ()-init
 	Shape const* const* const end	= (shapes + other.GetNumberOfAddedShapes());	// stupid microsoft -- cannot ()-init
 	for (Shape const* const* i = shapes; i != end; ++i)
@@ -50,7 +50,7 @@ DynamicShapeComposition::~DynamicShapeComposition (void) {
 DynamicShapeComposition* DynamicShapeComposition::Clone (void* const mem, size_t const bytesize) const {
 	size_t const requiredSize(GetSizeOf());
 	PASSERT(bytesize >= requiredSize);
-	
+
 	DynamicShapeComposition* result(NULL);
 	if (bytesize >= requiredSize)
 		result = new(mem) DynamicShapeComposition(*this);

@@ -105,7 +105,7 @@ namespace my { namespace gl { namespace shaders {
 		return errorMessage;
 	}
 
-	ShaderCompiler::ShaderType ShaderCompiler::GetShaderType (void) const { 
+	ShaderCompiler::ShaderType ShaderCompiler::GetShaderType (void) const {
 		return type;
 	}
 

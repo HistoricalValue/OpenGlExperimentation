@@ -53,7 +53,7 @@ namespace my { namespace gl { namespace math {
 		float const a44;
 
 	}; // class Matrix4x4
-	
+
 	typedef Matrix4x4 mat4;
 
 }}} // namespace my::gl::math

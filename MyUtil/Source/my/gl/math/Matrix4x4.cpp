@@ -133,7 +133,7 @@ namespace my { namespace gl { namespace math {
 		//
 		typedef void const* voidp;
 		PASSERT(voidp(this) == voidp(&a11))
-		
+
 		return reinterpret_cast<float const* const>(this);
 	}
 

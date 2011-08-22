@@ -32,7 +32,7 @@ private:
 
 	typedef NShapesComposition<3 * MY_UTIL__MY__GL__SHAPES__AXES__RESOLUTION>	Base;
 	// No public copying
-													
+
 	void											operator = (Axes const&);
 }; // class Axes
 
