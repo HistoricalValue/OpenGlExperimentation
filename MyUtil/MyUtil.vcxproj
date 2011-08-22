@@ -157,6 +157,7 @@
     <ClInclude Include="Include\stdafx.h" />
     <ClInclude Include="Include\targetver.h" />
     <ClCompile Include="Source\ankh\shapes\Buffer.cpp" />
+    <ClCompile Include="Source\my\gl\math\Transformations.cpp" />
     <ClCompile Include="Source\my\gl\shapes\Axes.cpp" />
     <ClCompile Include="Source\my\gl\shapes\ColourFactory.cpp" />
     <ClCompile Include="Source\my\gl\shapes\DynamitcShapeComposition.cpp" />

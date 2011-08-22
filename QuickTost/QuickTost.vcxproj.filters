@@ -24,5 +24,8 @@
     <ClCompile Include="main1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="main2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

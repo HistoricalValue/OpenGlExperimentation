@@ -9,7 +9,7 @@
 static inline void waitre (void) {
 #ifdef _DEBUG
 	puts("Type \"return\" to continue.");
-	fgetchar();
+	_fgetchar();
 #endif
 }
 

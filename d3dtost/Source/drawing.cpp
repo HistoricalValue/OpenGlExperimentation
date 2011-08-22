@@ -404,7 +404,19 @@ namespace _ {
 
 	static inline
 	void SetupCamera (void) {
-		glUniformMatrix4fv(::my::OpenGL::VUL_CAMERA, 1, GL_TRUE, ::my::gl::math::Matrix4x4(1).as_float_array_16());
+		using namespace my::gl::math::Transformations;
+		using namespace my::gl::math;
+
+		mat4 m(1);
+		m *= Translate(0, 0, 1);
+		m *= Rotate(Axis_Y(), M_PI_4 + M_PI/6.0f);
+		m *= ScaleX(0.5f);
+
+		glUniformMatrix4fv(::my::OpenGL::VUL_CAMERA, 1, GL_TRUE, m.as_float_array_16());
+	}
+
+	static inline
+	void SetupFrustrum (void) {
 	}
 
 	static

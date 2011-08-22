@@ -46,6 +46,10 @@ namespace my { namespace gl { namespace math {
 
 	///////////////////////////////////
 
+	Vector4 Vector4::New (float const v[4]) {
+		return Vector4(v[0], v[1], v[2], v[3]);
+	}
+
 	///////////////////////////////////
 
 	///////////////////////////////////

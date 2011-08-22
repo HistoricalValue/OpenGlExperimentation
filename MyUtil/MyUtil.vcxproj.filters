@@ -365,5 +365,8 @@
     <ClCompile Include="Source\my\gl\shapes\SpecificNumberOfShapesComposition.cpp">
       <Filter>Source Files\my\gl\shapes</Filter>
     </ClCompile>
+    <ClCompile Include="Source\my\gl\math\Transformations.cpp">
+      <Filter>Source Files\my\gl\math</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

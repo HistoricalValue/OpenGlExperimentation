@@ -2,6 +2,37 @@
 
 namespace my { namespace gl { namespace math {
 
+	Vector4 Matrix4x4::operator [] (size_t const i) const {
+		return transpose().row(i);
+	}
+
+	Vector4 Matrix4x4::row (size_t const i) const {
+		PASSERT(i < 4)
+		return Vector4::New(as_float_array_16() + i * 4);
+	}
+
+	Matrix4x4 Matrix4x4::operator * (Matrix4x4 const& other) const {
+		return Matrix4x4(
+					row(0) * other[0], row(0) * other[1], row(0) * other[2], row(0) * other[3],
+					row(1) * other[0], row(1) * other[1], row(1) * other[2], row(1) * other[3],
+					row(2) * other[0], row(2) * other[1], row(2) * other[2], row(2) * other[3],
+					row(3) * other[0], row(3) * other[1], row(3) * other[2], row(3) * other[3]
+				);
+	}
+
+	Matrix4x4 Matrix4x4::transpose (void) const {
+		return Matrix4x4(	a11, a21, a31, a41,
+							a12, a22, a32, a42,
+							a13, a23, a33, a43,
+							a14, a24, a34, a44
+					);
+	}
+
+	Matrix4x4 const& Matrix4x4::operator = (Matrix4x4 const& other) {
+		this->~Matrix4x4();
+		return *new(this) Matrix4x4(other);
+	}
+
 	Matrix4x4::Matrix4x4 (float const v):
 		a11(v),
 		a12(0),
@@ -19,6 +50,49 @@ namespace my { namespace gl { namespace math {
 		a42(0),
 		a43(0),
 		a44(v)
+		{ }
+
+	Matrix4x4::Matrix4x4 (Matrix4x4 const& other):
+		a11(other.a11),
+		a12(other.a12),
+		a13(other.a13),
+		a14(other.a14),
+		a21(other.a21),
+		a22(other.a22),
+		a23(other.a23),
+		a24(other.a24),
+		a31(other.a31),
+		a32(other.a32),
+		a33(other.a33),
+		a34(other.a34),
+		a41(other.a41),
+		a42(other.a42),
+		a43(other.a43),
+		a44(other.a44)
+		{ }
+
+
+	Matrix4x4::Matrix4x4 (
+			Vector4 const& col1,
+			Vector4 const& col2,
+			Vector4 const& col3,
+			Vector4 const& col4):
+		a11(col1.x()),
+		a12(col2.x()),
+		a13(col3.x()),
+		a14(col4.x()),
+		a21(col1.y()),
+		a22(col2.y()),
+		a23(col3.y()),
+		a24(col4.y()),
+		a31(col1.z()),
+		a32(col2.z()),
+		a33(col3.z()),
+		a34(col4.z()),
+		a41(col1.w()),
+		a42(col2.w()),
+		a43(col3.w()),
+		a44(col4.w())
 		{ }
 
 

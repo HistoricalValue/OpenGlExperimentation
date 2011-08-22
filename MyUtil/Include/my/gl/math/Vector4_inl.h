@@ -18,6 +18,17 @@ namespace my { namespace gl { namespace math {
 	///////////////////////////////////
 
 	P_INLINE
+	bool Vector4::operator == (Vector4 const& other) const {
+		return	v[0] == other.v[0]
+			&&	v[1] == other.v[1]
+			&&	v[2] == other.v[2]
+			&&	v[3] == other.v[3]
+			;
+	}
+
+	///////////////////////////////////
+
+	P_INLINE
 	Vector4 const Vector4::normalised (void) const {
 		float const mag = magnitude();
 		return New(x()/mag, y()/mag, z()/mag, w());

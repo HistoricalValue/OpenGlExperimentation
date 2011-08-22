@@ -83,6 +83,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="main0.cpp" />
     <ClCompile Include="main1.cpp" />
+    <ClCompile Include="main2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\ankh\Images\Project\ImageLoader.vcxproj">

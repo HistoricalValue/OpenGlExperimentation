@@ -40,18 +40,18 @@ inline mat4 const Affine (
 ///////////////////////////////////////////////////////////
 
 inline mat4 const Transform (vec4 const& x, vec4 const& y, vec4 const& z)
-	{ return Affine(x, y, z, vec4()); }
+	{ return Affine(x, y, z, vec4::New()); }
 
 inline mat4 const Transform (
 		float const x_1, float const x_2, float const x_3,
 		float const y_1, float const y_2, float const y_3,
 		float const z_1, float const z_2, float const z_3)
-	{ return Transform(vec4::New(x_1, x_2, x_3, 0), vec4::New(y_1, y_2, y_3, 0), vec4::New(z_1, z_2, z_3, 0); }
+	{ return Transform(vec4::New(x_1, x_2, x_3, 0), vec4::New(y_1, y_2, y_3, 0), vec4::New(z_1, z_2, z_3, 0)); }
 
 ///////////////////////////////////////////////////////////
 
 inline mat4 const Translate (vec4 const& u)
-	{ return Affine(Axis_X, Axis_Y, Axis_Z, u); }
+	{ return Affine(vec4::New(1, 0, 0, 0), vec4::New(0, 1, 0, 0), vec4::New(0, 0, 1, 0), u); }
 
 inline mat4 const Translate (float const u_1, float const u_2, float const u_3)
 	{ return Translate(vec4::New(u_1, u_2, u_3)); }
@@ -59,10 +59,10 @@ inline mat4 const Translate (float const u_1, float const u_2, float const u_3)
 ///////////////////////////////////////////////////////////
 
 inline mat4 const TransformX (vec4 const& x)
-	{ return Transform(x, Axis_Y, Axis_Z); }
+	{ return Transform(x, vec4::New(0, 1, 0, 0), vec4::New(0, 0, 1, 0)); }
 
 inline mat4 const TransformX (float const x_1, float const x_2, float const x_3)
-	{ return TransformX(vec4::New(x_1, x_2, x_3)); }
+	{ return TransformX(vec4::New(x_1, x_2, x_3, 0)); }
 
 ///////////////////////////////////////////////////////////
 
@@ -71,12 +71,7 @@ inline mat4 const ScaleX (float const f)
 
 ///////////////////////////////////////////////////////////
 
-inline mat4 const Rotate (vec4 const& axis, float const rad) {
-	float const	s	= sin(rad);
-	float const	c	= cos(rad);
-	float const	cc	= 1.0f - c;
-	vec4 const	d	= axis.normalised();
-}
+extern MYUTIL_API mat4 const Rotate (vec4 const& axis, float rad);
 
 ///////////////////////////////////////////////////////////
 

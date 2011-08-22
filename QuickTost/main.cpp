@@ -1,4 +1,4 @@
-static size_t const RunMain(		1		);
+static size_t const RunMain(		2		);
 
 #define DECLARE_MAIN(N) \
 	extern int main##N (int, char**);
@@ -7,10 +7,12 @@ static size_t const RunMain(		1		);
 
 DECLARE_MAIN(0)
 DECLARE_MAIN(1)
+DECLARE_MAIN(2)
 
 static int (*const mains[]) (int, char**) = {
 	ADDRESSOF_MAIN(0),
-	ADDRESSOF_MAIN(1)
+	ADDRESSOF_MAIN(1),
+	ADDRESSOF_MAIN(2)
 };
 
 int main (int const argc, char* argv[]) {
