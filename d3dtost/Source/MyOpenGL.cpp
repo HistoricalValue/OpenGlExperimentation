@@ -29,6 +29,7 @@ namespace my {
 		static GLuint colslctrLocation(-1);
 		static GLuint textureZLocation(-1);
 		static GLuint cameraLocation  (-1);
+		static GLuint projectionLocation(-1);
 
 		static bool InstallShaders (
 				my::gl::shaders::ProgramBuilder&	programBuilder,
@@ -139,6 +140,7 @@ namespace my {
 						_::colslctrLocation = programBuilder.GetUniformLocation("colouringSelector");
 						_::textureZLocation = programBuilder.GetUniformLocation("textureZ");
 						_::cameraLocation	= programBuilder.GetUniformLocation("camera");
+						_::projectionLocation	= programBuilder.GetUniformLocation("projection");
 
 						_::InfologAllExtensions();
 					}
@@ -245,14 +247,14 @@ namespace my {
 
 	OpenGL::_VUL_SAMPLER0 const OpenGL::VUL_SAMPLER0;
 	OpenGL::_VUL_SAMPLER0::operator GLuint (void) const {
-		PASSERT(_::sampler0location != -1)
+		PASSERT(_::sampler0location >= 0)
 		return _::sampler0location;
 	}
 
 
 	OpenGL::_VUL_SAMPLER1 const OpenGL::VUL_SAMPLER1;
 	OpenGL::_VUL_SAMPLER1::operator GLuint (void) const {
-		PASSERT(_::sampler1location != -1)
+		PASSERT(_::sampler1location >= 0)
 		return _::sampler1location;
 	}
 
@@ -288,7 +290,11 @@ namespace my {
 		return _::cameraLocation;
 	}
 
-
+	OpenGL::_VUL_PROJECTION const OpenGL::VUL_PROJECTION;
+	OpenGL::_VUL_PROJECTION::operator GLuint (void) const {
+		PASSERT(_::projectionLocation != -1)
+		return _::projectionLocation;
+	}
 
 
 

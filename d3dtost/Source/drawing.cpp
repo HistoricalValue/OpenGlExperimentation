@@ -409,14 +409,38 @@ namespace _ {
 
 		mat4 m(1);
 		m *= Translate(0, 0, 1);
-		m *= Rotate(Axis_Y(), M_PI_4 + M_PI/6.0f);
-		m *= ScaleX(0.5f);
+		m *= Rotate(Axis_Y(), M_PI_4);
+	//	m *= ScaleX(0.5f);
 
 		glUniformMatrix4fv(::my::OpenGL::VUL_CAMERA, 1, GL_TRUE, m.as_float_array_16());
 	}
 
 	static inline
-	void SetupFrustrum (void) {
+	void SetupFrustrum (float const n, float const f, float const l, float const r, float const b, float const t) {
+		PASSERT(n > 0)
+		PASSERT(f > 0)
+		PASSERT(f > n)
+		PASSERT(r > l)
+		PASSERT(t > b)
+
+		float const r_l		= r - l;
+		float const t_b		= t - b;
+		float const f_n		= f - n;
+		float const _2n		= 2.0f * n;
+		float const Cwn		= _2n / r_l;
+		float const Dw		= (-r -l) / r_l;
+		float const Chn		= _2n / t_b;
+		float const Dh		= (-t -b) / t_b;
+		float const A		= (f + n) / f_n;
+		float const B		= (_2n * -f) / f_n;
+
+		using my::gl::math::mat4;
+		mat4 m(
+				Cwn	,	0	,	Dw	,	0,
+				0	,	Chn	,	Dh	,	0,
+				0	,	0	,	A	,	B,
+				0	,	0	,	1	,	0);
+		glUniformMatrix4fv(::my::OpenGL::VUL_PROJECTION, 1, GL_TRUE, m.as_float_array_16());
 	}
 
 	static
@@ -684,6 +708,7 @@ namespace my {
 			_::CreateTextures(images, textures, drawData.previousTextureIndex);
 			_::ConfigureOpenGl();
 			_::SetupCamera();
+			_::SetupFrustrum(0.70f, 1.90f, -0.90f, 0.90f, -0.90f, 0.90f);
 
 			return &drawData;
 		}

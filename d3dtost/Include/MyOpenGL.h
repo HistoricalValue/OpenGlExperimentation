@@ -47,7 +47,8 @@ namespace my {
 
 		static struct _VUL_TEXTUREZ { operator GLuint (void) const; } const VUL_TEXTUREZ;
 
-		static struct _VUL_CAMERA { operator GLuint (void) const; } const	VUL_CAMERA;
+		static struct _VUL_CAMERA		{ operator GLuint (void) const; } const	VUL_CAMERA;
+		static struct _VUL_PROJECTION	{ operator GLuint (void) const; } const	VUL_PROJECTION;
 
 	private:
 		DeviceContextHandle								device;
