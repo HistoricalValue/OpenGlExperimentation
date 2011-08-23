@@ -409,7 +409,7 @@ namespace _ {
 
 		mat4 m(1);
 		m *= Translate(0, 0, 1);
-		m *= Rotate(Axis_Y(), M_PI_4);
+		m *= Rotate(Axis_Y(), M_PI_4 + M_PI_8);
 	//	m *= ScaleX(0.5f);
 
 		glUniformMatrix4fv(::my::OpenGL::VUL_CAMERA, 1, GL_TRUE, m.as_float_array_16());
@@ -571,7 +571,7 @@ namespace _ {
 	static
 	void ConfigureOpenGl (void) {
 		glEnable(GL_DEPTH_TEST);
-	//	glEnable(GL_CULL_FACE);
+		glEnable(GL_CULL_FACE);
 	//	glEnable(GL_TEXTURE_3D);
 	}
 }
@@ -708,7 +708,7 @@ namespace my {
 			_::CreateTextures(images, textures, drawData.previousTextureIndex);
 			_::ConfigureOpenGl();
 			_::SetupCamera();
-			_::SetupFrustrum(0.70f, 1.90f, -0.90f, 0.90f, -0.90f, 0.90f);
+			_::SetupFrustrum(0.50f, 1.90f, -0.90f, 0.90f, -0.90f, 0.90f);
 
 			return &drawData;
 		}
