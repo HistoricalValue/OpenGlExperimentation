@@ -26,3 +26,6 @@ freeglut-2.6.0
 *.jpg
 CopyUtilAndDefensiveHeapDLLs.bat
 QuickTost/dallocstats.txt
+FileJanitor/build
+FileJanitor/dist
+FileJanitor/nbproject/private
