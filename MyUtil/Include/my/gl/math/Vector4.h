@@ -41,17 +41,22 @@ namespace my { namespace gl { namespace math {
 		float											operator * (Vector4 const&) const;	// inner/dot product (.)				a . b = ||a|| ||b|| cos(a^b) , a.b < ||a|| ||b||
 		Vector4											operator * (float) const;			// scalar multiplication
 		Vector4											mul (Vector4 const&) const;			// element-by-element multiplication
+		Vector4											mul (float) const;					// scalar multiplication without touching w
 		float											angle (Vector4 const&) const;		// angle this^other in [-pi, pi]
 		Vector4											operator - (Vector4 const&) const;	// vector subtraction (element-by-element)
 		Vector4											operator / (Vector4 const&) const;	// element-by-element division
 		template <typename T>
 		Vector4											operator / (T) const;				// division by scalar
+		template <typename T>
+		Vector4											operator + (T) const;				// adding a scalar
+		template <typename T>
+		Vector4											add (T) const;						// adding a scalar without touching element 4 (w)
 	/// TODO implement (figure out)
 	//	Vector4											rhcross (Vector4 const&) const;		// right-hand-system cross-product (x)	||a|| ||b|| sin(a^b) *directionVector
 	//	Vector4											lhcross (Vector4 const&) const;		// left-hand-system cross-product (x)
 
 		//
-		struct Setter {
+		struct MYUTIL_API Setter {
 			Setter (float&, bool null = false);
 			float operator = (float) const;
 		private:
@@ -99,6 +104,10 @@ namespace my { namespace gl { namespace math {
 		float											v[4];
 														Vector4 (float x, float y, float z, float w);
 	}; // class Vector4
+
+	template <typename T>
+	inline Vector4 const operator * (T const& m, Vector4 const& v)
+		{ return v * m; }
 
 	typedef Vector4 vec4;
 	inline vec4 const O			(void)	{ return vec4::New(); }

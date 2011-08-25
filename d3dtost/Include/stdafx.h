@@ -48,7 +48,9 @@
 #include "my/gl/textures/TextureUnitManager_inl.h"
 #include <my/gl/shapes/ShapeCompositionFactory.h>
 #include <my/gl/shapes/NShapesComposition_inl.h>
+#include <my/gl/shapes/Point.h>
 #include <my/gl/math/Transformations.h>
+#include <my/gl/math/Vector4_inl.h>
 
 
 #include "my/gl/mygl.h"

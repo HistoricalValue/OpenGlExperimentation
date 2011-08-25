@@ -12,6 +12,21 @@ namespace my { namespace gl { namespace math {
 		return Vector4(x()/d, y()/d, z()/d, w()/d);
 	}
 
+	///////////////////////////////////
+
+	template <typename T>
+	Vector4 Vector4::operator + (T const d) const {
+		return Vector4(x()+d, y()+d, z()+d, w()+d);
+	}
+
+	///////////////////////////////////
+
+	template <typename T>
+	Vector4 Vector4::add (T const d) const {
+		return Vector4(x()+d, y()+d, z()+d, w());
+	}
+
+	///////////////////////////////////
 
 #if defined(P_INLINING) || defined(__MY_UTIL__MY__GL__MATH__VECTOR_4_DEFINING__)
 
@@ -44,6 +59,14 @@ namespace my { namespace gl { namespace math {
 
 	///////////////////////////////////
 
+	// scalar multiplication without touching the 4th element (w)
+	P_INLINE
+	Vector4 Vector4::mul (float const f) const {
+		return Vector4(v[0]*f, v[1]*f, v[2]*f, v[3]);
+	}
+
+	///////////////////////////////////
+
 	P_INLINE
 	Vector4 Vector4::operator + (Vector4 const& other) const {
 		return Vector4(v[0]+other.v[0], v[1]+other.v[1], v[2]+other.v[2], v[3]+other.v[3]);
@@ -53,6 +76,7 @@ namespace my { namespace gl { namespace math {
 
 	P_INLINE
 	void Vector4::operator = (Vector4 const& other) {
+		this->~Vector4();
 		new(this) Vector4(other);
 	}
 

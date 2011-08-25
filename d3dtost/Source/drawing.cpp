@@ -1,5 +1,210 @@
 #include "stdafx.h"
 
+template <typename C, typename F>
+static void foreach (C const& c, F const& f)
+	{ std::for_each(c.begin(), c.end(), f); }
+
+
+#ifdef _DEBUG
+#	define NOTEND(I,END) _NOTEND(I,END)
+#else
+#	define NOTNED(I,END)
+#endif
+
+template <typename I>
+static inline I& _NOTEND (I& i, I const& end) {
+	DASSERT(i != end);
+	return i;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
+//    LE SHIT !!!   //
+namespace nurbs {
+//////////////////////////////////////////////////////////////////////////////////////
+namespace _ {
+//////////////////////////////////////////////////////////////////////////////////////
+
+static inline bool in01 (float const u)		{ return u >= 0.0f && u <= 1.0f; }
+static inline bool in04 (float const u)		{ return u >= 0.0f && u <= 4.0f; }
+
+static inline float R0 (float const u) {
+	DASSERT(in01(u));
+	return (u*u*u)/6.0f;
+}
+
+static inline float R1 (float const u) {
+	DASSERT(in01(u));
+	return (-3.0f*u*u*u + 3.0f*u*u + 3.0f*u + 1.0f)/6.0f;
+}
+
+static inline float R2 (float const u) {
+	DASSERT(in01(u));
+	return (3.0f*u*u*u - 6.0f*u*u + 4.0f)/6.0f;
+}
+
+static inline float R3 (float const u) {
+	DASSERT(in01(u));
+	float const _1mu((1.0f - u));
+	return (_1mu*_1mu*_1mu)/6.0f;
+}
+
+static inline float N0 (float const u) {
+	DASSERT(in04(u));
+	if (u < 1)
+		return R0(u);
+	else
+	if (u < 2)
+		return R1(u - 1.0f);
+	else
+	if (u < 3)
+		return R2(u - 2.0f);
+	else
+		return R3(u - 3.0f);
+
+}
+
+static inline float N (size_t const i, float const u)
+	{ return N0(u - float(i)); }
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+template <typename C>
+static std::list<my::gl::shapes::Line> const linestrip (C const& points, my::gl::shapes::Colour const& col) {
+	using my::gl::math::Vector4;
+	using my::gl::shapes::Line;
+	using my::gl::shapes::Vertex;
+	using my::gl::shapes::Colour;
+	using my::gl::shapes::ColourFactory;
+
+	typename C::const_iterator points_end(points.end());
+	typename C::const_iterator i(points.begin());
+	DASSERT(i != points_end);
+	typename C::const_iterator prev(i++);
+
+	std::list<Line> result;
+	for (; i != points_end; prev = i++)
+		result.push_back(Line(Vertex(*prev), Vertex(*i), col, ColourFactory::Brighter(ColourFactory::Brighter(ColourFactory::Brighter(ColourFactory::Brighter(col))))));
+
+	return result;
+}
+
+template <typename C>
+static std::list<my::gl::shapes::Point> const vertices (C const& points, my::gl::shapes::Colour const& col) {
+	using my::gl::math::Vector4;
+	using my::gl::shapes::Point;
+	using my::gl::shapes::Vertex;
+	using my::gl::shapes::Colour;
+
+	typename C::const_iterator const points_end(points.end());
+	typename C::const_iterator i(points.begin());
+
+	std::list<Point> result;
+	for (; i != points_end; i++)
+		result.push_back(Point(Vertex(*i), col));
+
+	return result;
+}
+
+template <typename C>
+static inline void addshapesto (my::gl::shapes::ShapeCompositionFactory& f, C const& shapes) {
+	using my::gl::shapes::ShapeCompositionFactory;
+	using my::gl::shapes::Shape;
+	foreach(shapes, ubind1st(uspecific_mem_fun1<void, ShapeCompositionFactory, Shape const&, &ShapeCompositionFactory::Add>(), &f));
+}
+
+#define LINE(BX,BY,BZ,EX,EY,EZ) (Line(Vertex(Vector4::New(BX,BY,BZ,1)), Vertex(Vector4::New(EX,EY,EZ,1))))
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+static std::vector<my::gl::math::Vector4>* cpoints_p(NULL);
+
+static void Initialise (void) {
+	{
+		using my::gl::math::Vector4;
+		using my::gl::math::vec4;
+
+		cpoints_p = DNEW(std::vector<Vector4>);
+		cpoints_p->reserve(20);
+		cpoints_p->push_back(vec4::New(-0.2f, -0.5f));
+		cpoints_p->push_back(vec4::New(0.0f, 0.0f));
+		cpoints_p->push_back(vec4::New(0.2f, 0.5f));
+		cpoints_p->push_back(vec4::New(0.5f, 0.5f));
+		cpoints_p->push_back(vec4::New(0.5f,-0.5f));
+		cpoints_p->push_back(vec4::New(0.65f,-0.05f));
+		cpoints_p->push_back(vec4::New(0.7f, 0.5f));
+		cpoints_p->push_back(vec4::New(0.75f, 0.45f));
+	}
+
+}
+
+static void CleanUp (void) {
+	udelete(cpoints_p);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+static inline std::vector<my::gl::math::Vector4> const& cpoints (void) 
+	{ return *DPTR(_DNOTNULL(cpoints_p)); }
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+static std::list<my::gl::math::Vector4> const producenurbspoints (void) {
+	using my::gl::math::Vector4;
+	using my::gl::math::vec4;
+
+	std::list<Vector4> points;
+	std::vector<Vector4> const& cpoints(_::cpoints());
+
+	size_t const n(cpoints.size() - 1);
+
+	for (size_t j(3); j <= n; ++j)
+		for (float u((float(j))); u <= j+1; u += 0.01f) {
+			vec4 sum(vec4::New());
+			for (size_t i(j-3); i <= j; ++i)
+				sum = sum + cpoints.at(i).mul(_::N(i,u));
+
+			float const w = sum.w() = 1.0f;
+			DASSERT(w == 1.0f);
+
+			points.push_back(sum);
+		}
+
+	return points;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
+} // _
+//////////////////////////////////////////////////////////////////////////////////////
+
+void addaslinesto (my::gl::shapes::ShapeCompositionFactory& f) {
+	using my::gl::shapes::Colour;
+	using my::gl::math::vec4;
+	_::addshapesto(f, _::linestrip(_::producenurbspoints(), Colour(vec4::New(0.8f, 0.4f, 0.8f))));
+}
+
+void addaspointsto (my::gl::shapes::ShapeCompositionFactory& f) {
+	using my::gl::shapes::Colour;
+	using my::gl::math::vec4;
+	_::addshapesto(f, _::vertices(_::producenurbspoints(), Colour(vec4::New(0.5f, 0.2f, 0.2f))));
+}
+
+void addcontrolpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
+	using my::gl::shapes::ShapeCompositionFactory;
+	using my::gl::shapes::Colour;
+	using my::gl::math::vec4;
+
+	_::addshapesto(f, _::vertices(_::cpoints(), Colour(vec4::New(0.5f, 0.7f, 0.7f))));
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
+//   as dasd a s   //
+}	// nurbs
+//////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
 
 #define DONT	if (false)
 #define DO		if (true)
@@ -11,9 +216,12 @@
 using namespace ::gl::ext;
 
 namespace _ {
+	static const bool	WITH_DRAW_POINTS	(true);
 	static const bool	WITH_DRAW_LINES		(true);
 	static const bool	WITH_DRAW_TRIANGLES	(false);
 	static const bool	WITH_DRAW_TEXTURED	(false);
+	//
+	static const bool	WITH_CAMERA			(false);
 
 	static const float WW(2000.f);
 
@@ -38,6 +246,7 @@ namespace _ {
 		GLuint				texturesIds[TEXTURES_NUM];
 		GLuint				numberOfPoints;
 		GLuint				numberOfWorldCubeLineSegments;
+		GLuint				numberOfPointPoints;
 		unsigned long int	startingTime;
 		unsigned long int	prevtime;
 		GLuint				sampler_location;
@@ -192,6 +401,29 @@ namespace _ {
 	// Object setups
 	///////////////////////////////////////////////////////
 	static
+	void SetupPointShapes (
+			GLuint const	vertexArrayId,
+			GLuint const	buffer0Id,
+			GLuint const	buffer1Id,
+			GLuint&			numberOfPointPoints)
+	{
+		// Save setup time
+		if (_::WITH_DRAW_POINTS) {
+			using namespace my::gl::shapes;
+			ShapeCompositionFactory f;
+
+			nurbs::addcontrolpointsto(f);
+		//	nurbs::addaspointsto(f);
+			
+			DynamicShapeComposition* const dcomp(f.Generate());
+
+			SetAttribute(vertexArrayId, buffer0Id, *dcomp, POINTS_NORMALISED, false, numberOfPointPoints);
+
+			f.Dispose(dcomp);
+		}
+	}
+
+	static
 	void SetUpLineShapes (
 			GLuint const	vertexArrayId,
 			GLuint const	buffer0Id,
@@ -208,8 +440,9 @@ namespace _ {
 			ShapeCompositionFactory f;
 
 			f.Add(axs);
-			DynamicShapeComposition* const dcomp(f.Generate());
+			nurbs::addaslinesto(f);
 
+			DynamicShapeComposition* const dcomp(f.Generate());
 
 			{
 				Shape& shape(
@@ -350,8 +583,10 @@ namespace _ {
 
 		mat4 m(1);
 		m *= Translate(0, 0, 1);
-		m *= Rotate(Axis_Y(), M_PI_4 + M_PI_8);
-	//	m *= ScaleX(0.5f);
+		if (_::WITH_CAMERA) {
+			m *= Rotate(Axis_Y(), M_PI_4 + M_PI_8);
+		//	m *= ScaleX(0.5f);
+		}
 
 		glUniformMatrix4fv(::my::OpenGL::VUL_CAMERA, 1, GL_TRUE, m.as_float_array_16());
 	}
@@ -493,6 +728,9 @@ namespace _ {
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 	//	glEnable(GL_TEXTURE_3D);
+		
+		glEnable(GL_PROGRAM_POINT_SIZE);
+		glPointSize(1.5f);
 	}
 }
 
@@ -522,6 +760,19 @@ namespace my {
 				TCHAR msg[] = _T("Current time ist: 0\n");
 				msg[sizeof(msg)/sizeof(msg[0]) - 3] = _T('0') + texz;
 				my::global::log::info(&msg[0]);
+			}
+
+			// Draw points
+			if (_::WITH_DRAW_POINTS) {
+				PASSERT(glIsVertexArray(dd.vertexArrayIds[0] == GL_TRUE))
+				glBindVertexArray(dd.vertexArrayIds[0]);
+				glVertexAttrib4f(OpenGL::VAI_AXYC,
+						angle,
+						-0.0f,
+						0.0f,
+						cam);
+				glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_COLOUR);
+				glDrawArrays(GL_POINTS, 0, dd.numberOfPointPoints);
 			}
 
 			// Draw lines
@@ -582,6 +833,7 @@ namespace my {
 			GLuint				(&vertexArrayIds)[VAOs]			(drawData.vertexArrayIds);
 			GLuint				(&bufferIds)[VBOs]				(drawData.bufferIds);
 			GLuint&				numberOfPoints					(drawData.numberOfPoints);
+			GLuint&				numberOfPointPoints				(drawData.numberOfPointPoints);
 			GLuint&				numberOfWorldCubeLineSegments	(drawData.numberOfWorldCubeLineSegments);
 			unsigned long int&	startingTime					(drawData.startingTime);
 			unsigned long int&	prevtime						(drawData.prevtime);
@@ -602,7 +854,12 @@ namespace my {
 			P_STATIC_ASSERT(sizeof(bufferIds)/sizeof(bufferIds[0]) == 6)
 			glGenBuffers(sizeof(bufferIds)/sizeof(bufferIds[0]), &bufferIds[0]);
 
+			nurbs::_::Initialise();
 
+			///////////////////////////
+			// VAO#0: Points
+			// (buffers #1)
+			_::SetupPointShapes(vertexArrayIds[0], bufferIds[1], -1, numberOfPointPoints);
 			///////////////////////////
 			// VAO#1: Line objects
 			// (buffers #3 #4)
@@ -656,6 +913,8 @@ namespace my {
 
 			ankh::textures::CleanUp();
 			ankh::images::CleanUp();
+
+			nurbs::_::CleanUp();
 		}
 
 	} // namespace drawing

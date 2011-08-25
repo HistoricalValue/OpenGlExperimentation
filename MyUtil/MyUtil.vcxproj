@@ -129,6 +129,7 @@
     <ClInclude Include="Include\my\gl\shapes\NShapesComposition.h" />
     <ClInclude Include="Include\my\gl\shapes\NShapesComposition_inl.h" />
     <ClInclude Include="Include\my\gl\shapes\Plane.h" />
+    <ClInclude Include="Include\my\gl\shapes\Point.h" />
     <ClInclude Include="Include\my\gl\shapes\Shape.h" />
     <ClInclude Include="Include\my\gl\shapes\ShapeComposition.h" />
     <ClInclude Include="Include\my\gl\shapes\ShapeCompositionFactory.h" />
@@ -190,6 +191,7 @@
     <ClCompile Include="Source\my\gl\shapes\Cube.cpp" />
     <ClCompile Include="Source\my\gl\shapes\Line.cpp" />
     <ClCompile Include="Source\my\gl\shapes\Nothing.cpp" />
+    <ClCompile Include="Source\my\gl\shapes\Point.cpp" />
     <ClCompile Include="Source\my\gl\shapes\Shape.cpp" />
     <ClCompile Include="Source\my\gl\shapes\ShapeComposition.cpp" />
     <ClCompile Include="Source\my\gl\shapes\ShapeCompositionFactory.cpp" />

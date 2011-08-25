@@ -47,6 +47,7 @@
 #include <my/gl/shapes/NShapesComposition_inl.h>
 #include <my/gl/shapes/ShapeUtilities.h>
 #include <my/gl/math/Transformations.h>
+#include <my/gl/shapes/Point.h>
 
 #include <nmutil/OpenGlExtensionManager.h>
 

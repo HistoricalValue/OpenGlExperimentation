@@ -255,6 +255,9 @@
     <ClInclude Include="Include\my\gl\math\Transformations.h">
       <Filter>Header Files\my\gl\math</Filter>
     </ClInclude>
+    <ClInclude Include="Include\my\gl\shapes\Point.h">
+      <Filter>Header Files\my\gl\shapes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\MyLogger.cpp">
@@ -367,6 +370,9 @@
     </ClCompile>
     <ClCompile Include="Source\my\gl\math\Transformations.cpp">
       <Filter>Source Files\my\gl\math</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\shapes\Point.cpp">
+      <Filter>Source Files\my\gl\shapes</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
