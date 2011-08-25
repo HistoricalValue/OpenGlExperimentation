@@ -143,7 +143,7 @@ static void CleanUp (void) {
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-static inline std::vector<my::gl::math::Vector4> const& cpoints (void) 
+static inline std::vector<my::gl::math::Vector4> const& cpoints (void)
 	{ return *DPTR(_DNOTNULL(cpoints_p)); }
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -414,7 +414,7 @@ namespace _ {
 
 			nurbs::addcontrolpointsto(f);
 		//	nurbs::addaspointsto(f);
-			
+
 			DynamicShapeComposition* const dcomp(f.Generate());
 
 			SetAttribute(vertexArrayId, buffer0Id, *dcomp, POINTS_NORMALISED, false, numberOfPointPoints);
@@ -431,7 +431,7 @@ namespace _ {
 			GLuint&			numberOfPoints)
 	{
 		// Save setup time
-		if (_::WITH_DRAW_LINES) { 
+		if (_::WITH_DRAW_LINES) {
 			using namespace my::gl::shapes;
 			using namespace my::gl::math;
 
@@ -728,7 +728,7 @@ namespace _ {
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 	//	glEnable(GL_TEXTURE_3D);
-		
+
 		glEnable(GL_PROGRAM_POINT_SIZE);
 		glPointSize(1.5f);
 	}
