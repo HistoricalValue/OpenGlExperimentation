@@ -19,7 +19,7 @@
 #define M_SQRT1_2	static_cast<float>(0.707106781186547524401f)
 
 int main2 (int, char**) {
-	printf("%.21lf\n%.21lf\n%.21lf\n", 
+	printf("%.21lf\n%.21lf\n%.21lf\n",
 			double(M_PI) / 3.0f,
 			double(M_PI_6) / 0.5f,
 			double((M_PI_8) * 8.0f) / 3.0f
