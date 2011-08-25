@@ -125,6 +125,7 @@
     <ClInclude Include="Include\MyLocalGlobalInstances.h" />
     <ClInclude Include="Include\MyOpenGL.h" />
     <ClInclude Include="Include\MyWindow.h" />
+    <ClInclude Include="Include\resource.h" />
     <ClInclude Include="Include\Setup.h" />
     <ClInclude Include="Include\stdafx.h" />
   </ItemGroup>

@@ -47,7 +47,7 @@ public class FileTidier {
 			final Matcher matcher = TrailingSpacesRegexp.matcher(line);
 			if (matcher.find())
 				appendtrailingspacesreason();
-			final String linenotrailin = matcher.replaceAll("\n");
+			final String linenotrailin = matcher.replaceAll("");
 			bob.append(linenotrailin);
 		}
 	}
@@ -74,13 +74,8 @@ public class FileTidier {
 			for (charsread = r.read(buf); charsread == 0; charsread = r.read(buf))
 				buf.clear();
 			
-			buf.position(0);
 			result = charsread == -1;
-			
-			if (result)
-				buf.limit(0);
-			else
-				buf.limit(charsread);
+			buf.flip();
 		}
 		return result;
 	}
@@ -102,8 +97,7 @@ public class FileTidier {
 		for (c = nextchar(); c != '\n' && !eof(); c = nextchar())
 			b.append(c);
 		
-		if (c == '\n')
-			b.append(c);
+		b.append(c);
 		
 		return b.toString();
 	}
