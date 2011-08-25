@@ -1,0 +1,24 @@
+package fj.cleaning;
+
+import fj.Find;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+public final class DeletingTreeCallback implements Find.FoundCallback {	
+	
+	private final TreeDeleter treeDeleter;
+	public DeletingTreeCallback (final TreeDeleter treeDeleter) {
+		this.treeDeleter = treeDeleter;
+	}
+	
+	public void run (final Path file) {
+		try {
+			Files.walkFileTree(file, treeDeleter);
+		}
+		catch (final IOException io) {
+			throw new RuntimeException(io);
+		}
+	}
+	
+}
