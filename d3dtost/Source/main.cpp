@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#define WITH_TRIPLE_CLEANUP 0
+
 // notes: http://www.youtube.com/watch?v=6RbT0zWTb8g&feature=player_embedded
 
 namespace my {
@@ -223,7 +225,9 @@ int APIENTRY _tWinMain(
 		int       nCmdShow) {
 	// run main twice, so as to ensure clean-up works correctly
 	return
-	//	my::WinMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow) == 0 &&
-	//	my::WinMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow) == 0 &&
+#if WITH_TRIPLE_CLEANUP
+		my::WinMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow) == 0 &&
+		my::WinMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow) == 0 &&
+#endif
 		my::WinMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
 }

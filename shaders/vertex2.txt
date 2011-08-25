@@ -130,7 +130,9 @@ void main (void) {
 						
 	mat4 transtest		=	AId()
 						*	projection
-						*	camera;
+						*	camera
+						*	ARotate(vec3(1, 1, 1), radians(axyc[0]))
+						;
 						
 	gl_Position			= transtest * pos;
 	textureCoordinate	= vec4(texcoord.st, textureZ, 1);

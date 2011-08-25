@@ -1,76 +1,5 @@
 #include "stdafx.h"
 
-template <typename T>
-struct maker {};
-
-///////////////////////////////////////////////////////////
-namespace _ {
-///////////////////////////////////////////////////////////
-
-size_t SizeOfGlElementType (GLenum const type) {
-	switch (type) {
-		default:
-			DASSERT(false);
-	}
-	return size_t(-1);
-}
-
-///////////////////////////////////////////////////////////
-}
-///////////////////////////////////////////////////////////
-
-
-///////////////////////////////////////////////////////////
-
-namespace ankh		{
-namespace shapes	{
-
-///////////////////////////////////////////////////////////
-
-struct Attribute {
-public:
-	GLuint		index;
-	void*		data;
-	GLenum		elementType;
-	GLuint		numberOfElements;
-};
-template <>
-struct maker<Attribute> {
-public:
-	Attribute operator() (GLuint const index, void* const data, GLenum const elementType, GLuint const numberOfElements) const {
-		Attribute result;
-		result.index = index;
-		result.data = data;
-		result.elementType = elementType;
-		result.numberOfElements = numberOfElements;
-		return result;
-	}
-};
-
-class Buffer {
-public:
-	void	AddAttribute (GLuint const index, void* const data, GLenum const elementType, GLuint const numberOfElements) {
-				size_t const bytesize(numberOfElements * _::SizeOfGlElementType(elementType));
-				void* const copy(DNEWARR(util_ui8, bytesize));
-				memcpy(copy, data, bytesize);
-				lal.push_back(maker<Attribute>()(index, copy, elementType, numberOfElements));
-			}
-
-private:
-	std::list<Attribute> lal;
-
-}; // class Buffer
-
-///////////////////////////////////////////////////////////
-
-}	// shapes
-}	// ankh
-
-///////////////////////////////////////////////////////////
-
-
-
-
 
 #define DONT	if (false)
 #define DO		if (true)
@@ -82,6 +11,10 @@ private:
 using namespace ::gl::ext;
 
 namespace _ {
+	static const bool	WITH_DRAW_LINES		(true);
+	static const bool	WITH_DRAW_TRIANGLES	(false);
+	static const bool	WITH_DRAW_TEXTURED	(false);
+
 	static const float WW(2000.f);
 
 	static const size_t VAOs(4);
@@ -108,7 +41,6 @@ namespace _ {
 		unsigned long int	startingTime;
 		unsigned long int	prevtime;
 		GLuint				sampler_location;
-		glt::TGADecoder*	targa;
 		TexturesArray		textures;
 		ImagesArray			images;
 		GLuint				numberOfTexturedSegments;
@@ -266,28 +198,31 @@ namespace _ {
 			GLuint const	buffer1Id,
 			GLuint&			numberOfPoints)
 	{
-		using namespace my::gl::shapes;
-		using namespace my::gl::math;
+		// Save setup time
+		if (_::WITH_DRAW_LINES) { 
+			using namespace my::gl::shapes;
+			using namespace my::gl::math;
 
-		Nothing nothing;
-		Axes axs;
-		ShapeCompositionFactory f;
+			Nothing nothing;
+			Axes axs;
+			ShapeCompositionFactory f;
 
-		f.Add(axs);
-		DynamicShapeComposition* const dcomp(f.Generate());
+			f.Add(axs);
+			DynamicShapeComposition* const dcomp(f.Generate());
 
 
-		{
-			Shape& shape(
-				//	axs
-				//	nothing
-					*dcomp
-				);
+			{
+				Shape& shape(
+					//	axs
+					//	nothing
+						*dcomp
+					);
 
-			SetAttribute(vertexArrayId, buffer0Id, shape, POINTS_NORMALISED, false, numberOfPoints);
+				SetAttribute(vertexArrayId, buffer0Id, shape, POINTS_NORMALISED, false, numberOfPoints);
+			}
+
+			f.Dispose(dcomp);
 		}
-
-		f.Dispose(dcomp);
 	}
 
 	static
@@ -297,19 +232,22 @@ namespace _ {
 			GLuint const	buffer1Id,
 			GLuint&			numberOfWorldCubeLineSegments)
 	{
-		using namespace my::gl::shapes;
-		using namespace my::gl::math;
+		// Save setup time
+		if (_::WITH_DRAW_TRIANGLES) {
+			using namespace my::gl::shapes;
+			using namespace my::gl::math;
 
-		Nothing								nothing;
-		{
-			Shape& shape(
-				nothing
-			//	companions
-			//	companion0
-			//	plane
-				);
+			Nothing								nothing;
+			{
+				Shape& shape(
+					nothing
+				//	companions
+				//	companion0
+				//	plane
+					);
 
-			_::SetAttribute(vertexArrayId, buffer0Id, shape, POINTS_NORMALISED, false, numberOfWorldCubeLineSegments);
+				_::SetAttribute(vertexArrayId, buffer0Id, shape, POINTS_NORMALISED, false, numberOfWorldCubeLineSegments);
+			}
 		}
 	}
 
@@ -320,63 +258,66 @@ namespace _ {
 			GLuint const	buffer1Id,
 			GLuint&			numberOfTexturedSegments)
 	{
-		using namespace my::gl::shapes;
-		using namespace my::gl::math;
+		// Save setup time
+		if (_::WITH_DRAW_TEXTURED) {
+			using namespace my::gl::shapes;
+			using namespace my::gl::math;
 
-		PASSERT(SolidCube::GetSolidCubeNumberOfVertices() == 36u)
+			PASSERT(SolidCube::GetSolidCubeNumberOfVertices() == 36u)
 
-		SolidCube							companion0;
-		SolidCube							companion1;
-		SolidCube							companion2;
-		SolidCube							companion3;
-		SolidCube							companion4;
+			SolidCube							companion0;
+			SolidCube							companion1;
+			SolidCube							companion2;
+			SolidCube							companion3;
+			SolidCube							companion4;
 
-		NShapesComposition<5>				companions;
-		companions.Add(&companion0);
-		companions.Add(&companion1);
-		companions.Add(&companion2);
-		companions.Add(&companion3);
-		companions.Add(&companion4);
+			NShapesComposition<5>				companions;
+			companions.Add(&companion0);
+			companions.Add(&companion1);
+			companions.Add(&companion2);
+			companions.Add(&companion3);
+			companions.Add(&companion4);
 
-		companions.Scale( 0.125f);
-		companion0.Adjust(Vector4::New(-3.f  * 0.250f, 0.f, 0.f, 0.f));
-		companion1.Adjust(Vector4::New(-1.5f * 0.250f, 0.f, 0.f, 0.f));
-		companion2.Adjust(Vector4::New(-0.f  * 0.250f, 0.f, 0.f, 0.f));
-		companion3.Adjust(Vector4::New( 1.5f * 0.250f, 0.f, 0.f, 0.f));
-		companion4.Adjust(Vector4::New( 3.f  * 0.250f, 0.f, 0.f, 0.f));
-		companions.Adjust(Vector4::New(0.f, 0.125f, 0.f, 0.f));
+			companions.Scale( 0.125f);
+			companion0.Adjust(Vector4::New(-3.f  * 0.250f, 0.f, 0.f, 0.f));
+			companion1.Adjust(Vector4::New(-1.5f * 0.250f, 0.f, 0.f, 0.f));
+			companion2.Adjust(Vector4::New(-0.f  * 0.250f, 0.f, 0.f, 0.f));
+			companion3.Adjust(Vector4::New( 1.5f * 0.250f, 0.f, 0.f, 0.f));
+			companion4.Adjust(Vector4::New( 3.f  * 0.250f, 0.f, 0.f, 0.f));
+			companions.Adjust(Vector4::New(0.f, 0.125f, 0.f, 0.f));
 
-		companion0.SetColour(ColourFactory::LightRed());
-		companion1.SetColour(ColourFactory::LightGreen());
-		companion2.SetColour(ColourFactory::LightBlue());
-		companion3.SetColour(ColourFactory::LightYellow());
-		companion4.SetColour(ColourFactory::LightPurple());
+			companion0.SetColour(ColourFactory::LightRed());
+			companion1.SetColour(ColourFactory::LightGreen());
+			companion2.SetColour(ColourFactory::LightBlue());
+			companion3.SetColour(ColourFactory::LightYellow());
+			companion4.SetColour(ColourFactory::LightPurple());
 
-	/////////////
+		/////////////
 
-		Plane plane(ColourFactory::LightYellow());
-	//	plane.RotateX((3.f * M_PI) / 2.f);
-	//	plane.TranslateY(50.0f);
-		plane.Scale(0.250f);
+			Plane plane(ColourFactory::LightYellow());
+		//	plane.RotateX((3.f * M_PI) / 2.f);
+		//	plane.TranslateY(50.0f);
+			plane.Scale(0.250f);
 
 
-		SolidCube compos;
-		compos.Scale(0.250f);
-	/////////////
+			SolidCube compos;
+			compos.Scale(0.250f);
+		/////////////
 
-		NShapesComposition<2> scenery;
-		scenery.Add(&companions);
-		scenery.Add(&plane);
+			NShapesComposition<2> scenery;
+			scenery.Add(&companions);
+			scenery.Add(&plane);
 
-		Nothing nothing;
-		// Upload shape as textured, buffer 2
-		{
-			Shape& shape(
-				scenery
-			//	compos
-			//	nothing
-				);
-			_::SetAttribute(vertexArrayId, buffer0Id, shape, POINTS_NORMALISED, true, numberOfTexturedSegments);
+			Nothing nothing;
+			// Upload shape as textured, buffer 2
+			{
+				Shape& shape(
+					scenery
+				//	compos
+				//	nothing
+					);
+				_::SetAttribute(vertexArrayId, buffer0Id, shape, POINTS_NORMALISED, true, numberOfTexturedSegments);
+			}
 		}
 	}
 
@@ -507,32 +448,21 @@ namespace _ {
 	}
 
 	static
-	void InstallImageDecoders (glt::TGADecoder*& targa) {
-		ankh::images::ImageLoader& il(ankh::images::ImageLoader::GetSingleton());
-
-		il.InstallDecoder(targa = DNEW(glt::TGADecoder));
-	}
-
-	static
 	void LoadTehStonets(ImagesArray& images)
 	{
-		using namespace ankh::images;
+		// Save LOTS of setup time
+		if (_::WITH_DRAW_TEXTURED) {
+			using namespace ankh::images;
 
-		ImageLoader&		il	(ImageLoader		::GetSingleton());
+			ImageLoader& il(ImageLoader::GetSingleton());
 
-	//	images[0] = il.LoadFromPath("../textures/paccy.png");
+			images[0] = il.LoadFromPaths("../textures/digitframes", 11, "png");	// gets loaded with Devil
 
-		images[0] = il.LoadFromPaths("../textures/digitframes", 11, "png");	// gets loaded with Devil
-	//	images[1] = il.LoadFromPath("../textures/taliatela.jpg");
-	//	{
-	//		FILE* const fp(ubinaryfileopen("../textures/CoolTexture.tga", "r"));
-	//		PortableBinFileReader reader(fp);
-	//		images[2] = il.LoadFromData("CoolTexture", "tga", reader);	// gets loaded with Targa
-	//		fclose(fp);
-	//	}
-		size_t bufbytesize;
-		void* const buf(uloadbinaryfile("../textures/paccy.png", &bufbytesize));
-		images[1] = il.Load3DFromData(32, "pacco", "png", buf, bufbytesize);
+			size_t bufbytesize;
+			void* const buf(uloadbinaryfile("../textures/paccy.png", &bufbytesize));
+			images[1] = il.Load3DFromData(32, "pacco", "png", buf, bufbytesize);
+			delete[] buf;
+		}
 	}
 
 	static
@@ -541,31 +471,21 @@ namespace _ {
 			TexturesArray&		textures,
 			size_t&				previousTextureIndex)
 	{
-		using namespace ankh::textures;
+		// Save setup time
+		if (_::WITH_DRAW_TEXTURED) {
+			using namespace ankh::textures;
 
-		TextureUnitManager&	tum	(TextureUnitManager	::GetSingleton());
-		TextureManager&		tm	(TextureManager		::GetSingleton());
+			TextureUnitManager&	tum	(TextureUnitManager	::GetSingleton());
+			TextureManager&		tm	(TextureManager		::GetSingleton());
 
-		textures[0] = tm.New("Numberwng", images[0]);
-		textures[1] = tm.New("Pacco", images[1]);
+			textures[0] = tm.New("Numberwng", images[0]);
+			textures[1] = tm.New("Pacco", images[1]);
 
-		textures[0]->BindTo(tum.Get(_::TexturesUnits[0]));
-		textures[1]->BindTo(tum.Get(_::TexturesUnits[1]));
-	//
-	//
-	//	textures[0] = (tm.New("../textures/stone.tga"));
-	//	textures[1] = (tm.New("Taliatela", images[1]));
-	//	textures[2] = (tm.New("Cool", images[2]));
-	//
-	//	TextureUnit& tu16(tum.Get(TextureUnitIds::TEXTURE16));
-	//	TextureUnit& tu17(tum.Get(TextureUnitIds::TEXTURE17));
-	//	TextureUnit& tu18(tum.Get(TextureUnitIds::TEXTURE18));
-	//
-	//	glUniform1i(my::OpenGL::VUL_SAMPLER1, tu16.GetIndex());
-	//	glUniform1i(my::OpenGL::VUL_SAMPLER2, tu17.GetIndex());
-	//	glUniform1i(my::OpenGL::VUL_SAMPLER3, tu18.GetIndex());
+			textures[0]->BindTo(tum.Get(_::TexturesUnits[0]));
+			textures[1]->BindTo(tum.Get(_::TexturesUnits[1]));
 
-		previousTextureIndex = 0;
+			previousTextureIndex = 0;
+		}
 	}
 
 	static
@@ -605,7 +525,7 @@ namespace my {
 			}
 
 			// Draw lines
-			{
+			if (_::WITH_DRAW_LINES) {
 				PASSERT(glIsVertexArray(dd.vertexArrayIds[1]) == GL_TRUE)
 				glBindVertexArray(dd.vertexArrayIds[1]);
 				glVertexAttrib4f(OpenGL::VAI_AXYC,
@@ -619,7 +539,7 @@ namespace my {
 
 			// Draw Triangles
 		//	DONT
-			{
+			if (_::WITH_DRAW_TRIANGLES) {
 				PASSERT(glIsVertexArray(dd.vertexArrayIds[2]) == GL_TRUE)
 				glBindVertexArray(dd.vertexArrayIds[2]);
 				glVertexAttrib4f(OpenGL::VAI_AXYC,
@@ -632,7 +552,7 @@ namespace my {
 			}
 
 			// and textured triangles too
-			{
+			if (_::WITH_DRAW_TEXTURED) {
 				PASSERT(glIsVertexArray(dd.vertexArrayIds[3]) == GL_TRUE)
 				glBindVertexArray(dd.vertexArrayIds[3]);
 				glVertexAttrib4f(OpenGL::VAI_AXYC,
@@ -666,7 +586,6 @@ namespace my {
 			unsigned long int&	startingTime					(drawData.startingTime);
 			unsigned long int&	prevtime						(drawData.prevtime);
 			GLuint&				sampler_location				(drawData.sampler_location);
-			glt::TGADecoder*&	targa							= (drawData.targa); // stupid microsoft (and their inability to initialise references to pointers)
 			_::TexturesArray&	textures						(drawData.textures);
 			_::ImagesArray&		images							(drawData.images);
 			GLuint&				numberOfTexturedSegments		(drawData.numberOfTexturedSegments);
@@ -703,7 +622,6 @@ namespace my {
 			sampler_location = OpenGL::VUL_SAMPLER0;
 
 			_::PlayWithTextureUnitsForTesting();
-			_::InstallImageDecoders(targa);
 			_::LoadTehStonets(images);
 			_::CreateTextures(images, textures, drawData.previousTextureIndex);
 			_::ConfigureOpenGl();
@@ -725,12 +643,12 @@ namespace my {
 				glDeleteBuffers(sizeof(bufferIds)/sizeof(bufferIds[0]), &bufferIds[0]);
 				glDeleteVertexArrays(sizeof(bufferIds)/sizeof(bufferIds[0]), &vertexArrayIds[0]);
 
-				udelete(drawData.targa);
-
-				for (ankh::images::Image* const* i = &drawData.images[0]; i < &drawData.images[sizeof(drawData.images)/sizeof(drawData.images[0])]; ++i)
-					ankh::images::ImageLoader::GetSingleton().Unload(*i);
-				for (ankh::textures::Texture* const* i = &drawData.textures[0]; i < &drawData.textures[sizeof(drawData.textures)/sizeof(drawData.textures[0])]; ++i)
-					ankh::textures::TextureManager::GetSingleton().Delete(*i);
+				if (_::WITH_DRAW_TEXTURED) {
+					for (ankh::images::Image* const* i = &drawData.images[0]; i < &drawData.images[sizeof(drawData.images)/sizeof(drawData.images[0])]; ++i)
+						ankh::images::ImageLoader::GetSingleton().Unload(*i);
+					for (ankh::textures::Texture* const* i = &drawData.textures[0]; i < &drawData.textures[sizeof(drawData.textures)/sizeof(drawData.textures[0])]; ++i)
+						ankh::textures::TextureManager::GetSingleton().Delete(*i);
+				}
 
 				DDELETE(&drawData);
 			}
