@@ -42,5 +42,5 @@ public abstract class TreeWalkingFiltre implements Filter<Path> {
 		final boolean result = matchesglob;
 		return result;
 	}
-	
+
 }

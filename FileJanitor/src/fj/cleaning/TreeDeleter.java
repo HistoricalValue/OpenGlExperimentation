@@ -51,5 +51,5 @@ final public class TreeDeleter implements FileVisitor<Path> {
 		Main.delete(dir);
 		return FileVisitResult.CONTINUE;
 	}
-	
+
 }

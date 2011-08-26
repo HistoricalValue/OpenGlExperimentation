@@ -7,9 +7,9 @@ public final class ToBeTidiedFiltre extends TreeWalkingFiltre {
 
 	public ToBeTidiedFiltre () {
 		super(
-				FileSystems.getDefault().getPathMatcher("glob:*.{h,cpp}"),
+				FileSystems.getDefault().getPathMatcher("glob:*.{h,cpp,java}"),
 				FileSystems.getDefault().getPathMatcher("glob:")
 			);
 	}
-	
+
 }

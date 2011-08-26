@@ -24,10 +24,10 @@ public class Main {
 		fuckupfile = null;
 		fuckupreason.delete(0, fuckupreason.length());
 	}
-	
+
 	private static final TreeWalkingFiltre toBeTidiedFiltre = new ToBeTidiedFiltre();
 	private static final FoundCallback fileTidyingCallback = new FileTidyingCallback();
-	
+
 	public static void main (String[] args) throws Throwable {
 		final Path cwd = Paths.get(args[0]);
 		System.out.printf("Tidying up in directory: %s%n", cwd.toRealPath());

@@ -20,23 +20,23 @@ class FileTidyingCallback implements FoundCallback {
 		final String resolt;
 		final List<String> reasons;
 		final Charset charset;
-		
+
 		try (final BufferedReader reader = Files.newBufferedReader(file, charset = DetectCharset(file))) {
 			final FileTidier fileTidier = new FileTidier(reader);
 			resolt = fileTidier.ReadAndProduceTidy().GetResolt();
 			reasons = fileTidier.GetReasons();
-			
+
 			assert new FileTidier(new StringReader(resolt)).ReadAndProduceTidy().GetReasons().isEmpty();
 		} catch (final IOException io) {
 			throw new RuntimeException(io);
 		}
-		
+
 		if (!reasons.isEmpty()) {
 			Main.FuckupFile(file.toString());
 			for (final String reason : reasons)
 				Main.AddFuckupReason(reason);
 			Main.DoneFuckingUpFile();
-			
+
 			try (final BufferedWriter w = Files.newBufferedWriter(file, charset, StandardOpenOption.TRUNCATE_EXISTING)) {
 				w.append(resolt);
 			} catch (final IOException io) {
@@ -44,7 +44,7 @@ class FileTidyingCallback implements FoundCallback {
 			}
 		}
 	}
-	
+
 	private Charset DetectCharset (final Path file) throws IOException {
 		final ByteBuffer bbuf = ByteBuffer.allocate(2);
 		final int bytesread;
@@ -52,7 +52,7 @@ class FileTidyingCallback implements FoundCallback {
 			bytesread = bch.read(bbuf);
 		}
 		bbuf.flip();
-		
+
 		final Charset defaultcharset = Charset.forName("UTF-8");
 		final Charset candidate;
 		switch (bytesread) {
@@ -71,7 +71,7 @@ class FileTidyingCallback implements FoundCallback {
 			default:
 				candidate = defaultcharset;
 		}
-		
+
 		final Charset fallbackcharset = Charset.forName("ISO-8859-1");
 		Charset resolt;
 		try (final BufferedReader reada = Files.newBufferedReader(file, candidate)) {
@@ -81,8 +81,8 @@ class FileTidyingCallback implements FoundCallback {
 		catch (final java.nio.charset.MalformedInputException e) {
 			resolt = fallbackcharset;
 		}
-		
+
 		return resolt;
 	}
-	
+
 }
