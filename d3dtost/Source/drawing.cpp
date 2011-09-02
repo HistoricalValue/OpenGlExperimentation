@@ -17,54 +17,176 @@ static inline I& _NOTEND (I& i, I const& end) {
 	return i;
 }
 
+namespace {
+namespace floats {
+static const float precision(1e-06f);
+
+static inline bool iszero	(float const f)						{ return -precision < f && f < precision; }
+static inline bool equals	(float const f1, float const f2)	{ return iszero(f1-f2); }
+static inline bool less		(float const f1, float const f2)	{ return f1 -f2 < precision; }
+
+} // floats
+
+template <typename T>
+struct elcollector {
+	std::list<T> els;
+	elcollector& operator , (T const& el) { els.push_back(el); return *this; }
+}; // elcollector<T>
+
+} //
+
+
 //////////////////////////////////////////////////////////////////////////////////////
 //    LE SHIT !!!   //
 namespace nurbs {
 //////////////////////////////////////////////////////////////////////////////////////
+
+class spline {
+public:
+	typedef unsigned char		uchar;
+	typedef std::vector<float>	knots_t;
+	typedef std::vector<my::gl::math::Vector4>	cpoints_t;
+
+	uchar							order (void) const					{ return order_; }
+	uchar							degree (void) const					{ return order_ - 1; }
+	size_t							numknots (void) const				{ return knots.size(); }
+	size_t							numcpoints (void) const				{ return cpoints.size(); }
+
+	float const						getknot (size_t const i) const		{ try { return knots.at(i); } catch (std::out_of_range const&) { DASSERT(false); return -1; } }
+	my::gl::math::Vector4 const&	getcpoint (size_t const i) const	{ try { return cpoints.at(i); } catch (std::out_of_range const&) { DASSERT(false); return *reinterpret_cast<my::gl::math::Vector4 const* const>(NULL); } }
+
+	cpoints_t const&				getcpoints (void) const	{ return cpoints; }
+	knots_t const&					getknots (void) const	{ return knots; }
+
+	size_t							l (void) const						{ return numknots() - 1; }
+	uchar							n (void) const						{ return numcpoints() - 1; }
+	uchar							m (void) const						{ return order(); }
+	uchar							k (void) const						{ return m() - 1; }
+
+
+	template <typename KnotIter, typename CPointIter>
+	spline (KnotIter const& knot_begin, KnotIter const& knot_end, CPointIter const& cpoint_being, CPointIter const& cpoint_end):
+		knots(knot_begin, knot_end),
+		cpoints(cpoint_being, cpoint_end),
+		order_(std::distance(knot_begin, knot_end) - std::distance(cpoint_being, cpoint_end))
+		{ DASSERT(addsup()); }
+
+private:
+	uchar								order_;		// m, curve degree k = m-1
+	std::vector<float>					knots;
+	std::vector<my::gl::math::Vector4>	cpoints;
+
+	bool								addsup (void) const				{	//	k = m-1		=> OK by definition,
+																			//	n = l-m		=> numcpoints = numknots - order
+																			return order_ > 0 && numcpoints() == numknots() - order();
+																		}
+};
+
+//////////////////////////////////////////////////////////////////////////////////////
 namespace _ {
 //////////////////////////////////////////////////////////////////////////////////////
 
-static inline bool in01 (float const u)		{ return u >= 0.0f && u <= 1.0f; }
-static inline bool in04 (float const u)		{ return u >= 0.0f && u <= 4.0f; }
+static inline float N1 (spline const& spl, size_t const i ,float const u) {
+	bool const gt(u >= spl.getknot(i));
+	bool const lt(i+1 == spl.l()? u <= spl.getknot(i+1) : u < spl.getknot(i+1));
 
-static inline float R0 (float const u) {
-	DASSERT(in01(u));
-	return (u*u*u)/6.0f;
+	return (gt && lt)? 1.0f : 0.0f;
 }
 
-static inline float R1 (float const u) {
-	DASSERT(in01(u));
-	return (-3.0f*u*u*u + 3.0f*u*u + 3.0f*u + 1.0f)/6.0f;
+static inline float N (spline const& spl, size_t const i, size_t const m, float const u) {
+	float result;
+
+	size_t const k(m-1);
+
+	if (m == 1)
+		result = N1(spl, i, u);
+	else {
+		DASSERT(k >= 1);
+
+		float const	nom1	= u - spl.getknot(i);
+		float const	denom1	= spl.getknot(i+k) - spl.getknot(i);
+		float const	nom2	= spl.getknot(i+k+1) - u;
+		float const	denom2	= spl.getknot(i+k+1) - spl.getknot(i+1);
+
+		bool const	both1zero	= floats::iszero(denom1) && floats::iszero(nom1);
+		bool const	both2zero	= floats::iszero(denom2) && floats::iszero(nom2);
+
+		DASSERT(both1zero || !floats::iszero(denom1));
+		DASSERT(both2zero || !floats::iszero(denom2));
+
+		float const	N1	= both1zero? 0.0f : (nom1/denom1) * N(spl,i,k,u);
+		float const N2	= both2zero? 0.0f : (nom2/denom2) * N(spl,i+1,k,u);
+
+		result = N1 + N2;
+
+		DASSERT(result >= 0.0f);
+		DASSERT(result <= 1.0f);
+	}
+
+	return result;
 }
 
-static inline float R2 (float const u) {
-	DASSERT(in01(u));
-	return (3.0f*u*u*u - 6.0f*u*u + 4.0f)/6.0f;
+//////////////////////////////////////////////////////////////////////////////////////
+
+static bool VerifyBaseFunctions (size_t const m, std::vector<float> const& knots) {
+	using my::gl::math::vec4;
+	DASSERT(m >= 1);
+
+	size_t const l(knots.size() - 1);
+	size_t const n(l - m);
+
+	std::list<vec4> empty;
+	spline spl(knots.begin(), knots.end(), empty.begin(), empty.end());
+
+	// Verify that N_i,m has support in [u_i, u_i+m] for m>=1 and is also >=0 for all u in domain of definition
+	for (size_t i(0); i <= n; ++i) { // foreach control point
+		for (float u(spl.getknot(m-1)); u <= spl.getknot(n + 1); u += 0.01f) { // for all u in definition range
+			float const	Nval			(N(spl,i,m,u));
+			float const	u_i				(spl.getknot(i));
+			float const	u_i_m			(spl.getknot(i+m));
+			bool const	u_lt_u_i		(u < u_i);
+			bool const	u_gt_u_i_m		(u > u_i_m);
+			bool const	Nval_lt_zero	(Nval < 0.0f);
+			bool const	Nval_is_zero	(floats::iszero(Nval));
+
+			if (u_lt_u_i) {
+				bool const isok(Nval_is_zero);
+				DASSERT(isok);
+				if (!isok)
+					return false;
+			}
+			else
+			if (u_gt_u_i_m) {
+				bool const isok(Nval_is_zero);
+				DASSERT(isok);
+				if (!isok)
+					return false;
+			}
+
+			if (Nval_lt_zero) {
+				DASSERT(false);
+				return false;
+			}
+		}
+	}
+
+	// Verify that SUM N_i,m(u) for i in [0,n] for all u in [u_m-1, u_n+1]
+	for (float u(spl.getknot(m-1)); u <= spl.getknot(n+1); u += 0.01f) {
+		float sum(0.0f);
+
+		for (size_t i(0); i <= n; ++i) {
+			sum += N(spl,i,m,u);
+			DASSERT(floats::less(sum, 1.0000000f));
+		}
+
+		if (!floats::equals(sum, 1.0f)) {
+			DASSERT(false);
+			return false;
+		}
+	}
+	
+	return true;
 }
-
-static inline float R3 (float const u) {
-	DASSERT(in01(u));
-	float const _1mu((1.0f - u));
-	return (_1mu*_1mu*_1mu)/6.0f;
-}
-
-static inline float N0 (float const u) {
-	DASSERT(in04(u));
-	if (u < 1)
-		return R0(u);
-	else
-	if (u < 2)
-		return R1(u - 1.0f);
-	else
-	if (u < 3)
-		return R2(u - 2.0f);
-	else
-		return R3(u - 3.0f);
-
-}
-
-static inline float N (size_t const i, float const u)
-	{ return N0(u - float(i)); }
 
 //////////////////////////////////////////////////////////////////////////////////////
 
@@ -116,35 +238,64 @@ static inline void addshapesto (my::gl::shapes::ShapeCompositionFactory& f, C co
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-static std::vector<my::gl::math::Vector4>* cpoints_p(NULL);
+static spline* _spl(NULL);
+static float	minx(-0.8f);
+static float	maxx( 0.8f);
+static float	miny(-0.8f);
+static float	maxy( 0.8f);
 
 static void Initialise (void) {
 	{
+		DASSERT((minx < 0 && miny < 0 && maxx > 0 && maxy > 0));
+
 		using my::gl::math::Vector4;
 		using my::gl::math::vec4;
 
-		cpoints_p = DNEW(std::vector<Vector4>);
-		cpoints_p->reserve(20);
-		cpoints_p->push_back(vec4::New(-0.2f, -0.5f));
-		cpoints_p->push_back(vec4::New(0.0f, 0.0f));
-		cpoints_p->push_back(vec4::New(0.2f, 0.5f));
-		cpoints_p->push_back(vec4::New(0.5f, 0.5f));
-		cpoints_p->push_back(vec4::New(0.5f,-0.5f));
-		cpoints_p->push_back(vec4::New(0.65f,-0.05f));
-		cpoints_p->push_back(vec4::New(0.7f, 0.5f));
-		cpoints_p->push_back(vec4::New(0.75f, 0.45f));
+		size_t const width_units(16);
+		size_t const height_units(16);
+		float const width_unit( (maxx-minx) / width_units );
+		float const height_unit( (maxy - miny) / height_units );
+
+		elcollector<float> elcol;
+		elcol , -4.f,1.f,1.5f,0.f,1.f,-4.f,-2.8f,-5.4f,6.2f,-6.4f,5.3f,0.f,0.8f,6.1f,-0.5f,3.4f,-7.4f,-0.6f,-6.2f,7.2f,6.1f,6.6f;
+		DASSERT(elcol.els.size() % 2 == 0);
+
+		std::vector<vec4> cpoints;
+		cpoints.reserve(elcol.els.size() / 2);
+		for (std::list<float>::const_iterator i(elcol.els.begin()); i != elcol.els.end(); ++i) {
+			float const x(*i * width_unit);
+			++i;
+			DASSERT(i != elcol.els.end());
+			float const y(*i * height_unit);
+
+			cpoints.push_back(Vector4::New(x, y));
+		}
+
+		size_t const order(4);
+
+		std::vector<float> knots;
+		knots.reserve(cpoints.size() + order);
+		for (size_t i(0); i < knots.capacity(); ++i)
+			knots.push_back(float(i));
+
+		_spl = DNEWCLASS(spline, (knots.begin(), knots.end(), cpoints.begin(), cpoints.end()));
+
+		DASSERT(VerifyBaseFunctions(_spl->m(), knots));
 	}
 
 }
 
 static void CleanUp (void) {
-	udelete(cpoints_p);
+	udelete(_spl);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
 
+static inline spline const& getspline (void)
+	{ return *DPTR(_DNOTNULL(_spl)); }
+
 static inline std::vector<my::gl::math::Vector4> const& cpoints (void)
-	{ return *DPTR(_DNOTNULL(cpoints_p)); }
+	{ return getspline().getcpoints(); }
 
 //////////////////////////////////////////////////////////////////////////////////////
 
@@ -153,21 +304,30 @@ static std::list<my::gl::math::Vector4> const producenurbspoints (void) {
 	using my::gl::math::vec4;
 
 	std::list<Vector4> points;
-	std::vector<Vector4> const& cpoints(_::cpoints());
+	spline const& spl(getspline());
+	spline::knots_t const& knots(spl.getknots());
 
-	size_t const n(cpoints.size() - 1);
+	{
+		for (size_t j(spl.m() - 1); j <= spl.n(); ++j) {
+			for (float u(spl.getknot(j)); u <= spl.getknot(j + 1); u += 0.01f) {
+				Vector4 sum(Vector4::New());
 
-	for (size_t j(3); j <= n; ++j)
-		for (float u((float(j))); u <= j+1; u += 0.01f) {
-			vec4 sum(vec4::New());
-			for (size_t i(j-3); i <= j; ++i)
-				sum = sum + cpoints.at(i).mul(_::N(i,u));
+				std::list<Vector4> subparts;
+				for (size_t i(j - (spl.m() - 1)); i <= j; ++i) {
+					subparts.push_back(N(spl,i,spl.m(),u) * spl.getcpoint(i));
+					sum.addtothis_asvec3(subparts.back());
+				}
 
-			float const w = sum.w() = 1.0f;
-			DASSERT(w == 1.0f);
+				DASSERT(floats::equals(static_cast<Vector4 const&>(sum).w(), 1.0f));
+			//	DASSERT(static_cast<Vector4 const&>(sum).x() >= minx);
+			//	DASSERT(static_cast<Vector4 const&>(sum).x() <= maxx);
+			//	DASSERT(static_cast<Vector4 const&>(sum).y() >= miny);
+			//	DASSERT(static_cast<Vector4 const&>(sum).y() <= maxy);
 
-			points.push_back(sum);
+				points.push_back(sum);
+			}
 		}
+	}
 
 	return points;
 }

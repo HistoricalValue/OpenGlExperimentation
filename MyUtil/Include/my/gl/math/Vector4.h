@@ -35,6 +35,8 @@ namespace my { namespace gl { namespace math {
 		void											operator = (Vector4 const& other);
 
 		Vector4											operator + (Vector4 const& other) const;
+		void											operator += (Vector4 const& other);
+		void											addtothis_asvec3 (Vector4 const& other);
 
 		Vector4 const									normalised (void) const;			// magnitude = 1
 		float											magnitude (void) const;				// NOTICE: normalised by "w"
@@ -51,6 +53,8 @@ namespace my { namespace gl { namespace math {
 		Vector4											operator + (T) const;				// adding a scalar
 		template <typename T>
 		Vector4											add (T) const;						// adding a scalar without touching element 4 (w)
+		template <typename T>
+		void											addtothis (T);						// adding a scalar to this vector without touching element 4 (w)
 	/// TODO implement (figure out)
 	//	Vector4											rhcross (Vector4 const&) const;		// right-hand-system cross-product (x)	||a|| ||b|| sin(a^b) *directionVector
 	//	Vector4											lhcross (Vector4 const&) const;		// left-hand-system cross-product (x)
