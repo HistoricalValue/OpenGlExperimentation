@@ -10,7 +10,7 @@ public:
 	A (A const&) { printf("%lu A(A const&)\n", line); line = -1; }
 }; // A
 
-} // 
+} //
 
 #define SETLINE  line = __LINE__
 

@@ -184,7 +184,7 @@ static bool VerifyBaseFunctions (size_t const m, std::vector<float> const& knots
 			return false;
 		}
 	}
-	
+
 	return true;
 }
 
