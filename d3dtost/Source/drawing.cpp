@@ -63,6 +63,8 @@ public:
 	uchar							m (void) const						{ return order(); }
 	uchar							k (void) const						{ return m() - 1; }
 
+	bool							u_in_definition_domain (float const u)	{ DASSERT(addsup()); return knots.at(k()) <= u && u <= knots.at(n()+1); }
+
 
 	template <typename KnotIter, typename CPointIter>
 	spline (KnotIter const& knot_begin, KnotIter const& knot_end, CPointIter const& cpoint_being, CPointIter const& cpoint_end):
@@ -222,7 +224,7 @@ static std::list<my::gl::shapes::Point> const vertices (C const& points, my::gl:
 
 	std::list<Point> result;
 	for (; i != points_end; i++)
-		result.push_back(Point(Vertex(*i), col));
+		result.push_back(Point(Vertex(Vector4::New(*i)), col));
 
 	return result;
 }
@@ -297,7 +299,25 @@ static inline spline const& getspline (void)
 static inline std::vector<my::gl::math::Vector4> const& cpoints (void)
 	{ return getspline().getcpoints(); }
 
+static inline std::vector<float> const& knots (void)
+	{ return getspline().getknots(); }
+
 //////////////////////////////////////////////////////////////////////////////////////
+
+static my::gl::math::Vector4 nurbat (spline const& spl, float u) {
+	using my::gl::math::vec4;
+
+	DASSERT(spl.u_in_definition_domain(u));
+
+	vec4 sum(vec4::New());
+
+	std::vector<vec4>::const_iterator const	end	(spl.getcpoints().end());
+	std::vector<vec4>::const_iterator		i	(spl.getcpoints().begin());
+
+	for (std::vector<vec4>::const_iterator i(spl.begin()); i != spl.end(); ++i)
+		sum.addtothis_asvec3(N(spl, std::distance(spl.getcpounts().begin(), i), m, u));
+
+}
 
 static std::list<my::gl::math::Vector4> const producenurbspoints (void) {
 	using my::gl::math::Vector4;
@@ -308,12 +328,12 @@ static std::list<my::gl::math::Vector4> const producenurbspoints (void) {
 	spline::knots_t const& knots(spl.getknots());
 
 	{
-		for (size_t j(spl.m() - 1); j <= spl.n(); ++j) {
+		for (size_t j(spl.k()); j <= spl.n(); ++j) {
 			for (float u(spl.getknot(j)); u <= spl.getknot(j + 1); u += 0.01f) {
 				Vector4 sum(Vector4::New());
 
 				std::list<Vector4> subparts;
-				for (size_t i(j - (spl.m() - 1)); i <= j; ++i) {
+				for (size_t i(j - (spl.k())); i <= j; ++i) {
 					subparts.push_back(N(spl,i,spl.m(),u) * spl.getcpoint(i));
 					sum.addtothis_asvec3(subparts.back());
 				}
@@ -349,11 +369,25 @@ void addaspointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 }
 
 void addcontrolpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
-	using my::gl::shapes::ShapeCompositionFactory;
 	using my::gl::shapes::Colour;
 	using my::gl::math::vec4;
 
 	_::addshapesto(f, _::vertices(_::cpoints(), Colour(vec4::New(0.5f, 0.7f, 0.7f))));
+}
+
+void addknotpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
+	using my::gl::shapes::Colour;
+	using my::gl::math::vec4;
+
+	typedef std::vector<float>		knots_t;
+	typedef knots_t::const_iterator	ite_t;
+
+	knots_t	const&	nots(_::knots());
+	ite_t const		end	(nots.end());
+	ite_t			i	(nots.begin());
+	for (; i != end; ++i)
+	
+	_::addshapesto(f, _::vertices(_::knots(), Colour(vec4::New(0.7f, 0.5f, 0.5f))));
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -574,6 +608,7 @@ namespace _ {
 
 			nurbs::addcontrolpointsto(f);
 		//	nurbs::addaspointsto(f);
+			nurbs::addknotpointsto(f);
 
 			DynamicShapeComposition* const dcomp(f.Generate());
 

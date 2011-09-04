@@ -26,6 +26,7 @@ namespace my { namespace gl { namespace math {
 	public:
 		static Vector4									New (float x = 0.f, float y = 0.f, float z = 0.f, float w = 1.f);
 		static Vector4									New (float const v[4]);
+		static Vector4									New (Vector4 const&);
 
 														Vector4 (Vector4 const&);
 														~Vector4 (void);
