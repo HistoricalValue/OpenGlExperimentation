@@ -47,23 +47,38 @@ public:
 	typedef std::vector<float>	knots_t;
 	typedef std::vector<my::gl::math::Vector4>	cpoints_t;
 
-	uchar							order (void) const					{ return order_; }
-	uchar							degree (void) const					{ return order_ - 1; }
-	size_t							numknots (void) const				{ return knots.size(); }
-	size_t							numcpoints (void) const				{ return cpoints.size(); }
+	uchar							order (void) const
+										{ return order_; }
+	uchar							degree (void) const	
+										{ return order_ - 1; }
+	size_t							numknots (void) const
+										{ return knots.size(); }
+	size_t							numcpoints (void) const
+										{ return cpoints.size(); }
 
-	float const						getknot (size_t const i) const		{ try { return knots.at(i); } catch (std::out_of_range const&) { DASSERT(false); return -1; } }
-	my::gl::math::Vector4 const&	getcpoint (size_t const i) const	{ try { return cpoints.at(i); } catch (std::out_of_range const&) { DASSERT(false); return *reinterpret_cast<my::gl::math::Vector4 const* const>(NULL); } }
+	float const						getknot (size_t const i) const	
+										{	try { return knots.at(i); }
+											catch (std::out_of_range const&) { DASSERT(false); return -1; } }
+	my::gl::math::Vector4 const&	getcpoint (size_t const i) const
+										{	try { return cpoints.at(i); }
+											catch (std::out_of_range const&) { DASSERT(false); return *reinterpret_cast<my::gl::math::Vector4 const* const>(NULL); } }
 
-	cpoints_t const&				getcpoints (void) const	{ return cpoints; }
-	knots_t const&					getknots (void) const	{ return knots; }
+	cpoints_t const&				getcpoints (void) const
+										{ return cpoints; }
+	knots_t const&					getknots (void) const	
+										{ return knots; }
 
-	size_t							l (void) const						{ return numknots() - 1; }
-	uchar							n (void) const						{ return numcpoints() - 1; }
-	uchar							m (void) const						{ return order(); }
-	uchar							k (void) const						{ return m() - 1; }
+	size_t							l (void) const
+										{ return numknots() - 1; }
+	uchar							n (void) const
+										{ return numcpoints() - 1; }
+	uchar							m (void) const
+										{ return order(); }
+	uchar							k (void) const
+										{ return m() - 1; }
 
-	bool							u_in_definition_domain (float const u)	{ DASSERT(addsup()); return knots.at(k()) <= u && u <= knots.at(n()+1); }
+	bool							u_in_definition_domain (float const u) const
+										{ DASSERT(addsup()); return knots.at(k()) <= u && u <= knots.at(n()+1); }
 
 
 	template <typename KnotIter, typename CPointIter>
@@ -311,13 +326,19 @@ static my::gl::math::Vector4 nurbat (spline const& spl, float u) {
 
 	vec4 sum(vec4::New());
 
-	std::vector<vec4>::const_iterator const	end	(spl.getcpoints().end());
-	std::vector<vec4>::const_iterator		i	(spl.getcpoints().begin());
+	typedef std::vector<vec4>		vec4s_t;
+	typedef vec4s_t::const_iterator	ite_t;
 
-	for (std::vector<vec4>::const_iterator i(spl.begin()); i != spl.end(); ++i)
-		sum.addtothis_asvec3(N(spl, std::distance(spl.getcpounts().begin(), i), m, u));
+	ite_t const	cpoints_begin	(spl.getcpoints().begin());
+	ite_t const	cpoints_end		(spl.getcpoints().end());
+	
+	for (ite_t i(cpoints_begin); i != cpoints_end; ++i)
+		sum.addtothis_asvec3(N(spl, std::distance(cpoints_begin, i), spl.m(), u) * *i);
 
+	return sum;
 }
+
+//////////////////////////////////////////////////////////////////////////////////////
 
 static std::list<my::gl::math::Vector4> const producenurbspoints (void) {
 	using my::gl::math::Vector4;
@@ -339,10 +360,10 @@ static std::list<my::gl::math::Vector4> const producenurbspoints (void) {
 				}
 
 				DASSERT(floats::equals(static_cast<Vector4 const&>(sum).w(), 1.0f));
-			//	DASSERT(static_cast<Vector4 const&>(sum).x() >= minx);
-			//	DASSERT(static_cast<Vector4 const&>(sum).x() <= maxx);
-			//	DASSERT(static_cast<Vector4 const&>(sum).y() >= miny);
-			//	DASSERT(static_cast<Vector4 const&>(sum).y() <= maxy);
+				DASSERT(static_cast<Vector4 const&>(sum).x() >= minx);
+				DASSERT(static_cast<Vector4 const&>(sum).x() <= maxx);
+				DASSERT(static_cast<Vector4 const&>(sum).y() >= miny);
+				DASSERT(static_cast<Vector4 const&>(sum).y() <= maxy);
 
 				points.push_back(sum);
 			}
@@ -382,12 +403,17 @@ void addknotpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 	typedef std::vector<float>		knots_t;
 	typedef knots_t::const_iterator	ite_t;
 
+	spline const& spl(_::getspline());
+
+	std::list<vec4> points;
+
 	knots_t	const&	nots(_::knots());
-	ite_t const		end	(nots.end());
-	ite_t			i	(nots.begin());
+	size_t			i	(spl.k());
+	size_t const	end	(spl.n() + 2);
 	for (; i != end; ++i)
+		points.push_back(_::nurbat(spl, nots.at(i)));
 	
-	_::addshapesto(f, _::vertices(_::knots(), Colour(vec4::New(0.7f, 0.5f, 0.5f))));
+	_::addshapesto(f, _::vertices(points, Colour(vec4::New(0.7f, 0.5f, 0.5f))));
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -924,8 +950,8 @@ namespace _ {
 		glEnable(GL_CULL_FACE);
 	//	glEnable(GL_TEXTURE_3D);
 
-		glEnable(GL_PROGRAM_POINT_SIZE);
-		glPointSize(1.5f);
+		glDisable(GL_PROGRAM_POINT_SIZE); DASSERT(glGetError() == GL_NO_ERROR);
+		glPointSize(5.f);
 	}
 }
 
