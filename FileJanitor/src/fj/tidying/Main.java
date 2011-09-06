@@ -47,7 +47,7 @@ public class Main {
 			}
 	}
 
-	
+
 	private static final Charset		defaultCharset		= GetDefaultCharset();
 	private static final FoundCallback	fileTidyingCallback	= new FileTidyingCallback();
 	private static boolean				dry					= false;
@@ -55,7 +55,7 @@ public class Main {
 	public static void SetDryRun () {
 		dry = true;
 	}
-	
+
 	public static void main (ArrayList<String> args) throws Throwable {
 		final Path cwd = get(args.get(0));
 		final BufferedReader configfilereader = newBufferedReader(get(GetArg(args, "tidy:", "FileJanitor_tidying.config")), defaultCharset);

@@ -26,7 +26,7 @@ public class Main {
 			f.format("Deleting %s", file);
 			Files.delete(file);
 		}
-		
+
 		println(f.toString());
 	}
 

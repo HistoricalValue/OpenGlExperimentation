@@ -18,7 +18,7 @@ public class MainUtils {
 	public static String GetArg (final String[] args, final String pref, final String default_) {
 		return GetArg(asList(args), pref, default_);
 	}
-	
+
 	public static String GetArg (final Iterable<? extends String> args, final String pref, final String default_) {
 		String result = null;
 
@@ -28,12 +28,12 @@ public class MainUtils {
 
 		return Default(result, default_);
 	}
-	
+
 	private static final Charset defaultCharset = Charset.forName("UTF-8");
 	public static Charset GetDefaultCharset () {
 		return defaultCharset;
 	}
-	
+
 	public static void println (final String str) {
 		System.out.println(str);
 	}
