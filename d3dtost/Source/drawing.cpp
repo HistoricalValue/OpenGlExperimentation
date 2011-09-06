@@ -4,7 +4,6 @@ template <typename C, typename F>
 static void foreach (C const& c, F const& f)
 	{ std::for_each(c.begin(), c.end(), f); }
 
-
 #ifdef _DEBUG
 #	define NOTEND(I,END) _NOTEND(I,END)
 #else
@@ -48,34 +47,38 @@ public:
 	typedef std::vector<my::gl::math::Vector4>	cpoints_t;
 
 	uchar							order (void) const
-										{ return order_; }
+										{ DASSERT(addsup()); return order_; }
 	uchar							degree (void) const
-										{ return order_ - 1; }
+										{ DASSERT(addsup()); return order_ - 1; }
 	size_t							numknots (void) const
-										{ return knots.size(); }
+										{ DASSERT(addsup()); return knots.size(); }
 	size_t							numcpoints (void) const
-										{ return cpoints.size(); }
+										{ DASSERT(addsup()); return cpoints.size(); }
 
-	float const						getknot (size_t const i) const
-										{	try { return knots.at(i); }
-											catch (std::out_of_range const&) { DASSERT(false); return -1; } }
-	my::gl::math::Vector4 const&	getcpoint (size_t const i) const
-										{	try { return cpoints.at(i); }
-											catch (std::out_of_range const&) { DASSERT(false); return *reinterpret_cast<my::gl::math::Vector4 const* const>(NULL); } }
+	float const						getknot (size_t const i) const {
+											DASSERT(addsup());
+											DASSERT(i < numknots());
+											return knots.at(i);
+										}
+	my::gl::math::Vector4 const&	getcpoint (size_t const i) const {
+											DASSERT(addsup());
+											DASSERT(i < numcpoints());
+											return cpoints.at(i);
+										}
 
 	cpoints_t const&				getcpoints (void) const
-										{ return cpoints; }
+										{ DASSERT(addsup()); return cpoints; }
 	knots_t const&					getknots (void) const
-										{ return knots; }
+										{ DASSERT(addsup()); return knots; }
 
 	size_t							l (void) const
-										{ return numknots() - 1; }
+										{ DASSERT(addsup()); return numknots() - 1; }
 	uchar							n (void) const
-										{ return numcpoints() - 1; }
+										{ DASSERT(addsup()); return numcpoints() - 1; }
 	uchar							m (void) const
-										{ return order(); }
+										{ DASSERT(addsup()); return order(); }
 	uchar							k (void) const
-										{ return m() - 1; }
+										{ DASSERT(addsup()); return m() - 1; }
 
 	bool							u_in_definition_domain (float const u) const
 										{ DASSERT(addsup()); return knots.at(k()) <= u && u <= knots.at(n()+1); }
@@ -90,13 +93,14 @@ public:
 
 private:
 	uchar								order_;		// m, curve degree k = m-1
-	std::vector<float>					knots;
-	std::vector<my::gl::math::Vector4>	cpoints;
+	knots_t								knots;
+	cpoints_t							cpoints;
 
-	bool								addsup (void) const				{	//	k = m-1		=> OK by definition,
-																			//	n = l-m		=> numcpoints = numknots - order
-																			return order_ > 0 && numcpoints() == numknots() - order();
-																		}
+	bool								addsup (void) const {
+											//	k = m-1		=> OK by definition,
+											//	n = l-m		=> numcpoints = numknots - order
+											return order_ > 0 && numcpoints() == numknots() - order();
+										}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -203,6 +207,16 @@ static bool VerifyBaseFunctions (size_t const m, std::vector<float> const& knots
 	}
 
 	return true;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+static inline my::gl::math::Vector4 p0 (spline const& spl, size_t const i, float const u) {
+	return spl.getcpoint(i);
+}
+
+static inline my::gl::math::Vector4 p (size_t const j, size_t const i, float const u) {
+	
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
