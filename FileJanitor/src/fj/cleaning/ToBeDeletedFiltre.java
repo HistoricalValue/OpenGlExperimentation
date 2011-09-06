@@ -1,15 +1,13 @@
 package fj.cleaning;
 
-import fj.TreeWalkingFiltre;
-import java.nio.file.FileSystems;
+import fj.ConfigurableFiltre;
+import java.io.BufferedReader;
+import java.io.IOException;
 
-final public class ToBeDeletedFiltre extends TreeWalkingFiltre {
+final public class ToBeDeletedFiltre extends ConfigurableFiltre {
 
-	public ToBeDeletedFiltre () {
-		super(
-				FileSystems.getDefault().getPathMatcher("glob:*.{sdf,asm,obj,ncb,pdb,aps}"),
-				FileSystems.getDefault().getPathMatcher("glob:{Debug,Release,ExtraLibs-Debug,ExtraLibs-Release}")
-			);
+	public ToBeDeletedFiltre (final BufferedReader reader) throws IOException {
+		super(reader);
 	}
 
 }

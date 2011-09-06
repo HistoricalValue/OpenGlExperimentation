@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.LinkedList;
 import java.util.List;
+import static fj.cleaning.Main.delete;
 
 final public class TreeDeleter implements FileVisitor<Path> {
 
@@ -33,7 +34,7 @@ final public class TreeDeleter implements FileVisitor<Path> {
 
 	@Override
 	public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
-		Main.delete(file);
+		delete(file);
 		return FileVisitResult.CONTINUE;
 	}
 
@@ -48,7 +49,7 @@ final public class TreeDeleter implements FileVisitor<Path> {
 		if (exc != null) {
 			throw exc;
 		}
-		Main.delete(dir);
+		delete(dir);
 		return FileVisitResult.CONTINUE;
 	}
 

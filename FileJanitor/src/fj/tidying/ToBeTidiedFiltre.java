@@ -1,15 +1,13 @@
 package fj.tidying;
 
-import fj.TreeWalkingFiltre;
-import java.nio.file.FileSystems;
+import fj.ConfigurableFiltre;
+import java.io.BufferedReader;
+import java.io.IOException;
 
-public final class ToBeTidiedFiltre extends TreeWalkingFiltre {
+public final class ToBeTidiedFiltre extends ConfigurableFiltre {
 
-	public ToBeTidiedFiltre () {
-		super(
-				FileSystems.getDefault().getPathMatcher("glob:*.{h,cpp,java}"),
-				FileSystems.getDefault().getPathMatcher("glob:")
-			);
+	public ToBeTidiedFiltre (final BufferedReader reader) throws IOException {
+		super(reader);
 	}
 
 }

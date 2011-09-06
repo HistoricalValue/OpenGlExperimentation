@@ -49,14 +49,14 @@ public:
 
 	uchar							order (void) const
 										{ return order_; }
-	uchar							degree (void) const	
+	uchar							degree (void) const
 										{ return order_ - 1; }
 	size_t							numknots (void) const
 										{ return knots.size(); }
 	size_t							numcpoints (void) const
 										{ return cpoints.size(); }
 
-	float const						getknot (size_t const i) const	
+	float const						getknot (size_t const i) const
 										{	try { return knots.at(i); }
 											catch (std::out_of_range const&) { DASSERT(false); return -1; } }
 	my::gl::math::Vector4 const&	getcpoint (size_t const i) const
@@ -65,7 +65,7 @@ public:
 
 	cpoints_t const&				getcpoints (void) const
 										{ return cpoints; }
-	knots_t const&					getknots (void) const	
+	knots_t const&					getknots (void) const
 										{ return knots; }
 
 	size_t							l (void) const
@@ -331,7 +331,7 @@ static my::gl::math::Vector4 nurbat (spline const& spl, float u) {
 
 	ite_t const	cpoints_begin	(spl.getcpoints().begin());
 	ite_t const	cpoints_end		(spl.getcpoints().end());
-	
+
 	for (ite_t i(cpoints_begin); i != cpoints_end; ++i)
 		sum.addtothis_asvec3(N(spl, std::distance(cpoints_begin, i), spl.m(), u) * *i);
 
@@ -412,7 +412,7 @@ void addknotpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 	size_t const	end	(spl.n() + 2);
 	for (; i != end; ++i)
 		points.push_back(_::nurbat(spl, nots.at(i)));
-	
+
 	_::addshapesto(f, _::vertices(points, Colour(vec4::New(0.7f, 0.5f, 0.5f))));
 }
 

@@ -12,6 +12,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
+import static fj.tidying.Main.RecordBeginFuckingUpFile;
+import static fj.tidying.Main.AddFuckingUpReason;
+import static fj.tidying.Main.RecordDoneFuckingUpFile;
+import static fj.tidying.Main.FuckUpFile;
 
 class FileTidyingCallback implements FoundCallback {
 
@@ -32,16 +36,12 @@ class FileTidyingCallback implements FoundCallback {
 		}
 
 		if (!reasons.isEmpty()) {
-			Main.FuckupFile(file.toString());
+			RecordBeginFuckingUpFile(file.toString());
 			for (final String reason : reasons)
-				Main.AddFuckupReason(reason);
-			Main.DoneFuckingUpFile();
+				AddFuckingUpReason(reason);
+			RecordDoneFuckingUpFile();
 
-			try (final BufferedWriter w = Files.newBufferedWriter(file, charset, StandardOpenOption.TRUNCATE_EXISTING)) {
-				w.append(resolt);
-			} catch (final IOException io) {
-				throw new RuntimeException(io);
-			}
+			FuckUpFile(file, charset, resolt);
 		}
 	}
 
