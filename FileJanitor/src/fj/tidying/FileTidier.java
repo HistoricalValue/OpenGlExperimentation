@@ -1,5 +1,6 @@
 package fj.tidying;
 
+import static java.util.Collections.unmodifiableList;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.CharBuffer;
@@ -20,7 +21,7 @@ public class FileTidier {
 	private final List<String>		reasons					= new LinkedList<>();
 
 	public List<String> GetReasons () {
-		return reasons;
+		return unmodifiableList(reasons);
 	}
 
 	public FileTidier (final Readable r) {

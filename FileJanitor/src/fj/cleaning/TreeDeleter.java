@@ -8,23 +8,13 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.LinkedList;
 import java.util.List;
 import static fj.cleaning.Main.delete;
+import static java.util.Collections.unmodifiableList;
 
-final public class TreeDeleter implements FileVisitor<Path> {
+public class TreeDeleter implements FileVisitor<Path> {
 
-	public static final class CouldNotBeDeletedEntry {
-
-		public final Path path;
-		public final IOException reason;
-
-		public CouldNotBeDeletedEntry(final Path path, final IOException reason) {
-			this.path = path;
-			this.reason = reason;
-		}
-	}
 	private final List<CouldNotBeDeletedEntry> couldNotBeDeleted = new LinkedList<>();
-
 	List<CouldNotBeDeletedEntry> GetCouldNotBeDeleted() {
-		return couldNotBeDeleted;
+		return unmodifiableList(couldNotBeDeleted);
 	}
 
 	@Override

@@ -1,8 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package fj;
+package fj.util;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream.Filter;
@@ -10,10 +6,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 
-/**
- *
- * @author Amalia
- */
 public abstract class TreeWalkingFiltre implements Filter<Path> {
 
 	private final PathMatcher	fileMatcher;

@@ -1,8 +1,9 @@
 package fj;
 
+import fj.util.Algorithms;
+import fj.util.Predicate;
 import java.nio.charset.Charset;
-import java.nio.file.Path;
-import static java.util.Arrays.asList;
+import java.util.ArrayList;
 
 /**
  *
@@ -15,16 +16,19 @@ public class MainUtils {
 		return obj != null? obj : default_;
 	}
 
-	public static String GetArg (final String[] args, final String pref, final String default_) {
-		return GetArg(asList(args), pref, default_);
-	}
-
-	public static String GetArg (final Iterable<? extends String> args, final String pref, final String default_) {
+	public static String GetArg (final ArrayList<? extends String> args, final String pref, final String default_) {
 		String result = null;
 
-		for (final String arg : args)
-			if (arg.startsWith(pref))
-				result = arg.substring(pref.length());
+		final Predicate<String> pred = new Predicate<String>() {
+			@Override
+			public boolean accept (final String str) {
+				return str.startsWith(pref);
+			}
+		};
+
+		final int argindex = Algorithms.IndexOf(args, pred);
+		if (argindex != -1)
+			result = args.remove(argindex).substring(pref.length());
 
 		return Default(result, default_);
 	}
@@ -32,9 +36,5 @@ public class MainUtils {
 	private static final Charset defaultCharset = Charset.forName("UTF-8");
 	public static Charset GetDefaultCharset () {
 		return defaultCharset;
-	}
-
-	public static void println (final String str) {
-		System.out.println(str);
 	}
 }

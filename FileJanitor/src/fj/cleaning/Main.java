@@ -4,16 +4,15 @@ import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
-import fj.Find.FoundCallback;
+import fj.util.FoundCallback;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.Formatter;
-import static fj.Find.find;
-import static fj.MainUtils.GetArg;
+import static fj.util.Find.find;
+import static fj.Main.printf;
 import static java.nio.file.Paths.get;
-import static java.nio.file.Files.newBufferedReader;
 import static fj.MainUtils.GetDefaultCharset;
-import static fj.MainUtils.println;
+import static fj.Main.println;
 
 public class Main {
 	private final static StringBuilder	fout= new StringBuilder(1024);
@@ -38,11 +37,11 @@ public class Main {
 		dry = true;
 	}
 
-	public static void main (ArrayList<String> args) throws Throwable {
+	public static void main (final BufferedReader configReader, ArrayList<String> args) throws Throwable {
 		final Path cwd = get(args.get(0));
-		final BufferedReader configReader = newBufferedReader(get(GetArg(args, "clean:", "FileJanitor_cleaning.config")), defaultCharset);
-		System.out.printf("Cleaning up in directory: %s%n", cwd.toRealPath());
+		printf("Cleaning up in directory: %s%n", cwd.toRealPath());
 		find(cwd, new ToBeDeletedFiltre(configReader), treeDeletingCallback);
 	}
 
+	private Main() {}
 }

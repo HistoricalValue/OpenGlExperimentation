@@ -6,13 +6,13 @@ import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.nio.file.Path;
-import fj.Find.FoundCallback;
+import fj.util.FoundCallback;
 import java.io.BufferedReader;
 import java.nio.charset.Charset;
-import static fj.Find.find;
-import static java.nio.file.Files.newBufferedReader;
+import static fj.util.Find.find;
+import static fj.Main.print;
+import static fj.Main.printf;
 import static java.nio.file.Paths.get;
-import static fj.MainUtils.GetArg;
 import static fj.MainUtils.GetDefaultCharset;
 
 public class Main {
@@ -30,10 +30,10 @@ public class Main {
 	static void RecordDoneFuckingUpFile () {
 		assert fuckupfile != null;
 		if (dry)
-			System.out.print("Would fuck ");
+			print("Would fuck ");
 		else
-			System.out.print("Fucked ");
-		System.out.printf("up file %s because:%s%n", fuckupfile, fuckupreason);
+			print("Fucked ");
+		printf("up file %s because:%s%n", fuckupfile, fuckupreason);
 		fuckupfile = null;
 		fuckupreason.delete(0, fuckupreason.length());
 	}
@@ -56,11 +56,11 @@ public class Main {
 		dry = true;
 	}
 
-	public static void main (ArrayList<String> args) throws Throwable {
+	public static void main (final BufferedReader configReader, ArrayList<String> args) throws Throwable {
 		final Path cwd = get(args.get(0));
-		final BufferedReader configfilereader = newBufferedReader(get(GetArg(args, "tidy:", "FileJanitor_tidying.config")), defaultCharset);
-		System.out.printf("Tidying up in directory: %s%n", cwd.toRealPath());
-		find(cwd, new ToBeTidiedFiltre(configfilereader), fileTidyingCallback);
+		printf("Tidying up in directory: %s%n", cwd.toRealPath());
+		find(cwd, new ToBeTidiedFiltre(configReader), fileTidyingCallback);
 	}
 
+	private Main() {}
 }

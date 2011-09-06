@@ -1,8 +1,7 @@
 package fj.tidying;
 
-import fj.Find.FoundCallback;
+import fj.util.FoundCallback;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.ByteBuffer;
@@ -25,7 +24,9 @@ class FileTidyingCallback implements FoundCallback {
 		final List<String> reasons;
 		final Charset charset;
 
-		try (final BufferedReader reader = Files.newBufferedReader(file, charset = DetectCharset(file))) {
+		try (@SuppressWarnings("NestedAssignment")
+			final BufferedReader reader = Files.newBufferedReader(file, charset = DetectCharset(file)))
+		{
 			final FileTidier fileTidier = new FileTidier(reader);
 			resolt = fileTidier.ReadAndProduceTidy().GetResolt();
 			reasons = fileTidier.GetReasons();

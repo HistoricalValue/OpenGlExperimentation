@@ -216,7 +216,7 @@ static inline my::gl::math::Vector4 p0 (spline const& spl, size_t const i, float
 }
 
 static inline my::gl::math::Vector4 p (size_t const j, size_t const i, float const u) {
-	
+
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
