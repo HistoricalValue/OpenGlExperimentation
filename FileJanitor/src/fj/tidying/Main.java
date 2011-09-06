@@ -32,7 +32,7 @@ public class Main {
 		if (dry)
 			System.out.print("Would fuck ");
 		else
-			System.out.println("Fucked ");
+			System.out.print("Fucked ");
 		System.out.printf("up file %s because:%s%n", fuckupfile, fuckupreason);
 		fuckupfile = null;
 		fuckupreason.delete(0, fuckupreason.length());
