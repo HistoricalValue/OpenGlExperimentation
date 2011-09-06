@@ -99,7 +99,7 @@ private:
 	bool								addsup (void) const {
 											//	k = m-1		=> OK by definition,
 											//	n = l-m		=> numcpoints = numknots - order
-											return order_ > 0 && numcpoints() == numknots() - order();
+											return order_ > 0 && cpoints.size() == knots.size() - order_;
 										}
 };
 
