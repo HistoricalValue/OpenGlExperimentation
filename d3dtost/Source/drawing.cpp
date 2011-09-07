@@ -103,18 +103,56 @@ private:
 										}
 };
 
+static bool inline spline_is_mupltiplicity_less_that_or_equal_to_k (std::vector<float> const& knots, short const k) {
+	DASSERT(k > 0);
+	size_t const u_k(k);
+
+	bool result(true);
+
+	typedef std::vector<float>::const_iterator ite_t;
+	ite_t const	end	(knots.end()	);
+	ite_t		i	(knots.begin()	);
+
+	DASSERT(i != end);
+
+	size_t	multiplicity(1u);
+	float	previous	(*i);
+	++i;
+	DASSERT(i != end);
+
+	for (; result && i != end; ++i) {
+		float const current(*i);
+
+		if (floats::equals(current, previous))
+			++multiplicity;
+		else
+			multiplicity = 1u;
+
+		if (multiplicity > u_k && (multiplicity > u_k+1u || !floats::equals(current, knots.front()) && !floats::equals(current, knots.back())))
+			result = false;
+
+		previous = current;
+	}
+
+	return result;
+}
+
 //////////////////////////////////////////////////////////////////////////////////////
 namespace _ {
 //////////////////////////////////////////////////////////////////////////////////////
 
-static inline float N1 (spline const& spl, size_t const i ,float const u) {
+static inline float N1 (spline const& spl, short const i, float const u) {
+	DASSERT(i >= 0);
 	bool const gt(u >= spl.getknot(i));
 	bool const lt(i+1 == spl.l()? u <= spl.getknot(i+1) : u < spl.getknot(i+1));
 
 	return (gt && lt)? 1.0f : 0.0f;
 }
 
-static inline float N (spline const& spl, size_t const i, size_t const m, float const u) {
+static inline float N (spline const& spl, short const i, short const m, float const u) {
+	DASSERT(i >= 0);
+	DASSERT(m > 0);
+
 	float result;
 
 	size_t const k(m-1);
@@ -149,7 +187,9 @@ static inline float N (spline const& spl, size_t const i, size_t const m, float 
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-static bool VerifyBaseFunctions (size_t const m, std::vector<float> const& knots) {
+static bool VerifyBaseFunctions (short const m, std::vector<float> const& knots) {
+	DASSERT(m > 1);
+
 	using my::gl::math::vec4;
 	DASSERT(m >= 1);
 
@@ -211,13 +251,62 @@ static bool VerifyBaseFunctions (size_t const m, std::vector<float> const& knots
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-static inline my::gl::math::Vector4 p0 (spline const& spl, size_t const i, float const u) {
+template <typename T>
+struct nexter {
+public:
+	T const operator () (void) { return val++; }
+	nexter (T const& init): val(init) {}
+	nexter (nexter<T> const& other): val(other.val) {}
+private:
+	T val;
+};
+template <typename T>
+nexter<T> makenexter (T const& init) { return nexter<T>(init); }
+
+static bool VerifyMultiplicityChecker (void) {
+	using my::gl::math::vec4;
+
+	typedef std::vector<float>	Knots;
+	
+	Knots knots(20);
+	
+	DASSERT(spline_is_mupltiplicity_less_that_or_equal_to_k(knots, 14) == false);
+
+	std::generate_n(knots.begin() + 5, 10, makenexter(1u));
+	DASSERT(spline_is_mupltiplicity_less_that_or_equal_to_k(knots, 4) == true);
+	std::fill_n(knots.begin() + 12, 4, 0u);
+	DASSERT(spline_is_mupltiplicity_less_that_or_equal_to_k(knots, 4) == true);
+	knots.assign(16, 0u);
+	DASSERT(spline_is_mupltiplicity_less_that_or_equal_to_k(knots, 4) == false);
+
+	return true;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
+namespace deboor {
+//////////////////////////////////////////////////////////////////////////////////////
+namespace simple {
+//////////////////////////////////////////////////////////////////////////////////////
+
+static inline my::gl::math::Vector4 p0 (spline const& spl, short const i, float const u) {
+	DASSERT(i > 0);
+	DASSERT(spl.u_in_definition_domain(u));
+	
 	return spl.getcpoint(i);
 }
 
-static inline my::gl::math::Vector4 p (size_t const j, size_t const i, float const u) {
+static inline my::gl::math::Vector4 p (spline const& spl, short const j, short const i, float const u) {
+	DASSERT(1 <= j);
+	DASSERT(j <= spl.k());
+	DASSERT(i >= j);
 
 }
+
+//////////////////////////////////////////////////////////////////////////////////////
+}	// simple
+//////////////////////////////////////////////////////////////////////////////////////
+}	// deboor
+//////////////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////////////
 
@@ -312,6 +401,8 @@ static void Initialise (void) {
 		_spl = DNEWCLASS(spline, (knots.begin(), knots.end(), cpoints.begin(), cpoints.end()));
 
 		DASSERT(VerifyBaseFunctions(_spl->m(), knots));
+
+		DASSERT(VerifyMultiplicityChecker());
 	}
 
 }
