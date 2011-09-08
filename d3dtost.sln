@@ -15,6 +15,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TextureManager", "..\ankh\T
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QuickTost", "QuickTost\QuickTost.vcxproj", "{CA504778-5B82-4BC6-9E87-3F394E6F7F79}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Surfaces", "..\ankh\Surfaces\Project\Surfaces.vcxproj", "{BC821220-382D-4691-8BBE-6DB8F45DA3F3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -85,6 +87,15 @@ Global
 		{CA504778-5B82-4BC6-9E87-3F394E6F7F79}.Release|Win32.ActiveCfg = Release|Win32
 		{CA504778-5B82-4BC6-9E87-3F394E6F7F79}.Release|Win32.Build.0 = Release|Win32
 		{CA504778-5B82-4BC6-9E87-3F394E6F7F79}.Release|x64.ActiveCfg = Release|Win32
+		{BC821220-382D-4691-8BBE-6DB8F45DA3F3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BC821220-382D-4691-8BBE-6DB8F45DA3F3}.Debug|Win32.Build.0 = Debug|Win32
+		{BC821220-382D-4691-8BBE-6DB8F45DA3F3}.Debug|x64.ActiveCfg = Debug|Win32
+		{BC821220-382D-4691-8BBE-6DB8F45DA3F3}.Profile|Win32.ActiveCfg = Release|Win32
+		{BC821220-382D-4691-8BBE-6DB8F45DA3F3}.Profile|Win32.Build.0 = Release|Win32
+		{BC821220-382D-4691-8BBE-6DB8F45DA3F3}.Profile|x64.ActiveCfg = Release|Win32
+		{BC821220-382D-4691-8BBE-6DB8F45DA3F3}.Release|Win32.ActiveCfg = Release|Win32
+		{BC821220-382D-4691-8BBE-6DB8F45DA3F3}.Release|Win32.Build.0 = Release|Win32
+		{BC821220-382D-4691-8BBE-6DB8F45DA3F3}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

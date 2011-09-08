@@ -1,9 +1,5 @@
 #include "stdafx.h"
 
-template <typename C, typename F>
-static void foreach (C const& c, F const& f)
-	{ std::for_each(c.begin(), c.end(), f); }
-
 #ifdef _DEBUG
 #	define NOTEND(I,END) _NOTEND(I,END)
 #else
@@ -17,6 +13,11 @@ static inline I& _NOTEND (I& i, I const& end) {
 }
 
 namespace {
+
+template <typename C, typename F>
+static void foreach (C const& c, F const& f)
+	{ std::for_each(c.begin(), c.end(), f); }
+
 namespace floats {
 static const float precision(1e-06f);
 
@@ -31,6 +32,11 @@ struct elcollector {
 	std::list<T> els;
 	elcollector& operator , (T const& el) { els.push_back(el); return *this; }
 }; // elcollector<T>
+
+template <typename T, typename F>
+static inline
+T lerp (T const& a, T const& b, F const& f)
+	{ return (1-f)*a + f*b; }
 
 template <typename KnotIterType>
 static bool inline spline_is_mupltiplicity_less_that_or_equal_to_k (KnotIterType const& knot_begin, KnotIterType const& end, short const k) {
@@ -276,16 +282,16 @@ static bool VerifyMultiplicityChecker (void) {
 	using my::gl::math::vec4;
 
 	typedef std::vector<float>	Knots;
-	
+
 	Knots knots(20);
-	
+
 	DASSERT(spline_is_mupltiplicity_less_that_or_equal_to_k(knots.begin(), knots.end(), 14) == false);
 
 	std::generate_n(knots.begin() + 5, 10, makenexter(1u));
 	DASSERT(spline_is_mupltiplicity_less_that_or_equal_to_k(knots.begin(), knots.end(), 4) == true);
 	std::fill_n(knots.begin() + 10, 4, 0.0f);
 	DASSERT(spline_is_mupltiplicity_less_that_or_equal_to_k(knots.begin(), knots.end(), 4) == true);
-	knots.assign(16, 0u);
+	knots.assign(16, 0.0f);
 	DASSERT(spline_is_mupltiplicity_less_that_or_equal_to_k(knots.begin(), knots.end(), 4) == false);
 
 	return true;
@@ -294,25 +300,141 @@ static bool VerifyMultiplicityChecker (void) {
 //////////////////////////////////////////////////////////////////////////////////////
 namespace deboor {
 //////////////////////////////////////////////////////////////////////////////////////
+
+struct precise_sub_contron_point_interpolator {
+public:
+	static my::gl::math::vec4 lerp (
+			my::gl::math::vec4 const&	p_,
+			my::gl::math::vec4 const&	p__,
+			float const					u_end,
+			float const					u_start,
+			float const					u) {
+		
+		using my::gl::math::vec4;
+
+		DASSERT(u < u_end);
+		DASSERT(u_start <= u);
+
+		float const			denom	(u_end - u_start);
+		float const			num1	(u_end - u);
+		float const			num2	(u - u_start);
+
+		using floats::iszero;
+		DASSERT(!iszero(denom));
+		DASSERT(num1 != 0.0f);
+
+		float const			r1		(num1 / denom);
+		float const			r2		(num2 / denom);
+
+		return r1*p_ + (iszero(num2)? vec4::New(0,0,0,0) : r2*p__);
+	}
+}; // precise_sub_contron_point_interpolator
+
+struct fast_sub_control_point_interpolator {
+public:
+	static my::gl::math::vec4 lerp (
+			my::gl::math::vec4 const&	p_,
+			my::gl::math::vec4 const&	p__,
+			float const					u_end,
+			float const					u_start,
+			float const					u) {
+
+		using my::gl::math::vec4;
+
+		DASSERT(u < u_end);
+		DASSERT(u_start <= u);
+
+		float const			denom	(u_end - u_start);
+		float const			num2	(u - u_start);
+
+		DASSERT(!floats::iszero(denom));
+
+		float const			r2		(num2 / denom);
+
+		return ::lerp(p_, p__, r2);
+	}
+}; // fast_sub_control_point_interpolator
+
+//////////////////////////////////////////////////////////////////////////////////////
 namespace simple {
 //////////////////////////////////////////////////////////////////////////////////////
 
 static inline my::gl::math::Vector4 p0 (spline const& spl, short const i, float const u) {
-	DASSERT(i > 0);
+	DASSERT(i >= 0);
 	DASSERT(spl.u_in_definition_domain(u));
-	
+
 	return spl.getcpoint(i);
 }
 
+template <typename SubcontrolPointsInterpolatorType>
 static inline my::gl::math::Vector4 p (spline const& spl, short const j, short const i, float const u) {
-	DASSERT(1 <= j);
+	DASSERT(j >= 1);
 	DASSERT(j <= spl.k());
 	DASSERT(i >= j);
 
+	spline::uchar const	m		(spl.m());
+	float const			u_end	(spl.getknot(i+m-j));
+	float const			u_start	(spl.getknot(i));
+	size_t const		jm1		(j-1);
+	size_t const		im1		(i-1);
+	bool const			sndzero	(floats::equals(u, u_start));
+
+	using my::gl::math::vec4;
+	vec4 const			p_		(          jm1 == 0? p0(spl,im1,u) : p<SubcontrolPointsInterpolatorType>(spl,jm1,im1,u)                     );
+	vec4 const			p__		(!sndzero? jm1 == 0? p0(spl,i,u)   : p<SubcontrolPointsInterpolatorType>(spl,jm1,i,u)   : vec4::New(0,0,0,0));
+
+	return SubcontrolPointsInterpolatorType::lerp(p_, p__, u_end, u_start, u);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
 }	// simple
+//////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////////
+namespace optimised {
+//////////////////////////////////////////////////////////////////////////////////////
+
+static inline my::gl::math::vec4 p0 (spline const& spl, short const i, float const u) {
+	return simple::p0(spl, i, u);
+}
+
+static inline my::gl::math::vec4 p (spline const& spl, short const j, short const i, float const u) {
+	DASSERT(1 <= j);
+	DASSERT(j <= spl.k());
+	DASSERT(i >= j);
+
+	spline::uchar const	m		(spl.m());
+	float const			u_end	(spl.getknot(i+m-j));
+	float const			u_start	(spl.getknot(i));
+	
+	DASSERT(u < u_end);
+	DASSERT(u_start <= u);
+
+	float const			denom	(u_end - u_start);
+	float const			num1	(u_end - u);
+	float const			num2	(u - u_start);
+
+	using floats::iszero;
+	DASSERT(!iszero(denom));
+	DASSERT(num1 != 0.0f);
+
+	float const			r1		(num1 / denom);
+	float const			r2		(num2 / denom);
+
+	DASSERT(j >= 1);
+	DASSERT(i >= 1);
+	size_t const		jm1		(j-1);
+	size_t const		im1		(i-1);
+
+	using my::gl::math::vec4;
+	vec4 const			p_		(                                   jm1 == 0? p0(spl,im1,u) : p(spl,jm1,im1,u));
+	vec4 const			p__		(iszero(num2)? vec4::New(0,0,0,0) : jm1 == 0? p0(spl,i,u)   : p(spl,jm1,i,u)  );
+
+	return r1*p_ + (iszero(num2)? vec4::New(0,0,0,0) : r2*p__);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
+}	// optimised
 //////////////////////////////////////////////////////////////////////////////////////
 }	// deboor
 //////////////////////////////////////////////////////////////////////////////////////
@@ -488,13 +610,37 @@ static std::list<my::gl::math::Vector4> const producenurbspoints (void) {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
+
+template <typename SubcontrolPointsInterpolatorType>
+static std::list<my::gl::math::Vector4> const producenurbspoints_deboor (void) {
+	using my::gl::math::vec4;
+	std::list<vec4> points;
+
+	spline const&	spl		(getspline());
+	spline::knots_t	knots	(spl.getknots());
+	size_t const	n		(spl.n());
+	size_t const	k		(spl.k());
+
+	for (size_t s(spl.k()); s <= n; ++s) {
+		float const u_end(spl.getknot(s+1));
+		for (float u(spl.getknot(s)); u < u_end; u += 0.01f)
+			points.push_back(deboor::simple::p<SubcontrolPointsInterpolatorType>(spl,k,s,u));
+	}
+
+	return points;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
 } // _
 //////////////////////////////////////////////////////////////////////////////////////
 
 void addaslinesto (my::gl::shapes::ShapeCompositionFactory& f) {
 	using my::gl::shapes::Colour;
 	using my::gl::math::vec4;
-	_::addshapesto(f, _::linestrip(_::producenurbspoints(), Colour(vec4::New(0.8f, 0.4f, 0.8f))));
+	_::addshapesto(f, _::linestrip(_::
+			//	producenurbspoints
+				producenurbspoints_deboor<_::deboor::precise_sub_contron_point_interpolator>
+		(), Colour(vec4::New(0.8f, 0.4f, 0.8f))));
 }
 
 void addaspointsto (my::gl::shapes::ShapeCompositionFactory& f) {
