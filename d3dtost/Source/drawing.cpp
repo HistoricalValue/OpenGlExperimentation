@@ -32,6 +32,46 @@ struct elcollector {
 	elcollector& operator , (T const& el) { els.push_back(el); return *this; }
 }; // elcollector<T>
 
+template <typename KnotIterType>
+static bool inline spline_is_mupltiplicity_less_that_or_equal_to_k (KnotIterType const& knot_begin, KnotIterType const& end, short const k) {
+	DASSERT(k > 0);
+
+	size_t const	u_k		(k);
+	bool			result	(true);
+	KnotIterType	i		(knot_begin);
+
+	DASSERT(i != end);
+
+	size_t			multiplicity(1u);
+	float			previous	(*i);
+	++i;
+	DASSERT(i != end);
+	KnotIterType	current_i	(i);
+	++i;
+	DASSERT(i != end);
+	KnotIterType	next_i		(i);
+
+	while (result && current_i != end) {
+		float const current(*current_i);
+
+		if (floats::equals(current, previous))
+			++multiplicity;
+		else
+			multiplicity = 1u;
+
+		if (multiplicity > u_k && (multiplicity > u_k+1u || !floats::equals(current, *knot_begin) && !(next_i == end)))
+			result = false;
+
+		previous = current;
+		++current_i;
+		DASSERT(current_i == next_i);
+		if (next_i != end)
+			++next_i;
+	}
+
+	return result;
+}
+
 } //
 
 
@@ -89,7 +129,10 @@ public:
 		knots(knot_begin, knot_end),
 		cpoints(cpoint_being, cpoint_end),
 		order_(std::distance(knot_begin, knot_end) - std::distance(cpoint_being, cpoint_end))
-		{ DASSERT(addsup()); }
+	{
+		DASSERT(addsup());
+		DASSERT(spline_is_mupltiplicity_less_that_or_equal_to_k(knot_begin, knot_end, k()));
+	}
 
 private:
 	uchar								order_;		// m, curve degree k = m-1
@@ -102,40 +145,6 @@ private:
 											return order_ > 0 && cpoints.size() == knots.size() - order_;
 										}
 };
-
-static bool inline spline_is_mupltiplicity_less_that_or_equal_to_k (std::vector<float> const& knots, short const k) {
-	DASSERT(k > 0);
-	size_t const u_k(k);
-
-	bool result(true);
-
-	typedef std::vector<float>::const_iterator ite_t;
-	ite_t const	end	(knots.end()	);
-	ite_t		i	(knots.begin()	);
-
-	DASSERT(i != end);
-
-	size_t	multiplicity(1u);
-	float	previous	(*i);
-	++i;
-	DASSERT(i != end);
-
-	for (; result && i != end; ++i) {
-		float const current(*i);
-
-		if (floats::equals(current, previous))
-			++multiplicity;
-		else
-			multiplicity = 1u;
-
-		if (multiplicity > u_k && (multiplicity > u_k+1u || !floats::equals(current, knots.front()) && !floats::equals(current, knots.back())))
-			result = false;
-
-		previous = current;
-	}
-
-	return result;
-}
 
 //////////////////////////////////////////////////////////////////////////////////////
 namespace _ {
@@ -270,14 +279,14 @@ static bool VerifyMultiplicityChecker (void) {
 	
 	Knots knots(20);
 	
-	DASSERT(spline_is_mupltiplicity_less_that_or_equal_to_k(knots, 14) == false);
+	DASSERT(spline_is_mupltiplicity_less_that_or_equal_to_k(knots.begin(), knots.end(), 14) == false);
 
 	std::generate_n(knots.begin() + 5, 10, makenexter(1u));
-	DASSERT(spline_is_mupltiplicity_less_that_or_equal_to_k(knots, 4) == true);
-	std::fill_n(knots.begin() + 12, 4, 0u);
-	DASSERT(spline_is_mupltiplicity_less_that_or_equal_to_k(knots, 4) == true);
+	DASSERT(spline_is_mupltiplicity_less_that_or_equal_to_k(knots.begin(), knots.end(), 4) == true);
+	std::fill_n(knots.begin() + 10, 4, 0.0f);
+	DASSERT(spline_is_mupltiplicity_less_that_or_equal_to_k(knots.begin(), knots.end(), 4) == true);
 	knots.assign(16, 0u);
-	DASSERT(spline_is_mupltiplicity_less_that_or_equal_to_k(knots, 4) == false);
+	DASSERT(spline_is_mupltiplicity_less_that_or_equal_to_k(knots.begin(), knots.end(), 4) == false);
 
 	return true;
 }
