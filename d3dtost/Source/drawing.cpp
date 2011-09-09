@@ -1,5 +1,23 @@
 #include "stdafx.h"
 
+//////////////////////////////////////////////////////////////////////////////////////
+
+// CONTROL SWITCHES
+#define USE_DE_BOOR		1
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+// CONTROL SWITCHES RESULTS
+#if USE_DE_BOOR
+#	define DE_BOOR_OR_NOT_DE_BOOR(FUNC) FUNC##_deboor<_::deboor::precise_sub_contron_point_interpolator>
+#	define NOT_USING_DE_BOOR_CHECK()	DASSERT(!"Using De-Boor's algorithm, this function shouldn't be used")
+#else
+#	define DE_BOOR_OR_NOT_DE_BOOR(FUNC)	FUNC
+#	define NOT_USING_DE_BOOR_CHECK()
+#endif
+
+
+
 #ifdef _DEBUG
 #	define NOTEND(I,END) _NOTEND(I,END)
 #else
@@ -93,41 +111,39 @@ public:
 	typedef std::vector<my::gl::math::Vector4>	cpoints_t;
 
 	uchar							order (void) const
-										{ DASSERT(addsup()); return order_; }
+										{ return order_; }
 	uchar							degree (void) const
-										{ DASSERT(addsup()); return order_ - 1; }
+										{ return order_ - 1; }
 	size_t							numknots (void) const
-										{ DASSERT(addsup()); return knots.size(); }
+										{ return knots.size(); }
 	size_t							numcpoints (void) const
-										{ DASSERT(addsup()); return cpoints.size(); }
+										{ return cpoints.size(); }
 
 	float const						getknot (size_t const i) const {
-											DASSERT(addsup());
 											DASSERT(i < numknots());
 											return knots.at(i);
 										}
 	my::gl::math::Vector4 const&	getcpoint (size_t const i) const {
-											DASSERT(addsup());
 											DASSERT(i < numcpoints());
 											return cpoints.at(i);
 										}
 
 	cpoints_t const&				getcpoints (void) const
-										{ DASSERT(addsup()); return cpoints; }
+										{ return cpoints; }
 	knots_t const&					getknots (void) const
-										{ DASSERT(addsup()); return knots; }
+										{ return knots; }
 
 	size_t							l (void) const
-										{ DASSERT(addsup()); return numknots() - 1; }
+										{ return numknots() - 1; }
 	uchar							n (void) const
-										{ DASSERT(addsup()); return numcpoints() - 1; }
+										{ return numcpoints() - 1; }
 	uchar							m (void) const
-										{ DASSERT(addsup()); return order(); }
+										{ return order(); }
 	uchar							k (void) const
-										{ DASSERT(addsup()); return m() - 1; }
+										{ return m() - 1; }
 
 	bool							u_in_definition_domain (float const u) const
-										{ DASSERT(addsup()); return knots.at(k()) <= u && u <= knots.at(n()+1); }
+										{ return knots.at(k()) <= u && u <= knots.at(n()+1); }
 
 
 	template <typename KnotIter, typename CPointIter>
@@ -148,10 +164,47 @@ private:
 	bool								addsup (void) const {
 											//	k = m-1		=> OK by definition,
 											//	n = l-m		=> numcpoints = numknots - order
-											return order_ > 0 && cpoints.size() == knots.size() - order_;
+											return order() > 0 && n() == l() - m();
 										}
 };
 
+namespace _ {
+	struct subcurve_finding_data {
+		size_t i;
+		float const u;
+		bool found;
+	};
+	static void find_subcurve_of (subcurve_finding_data& data, float const u_next) {
+		if (!data.found)
+			if (data.u < u_next)
+				data.found = true;
+			else
+				++data.i;
+	}
+}
+static inline
+size_t spline_get_subcurve_of (spline const& spl, float const u) {
+	DASSERT(spl.u_in_definition_domain(u));
+
+	typedef spline::knots_t::const_iterator ite_t;
+
+	spline::knots_t const&	knots	(spl.getknots());
+	ite_t const				end		(knots.end());
+	ite_t					begin	(knots.begin());
+
+	DASSERT(begin != end);
+	++begin;
+	DASSERT(begin != end);
+
+	_::subcurve_finding_data data = { 0u, u, false };
+	std::for_each(begin, end, ubind1st(uptr_fun(_::find_subcurve_of), data));
+
+	DASSERT(data.found);
+	DASSERT(spl.getknot(data.i) <= u);
+	DASSERT(spl.getknot(data.i + 1) > u);
+
+	return data.i;
+}
 //////////////////////////////////////////////////////////////////////////////////////
 namespace _ {
 //////////////////////////////////////////////////////////////////////////////////////
@@ -211,7 +264,7 @@ static bool VerifyBaseFunctions (short const m, std::vector<float> const& knots)
 	size_t const l(knots.size() - 1);
 	size_t const n(l - m);
 
-	std::list<vec4> empty;
+	std::list<vec4> empty(n, vec4::New());
 	spline spl(knots.begin(), knots.end(), empty.begin(), empty.end());
 
 	// Verify that N_i,m has support in [u_i, u_i+m] for m>=1 and is also >=0 for all u in domain of definition
@@ -555,8 +608,10 @@ static inline std::vector<float> const& knots (void)
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-static my::gl::math::Vector4 nurbat (spline const& spl, float u) {
+static my::gl::math::Vector4 nurbat (spline const& spl, float const u) {
 	using my::gl::math::vec4;
+
+	NOT_USING_DE_BOOR_CHECK();
 
 	DASSERT(spl.u_in_definition_domain(u));
 
@@ -579,6 +634,8 @@ static my::gl::math::Vector4 nurbat (spline const& spl, float u) {
 static std::list<my::gl::math::Vector4> const producenurbspoints (void) {
 	using my::gl::math::Vector4;
 	using my::gl::math::vec4;
+
+	NOT_USING_DE_BOOR_CHECK();
 
 	std::list<Vector4> points;
 	spline const& spl(getspline());
@@ -612,6 +669,14 @@ static std::list<my::gl::math::Vector4> const producenurbspoints (void) {
 //////////////////////////////////////////////////////////////////////////////////////
 
 template <typename SubcontrolPointsInterpolatorType>
+static my::gl::math::vec4 nurbat_deboor (spline const& spl, float const u) {
+	size_t const s(spline_get_subcurve_of(spl, u));
+	return deboor::simple::p<SubcontrolPointsInterpolatorType>(spl, spl.k(), s, u);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+template <typename SubcontrolPointsInterpolatorType>
 static std::list<my::gl::math::Vector4> const producenurbspoints_deboor (void) {
 	using my::gl::math::vec4;
 	std::list<vec4> points;
@@ -637,10 +702,7 @@ static std::list<my::gl::math::Vector4> const producenurbspoints_deboor (void) {
 void addaslinesto (my::gl::shapes::ShapeCompositionFactory& f) {
 	using my::gl::shapes::Colour;
 	using my::gl::math::vec4;
-	_::addshapesto(f, _::linestrip(_::
-			//	producenurbspoints
-				producenurbspoints_deboor<_::deboor::precise_sub_contron_point_interpolator>
-		(), Colour(vec4::New(0.8f, 0.4f, 0.8f))));
+	_::addshapesto(f, _::linestrip(DE_BOOR_OR_NOT_DE_BOOR(_::producenurbspoints)(), Colour(vec4::New(0.8f, 0.4f, 0.8f))));
 }
 
 void addaspointsto (my::gl::shapes::ShapeCompositionFactory& f) {
@@ -671,7 +733,7 @@ void addknotpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 	size_t			i	(spl.k());
 	size_t const	end	(spl.n() + 2);
 	for (; i != end; ++i)
-		points.push_back(_::nurbat(spl, nots.at(i)));
+		points.push_back(DE_BOOR_OR_NOT_DE_BOOR(_::nurbat)(spl, nots.at(i)));
 
 	_::addshapesto(f, _::vertices(points, Colour(vec4::New(0.7f, 0.5f, 0.5f))));
 }
