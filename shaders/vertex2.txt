@@ -62,30 +62,34 @@ mat4 ARotate (const vec3 axis, const float rad) {
 		;
 }
 
-mat4 AFrustrum (		const float	left,
-						const float right,
-						const float bottom,
-						const float top,
-						const float near,
-						const float far) {
-	const float _2n		= 2.0f*near;
-	const float r_l		= right - left;
-	const float t_b		= top - bottom;
-	const float f_n		= far - near;
-	const float r		= right;
-	const float l		= left;
-	const float	t		= top;
-	const float	b		= bottom;
-	const float n		= near;
-	const float f		= far;
-	
-	const float	d		= f - n;
-	
-	return mat4(	1, 0, 0, 0,
-					0, 1, 0, 0,
-					0, 0, 1, 0,
-					0, 0, 0, 1
-			);
+mat4 AFrustrum (		const float	l,
+						const float r,
+						const float b,
+						const float t,
+						const float n,
+						const float f) {
+//	PASSERT(n > 0)
+//	PASSERT(f > 0)
+//	PASSERT(f > n)
+//	PASSERT(r > l)
+//	PASSERT(t > b)
+
+	float const r_l		= r - l;
+	float const t_b		= t - b;
+	float const f_n		= f - n;
+	float const _2n		= 2.0f * n;
+	float const Cwn		= _2n / r_l;
+	float const Dw		= (-r -l) / r_l;
+	float const Chn		= _2n / t_b;
+	float const Dh		= (-t -b) / t_b;
+	float const A		= (f + n) / f_n;
+	float const B		= (_2n * -f) / f_n;
+
+	return mat4 m(
+			Cwn	,	0	,	Dw	,	0,
+			0	,	Chn	,	Dh	,	0,
+			0	,	0	,	A	,	B,
+			0	,	0	,	1	,	0);
 }
 
 ///////////////////////////////////////////////////////////
