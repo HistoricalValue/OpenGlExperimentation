@@ -1,3 +1,11 @@
+#include <SurfacesDLL.h>
+#include <SurfacesTraits.h>
+#include <nurbs/ControlPoints.h>
+#include <nurbs/Knots.h>
+#include <nurbs/Curve.h>
+#include <nurbs/Curve_inl.h>
+
+
 #include "MyWindows.h"
 
 #include "nmutil/OpenGlExtensionManager.h"

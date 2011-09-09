@@ -45,13 +45,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>.\Include;..\MyUtil\Include;..\..\ankh\Images\Include;..\..\ankh\Textures\Include;$(DELTA)UtilLib\Include;$(DELTA)DebugLib\Include;$(DELTA)FileReadersLib\Include;..\freeglut-2.6.0\include;$(IncludePath)</IncludePath>
+    <IncludePath>.\Include;..\MyUtil\Include;..\..\ankh\Images\Include;..\..\ankh\Textures\Include;..\..\ankh\Surfaces\Include;$(DELTA)UtilLib\Include;$(DELTA)DebugLib\Include;$(DELTA)FileReadersLib\Include;..\freeglut-2.6.0\include;..\..\ankh\Math\Include;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <LibraryPath>..\ExtraLibs-Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>.\Include;..\MyUtil\Include;..\..\ankh\Images\Include;..\..\ankh\Textures\Include;$(DELTA)UtilLib\Include;$(DELTA)DebugLib\Include;$(DELTA)FileReadersLib\Include;..\freeglut-2.6.0\include;$(IncludePath)</IncludePath>
+    <IncludePath>.\Include;..\MyUtil\Include;..\..\ankh\Images\Include;..\..\ankh\Textures\Include;..\..\ankh\Surfaces\Include;$(DELTA)UtilLib\Include;$(DELTA)DebugLib\Include;$(DELTA)FileReadersLib\Include;..\freeglut-2.6.0\include;..\..\ankh\Math\Include;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <LibraryPath>..\ExtraLibs-Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
@@ -60,7 +60,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;D3D_DEBUG_INFO;UTILITIES__IMPORTS;TEXTURE_MANAGER__IMPORTS;IMAGE_LOADER__IMPORTS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;D3D_DEBUG_INFO;UTILITIES__IMPORTS;TEXTURE_MANAGER__IMPORTS;IMAGE_LOADER__IMPORTS;SURFACES__IMPORTS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <ObjectFileName>$(IntDir)</ObjectFileName>
     </ClCompile>
@@ -81,7 +81,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;D3D_DEBUG_INFO;UTILITIES__IMPORTS;TEXTURE_MANAGER__IMPORTS;IMAGE_LOADER__IMPORTS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;D3D_DEBUG_INFO;UTILITIES__IMPORTS;TEXTURE_MANAGER__IMPORTS;IMAGE_LOADER__IMPORTS;SURFACES__IMPORTS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
     </ClCompile>
     <Link>
