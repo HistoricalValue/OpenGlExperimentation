@@ -362,7 +362,7 @@ public:
 			float const					u_end,
 			float const					u_start,
 			float const					u) {
-		
+
 		using my::gl::math::vec4;
 
 		DASSERT(u < u_end);
@@ -459,7 +459,7 @@ static inline my::gl::math::vec4 p (spline const& spl, short const j, short cons
 	spline::uchar const	m		(spl.m());
 	float const			u_end	(spl.getknot(i+m-j));
 	float const			u_start	(spl.getknot(i));
-	
+
 	DASSERT(u < u_end);
 	DASSERT(u_start <= u);
 

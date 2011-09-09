@@ -126,16 +126,11 @@ out	vec4		textureCoordinate;
 void main (void) {
 
 	vec4 pos			=	Hom_True(position);
-
-	mat4 trans			=	AId()
-						*	AFrustrum(-0.75f, 0.75f, -0.75f, 0.75f, -0.75f, 0.75f)
-						*	ACamera()
-						;
 						
 	mat4 transtest		=	AId()
 						*	projection
 						*	camera
-						*	ARotate(vec3(1, 1, 1), radians(axyc[0]))
+				//		*	ARotate(vec3(1, 1, 1), radians(axyc[0]))
 						;
 						
 	gl_Position			= transtest * pos;
