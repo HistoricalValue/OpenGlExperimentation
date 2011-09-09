@@ -74,18 +74,18 @@ mat4 AFrustrum (		const float	l,
 //	PASSERT(r > l)
 //	PASSERT(t > b)
 
-	float const r_l		= r - l;
-	float const t_b		= t - b;
-	float const f_n		= f - n;
-	float const _2n		= 2.0f * n;
-	float const Cwn		= _2n / r_l;
-	float const Dw		= (-r -l) / r_l;
-	float const Chn		= _2n / t_b;
-	float const Dh		= (-t -b) / t_b;
-	float const A		= (f + n) / f_n;
-	float const B		= (_2n * -f) / f_n;
+	const float r_l		= r - l;
+	const float t_b		= t - b;
+	const float f_n		= f - n;
+	const float _2n		= 2.0f * n;
+	const float Cwn		= _2n / r_l;
+	const float Dw		= (-r -l) / r_l;
+	const float Chn		= _2n / t_b;
+	const float Dh		= (-t -b) / t_b;
+	const float A		= (f + n) / f_n;
+	const float B		= (_2n * -f) / f_n;
 
-	return mat4 m(
+	return mat4(
 			Cwn	,	0	,	Dw	,	0,
 			0	,	Chn	,	Dh	,	0,
 			0	,	0	,	A	,	B,
