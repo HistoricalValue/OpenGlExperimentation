@@ -3,7 +3,8 @@
 //////////////////////////////////////////////////////////////////////////////////////
 
 // CONTROL SWITCHES
-#define USE_DE_BOOR		1
+#define USE_DE_BOOR				1
+#define WITH_OPTIMISED_DE_BOOR	1
 
 //////////////////////////////////////////////////////////////////////////////////////
 
@@ -16,7 +17,11 @@
 #	define NOT_USING_DE_BOOR_CHECK()
 #endif
 
-
+#if WITH_OPTIMISED_DE_BOOR
+#	define DE_BOOR_P(SUBCONTROL_POINTS_INTERPOLATOR_TYPE, SPL, K, S, U)	deboor::p_s_k<SUBCONTROL_POINTS_INTERPOLATOR_TYPE>(SPL, S, U)
+#else
+#	define DE_BOOR_P(SUBCONTROL_POINTS_INTERPOLATOR_TYPE, SPL, K, S, U)	deboor::p<SUBCONTROL_POINTS_INTERPOLATOR_TYPE>(SPL, K, S, U)
+#endif
 
 #ifdef _DEBUG
 #	define NOTEND(I,END) _NOTEND(I,END)
@@ -196,14 +201,26 @@ size_t spline_get_subcurve_of (spline const& spl, float const u) {
 	++begin;
 	DASSERT(begin != end);
 
-	_::subcurve_finding_data data = { 0u, u, false };
-	std::for_each(begin, end, ubind1st(uptr_fun(_::find_subcurve_of), data));
+	size_t const			n		(spl.n());
+	size_t					result	(-1);
 
-	DASSERT(data.found);
-	DASSERT(spl.getknot(data.i) <= u);
-	DASSERT(spl.getknot(data.i + 1) > u);
+	// u could be the last u of the last subcurve in the domain of definition
+	// (that is, the knot of the next subcurve). In that case, it is still 
+	// considered to be in the last subcurve in the domain of definition.
+	if (u == knots.at(n + 1))
+		result = n;
+	else {
+		_::subcurve_finding_data data = { 0u, u, false };
+		std::for_each(begin, end, ubind1st(uptr_fun(_::find_subcurve_of), data));
 
-	return data.i;
+		DASSERT(data.found);
+		DASSERT(spl.getknot(data.i) <= u);
+		DASSERT(spl.getknot(data.i + 1) > u);
+
+		result = data.i;
+	}
+
+	return result;
 }
 //////////////////////////////////////////////////////////////////////////////////////
 namespace _ {
@@ -408,10 +425,6 @@ public:
 	}
 }; // fast_sub_control_point_interpolator
 
-//////////////////////////////////////////////////////////////////////////////////////
-namespace simple {
-//////////////////////////////////////////////////////////////////////////////////////
-
 static inline my::gl::math::Vector4 p0 (spline const& spl, short const i, float const u) {
 	DASSERT(i >= 0);
 	DASSERT(spl.u_in_definition_domain(u));
@@ -432,62 +445,65 @@ static inline my::gl::math::Vector4 p (spline const& spl, short const j, short c
 	size_t const		im1		(i-1);
 	bool const			sndzero	(floats::equals(u, u_start));
 
-	using my::gl::math::vec4;
-	vec4 const			p_		(          jm1 == 0? p0(spl,im1,u) : p<SubcontrolPointsInterpolatorType>(spl,jm1,im1,u)                     );
-	vec4 const			p__		(!sndzero? jm1 == 0? p0(spl,i,u)   : p<SubcontrolPointsInterpolatorType>(spl,jm1,i,u)   : vec4::New(0,0,0,0));
-
-	return SubcontrolPointsInterpolatorType::lerp(p_, p__, u_end, u_start, u);
-}
-
-//////////////////////////////////////////////////////////////////////////////////////
-}	// simple
-//////////////////////////////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////////////////////////////
-namespace optimised {
-//////////////////////////////////////////////////////////////////////////////////////
-
-static inline my::gl::math::vec4 p0 (spline const& spl, short const i, float const u) {
-	return simple::p0(spl, i, u);
-}
-
-static inline my::gl::math::vec4 p (spline const& spl, short const j, short const i, float const u) {
-	DASSERT(1 <= j);
-	DASSERT(j <= spl.k());
-	DASSERT(i >= j);
-
-	spline::uchar const	m		(spl.m());
-	float const			u_end	(spl.getknot(i+m-j));
-	float const			u_start	(spl.getknot(i));
-
-	DASSERT(u < u_end);
-	DASSERT(u_start <= u);
-
-	float const			denom	(u_end - u_start);
-	float const			num1	(u_end - u);
-	float const			num2	(u - u_start);
-
-	using floats::iszero;
-	DASSERT(!iszero(denom));
-	DASSERT(num1 != 0.0f);
-
-	float const			r1		(num1 / denom);
-	float const			r2		(num2 / denom);
-
-	DASSERT(j >= 1);
-	DASSERT(i >= 1);
-	size_t const		jm1		(j-1);
-	size_t const		im1		(i-1);
+	// u == u_end allowed only for the last subcurve in the domain of definition
+	DASSERT(!(u == u_end) || (i+m-j) == spl.n() + 1);
 
 	using my::gl::math::vec4;
-	vec4 const			p_		(                                   jm1 == 0? p0(spl,im1,u) : p(spl,jm1,im1,u));
-	vec4 const			p__		(iszero(num2)? vec4::New(0,0,0,0) : jm1 == 0? p0(spl,i,u)   : p(spl,jm1,i,u)  );
 
-	return r1*p_ + (iszero(num2)? vec4::New(0,0,0,0) : r2*p__);
+	vec4 result(vec4::New());
+
+	// also, u == u_end means that it's not a real "interpolation".
+	// the first element is ignored, and only the second one
+	// is taken into account.
+	// In that case, of course, the second element's factor is
+	// (far from zero) 1.0f.
+	DASSERT(!(u == u_end) || !sndzero);
+
+	vec4 const p__(!sndzero? jm1 == 0? p0(spl,i,u) : p<SubcontrolPointsInterpolatorType>(spl,jm1,i,u) : vec4::New(0,0,0,0));
+
+	if (u == u_end)
+		result = p__;
+	else {
+		vec4 const p_(jm1 == 0? p0(spl,im1,u) : p<SubcontrolPointsInterpolatorType>(spl,jm1,im1,u));
+
+		result = SubcontrolPointsInterpolatorType::lerp(p_, p__, u_end, u_start, u);
+	}
+
+	return result;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////
-}	// optimised
+template <typename SubcontrolPointsInterpolatorType>
+static inline my::gl::math::vec4 p_s_k (spline const& spl, size_t const subcurve_index, float const u) {
+	using my::gl::math::vec4;
+
+	size_t const			k					(spl.k());
+	size_t const			bottom_most_length	(k + 1);
+	std::vector<vec4>		r					(bottom_most_length, vec4::New());
+	spline::knots_t const&	knots				(spl.getknots());
+	size_t const			s					(subcurve_index);
+
+	// Initialise for j=0
+	for (size_t l(0u); l < bottom_most_length; ++l)
+		r.at(l) = spl.getcpoint(s-(k-l));
+
+	// Recursively caculate interpolations of control points
+	for (size_t j(1u); j <= k; ++j)
+		for (size_t l(0u); l <= k-j; ++l) {
+			float const	u_end	(knots.at(s+l+1));
+			float const	u_start	(knots.at(s-(k-j-l)));
+			
+			// u == u_end allowed only for the last subcurve in the domain of definition
+			DASSERT(!(u == u_end) || (s+l+1) == spl.n() + 1);
+			// also, u == u_end means that it's not a real "interpolation".
+			// the first element is ignored, and only the second one
+			// is taken into account.
+			r.at(l) = u == u_end? r.at(l+1) : SubcontrolPointsInterpolatorType::lerp(r.at(l), r.at(l+1), u_end, u_start, u);
+		}
+
+	DASSERT(r.at(0) == p<SubcontrolPointsInterpolatorType>(spl,k,s,u));
+	return r.at(0);
+}
+
 //////////////////////////////////////////////////////////////////////////////////////
 }	// deboor
 //////////////////////////////////////////////////////////////////////////////////////
@@ -671,7 +687,7 @@ static std::list<my::gl::math::Vector4> const producenurbspoints (void) {
 template <typename SubcontrolPointsInterpolatorType>
 static my::gl::math::vec4 nurbat_deboor (spline const& spl, float const u) {
 	size_t const s(spline_get_subcurve_of(spl, u));
-	return deboor::simple::p<SubcontrolPointsInterpolatorType>(spl, spl.k(), s, u);
+	return DE_BOOR_P(SubcontrolPointsInterpolatorType, spl, spl.k(), s, u);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -689,7 +705,7 @@ static std::list<my::gl::math::Vector4> const producenurbspoints_deboor (void) {
 	for (size_t s(spl.k()); s <= n; ++s) {
 		float const u_end(spl.getknot(s+1));
 		for (float u(spl.getknot(s)); u < u_end; u += 0.01f)
-			points.push_back(deboor::simple::p<SubcontrolPointsInterpolatorType>(spl,k,s,u));
+			points.push_back(DE_BOOR_P(SubcontrolPointsInterpolatorType, spl, k, s, u));
 	}
 
 	return points;
