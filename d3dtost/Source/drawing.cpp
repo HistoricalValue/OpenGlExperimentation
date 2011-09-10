@@ -41,6 +41,12 @@ template <typename C, typename F>
 static void foreach (C const& c, F const& f)
 	{ std::for_each(c.begin(), c.end(), f); }
 
+static inline
+my::gl::math::Vector4 makevector4 (ankh::math::trig::vec4 const& v) {
+	DASSERT(v.w == 1.0f);
+	return my::gl::math::Vector4::New(v.x, v.y, v.z, v.w);
+}
+
 namespace floats {
 static const float precision(1e-06f);
 
@@ -226,83 +232,38 @@ size_t spline_get_subcurve_of (spline const& spl, float const u) {
 namespace _ {
 //////////////////////////////////////////////////////////////////////////////////////
 
-static inline float N1 (spline const& spl, short const i, float const u) {
-	DASSERT(i >= 0);
-	bool const gt(u >= spl.getknot(i));
-	bool const lt(i+1 == spl.l()? u <= spl.getknot(i+1) : u < spl.getknot(i+1));
+static bool VerifyBaseFunctions (short const m, std::vector<ankh::surfaces::Traits::Precision::Unit> const& knots) {
+	using ankh::math::trig::vec4;
+	using ankh::surfaces::nurbs::Curve;
+	using ankh::surfaces::Traits::Precision::step;
+	using ankh::surfaces::Traits::Precision::Unit;
+	using ankh::surfaces::nurbs::curve_algorithms::simple::N;
+	using ankh::surfaces::Traits::Precision::iszero;
+	using ankh::surfaces::Traits::Precision::less;
+	using ankh::surfaces::Traits::Precision::equals;
 
-	return (gt && lt)? 1.0f : 0.0f;
-}
-
-static inline float N (spline const& spl, short const i, short const m, float const u) {
-	DASSERT(i >= 0);
-	DASSERT(m > 0);
-
-	float result;
-
-	size_t const k(m-1);
-
-	if (m == 1)
-		result = N1(spl, i, u);
-	else {
-		DASSERT(k >= 1);
-
-		float const	nom1	= u - spl.getknot(i);
-		float const	denom1	= spl.getknot(i+k) - spl.getknot(i);
-		float const	nom2	= spl.getknot(i+k+1) - u;
-		float const	denom2	= spl.getknot(i+k+1) - spl.getknot(i+1);
-
-		bool const	both1zero	= floats::iszero(denom1) && floats::iszero(nom1);
-		bool const	both2zero	= floats::iszero(denom2) && floats::iszero(nom2);
-
-		DASSERT(both1zero || !floats::iszero(denom1));
-		DASSERT(both2zero || !floats::iszero(denom2));
-
-		float const	N1	= both1zero? 0.0f : (nom1/denom1) * N(spl,i,k,u);
-		float const N2	= both2zero? 0.0f : (nom2/denom2) * N(spl,i+1,k,u);
-
-		result = N1 + N2;
-
-		DASSERT(result >= 0.0f);
-		DASSERT(result <= 1.0f);
-	}
-
-	return result;
-}
-
-//////////////////////////////////////////////////////////////////////////////////////
-
-static bool VerifyBaseFunctions (short const m, std::vector<float> const& knots) {
-	DASSERT(m > 1);
-
-	using my::gl::math::vec4;
 	DASSERT(m >= 1);
 
 	size_t const l(knots.size() - 1);
 	size_t const n(l - m);
 
-	std::list<vec4> empty(n, vec4::New());
-	spline spl(knots.begin(), knots.end(), empty.begin(), empty.end());
+	std::list<vec4> empty(n, vec4());
+	Curve spl(empty.begin(), empty.end(), knots.begin(), knots.end());
+
+	Curve::Domain const	domain	(spl.GetDomainOfDefinition());
 
 	// Verify that N_i,m has support in [u_i, u_i+m] for m>=1 and is also >=0 for all u in domain of definition
 	for (size_t i(0); i <= n; ++i) { // foreach control point
-		for (float u(spl.getknot(m-1)); u <= spl.getknot(n + 1); u += 0.01f) { // for all u in definition range
+		for (Unit u(domain.first); u <= domain.second; u += step) { // for all u in definition range
 			float const	Nval			(N(spl,i,m,u));
-			float const	u_i				(spl.getknot(i));
-			float const	u_i_m			(spl.getknot(i+m));
+			float const	u_i				(spl.GetKnot(i));
+			float const	u_i_m			(spl.GetKnot(i+m));
 			bool const	u_lt_u_i		(u < u_i);
 			bool const	u_gt_u_i_m		(u > u_i_m);
 			bool const	Nval_lt_zero	(Nval < 0.0f);
-			bool const	Nval_is_zero	(floats::iszero(Nval));
+			bool const	Nval_is_zero	(iszero(Nval));
 
-			if (u_lt_u_i) {
-				bool const isok(Nval_is_zero);
-				DASSERT(isok);
-				if (!isok)
-					return false;
-			}
-			else
-			if (u_gt_u_i_m) {
+			if (u_lt_u_i || u_gt_u_i_m) {
 				bool const isok(Nval_is_zero);
 				DASSERT(isok);
 				if (!isok)
@@ -316,16 +277,16 @@ static bool VerifyBaseFunctions (short const m, std::vector<float> const& knots)
 		}
 	}
 
-	// Verify that SUM N_i,m(u) for i in [0,n] for all u in [u_m-1, u_n+1]
-	for (float u(spl.getknot(m-1)); u <= spl.getknot(n+1); u += 0.01f) {
-		float sum(0.0f);
+	// Verify that SUM N_i,m(u) = 1 for i in [0,n] for all u in [u_m-1, u_n+1]
+	for (Unit u(domain.first); u <= domain.second; u += step) {
+		Unit sum(0.0f);
 
 		for (size_t i(0); i <= n; ++i) {
 			sum += N(spl,i,m,u);
-			DASSERT(floats::less(sum, 1.0000000f));
+			DASSERT(less(sum, 1.0f));
 		}
 
-		if (!floats::equals(sum, 1.0f)) {
+		if (!equals(sum, 1.0f)) {
 			DASSERT(false);
 			return false;
 		}
@@ -624,58 +585,67 @@ static inline std::vector<float> const& knots (void)
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-static my::gl::math::Vector4 nurbat (spline const& spl, float const u) {
-	using my::gl::math::vec4;
+static my::gl::math::Vector4 nurbat (ankh::surfaces::nurbs::Curve const& spl, float const u) {
+	using ankh::math::trig::vec4;
+	using ankh::math::trig::vec3;
+	using namespace ankh::surfaces::nurbs;
+	using namespace ankh::surfaces::Traits;
+	using curve_algorithms::InDefinitionDomain;
+	using curve_algorithms::simple::N;
+	using my::gl::math::Vector4;
 
 	NOT_USING_DE_BOOR_CHECK();
 
-	DASSERT(spl.u_in_definition_domain(u));
+	DASSERT(InDefinitionDomain(spl, u));
 
-	vec4 sum(vec4::New());
+	vec4 sum;
+	DASSERT(sum.w == 1.0f);
+	typedef ControlPoints::const_iterator	ite_t;
 
-	typedef std::vector<vec4>		vec4s_t;
-	typedef vec4s_t::const_iterator	ite_t;
-
-	ite_t const	cpoints_begin	(spl.getcpoints().begin());
-	ite_t const	cpoints_end		(spl.getcpoints().end());
+	ite_t const	cpoints_begin	(spl.GetControlPointsBegin());
+	ite_t const	cpoints_end		(spl.GetControlPointsEnd());
 
 	for (ite_t i(cpoints_begin); i != cpoints_end; ++i)
-		sum.addtothis_asvec3(N(spl, std::distance(cpoints_begin, i), spl.m(), u) * *i);
+		sum.vec3::operator+=(*i * N(spl, std::distance(cpoints_begin, i), spl.m(), u));
 
-	return sum;
+	DASSERT(sum.w == 1.0f);
+	return makevector4(sum);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-static std::list<my::gl::math::Vector4> const producenurbspoints (void) {
+static std::list<my::gl::math::Vector4> const producenurbspoints (ankh::surfaces::nurbs::Curve const& spl) {
 	using my::gl::math::Vector4;
-	using my::gl::math::vec4;
+	using namespace ankh::surfaces::nurbs;
+	using namespace ankh::surfaces::Traits;
+	using Precision::step;
+	using Precision::equals;
+	using ankh::math::trig::vec4;
+	using ankh::math::trig::vec3;
+	using curve_algorithms::simple::N;
 
 	NOT_USING_DE_BOOR_CHECK();
 
 	std::list<Vector4> points;
-	spline const& spl(getspline());
-	spline::knots_t const& knots(spl.getknots());
 
-	{
-		for (size_t j(spl.k()); j <= spl.n(); ++j) {
-			for (float u(spl.getknot(j)); u <= spl.getknot(j + 1); u += 0.01f) {
-				Vector4 sum(Vector4::New());
+	size_t const	k	(spl.k());
+	size_t const	n	(spl.n());
+	size_t const	m	(spl.m());
 
-				std::list<Vector4> subparts;
-				for (size_t i(j - (spl.k())); i <= j; ++i) {
-					subparts.push_back(N(spl,i,spl.m(),u) * spl.getcpoint(i));
-					sum.addtothis_asvec3(subparts.back());
-				}
+	for (size_t j(k); j <= n; ++j) {
+		for (float u(spl.GetKnot(j)); u <= spl.GetKnot(j + 1); u += step) {
+			vec4 sum;
 
-				DASSERT(floats::equals(static_cast<Vector4 const&>(sum).w(), 1.0f));
-				DASSERT(static_cast<Vector4 const&>(sum).x() >= minx);
-				DASSERT(static_cast<Vector4 const&>(sum).x() <= maxx);
-				DASSERT(static_cast<Vector4 const&>(sum).y() >= miny);
-				DASSERT(static_cast<Vector4 const&>(sum).y() <= maxy);
+			for (size_t i(j - k); i <= j; ++i)
+				sum.vec3::operator +=(spl.GetControlPoint(i) * N(spl,i,m,u));
 
-				points.push_back(sum);
-			}
+			DASSERT(equals(static_cast<vec4 const&>(sum).w , 1.0f));
+			DASSERT(       static_cast<vec4 const&>(sum).x >= minx);
+			DASSERT(       static_cast<vec4 const&>(sum).x <= maxx);
+			DASSERT(       static_cast<vec4 const&>(sum).y >= miny);
+			DASSERT(       static_cast<vec4 const&>(sum).y <= maxy);
+
+			points.push_back(makevector4(sum));
 		}
 	}
 
@@ -724,7 +694,16 @@ void addaslinesto (my::gl::shapes::ShapeCompositionFactory& f) {
 void addaspointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 	using my::gl::shapes::Colour;
 	using my::gl::math::vec4;
-	_::addshapesto(f, _::vertices(_::producenurbspoints(), Colour(vec4::New(0.5f, 0.2f, 0.2f))));
+	_::addshapesto(
+			f,
+			_::vertices(
+				_::producenurbspoints(
+					ankh::surfaces::nurbs::Curve(
+						_::getspline().getcpoints().begin(),
+						_::getspline().getcpoints().end(),
+						_::getspline().getknots().begin(),
+						_::getspline().getknots().end())),
+				Colour(vec4::New(0.5f, 0.2f, 0.2f))));
 }
 
 void addcontrolpointsto (my::gl::shapes::ShapeCompositionFactory& f) {

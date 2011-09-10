@@ -34,13 +34,11 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\Bloost.props" />
     <Import Project="..\D3D.props" />
-    <Import Project="..\GLUTLinkDebug.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\Bloost.props" />
     <Import Project="..\D3D.props" />
-    <Import Project="..\GLUTLinkRelease.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -141,6 +139,9 @@
   <ItemGroup>
     <ProjectReference Include="..\..\ankh\Images\Project\ImageLoader.vcxproj">
       <Project>{f3b33fb5-57dc-44cc-8b99-52afa5f087bf}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ankh\Surfaces\Project\Surfaces.vcxproj">
+      <Project>{bc821220-382d-4691-8bbe-6db8f45da3f3}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\ankh\Textures\Project\TextureManager.vcxproj">
       <Project>{126c2a20-0584-41bd-8658-164b81c4e8f7}</Project>

@@ -1,9 +1,15 @@
 #include <SurfacesDLL.h>
 #include <SurfacesTraits.h>
+// - nurbs
+#include <nurbs/Algorithms.h>
+#include <nurbs/Algorithms_inl.h>
 #include <nurbs/ControlPoints.h>
-#include <nurbs/Knots.h>
 #include <nurbs/Curve.h>
 #include <nurbs/Curve_inl.h>
+#include <nurbs/CurveAlgorithms.h>
+#include <nurbs/CurveAlgorithms_inl.h>
+#include <nurbs/Knots.h>
+#include <nurbs/Knots_inl.h>
 
 
 #include "MyWindows.h"
@@ -96,9 +102,9 @@
 #include "PGlobalSingleAllocationBuffer.h"
 #include "PPlaceholder_inl.h"
 
-#define FREEGLUT_LIB_PRAGMAS 0
-#include <GL/glut.h>
-
 namespace d3dtost {
 	extern LPWSTR ConvertErrorMessage (char const* const msg);
 }
+
+
+#include <Trig.h>

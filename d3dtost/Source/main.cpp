@@ -62,23 +62,6 @@ namespace _ {
 		}
 	}
 
-
-	static void buffahSwappah (void* const clos) {
-		DASSERT(clos == NULL);
-		glutSwapBuffers();
-	}
-
-	static void* drawData(NULL);
-	static void drawinit (void) {
-		drawData = my::drawing::setup();
-	}
-	static void draw (void) {
-		my::drawing::draw(drawData, &buffahSwappah, NULL);
-	}
-	static void drawcleanup (void) {
-		my::drawing::cleanup(drawData);
-	}
-
 	struct {
 		operator bool (void) const {
 			std::ifstream ifs("../shaders/vertex2.txt");
@@ -107,56 +90,6 @@ namespace my { namespace global {
 }} // namespace my::global
 
 namespace my {
-	int APIENTRY WinMain0 (
-			HINSTANCE hInstance,
-			HINSTANCE hPrevInstance,
-			LPTSTR    lpCmdLine,
-			int       nCmdShow) {
-
-		{
-			char progname[] = "satubublis";
-			int argc(1);
-			char* argv[] = { &progname[0] };
-			glutInit(&argc, &argv[0]);
-			glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_STENCIL);
-			glutInitWindowSize(800, 600);
-			glutCreateWindow("Universe control");
-			glutDisplayFunc(&_::draw);
-		}
-
-		_::Console		console;
-		PASSERT(console.IsValid())
-
-		_::info_console = &console;
-
-		dinit(&_::ddebug::onError);
-		d3dtost::Initialise();
-
-		{
-			my::OpenGL opengl;
-
-			if (opengl.Initialise() && opengl.IsValid()) {
-				console << _T("Hello comrades\n");// << std::endl;
-
-				_::drawinit();
-
-
-				///////////////
-				glutMainLoop();
-				///////////////
-
-
-				_::drawcleanup();
-			}
-		}
-
-		d3dtost::CleanUp();
-		dclose();
-		system("pause");
-		_::info_console = NULL;
-
-		return 0;
-	}
 
 	int APIENTRY WinMain (
 			HINSTANCE hInstance,

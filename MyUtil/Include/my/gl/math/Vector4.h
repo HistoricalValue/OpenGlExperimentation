@@ -2,6 +2,7 @@
 #define __MY_UTIL__MY__GL__MATH__VECTOR_4__H__
 
 #include <MyUtil.h>
+#include <Trig.h>
 
 #define M_E			static_cast<float>(2.71828182845904523536f )
 #define M_LOG2E		static_cast<float>(1.44269504088896340736f )
@@ -27,6 +28,8 @@ namespace my { namespace gl { namespace math {
 		static Vector4									New (float x = 0.f, float y = 0.f, float z = 0.f, float w = 1.f);
 		static Vector4									New (float const v[4]);
 		static Vector4									New (Vector4 const&);
+
+														operator ankh::math::trig::vec4 (void) const;
 
 														Vector4 (Vector4 const&);
 														~Vector4 (void);

@@ -47,13 +47,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>.\Include;$(DELTA)UtilLib\Include;..\..\ankh\Images\Include;..\DevIL\DevIL\include;$(IncludePath)</IncludePath>
+    <IncludePath>.\Include;$(DELTA)UtilLib\Include;..\..\ankh\Images\Include;..\DevIL\DevIL\include;..\..\ankh\Math\Include;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <LibraryPath>..\ExtraLibs-Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>.\Include;$(DELTA)UtilLib\Include;..\..\ankh\Images\Include;..\DevIL\DevIL\include;$(IncludePath)</IncludePath>
+    <IncludePath>.\Include;$(DELTA)UtilLib\Include;..\..\ankh\Images\Include;..\DevIL\DevIL\include;..\..\ankh\Math\Include;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <LibraryPath>..\ExtraLibs-Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
