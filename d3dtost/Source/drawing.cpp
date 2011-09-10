@@ -211,7 +211,7 @@ size_t spline_get_subcurve_of (spline const& spl, float const u) {
 	size_t					result	(-1);
 
 	// u could be the last u of the last subcurve in the domain of definition
-	// (that is, the knot of the next subcurve). In that case, it is still 
+	// (that is, the knot of the next subcurve). In that case, it is still
 	// considered to be in the last subcurve in the domain of definition.
 	if (u == knots.at(n + 1))
 		result = n;
@@ -452,7 +452,7 @@ static inline my::gl::math::vec4 p_s_k (spline const& spl, size_t const subcurve
 		for (size_t l(0u); l <= k-j; ++l) {
 			float const	u_end	(knots.at(s+l+1));
 			float const	u_start	(knots.at(s-(k-j-l)));
-			
+
 			// u == u_end allowed only for the last subcurve in the domain of definition
 			DASSERT(!(u == u_end) || (s+l+1) == spl.n() + 1);
 			// also, u == u_end means that it's not a real "interpolation".
