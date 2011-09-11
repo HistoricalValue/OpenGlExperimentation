@@ -3,25 +3,36 @@
 //////////////////////////////////////////////////////////////////////////////////////
 
 // CONTROL SWITCHES
-#define USE_DE_BOOR				1
-#define WITH_OPTIMISED_DE_BOOR	1
+#define USE_DE_BOOR								1
+#define WITH_OPTIMISED_DE_BOOR					1
+#define WITH_FAST_CONTROL_POINT_INTERPOLATOR	1
+#define WITH_OPTIMISED_BLENDING					1
 
 //////////////////////////////////////////////////////////////////////////////////////
 
 // CONTROL SWITCHES RESULTS
+template <const int WithFastControlPointInterpolator> struct ControlPointInterpolatoTraits;
+template <> struct ControlPointInterpolatoTraits<1> { typedef ankh::surfaces::nurbs::curve_algorithms::FastControlPointInterpolator		Interpolator; };
+template <> struct ControlPointInterpolatoTraits<0> { typedef ankh::surfaces::nurbs::curve_algorithms::PreciceControlPointInterpolator	Interpolator; };
+
+template <const int WithOptimisedDeBoor> struct DeBoorOptimisationTraits;
+template <> struct DeBoorOptimisationTraits<1> {
+	typedef ankh::surfaces::nurbs::tesselation::OptimisedInterpolatingTraits<typename ControlPointInterpolatoTraits<WITH_FAST_CONTROL_POINT_INTERPOLATOR>::Interpolator >	Traits; };
+template <> struct DeBoorOptimisationTraits<0> {
+	typedef ankh::surfaces::nurbs::tesselation::SimpleInterpolatingTraits<typename ControlPointInterpolatoTraits<WITH_FAST_CONTROL_POINT_INTERPOLATOR>::Interpolator >		Traits; };
+
+template <const int WithOptimisedBlending> struct BlendingOptimisationTraits;
+template <> struct BlendingOptimisationTraits<1> { typedef ankh::surfaces::nurbs::tesselation::OptimisedBlendingTraits	Traits; };
+template <> struct BlendingOptimisationTraits<0> { typedef ankh::surfaces::nurbs::tesselation::SimpleBlendingTraits		Traits; };
+
 #if USE_DE_BOOR
-#	define DE_BOOR_OR_NOT_DE_BOOR(FUNC) FUNC##_deboor<ankh::surfaces::nurbs::curve_algorithms::PreciceControlPointInterpolator>
+#	define DE_BOOR_OR_NOT_DE_BOOR(FUNC) ankh::surfaces::nurbs::tesselation::deboor:: FUNC <DeBoorOptimisationTraits <WITH_OPTIMISED_DE_BOOR>::Traits >
 #	define NOT_USING_DE_BOOR_CHECK()	DASSERT(!"Using De-Boor's algorithm, this function shouldn't be used")
 #else
-#	define DE_BOOR_OR_NOT_DE_BOOR(FUNC)	FUNC
+#	define DE_BOOR_OR_NOT_DE_BOOR(FUNC)	ankh::surfaces::nurbs::tesselation::blending:: FUNC <BlendingOptimisationTraits <WITH_OPTIMISED_BLENDING>::Traits >
 #	define NOT_USING_DE_BOOR_CHECK()
 #endif
 
-#if WITH_OPTIMISED_DE_BOOR
-#	define DE_BOOR_P(SUBCONTROL_POINTS_INTERPOLATOR_TYPE, SPL, K, S, U)	ankh::surfaces::nurbs::curve_algorithms::optimised::p_k_s<SUBCONTROL_POINTS_INTERPOLATOR_TYPE>(SPL, S, U)
-#else
-#	define DE_BOOR_P(SUBCONTROL_POINTS_INTERPOLATOR_TYPE, SPL, K, S, U)	ankh::surfaces::nurbs::curve_algorithms::simple::p<SUBCONTROL_POINTS_INTERPOLATOR_TYPE>(SPL, K, S, U)
-#endif
 
 #ifdef _DEBUG
 #	define NOTEND(I,END) _NOTEND(I,END)
@@ -177,9 +188,11 @@ static std::list<my::gl::shapes::Line> const linestrip (C const& points, my::gl:
 	DASSERT(i != points_end);
 	typename C::const_iterator prev(i++);
 
+	Colour const bright(ColourFactory::Brighter(ColourFactory::Brighter(ColourFactory::Brighter(ColourFactory::Brighter(col)))));
+
 	std::list<Line> result;
 	for (; i != points_end; prev = i++)
-		result.push_back(Line(Vertex(*prev), Vertex(*i), col, ColourFactory::Brighter(ColourFactory::Brighter(ColourFactory::Brighter(ColourFactory::Brighter(col))))));
+		result.push_back(Line(Vertex(makevector4(*prev)), Vertex(makevector4(*i)), col, bright));
 
 	return result;
 }
@@ -286,120 +299,25 @@ static inline ankh::surfaces::nurbs::Curve const& getcurve (void)
 	{ return *DPTR(_DNOTNULL(_curve)); }
 
 //////////////////////////////////////////////////////////////////////////////////////
-
-static my::gl::math::Vector4 nurbat (ankh::surfaces::nurbs::Curve const& spl, float const u) {
-	using ankh::math::trig::vec4;
-	using ankh::math::trig::vec3;
-	using namespace ankh::surfaces::nurbs;
-	using namespace ankh::surfaces::Traits;
-	using curve_algorithms::InDefinitionDomain;
-	using curve_algorithms::simple::N;
-	using my::gl::math::Vector4;
-
-	NOT_USING_DE_BOOR_CHECK();
-
-	DASSERT(InDefinitionDomain(spl, u));
-
-	vec4 sum;
-	DASSERT(sum.w == 1.0f);
-	typedef ControlPoints::const_iterator	ite_t;
-
-	ite_t const	cpoints_begin	(spl.GetControlPointsBegin());
-	ite_t const	cpoints_end		(spl.GetControlPointsEnd());
-	DASSERT(cpoints_begin != cpoints_end);
-
-	for (ite_t i(cpoints_begin); i != cpoints_end; ++i)
-		sum.vec3::operator+=(*i * N(spl, std::distance(cpoints_begin, i), spl.m(), u));
-
-	DASSERT(sum.w == 1.0f);
-	return makevector4(sum);
-}
-
-//////////////////////////////////////////////////////////////////////////////////////
-
-static std::list<my::gl::math::Vector4> const producenurbspoints (ankh::surfaces::nurbs::Curve const& spl) {
-	using my::gl::math::Vector4;
-	using namespace ankh::surfaces::nurbs;
-	using namespace ankh::surfaces::Traits;
-	using Precision::step;
-	using Precision::isequal;
-	using ankh::math::trig::vec4;
-	using ankh::math::trig::vec3;
-	using curve_algorithms::simple::N;
-
-	NOT_USING_DE_BOOR_CHECK();
-
-	std::list<Vector4> points;
-
-	size_t const	k	(spl.k());
-	size_t const	n	(spl.n());
-	size_t const	m	(spl.m());
-
-	for (size_t j(k); j <= n; ++j) {
-		for (float u(spl.GetKnot(j)); u <= spl.GetKnot(j + 1); u += step) {
-			vec4 sum;
-
-			for (size_t i(j - k); i <= j; ++i)
-				sum.vec3::operator +=(spl.GetControlPoint(i) * N(spl,i,m,u));
-
-			DASSERT(isequal(static_cast<vec4 const&>(sum).w , 1.0f));
-			DASSERT(        static_cast<vec4 const&>(sum).x >= minx);
-			DASSERT(        static_cast<vec4 const&>(sum).x <= maxx);
-			DASSERT(        static_cast<vec4 const&>(sum).y >= miny);
-			DASSERT(        static_cast<vec4 const&>(sum).y <= maxy);
-
-			points.push_back(makevector4(sum));
-		}
-	}
-
-	return points;
-}
-
-//////////////////////////////////////////////////////////////////////////////////////
-
-template <typename SubcontrolPointsInterpolatorType>
-static my::gl::math::vec4 nurbat_deboor (ankh::surfaces::nurbs::Curve const& spl, float const u) {
-	size_t const s(ankh::surfaces::nurbs::curve_algorithms::GetSubcurveIndexInWhichBelongs(spl, u));
-	return makevector4(DE_BOOR_P(SubcontrolPointsInterpolatorType, spl, spl.k(), s, u));
-}
-
-//////////////////////////////////////////////////////////////////////////////////////
-
-template <typename SubcontrolPointsInterpolatorType>
-static std::list<my::gl::math::Vector4> const producenurbspoints_deboor (ankh::surfaces::nurbs::Curve const& spl) {
-	using my::gl::math::vec4;
-	using ankh::surfaces::nurbs::Curve;
-	using ankh::surfaces::Traits::Precision::step;
-	using ankh::surfaces::Traits::Precision::isless;
-
-	std::list<vec4> points;
-
-	size_t const	k	(spl.k());
-	size_t const	end	(spl.GetLastKnotInDomainIndex() - 1);
-
-	for (size_t s(spl.GetFirstKnotInDomainIndex()); s <= end; ++s) {
-		float const u_end(spl.GetKnot(s+1));
-		for (float u(spl.GetKnot(s)); isless(u, u_end); u += step)
-			points.push_back(makevector4(DE_BOOR_P(SubcontrolPointsInterpolatorType, spl, k, s, u)));
-	}
-
-	return points;
-}
-
-//////////////////////////////////////////////////////////////////////////////////////
 } // _
 //////////////////////////////////////////////////////////////////////////////////////
 
 void addaslinesto (my::gl::shapes::ShapeCompositionFactory& f) {
 	using my::gl::shapes::Colour;
-	using my::gl::math::vec4;
-	_::addshapesto(f, _::linestrip(DE_BOOR_OR_NOT_DE_BOOR(_::producenurbspoints)(_::getcurve()), Colour(vec4::New(0.8f, 0.4f, 0.8f))));
+	using my::gl::math::Vector4;
+	using ankh::math::trig::vec4;
+
+	std::list<vec4> dest;
+	_::addshapesto(f, _::linestrip(DE_BOOR_OR_NOT_DE_BOOR(ProduceAll)(_::getcurve(), dest), Colour(Vector4::New(0.8f, 0.4f, 0.8f))));
 }
 
 void addaspointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 	using my::gl::shapes::Colour;
-	using my::gl::math::vec4;
-	_::addshapesto(f, _::vertices(DE_BOOR_OR_NOT_DE_BOOR(_::producenurbspoints)(_::getcurve()), Colour(vec4::New(0.5f, 0.2f, 0.2f))));
+	using my::gl::math::Vector4;
+	using ankh::math::trig::vec4;
+
+	std::list<vec4> dest;
+	_::addshapesto(f, _::vertices(DE_BOOR_OR_NOT_DE_BOOR(ProduceAll)(_::getcurve(), dest), Colour(Vector4::New(0.5f, 0.2f, 0.2f))));
 }
 
 void addcontrolpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
@@ -414,7 +332,8 @@ void addcontrolpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 
 void addknotpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 	using my::gl::shapes::Colour;
-	using my::gl::math::vec4;
+	using my::gl::math::Vector4;
+	using ankh::math::trig::vec4;
 	using ankh::surfaces::nurbs::Curve;
 
 	typedef std::vector<float>		knots_t;
@@ -427,9 +346,9 @@ void addknotpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 	size_t			i	(spl.GetFirstKnotInDomainIndex());
 	size_t const	end	(spl.GetLastKnotInDomainIndex());
 	for (; i <= end; ++i)
-		points.push_back(DE_BOOR_OR_NOT_DE_BOOR(_::nurbat)(spl, spl.GetKnot(i)));
+		points.push_back(DE_BOOR_OR_NOT_DE_BOOR(At)(spl, spl.GetKnot(i)));
 
-	_::addshapesto(f, _::vertices(points, Colour(vec4::New(0.7f, 0.5f, 0.5f))));
+	_::addshapesto(f, _::vertices(points, Colour(Vector4::New(0.7f, 0.5f, 0.5f))));
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -564,24 +483,6 @@ namespace _ {
 	static void DeallocateSingleAllocationBufferMemory (void* ptr) {
 		PASSERT(ptr == __last_static_buffer_allocation)
 		codeshare::utilities::GlobalSingleAllocationBuffer::Get().ReleaseArrayOf<char>(__last_static_buffer_allocation_size);
-	}
-
-	static const float FLOAT_EQUALITY_MARGIN(1e-6f);
-	P_INLINE
-	static bool eq (float const f1, float const f2) {
-#ifdef P_DEBUG
-		bool const f2_gt_f1(f2 > f1);
-		float const diff(f2_gt_f1? f2-f1 : f1-f2);
-		bool const diff_too_small(diff <= FLOAT_EQUALITY_MARGIN);
-
-		return diff_too_small;
-#else
-		return	f2 > f1?
-					f2-f1 <= FLOAT_EQUALITY_MARGIN
-				:
-					f1-f2 <= FLOAT_EQUALITY_MARGIN
-				;
-#endif
 	}
 
 	static void SetAttribute (

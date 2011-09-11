@@ -1,5 +1,6 @@
 #include <SurfacesDLL.h>
 #include <SurfacesTraits.h>
+#include <SurfacesTraits_inl.h>
 // - nurbs
 #include <nurbs/Algorithms.h>
 #include <nurbs/Algorithms_inl.h>
@@ -8,9 +9,10 @@
 #include <nurbs/Curve_inl.h>
 #include <nurbs/CurveAlgorithms.h>
 #include <nurbs/CurveAlgorithms_inl.h>
+#include <nurbs/CurveTesselation.h>
+#include <nurbs/CurveTesselation_inl.h>
 #include <nurbs/Knots.h>
 #include <nurbs/Knots_inl.h>
-
 
 #include "MyWindows.h"
 
