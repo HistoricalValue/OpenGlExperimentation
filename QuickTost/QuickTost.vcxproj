@@ -44,10 +44,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(ProjectDir)..\..\ankh\Images\Include;$(ProjectDir)..\..\ankh\Textures\Include;$(ProjectDir)..\MyUtil\Include;$(ProjectDir)..\Codeshare\isi_branch\Utilities\Include;$(ProjectDir)..\..\ankh\Math\Include;$(IncludePath)</IncludePath>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(ProjectDir)..\..\ankh\Images\Include;$(ProjectDir)..\..\ankh\Textures\Include;$(ProjectDir)..\MyUtil\Include;$(ProjectDir)..\Codeshare\isi_branch\Utilities\Include;$(ProjectDir)..\..\ankh\Math\Include;$(IncludePath)</IncludePath>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

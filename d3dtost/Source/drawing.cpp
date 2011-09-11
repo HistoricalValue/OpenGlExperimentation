@@ -239,8 +239,8 @@ static bool VerifyBaseFunctions (short const m, std::vector<ankh::surfaces::Trai
 	using ankh::surfaces::Traits::Precision::Unit;
 	using ankh::surfaces::nurbs::curve_algorithms::simple::N;
 	using ankh::surfaces::Traits::Precision::iszero;
-	using ankh::surfaces::Traits::Precision::less;
-	using ankh::surfaces::Traits::Precision::equals;
+	using ankh::surfaces::Traits::Precision::isless;
+	using ankh::surfaces::Traits::Precision::isequal;
 
 	DASSERT(m >= 1);
 
@@ -283,10 +283,10 @@ static bool VerifyBaseFunctions (short const m, std::vector<ankh::surfaces::Trai
 
 		for (size_t i(0); i <= n; ++i) {
 			sum += N(spl,i,m,u);
-			DASSERT(less(sum, 1.0f) || equals(sum, 1.0f));
+			DASSERT(isless(sum, 1.0f) || isequal(sum, 1.0f));
 		}
 
-		if (!equals(sum, 1.0f)) {
+		if (!isequal(sum, 1.0f)) {
 			DASSERT(false);
 			return false;
 		}
@@ -628,7 +628,7 @@ static std::list<my::gl::math::Vector4> const producenurbspoints (spline const&,
 	using namespace ankh::surfaces::nurbs;
 	using namespace ankh::surfaces::Traits;
 	using Precision::step;
-	using Precision::equals;
+	using Precision::isequal;
 	using ankh::math::trig::vec4;
 	using ankh::math::trig::vec3;
 	using curve_algorithms::simple::N;
@@ -648,11 +648,11 @@ static std::list<my::gl::math::Vector4> const producenurbspoints (spline const&,
 			for (size_t i(j - k); i <= j; ++i)
 				sum.vec3::operator +=(spl.GetControlPoint(i) * N(spl,i,m,u));
 
-			DASSERT(equals(static_cast<vec4 const&>(sum).w , 1.0f));
-			DASSERT(       static_cast<vec4 const&>(sum).x >= minx);
-			DASSERT(       static_cast<vec4 const&>(sum).x <= maxx);
-			DASSERT(       static_cast<vec4 const&>(sum).y >= miny);
-			DASSERT(       static_cast<vec4 const&>(sum).y <= maxy);
+			DASSERT(isequal(static_cast<vec4 const&>(sum).w , 1.0f));
+			DASSERT(        static_cast<vec4 const&>(sum).x >= minx);
+			DASSERT(        static_cast<vec4 const&>(sum).x <= maxx);
+			DASSERT(        static_cast<vec4 const&>(sum).y >= miny);
+			DASSERT(        static_cast<vec4 const&>(sum).y <= maxy);
 
 			points.push_back(makevector4(sum));
 		}
