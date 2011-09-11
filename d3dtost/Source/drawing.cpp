@@ -3,8 +3,8 @@
 //////////////////////////////////////////////////////////////////////////////////////
 
 // CONTROL SWITCHES
-#define USE_DE_BOOR				1
-#define WITH_OPTIMISED_DE_BOOR	1
+#define USE_DE_BOOR				0
+#define WITH_OPTIMISED_DE_BOOR	0
 
 //////////////////////////////////////////////////////////////////////////////////////
 
@@ -283,7 +283,7 @@ static bool VerifyBaseFunctions (short const m, std::vector<ankh::surfaces::Trai
 
 		for (size_t i(0); i <= n; ++i) {
 			sum += N(spl,i,m,u);
-			DASSERT(less(sum, 1.0f));
+			DASSERT(less(sum, 1.0f) || equals(sum, 1.0f));
 		}
 
 		if (!equals(sum, 1.0f)) {
@@ -583,9 +583,17 @@ static inline std::vector<my::gl::math::Vector4> const& cpoints (void)
 static inline std::vector<float> const& knots (void)
 	{ return getspline().getknots(); }
 
+static inline ankh::surfaces::nurbs::Curve const getcurve (void) {
+	return ankh::surfaces::nurbs::Curve(
+			_::getspline().getcpoints().begin(),
+			_::getspline().getcpoints().end(),
+			_::getspline().getknots().begin(),
+			_::getspline().getknots().end());
+}
+
 //////////////////////////////////////////////////////////////////////////////////////
 
-static my::gl::math::Vector4 nurbat (ankh::surfaces::nurbs::Curve const& spl, float const u) {
+static my::gl::math::Vector4 nurbat (spline const&, ankh::surfaces::nurbs::Curve const& spl, float const u) {
 	using ankh::math::trig::vec4;
 	using ankh::math::trig::vec3;
 	using namespace ankh::surfaces::nurbs;
@@ -604,6 +612,7 @@ static my::gl::math::Vector4 nurbat (ankh::surfaces::nurbs::Curve const& spl, fl
 
 	ite_t const	cpoints_begin	(spl.GetControlPointsBegin());
 	ite_t const	cpoints_end		(spl.GetControlPointsEnd());
+	DASSERT(cpoints_begin != cpoints_end);
 
 	for (ite_t i(cpoints_begin); i != cpoints_end; ++i)
 		sum.vec3::operator+=(*i * N(spl, std::distance(cpoints_begin, i), spl.m(), u));
@@ -614,7 +623,7 @@ static my::gl::math::Vector4 nurbat (ankh::surfaces::nurbs::Curve const& spl, fl
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-static std::list<my::gl::math::Vector4> const producenurbspoints (ankh::surfaces::nurbs::Curve const& spl) {
+static std::list<my::gl::math::Vector4> const producenurbspoints (spline const&, ankh::surfaces::nurbs::Curve const& spl) {
 	using my::gl::math::Vector4;
 	using namespace ankh::surfaces::nurbs;
 	using namespace ankh::surfaces::Traits;
@@ -655,7 +664,7 @@ static std::list<my::gl::math::Vector4> const producenurbspoints (ankh::surfaces
 //////////////////////////////////////////////////////////////////////////////////////
 
 template <typename SubcontrolPointsInterpolatorType>
-static my::gl::math::vec4 nurbat_deboor (spline const& spl, float const u) {
+static my::gl::math::vec4 nurbat_deboor (spline const& spl, ankh::surfaces::nurbs::Curve const&, float const u) {
 	size_t const s(spline_get_subcurve_of(spl, u));
 	return DE_BOOR_P(SubcontrolPointsInterpolatorType, spl, spl.k(), s, u);
 }
@@ -663,11 +672,10 @@ static my::gl::math::vec4 nurbat_deboor (spline const& spl, float const u) {
 //////////////////////////////////////////////////////////////////////////////////////
 
 template <typename SubcontrolPointsInterpolatorType>
-static std::list<my::gl::math::Vector4> const producenurbspoints_deboor (void) {
+static std::list<my::gl::math::Vector4> const producenurbspoints_deboor (spline const& spl, ankh::surfaces::nurbs::Curve const&) {
 	using my::gl::math::vec4;
 	std::list<vec4> points;
 
-	spline const&	spl		(getspline());
 	spline::knots_t	knots	(spl.getknots());
 	size_t const	n		(spl.n());
 	size_t const	k		(spl.k());
@@ -688,22 +696,13 @@ static std::list<my::gl::math::Vector4> const producenurbspoints_deboor (void) {
 void addaslinesto (my::gl::shapes::ShapeCompositionFactory& f) {
 	using my::gl::shapes::Colour;
 	using my::gl::math::vec4;
-	_::addshapesto(f, _::linestrip(DE_BOOR_OR_NOT_DE_BOOR(_::producenurbspoints)(), Colour(vec4::New(0.8f, 0.4f, 0.8f))));
+	_::addshapesto(f, _::linestrip(DE_BOOR_OR_NOT_DE_BOOR(_::producenurbspoints)(_::getspline(), _::getcurve()), Colour(vec4::New(0.8f, 0.4f, 0.8f))));
 }
 
 void addaspointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 	using my::gl::shapes::Colour;
 	using my::gl::math::vec4;
-	_::addshapesto(
-			f,
-			_::vertices(
-				_::producenurbspoints(
-					ankh::surfaces::nurbs::Curve(
-						_::getspline().getcpoints().begin(),
-						_::getspline().getcpoints().end(),
-						_::getspline().getknots().begin(),
-						_::getspline().getknots().end())),
-				Colour(vec4::New(0.5f, 0.2f, 0.2f))));
+	_::addshapesto(f, _::vertices(DE_BOOR_OR_NOT_DE_BOOR(_::producenurbspoints)(_::getspline(), _::getcurve()), Colour(vec4::New(0.5f, 0.2f, 0.2f))));
 }
 
 void addcontrolpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
@@ -728,7 +727,7 @@ void addknotpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 	size_t			i	(spl.k());
 	size_t const	end	(spl.n() + 2);
 	for (; i != end; ++i)
-		points.push_back(DE_BOOR_OR_NOT_DE_BOOR(_::nurbat)(spl, nots.at(i)));
+		points.push_back(DE_BOOR_OR_NOT_DE_BOOR(_::nurbat)(spl, _::getcurve(), nots.at(i)));
 
 	_::addshapesto(f, _::vertices(points, Colour(vec4::New(0.7f, 0.5f, 0.5f))));
 }

@@ -60,6 +60,16 @@ namespace _ {
 		static void onError (char const* str) {
 			info_console->WriteToOutputStreamA(str);
 		}
+
+		static void asserter (bool const val, const char* const expr, uvoidvoid_f const vvf) {
+			if (!val) {
+				(*vvf)();
+
+				int x = 6;
+				int y = 8;
+				assert(!"Ze FAILR");
+			}
+		}
 	}
 
 	struct {
@@ -103,6 +113,7 @@ namespace my {
 		_::info_console = &console;
 
 		dinit(&_::ddebug::onError);
+		dsetassertfunc(&_::ddebug::asserter);
 		d3dtost::Initialise();
 
 		{
