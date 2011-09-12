@@ -1,4 +1,16 @@
 #include <stdio.h>
+#include <string>
+#include <iostream>
+#include <list>
+#include <ufunctors.h>
+#define IMAGE_LOADER__IMPORTS
+#include <ImageLoader.h>
+#define TEXTURE_MANAGER__IMPORTS
+#include <TextureManager.h>
+
+#include <../_trash/upig.h>
+
+
 
 namespace {
 
@@ -24,6 +36,9 @@ int main3 (int, char**) {
 	}
 	catch (A const& a) {}
 //	catch (A a) {}
+
+	std::cout << pig<std::iterator_traits<std::list<int>::iterator>::iterator_category>::t2s() << std::endl;
+
 
 	return 0;
 }

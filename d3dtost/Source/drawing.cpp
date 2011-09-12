@@ -6,7 +6,7 @@
 #define USE_DE_BOOR								1
 #define WITH_OPTIMISED_DE_BOOR					1
 #define WITH_FAST_CONTROL_POINT_INTERPOLATOR	1
-#define WITH_OPTIMISED_BLENDING					1
+#define WITH_OPTIMISED_BLENDING					0
 
 //////////////////////////////////////////////////////////////////////////////////////
 
@@ -175,25 +175,6 @@ static bool VerifyMultiplicityChecker (void) {
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-template <typename ControlPointsIteratorType>
-static std::list<my::gl::shapes::Point> const vertices (ControlPointsIteratorType const& points_begin, ControlPointsIteratorType const& points_end, my::gl::shapes::Colour const& col) {
-	using my::gl::math::Vector4;
-	using my::gl::shapes::Point;
-	using my::gl::shapes::Vertex;
-	using my::gl::shapes::Colour;
-
-	typename ControlPointsIteratorType i(points_begin);
-
-	std::list<Point> result;
-	for (; i != points_end; i++)
-		result.push_back(Point(Vertex(makevector4(*i)), col));
-
-	return result;
-}
-template <typename C>
-static inline std::list<my::gl::shapes::Point> const vertices (C const& container, my::gl::shapes::Colour const& col)
-	{ return vertices(container.begin(), container.end(), col); }
-
 
 template <typename C>
 static inline void addshapesto (my::gl::shapes::ShapeCompositionFactory& f, C const& shapes) {
@@ -302,19 +283,38 @@ void addaspointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 	using my::gl::shapes::Colour;
 	using my::gl::math::Vector4;
 	using ankh::math::trig::vec4;
+	using my::gl::shapes::Point;
+	using my::algo::map_vec4_to_points;
 
 	std::list<vec4> dest;
-	_::addshapesto(f, _::vertices(DE_BOOR_OR_NOT_DE_BOOR(ProduceAll)(_::getcurve(), dest), Colour(Vector4::New(0.5f, 0.2f, 0.2f))));
+	std::list<Point> points;
+	_::addshapesto(
+			f,
+			map_vec4_to_points(
+				DE_BOOR_OR_NOT_DE_BOOR(ProduceAll)(_::getcurve(), dest),
+				points,
+				Colour(Vector4::New(0.5f, 0.2f, 0.2f)),
+				&makevector4));
 }
 
 void addcontrolpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 	using my::gl::shapes::Colour;
 	using my::gl::math::vec4;
 	using ankh::surfaces::nurbs::Curve;
+	using my::algo::map_vec4_to_points;
+	using my::gl::shapes::Point;
 
 	Curve const& c(_::getcurve());
 
-	_::addshapesto(f, _::vertices(c.GetControlPointsBegin(), c.GetControlPointsEnd(), Colour(vec4::New(0.5f, 0.7f, 0.7f))));
+	std::list<Point> points;
+	_::addshapesto(
+			f,
+			map_vec4_to_points(
+				c.GetControlPointsBegin(),
+				c.GetControlPointsEnd(),
+				points ,
+				Colour(vec4::New(0.5f, 0.7f, 0.7f)),
+				&makevector4));
 }
 
 void addknotpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
@@ -322,20 +322,26 @@ void addknotpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 	using my::gl::math::Vector4;
 	using ankh::math::trig::vec4;
 	using ankh::surfaces::nurbs::Curve;
-
-	typedef std::vector<float>		knots_t;
-	typedef knots_t::const_iterator	ite_t;
+	using my::algo::map_vec4_to_points;
+	using my::gl::shapes::Point;
 
 	Curve const& spl(_::getcurve());
 
-	std::list<vec4> points;
+	std::list<vec4> vectors;
 
 	size_t			i	(spl.GetFirstKnotInDomainIndex());
 	size_t const	end	(spl.GetLastKnotInDomainIndex());
 	for (; i <= end; ++i)
-		points.push_back(DE_BOOR_OR_NOT_DE_BOOR(At)(spl, spl.GetKnot(i)));
+		vectors.push_back(DE_BOOR_OR_NOT_DE_BOOR(At)(spl, i == end? i-1 : i, spl.GetKnot(i)));
 
-	_::addshapesto(f, _::vertices(points, Colour(Vector4::New(0.7f, 0.5f, 0.5f))));
+	std::list<Point> points;
+	_::addshapesto(
+			f,
+			map_vec4_to_points(
+				vectors,
+				points,
+				Colour(Vector4::New(0.7f, 0.5f, 0.5f)),
+				&makevector4));
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
