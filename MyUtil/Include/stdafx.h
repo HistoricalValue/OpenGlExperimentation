@@ -43,7 +43,7 @@
 #include <MyWinUtils.h>
 #include <MyOpenGLUtils.h>
 #include <MyGlobalInstances.h>
-#include <my/gl/shapes/ShapeCompositionFactory.h>
+#include <my/gl/shapes/ShapeCompositionFactory_inl.h>
 #include <my/gl/shapes/NShapesComposition_inl.h>
 #include <my/gl/shapes/ShapeUtilities.h>
 #include <my/gl/math/Transformations.h>

@@ -264,6 +264,9 @@
     <ClInclude Include="Include\my\algo\ShapeProducers.h">
       <Filter>Header Files\my\algo</Filter>
     </ClInclude>
+    <ClInclude Include="Include\my\gl\shapes\ShapeCompositionFactory_inl.h">
+      <Filter>Header Files\my\gl\shapes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\MyLogger.cpp">

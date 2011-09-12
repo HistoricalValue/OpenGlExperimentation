@@ -4,6 +4,8 @@
 #include <MyUtil.h>
 #include <my/gl/shapes/DynamicShapeComposition.h>
 #include <my/gl/shapes/Shape.h>
+#include <algorithm>
+#include <ufunctors.h>
 
 namespace my { namespace gl { namespace shapes {
 
@@ -19,6 +21,12 @@ public:
 
 								ShapeCompositionFactory (void);
 								~ShapeCompositionFactory (void);
+
+	template <typename InputIteratorType>
+	ShapeCompositionFactory&	AddAll (InputIteratorType const& begin, InputIteratorType const& end);
+
+	template <typename ContainerType>
+	ShapeCompositionFactory&	AddAll (ContainerType const& container);
 
 private:
 	void* const data;

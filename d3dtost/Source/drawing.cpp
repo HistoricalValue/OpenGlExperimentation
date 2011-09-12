@@ -175,18 +175,6 @@ static bool VerifyMultiplicityChecker (void) {
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-
-template <typename C>
-static inline void addshapesto (my::gl::shapes::ShapeCompositionFactory& f, C const& shapes) {
-	using my::gl::shapes::ShapeCompositionFactory;
-	using my::gl::shapes::Shape;
-	foreach(shapes, ubind1st(uspecific_mem_fun1<void, ShapeCompositionFactory, Shape const&, &ShapeCompositionFactory::Add>(), &f));
-}
-
-#define LINE(BX,BY,BZ,EX,EY,EZ) (Line(Vertex(Vector4::New(BX,BY,BZ,1)), Vertex(Vector4::New(EX,EY,EZ,1))))
-
-//////////////////////////////////////////////////////////////////////////////////////
-
 static ankh::surfaces::nurbs::Curve* _curve(NULL);
 static float	minx(-0.8f);
 static float	maxx( 0.8f);
@@ -270,13 +258,11 @@ void addaslinesto (my::gl::shapes::ShapeCompositionFactory& f) {
 
 	std::list<vec4> dest;
 	std::list<Line> lines;
-	_::addshapesto(
-			f,
-			map_vec4_to_linestrip(
-				DE_BOOR_OR_NOT_DE_BOOR(ProduceAll)(_::getcurve(), dest),
-				lines,
-				Colour(Vector4::New(0.8f, 0.4f, 0.8f)),
-				&makevector4));
+	f.AddAll(	map_vec4_to_linestrip(
+					DE_BOOR_OR_NOT_DE_BOOR(ProduceAll)(_::getcurve(), dest),
+					lines,
+					Colour(Vector4::New(0.8f, 0.4f, 0.8f)),
+					&makevector4));
 }
 
 void addaspointsto (my::gl::shapes::ShapeCompositionFactory& f) {
@@ -288,13 +274,11 @@ void addaspointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 
 	std::list<vec4> dest;
 	std::list<Point> points;
-	_::addshapesto(
-			f,
-			map_vec4_to_points(
-				DE_BOOR_OR_NOT_DE_BOOR(ProduceAll)(_::getcurve(), dest),
-				points,
-				Colour(Vector4::New(0.5f, 0.2f, 0.2f)),
-				&makevector4));
+	f.AddAll(	map_vec4_to_points(
+					DE_BOOR_OR_NOT_DE_BOOR(ProduceAll)(_::getcurve(), dest),
+					points,
+					Colour(Vector4::New(0.5f, 0.2f, 0.2f)),
+					&makevector4));
 }
 
 void addcontrolpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
@@ -307,14 +291,12 @@ void addcontrolpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 	Curve const& c(_::getcurve());
 
 	std::list<Point> points;
-	_::addshapesto(
-			f,
-			map_vec4_to_points(
-				c.GetControlPointsBegin(),
-				c.GetControlPointsEnd(),
-				points ,
-				Colour(vec4::New(0.5f, 0.7f, 0.7f)),
-				&makevector4));
+	f.AddAll(	map_vec4_to_points(
+					c.GetControlPointsBegin(),
+					c.GetControlPointsEnd(),
+					points ,
+					Colour(vec4::New(0.5f, 0.7f, 0.7f)),
+					&makevector4));
 }
 
 void addknotpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
@@ -335,13 +317,11 @@ void addknotpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 		vectors.push_back(DE_BOOR_OR_NOT_DE_BOOR(At)(spl, i == end? i-1 : i, spl.GetKnot(i)));
 
 	std::list<Point> points;
-	_::addshapesto(
-			f,
-			map_vec4_to_points(
-				vectors,
-				points,
-				Colour(Vector4::New(0.7f, 0.5f, 0.5f)),
-				&makevector4));
+	f.AddAll(	map_vec4_to_points(
+					vectors,
+					points,
+					Colour(Vector4::New(0.7f, 0.5f, 0.5f)),
+					&makevector4));
 }
 
 //////////////////////////////////////////////////////////////////////////////////////

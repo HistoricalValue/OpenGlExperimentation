@@ -134,6 +134,7 @@
     <ClInclude Include="Include\my\gl\shapes\Shape.h" />
     <ClInclude Include="Include\my\gl\shapes\ShapeComposition.h" />
     <ClInclude Include="Include\my\gl\shapes\ShapeCompositionFactory.h" />
+    <ClInclude Include="Include\my\gl\shapes\ShapeCompositionFactory_inl.h" />
     <ClInclude Include="Include\my\gl\shapes\ShapeUtilities.h" />
     <ClInclude Include="Include\my\gl\shapes\SolidCube.h" />
     <ClInclude Include="Include\my\gl\shapes\SpecificNumberOfShapesComposition.h" />
