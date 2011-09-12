@@ -70,6 +70,6 @@ static inline Cout& map_vec4_to_points (
 
 
 
-}} // namespace my::algo 
+}} // namespace my::algo
 
 #endif // __MY_UTIL__MY__ALGO__SHAPE_PRODUCERS__H__
