@@ -58,6 +58,9 @@
     <Filter Include="Source Files\ankh\shapes">
       <UniqueIdentifier>{035bda67-7f1b-4a78-89e8-0d8037c1fb57}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\my\algo">
+      <UniqueIdentifier>{1e420400-2dc1-4b04-bdcf-22af86acd3b3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -257,6 +260,9 @@
     </ClInclude>
     <ClInclude Include="Include\my\gl\shapes\Point.h">
       <Filter>Header Files\my\gl\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\my\algo\ShapeProducers.h">
+      <Filter>Header Files\my\algo</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

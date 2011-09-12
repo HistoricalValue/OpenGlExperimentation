@@ -175,28 +175,6 @@ static bool VerifyMultiplicityChecker (void) {
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-template <typename C>
-static std::list<my::gl::shapes::Line> const linestrip (C const& points, my::gl::shapes::Colour const& col) {
-	using my::gl::math::Vector4;
-	using my::gl::shapes::Line;
-	using my::gl::shapes::Vertex;
-	using my::gl::shapes::Colour;
-	using my::gl::shapes::ColourFactory;
-
-	typename C::const_iterator points_end(points.end());
-	typename C::const_iterator i(points.begin());
-	DASSERT(i != points_end);
-	typename C::const_iterator prev(i++);
-
-	Colour const bright(ColourFactory::Brighter(ColourFactory::Brighter(ColourFactory::Brighter(ColourFactory::Brighter(col)))));
-
-	std::list<Line> result;
-	for (; i != points_end; prev = i++)
-		result.push_back(Line(Vertex(makevector4(*prev)), Vertex(makevector4(*i)), col, bright));
-
-	return result;
-}
-
 template <typename ControlPointsIteratorType>
 static std::list<my::gl::shapes::Point> const vertices (ControlPointsIteratorType const& points_begin, ControlPointsIteratorType const& points_end, my::gl::shapes::Colour const& col) {
 	using my::gl::math::Vector4;
@@ -306,9 +284,18 @@ void addaslinesto (my::gl::shapes::ShapeCompositionFactory& f) {
 	using my::gl::shapes::Colour;
 	using my::gl::math::Vector4;
 	using ankh::math::trig::vec4;
+	using my::algo::map_vec4_to_linestrip;
+	using my::gl::shapes::Line;
 
 	std::list<vec4> dest;
-	_::addshapesto(f, _::linestrip(DE_BOOR_OR_NOT_DE_BOOR(ProduceAll)(_::getcurve(), dest), Colour(Vector4::New(0.8f, 0.4f, 0.8f))));
+	std::list<Line> lines;
+	_::addshapesto(
+			f,
+			map_vec4_to_linestrip(
+				DE_BOOR_OR_NOT_DE_BOOR(ProduceAll)(_::getcurve(), dest),
+				lines,
+				Colour(Vector4::New(0.8f, 0.4f, 0.8f)),
+				&makevector4));
 }
 
 void addaspointsto (my::gl::shapes::ShapeCompositionFactory& f) {
