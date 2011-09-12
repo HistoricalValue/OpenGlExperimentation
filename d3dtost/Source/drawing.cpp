@@ -200,9 +200,8 @@ static void Initialise (void) {
 		float const height_unit( (maxy - miny) / height_units );
 		float const depth_unit( (maxz - minz) / depth_units );
 
-		elcollector<float> elcol;
-		elcol , -4.f,1.f,1.5f,0.f,1.f,-4.f,-2.8f,-5.4f,6.2f,-6.4f,5.3f,0.f,0.8f,6.1f,-0.5f,3.4f,-7.4f,-0.6f,-6.2f,7.2f,6.1f,6.6f;
-		DASSERT(elcol.els.size() % 2 == 0);
+		size_t const numcpoints_i;
+		size_t const numcpoints
 
 		std::vector<vec4> cpoints;
 		cpoints.reserve(elcol.els.size() / 2);
@@ -212,10 +211,15 @@ static void Initialise (void) {
 			DASSERT(i != elcol.els.end());
 			float const y(*i * height_unit);
 
-			// random z
+			float const x(float(-8 + int(abs(rand()) % depth_units)) * depth_unit);
+			float const y(float(-8 + int(abs(rand()) % depth_units)) * depth_unit);
 			float const z(float(-8 + int(abs(rand()) % depth_units)) * depth_unit);
-			DASSERT(z <= maxz);
+			DASSERT(minx <= x);
+			DASSERT(x <= maxx);
+			DASSERT(miny <= y);
+			DASSERT(y <= maxy);
 			DASSERT(minz <= z);
+			DASSERT(z <= maxz);
 
 			cpoints.push_back(Vector4::New(x, y, z));
 		}
