@@ -190,48 +190,47 @@ static void Initialise (void) {
 	{
 		DASSERT((minx < 0 && miny < 0 && maxx > 0 && maxy > 0));
 
-		using my::gl::math::Vector4;
-		using my::gl::math::vec4;
+		using my::gl::math::						Vector4;
+		using my::gl::math::						vec4;
+		using ankh::surfaces::nurbs::				Curve;
+		using ankh::surfaces::nurbs::				ControlPoints;
+		using ankh::surfaces::nurbs::				Knots;
+		using ankh::surfaces::nurbs::				ControlPoints_FillRandom;
+		using ankh::surfaces::nurbs::				Knots_FillUniformly;
+		using ankh::surfaces::Traits::Precision::	Unit;
 
 		size_t const width_units(16);
 		size_t const height_units(16);
 		size_t const depth_units(16);
-		float const width_unit( (maxx-minx) / width_units );
-		float const height_unit( (maxy - miny) / height_units );
-		float const depth_unit( (maxz - minz) / depth_units );
-
-		size_t const numcpoints_i;
-		size_t const numcpoints
-
-		std::vector<vec4> cpoints;
-		cpoints.reserve(elcol.els.size() / 2);
-		for (std::list<float>::const_iterator i(elcol.els.begin()); i != elcol.els.end(); ++i) {
-			float const x(*i * width_unit);
-			++i;
-			DASSERT(i != elcol.els.end());
-			float const y(*i * height_unit);
-
-			float const x(float(-8 + int(abs(rand()) % depth_units)) * depth_unit);
-			float const y(float(-8 + int(abs(rand()) % depth_units)) * depth_unit);
-			float const z(float(-8 + int(abs(rand()) % depth_units)) * depth_unit);
-			DASSERT(minx <= x);
-			DASSERT(x <= maxx);
-			DASSERT(miny <= y);
-			DASSERT(y <= maxy);
-			DASSERT(minz <= z);
-			DASSERT(z <= maxz);
-
-			cpoints.push_back(Vector4::New(x, y, z));
+		
+		size_t const order		(0x04u);
+		size_t const numcpoints	(0x0bu);
+		size_t const numcurves	(numcpoints);
+		size_t const numknots	(Curve::NumberOfKnotsFor(order, numcpoints));
+		
+		std::vector<Curve> 	curves;
+		ControlPoints		cpoints;
+		Knots				knots;
+		
+		curves.reserve(numcurves);
+		cpoints.reserve(numcpoints);
+		knots.reserve(numknots);
+		
+		
+		for (size_t curve_i(0u); curve_i < numcurves; ++curve_i) {
+			cpoints.clear();
+			knots.clear();
+			
+			ControlPoints_FillRandom(cpoints, numcpoints,
+					minx, maxx, miny, maxy, minz, maxz,
+					width_units, height_units, depth_units, 12ul);
+			Knots_FillUniformly(knots, numknots, 0.0f, 1.0f);
+			
+			curves.push_back(Curve(cpoints.begin(), cpoints.end(),
+					knots.begin(), knots.end()));
 		}
 
-		size_t const order(4);
-
-		std::vector<float> knots;
-		knots.reserve(cpoints.size() + order);
-		for (size_t i(0); i < knots.capacity(); ++i)
-			knots.push_back(float(i));
-
-		_curve = DNEWCLASS(ankh::surfaces::nurbs::Curve, (cpoints.begin(), cpoints.end(), knots.begin(), knots.end()));
+		_curve = DNEWCLASS(Curve, (curves.front()));
 
 		DASSERT(VerifyBaseFunctions(_curve->m(), knots));
 
