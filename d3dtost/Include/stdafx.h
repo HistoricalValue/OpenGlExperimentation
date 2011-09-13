@@ -1,3 +1,5 @@
+// Surfaces Project
+// -
 #include <SurfacesDLL.h>
 #include <SurfacesTraits.h>
 #include <SurfacesTraits_inl.h>
@@ -13,6 +15,7 @@
 #include <nurbs/CurveTesselation_inl.h>
 #include <nurbs/Knots.h>
 #include <nurbs/Knots_inl.h>
+#include <nurbs/Surface.h>
 
 #include "MyWindows.h"
 

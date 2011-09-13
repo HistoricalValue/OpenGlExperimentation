@@ -131,7 +131,7 @@ void main (void) {
 						*	projection
 						*	camera
 						*	ARotate(vec3(1, 1, 1), radians(axyc[0]))
-						*	ATransform(0.5f * Axis_X, 0.5f * Axis_Y, 0.5f * Axis_Z)
+				//		*	ATransform(0.5f * Axis_X, 0.5f * Axis_Y, 0.5f * Axis_Z)
 						;
 						
 	gl_Position			= transtest * pos;

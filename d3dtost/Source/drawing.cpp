@@ -175,7 +175,7 @@ static bool VerifyMultiplicityChecker (void) {
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-static ankh::surfaces::nurbs::Curve* _curve(NULL);
+static std::vector<ankh::surfaces::nurbs::Curve>* _curves(NULL);
 static float	minx(-0.8f);
 static float	maxx( 0.8f);
 static float	miny(-0.8f);
@@ -204,15 +204,15 @@ static void Initialise (void) {
 		size_t const depth_units(16);
 		
 		size_t const order		(0x04u);
-		size_t const numcpoints	(0x0bu);
+		size_t const numcpoints	(0x05u);
 		size_t const numcurves	(numcpoints);
 		size_t const numknots	(Curve::NumberOfKnotsFor(order, numcpoints));
-		
-		std::vector<Curve> 	curves;
+
 		ControlPoints		cpoints;
 		Knots				knots;
-		
-		curves.reserve(numcurves);
+
+		_curves = DNEW(std::vector<ankh::surfaces::nurbs::Curve>);
+		_curves->reserve(numcurves);
 		cpoints.reserve(numcpoints);
 		knots.reserve(numknots);
 		
@@ -223,16 +223,14 @@ static void Initialise (void) {
 			
 			ControlPoints_FillRandom(cpoints, numcpoints,
 					minx, maxx, miny, maxy, minz, maxz,
-					width_units, height_units, depth_units, 12ul);
+					width_units, height_units, depth_units, 12ul + curve_i);
 			Knots_FillUniformly(knots, numknots, 0.0f, 1.0f);
 			
-			curves.push_back(Curve(cpoints.begin(), cpoints.end(),
+			_curves->push_back(Curve(cpoints.begin(), cpoints.end(),
 					knots.begin(), knots.end()));
 		}
 
-		_curve = DNEWCLASS(Curve, (curves.front()));
-
-		DASSERT(VerifyBaseFunctions(_curve->m(), knots));
+		DASSERT(VerifyBaseFunctions(_curves->front().m(), knots));
 
 		DASSERT(VerifyMultiplicityChecker());
 	}
@@ -240,13 +238,15 @@ static void Initialise (void) {
 }
 
 static void CleanUp (void) {
-	udelete(_curve);
+	udelete(_curves);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
 
+static inline std::vector<ankh::surfaces::nurbs::Curve> const& getcurves (void)
+	{ return *DPTR(_DNOTNULL(_curves)); }
 static inline ankh::surfaces::nurbs::Curve const& getcurve (void)
-	{ return *DPTR(_DNOTNULL(_curve)); }
+	{ return getcurves().front(); }
 
 //////////////////////////////////////////////////////////////////////////////////////
 } // _
@@ -258,14 +258,20 @@ void addaslinesto (my::gl::shapes::ShapeCompositionFactory& f) {
 	using ankh::math::trig::vec4;
 	using my::algo::map_vec4_to_linestrip;
 	using my::gl::shapes::Line;
+	using ankh::surfaces::nurbs::Curve;
 
+	std::vector<Curve> const& curves(_::getcurves());
 	std::list<vec4> dest;
 	std::list<Line> lines;
-	f.AddAll(	map_vec4_to_linestrip(
-					DE_BOOR_OR_NOT_DE_BOOR(ProduceAll)(_::getcurve(), dest),
-					lines,
-					Colour(Vector4::New(0.8f, 0.4f, 0.8f)),
-					&makevector4));
+
+	for (std::vector<Curve>::const_iterator i(curves.begin()); i != curves.end(); ++i)
+		dest.clear(),
+		lines.clear(),
+		f.AddAll(	map_vec4_to_linestrip(
+						DE_BOOR_OR_NOT_DE_BOOR(ProduceAll)(*i, dest),
+						lines,
+						Colour(Vector4::New(0.8f, 0.4f, 0.8f)),
+						&makevector4));
 }
 
 void addaspointsto (my::gl::shapes::ShapeCompositionFactory& f) {
