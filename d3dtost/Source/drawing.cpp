@@ -17,16 +17,16 @@ template <> struct ControlPointInterpolatoTraits<0> { typedef ankh::surf::nurbs:
 
 template <const int WithOptimisedDeBoor> struct DeBoorOptimisationTraits;
 template <> struct DeBoorOptimisationTraits<1> {
-	typedef ankh::surf::nurbs::tesselation::OptimisedInterpolatingTraits<typename ControlPointInterpolatoTraits<WITH_FAST_CONTROL_POINT_INTERPOLATOR>::Interpolator >	Traits; };
+	typedef ankh::surf::nurbs::tesselation::curve::OptimisedInterpolatingTraits<typename ControlPointInterpolatoTraits<WITH_FAST_CONTROL_POINT_INTERPOLATOR>::Interpolator >	Traits; };
 template <> struct DeBoorOptimisationTraits<0> {
-	typedef ankh::surf::nurbs::tesselation::SimpleInterpolatingTraits<typename ControlPointInterpolatoTraits<WITH_FAST_CONTROL_POINT_INTERPOLATOR>::Interpolator >		Traits; };
+	typedef ankh::surf::nurbs::tesselation::curve::SimpleInterpolatingTraits<typename ControlPointInterpolatoTraits<WITH_FAST_CONTROL_POINT_INTERPOLATOR>::Interpolator >		Traits; };
 
 template <const int WithOptimisedBlending> struct BlendingOptimisationTraits;
-template <> struct BlendingOptimisationTraits<1> { typedef ankh::surf::nurbs::tesselation::OptimisedBlendingTraits	Traits; };
-template <> struct BlendingOptimisationTraits<0> { typedef ankh::surf::nurbs::tesselation::SimpleBlendingTraits		Traits; };
+template <> struct BlendingOptimisationTraits<1> { typedef ankh::surf::nurbs::tesselation::curve::OptimisedBlendingTraits	Traits; };
+template <> struct BlendingOptimisationTraits<0> { typedef ankh::surf::nurbs::tesselation::curve::SimpleBlendingTraits		Traits; };
 
 #if USE_DE_BOOR
-#	define DE_BOOR_OR_NOT_DE_BOOR(FUNC) ankh::surf::nurbs::tesselation::deboor:: FUNC <DeBoorOptimisationTraits <WITH_OPTIMISED_DE_BOOR>::Traits >
+#	define DE_BOOR_OR_NOT_DE_BOOR(FUNC) ankh::surf::nurbs::tesselation::curve::deboor:: FUNC <DeBoorOptimisationTraits <WITH_OPTIMISED_DE_BOOR>::Traits >
 #	define NOT_USING_DE_BOOR_CHECK()	DASSERT(!"Using De-Boor's algorithm, this function shouldn't be used")
 #else
 #	define DE_BOOR_OR_NOT_DE_BOOR(FUNC)	ankh::surf::nurbs::tesselation::blending:: FUNC <BlendingOptimisationTraits <WITH_OPTIMISED_BLENDING>::Traits >
@@ -87,11 +87,12 @@ static bool VerifyBaseFunctions (short const m, std::vector<ankh::surf::Traits::
 	using ankh::surf::Traits::Precision::isequal;
 
 	DASSERT(m >= 1);
-
 	size_t const l(knots.size() - 1);
 	size_t const n(l - m);
+	size_t const numcpoints(Curve::NumberOfControlPointsFor(m, knots.size()));
+	DASSERT(numcpoints == n+1);
 
-	std::list<vec4> empty(n, vec4());
+	std::list<vec4> empty(numcpoints, vec4());
 	Curve spl(empty.begin(), empty.end(), knots.begin(), knots.end());
 
 	Curve::Domain const	domain	(spl.GetDomainOfDefinition());
@@ -199,6 +200,7 @@ static void Initialise (void) {
 		using ankh::surf::nurbs::				Knots_FillUniformly;
 		using ankh::surf::nurbs::				Surface;
 		using ankh::surf::Traits::Precision::	Unit;
+		using ankh::surf::nurbs::algo::surf::	FirstCrossSection;
 
 		size_t const width_units(16);
 		size_t const height_units(16);
@@ -230,7 +232,7 @@ static void Initialise (void) {
 
 		_surf = DNEWCLASS(Surface, (knots.begin(), knots.end(), knots.begin(), knots.end(), cpoints_j.begin(), cpoints_j.end()));
 
-		DASSERT(VerifyBaseFunctions(_surf->GetFirstCrossSection().m(), knots));
+		DASSERT(VerifyBaseFunctions(FirstCrossSection(*_surf).m(), knots));
 
 		DASSERT(VerifyMultiplicityChecker());
 	}
@@ -259,18 +261,19 @@ void addaslinesto (my::gl::shapes::ShapeCompositionFactory& f) {
 	using ankh::surf::nurbs::Curve;
 	using ankh::surf::nurbs::Surface;
 	using ankh::surf::nurbs::Knots;
+	using ankh::surf::nurbs::algo::surf::CrossSection;
 
-	Surface const&				surf(_::getsurf());
-	std::list<vec4>				dest;
-	std::list<Line>				lines;
-	Knots::const_iterator		i(surf.GetKnotsJBegin());
-	Knots::const_iterator const	end(surf.GetKnotsJEnd());
+	Surface const&	surf(_::getsurf());
+	std::list<vec4>	dest;
+	std::list<Line>	lines;
+	size_t			i(surf.GetFirstKnotJInDomainIndex());
+	size_t const	end(surf.GetLastKnotJInDomainIndex());
 
 	for (; i != end; ++i)
 		dest.clear(),
 		lines.clear(),
 		f.AddAll(	map_vec4_to_linestrip(
-						DE_BOOR_OR_NOT_DE_BOOR(ProduceAll)(surf.GetCrossSection(*i), dest),
+						DE_BOOR_OR_NOT_DE_BOOR(ProduceAll)(CrossSection(surf, i), dest),
 						lines,
 						Colour(Vector4::New(0.8f, 0.4f, 0.8f)),
 						&makevector4));
@@ -285,18 +288,19 @@ void addaspointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 	using ankh::surf::nurbs::Curve;
 	using ankh::surf::nurbs::Surface;
 	using ankh::surf::nurbs::Knots;
+	using ankh::surf::nurbs::algo::surf::CrossSection;
 
-	Surface const&				surf(_::getsurf());
-	std::list<vec4>				dest;
-	std::list<Point>			points;
-	Knots::const_iterator		i(surf.GetKnotsJBegin());
-	Knots::const_iterator const	end(surf.GetKnotsJEnd());
+	Surface const&	surf(_::getsurf());
+	std::list<vec4>	dest;
+	std::list<Point>points;
+	size_t			i(surf.GetFirstKnotJInDomainIndex());
+	size_t const	end(surf.GetLastKnotJInDomainIndex());
 
 	for (; i != end; ++i)
 		dest.clear(),
 		points.clear(),
 		f.AddAll(	map_vec4_to_points(
-						DE_BOOR_OR_NOT_DE_BOOR(ProduceAll)(surf.GetCrossSection(*i), dest),
+						DE_BOOR_OR_NOT_DE_BOOR(ProduceAll)(CrossSection(surf, i), dest),
 						points,
 						Colour(Vector4::New(0.5f, 0.2f, 0.2f)),
 						&makevector4));
@@ -311,15 +315,16 @@ void addcontrolpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 	using ankh::surf::nurbs::Curve;
 	using ankh::surf::nurbs::Surface;
 	using ankh::surf::nurbs::Knots;
+	using ankh::surf::nurbs::algo::surf::CrossSection;
 
-	Surface const&				surf(_::getsurf());
-	std::list<Point>			points;
-	Knots::const_iterator		i(surf.GetKnotsJBegin());
-	Knots::const_iterator const	end(surf.GetKnotsJEnd());
+	Surface const&	surf(_::getsurf());
+	std::list<Point>points;
+	size_t			i(surf.GetFirstKnotJInDomainIndex());
+	size_t const	end(surf.GetLastKnotJInDomainIndex());
 
 	for (; i != end; ++i) {
 		points.clear();
-		Curve const c(surf.GetCrossSection(*i));
+		Curve const c(CrossSection(surf, i));
 		f.AddAll(	map_vec4_to_points(
 						c.GetControlPointsBegin(),
 						c.GetControlPointsEnd(),
@@ -339,18 +344,19 @@ void addknotpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 	using ankh::surf::nurbs::Curve;
 	using ankh::surf::nurbs::Surface;
 	using ankh::surf::nurbs::Knots;
+	using ankh::surf::nurbs::algo::surf::CrossSection;
 
-	Surface const&				surf(_::getsurf());
-	std::list<vec4>				vectors;
-	std::list<Point>			points;
-	Knots::const_iterator		c(surf.GetKnotsJBegin());
-	Knots::const_iterator const	c_end(surf.GetKnotsJEnd());
+	Surface const&	surf(_::getsurf());
+	std::list<vec4>	vectors;
+	std::list<Point>points;
+	size_t			c(surf.GetFirstKnotJInDomainIndex());
+	size_t const	c_end(surf.GetLastKnotJInDomainIndex());
 
 	for (; c != c_end; ++c) {
 		vectors.clear();
 		points.clear();
 
-		Curve const curve(surf.GetCrossSection(*c));
+		Curve const curve(CrossSection(surf, c));
 
 		size_t			i	(curve.GetFirstKnotInDomainIndex());
 		size_t const	end	(curve.GetLastKnotInDomainIndex());

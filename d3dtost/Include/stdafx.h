@@ -18,6 +18,7 @@
 #include <nurbs/Surface.h>
 #include <nurbs/Surface_inl.h>
 #include <nurbs/SurfaceAlgorithms.h>
+#include <nurbs/SurfaceAlgorithms_inl.h>
 
 #include "MyWindows.h"
 
