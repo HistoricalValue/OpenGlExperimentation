@@ -266,6 +266,7 @@ void addaslinesto (my::gl::shapes::ShapeCompositionFactory& f) {
 	Surface const&	surf(_::getsurf());
 	std::list<vec4>	dest;
 	std::list<Line>	lines;
+#if 0
 	size_t			i(surf.GetFirstKnotJInDomainIndex());
 	size_t const	end(surf.GetLastKnotJInDomainIndex());
 
@@ -277,6 +278,24 @@ void addaslinesto (my::gl::shapes::ShapeCompositionFactory& f) {
 						lines,
 						Colour(Vector4::New(0.8f, 0.4f, 0.8f)),
 						&makevector4));
+#else
+	Surface::Domain const D(surf.GetDomainOfDefinition());
+	unsigned long const t0 = ugettime();
+	for (float u(D.j.first); u <= D.j.last; u += 0.01f)
+		dest.clear(),
+		lines.clear(),
+		f.AddAll(	map_vec4_to_linestrip(
+						DE_BOOR_OR_NOT_DE_BOOR(ProduceAll)(CrossSection(surf, u), dest),
+						lines,
+						Colour(Vector4::New(0.5f, 0.2f, 0.2f)),
+						&makevector4));
+	unsigned long const t1 = ugettime();
+	{
+		char bug[1024];
+		_snprintf_s(&bug[0], _countof(bug), _countof(bug)-1, "tesselation took %ld miliseconds\n", t1-t0);
+		my::global::log::infoA(&bug[0]);
+	}
+#endif
 }
 
 void addaspointsto (my::gl::shapes::ShapeCompositionFactory& f) {
@@ -571,9 +590,9 @@ namespace _ {
 			using namespace my::gl::shapes;
 			ShapeCompositionFactory f;
 
-			nurbs::addcontrolpointsto(f);
+		//	nurbs::addcontrolpointsto(f);
 		//	nurbs::addaspointsto(f);
-			nurbs::addknotpointsto(f);
+		//	nurbs::addknotpointsto(f);
 
 			DynamicShapeComposition* const dcomp(f.Generate());
 
