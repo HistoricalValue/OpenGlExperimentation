@@ -29,8 +29,10 @@
 #include "TextureManager.h"
 #include "ImageLoader.h"
 
-
+#pragma warning( push, 0)
 #include <usystem.h>
+#include <ubinaryio.h>
+#pragma warning( pop )
 
 
 

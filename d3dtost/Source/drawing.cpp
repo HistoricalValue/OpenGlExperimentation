@@ -211,6 +211,16 @@ static void Initialise (void) {
 		size_t const numcurves	(numcpoints);
 		size_t const numknots	(Curve::NumberOfKnotsFor(order, numcpoints));
 
+		long seed;
+		{
+			std::ifstream fin("./seed.txt", std::ios::in);
+			DASSERT(!fin.bad());
+
+			std::string str;
+			std::getline(fin, str);
+			seed = atol(str.c_str());
+		}
+
 		ControlPoints				cpoints;
 		Knots						knots;
 		std::vector<ControlPoints>	cpoints_j;
@@ -228,7 +238,7 @@ static void Initialise (void) {
 					ControlPoints_FillRandom(
 						cpoints, numcpoints,
 						minx, maxx, miny, maxy, minz, maxz,
-						width_units, height_units, depth_units, 12ul + curve_i));
+						width_units, height_units, depth_units, seed + curve_i));
 
 		_surf = DNEWCLASS(Surface, (knots.begin(), knots.end(), knots.begin(), knots.end(), cpoints_j.begin(), cpoints_j.end()));
 

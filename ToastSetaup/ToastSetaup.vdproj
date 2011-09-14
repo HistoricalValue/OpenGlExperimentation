@@ -21,14 +21,20 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_165A20F143A68BD68923570DE70E88D5"
-        "OwnerKey" = "8:_7CE36FA446A04A22B62081025FAE540D"
+        "MsmKey" = "8:_2FCBF4BADC6E78D60E8E7EA1CCA075FE"
+        "OwnerKey" = "8:_9DBE5D8335DC48BB8510D7319BCA58EE"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_7CE36FA446A04A22B62081025FAE540D"
-        "OwnerKey" = "8:_UNDEFINED"
+        "MsmKey" = "8:_58E4AC81C34C6FC255040D0622308B1E"
+        "OwnerKey" = "8:_9DBE5D8335DC48BB8510D7319BCA58EE"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_722419E1F1A7B447529228880ECC73FC"
+        "OwnerKey" = "8:_9DBE5D8335DC48BB8510D7319BCA58EE"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -39,19 +45,25 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_AB237D34BB40FD41D8C8D29BFE1911EC"
+        "MsmKey" = "8:_BBF7ABFB7B61217976DCD9A0C236ABC1"
         "OwnerKey" = "8:_9DBE5D8335DC48BB8510D7319BCA58EE"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_AB237D34BB40FD41D8C8D29BFE1911EC"
-        "OwnerKey" = "8:_7CE36FA446A04A22B62081025FAE540D"
+        "MsmKey" = "8:_BE8F8D0B784F4D73A88B22167A33EC2D"
+        "OwnerKey" = "8:_9DBE5D8335DC48BB8510D7319BCA58EE"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_AF07B820C33BA89423AFC61F086CCC77"
+        "MsmKey" = "8:_D818E5B3635ED9626AA349EBC21B9255"
+        "OwnerKey" = "8:_9DBE5D8335DC48BB8510D7319BCA58EE"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F6D8B260FC76F0E62C8AB3A348A8A56D"
         "OwnerKey" = "8:_9DBE5D8335DC48BB8510D7319BCA58EE"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -178,10 +190,10 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AB237D34BB40FD41D8C8D29BFE1911EC"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2FCBF4BADC6E78D60E8E7EA1CCA075FE"
             {
-            "SourcePath" = "8:Utilities.dll"
-            "TargetName" = "8:Utilities.dll"
+            "SourcePath" = "8:Codeshare_Utilities.dll"
+            "TargetName" = "8:Codeshare_Utilities.dll"
             "Tag" = "8:"
             "Folder" = "8:_C1FB360C4FCC4A2E9B09A9A2FF3B4FF5"
             "Condition" = "8:"
@@ -198,10 +210,90 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AF07B820C33BA89423AFC61F086CCC77"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_58E4AC81C34C6FC255040D0622308B1E"
+            {
+            "SourcePath" = "8:Surfaces.dll"
+            "TargetName" = "8:Surfaces.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_C1FB360C4FCC4A2E9B09A9A2FF3B4FF5"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_722419E1F1A7B447529228880ECC73FC"
+            {
+            "SourcePath" = "8:UtilAndDefensiveHeap.dll"
+            "TargetName" = "8:UtilAndDefensiveHeap.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_C1FB360C4FCC4A2E9B09A9A2FF3B4FF5"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BBF7ABFB7B61217976DCD9A0C236ABC1"
+            {
+            "SourcePath" = "8:TextureManager.dll"
+            "TargetName" = "8:TextureManager.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_C1FB360C4FCC4A2E9B09A9A2FF3B4FF5"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D818E5B3635ED9626AA349EBC21B9255"
             {
             "SourcePath" = "8:MyUtil.dll"
             "TargetName" = "8:MyUtil.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_C1FB360C4FCC4A2E9B09A9A2FF3B4FF5"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F6D8B260FC76F0E62C8AB3A348A8A56D"
+            {
+            "SourcePath" = "8:ImageLoader.dll"
+            "TargetName" = "8:ImageLoader.dll"
             "Tag" = "8:"
             "Folder" = "8:_C1FB360C4FCC4A2E9B09A9A2FF3B4FF5"
             "Condition" = "8:"
@@ -295,7 +387,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:ToastSetaup"
         "ProductCode" = "8:{7D692279-CC22-4B92-9E6D-C0D90B7968D1}"
-        "PackageCode" = "8:{EADDCDEB-3072-4DA3-B70E-C189573A2F10}"
+        "PackageCode" = "8:{50627BFC-D279-46BE-9ECD-A8A55F13408A}"
         "UpgradeCode" = "8:{3F0BA946-3922-4F73-94A3-99B43A6BB778}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -825,40 +917,26 @@
         }
         "MergeModule"
         {
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_BE8F8D0B784F4D73A88B22167A33EC2D"
+            {
+            "UseDynamicProperties" = "11:TRUE"
+            "IsDependency" = "11:TRUE"
+            "SourcePath" = "8:Microsoft_VC100_CRT_x86.msm"
+                "Properties"
+                {
+                }
+            "LanguageId" = "3:0"
+            "Exclude" = "11:FALSE"
+            "Folder" = "8:"
+            "Feature" = "8:"
+            "IsolateTo" = "8:"
+            }
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_7CE36FA446A04A22B62081025FAE540D"
-            {
-            "SourcePath" = "8:..\\Debug\\MyUtil.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_C1FB360C4FCC4A2E9B09A9A2FF3B4FF5"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:"
-            "OutputGroupCanonicalName" = "8:Built"
-            "OutputProjectGuid" = "8:{B5B97509-1F26-4D3E-AC89-C3B99CA25E55}"
-            "ShowKeyOutput" = "11:TRUE"
-                "ExcludeFilters"
-                {
-                }
-            }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_9DBE5D8335DC48BB8510D7319BCA58EE"
             {
-            "SourcePath" = "8:..\\Debug\\d3dtost.exe"
+            "SourcePath" = "8:..\\Release\\d3dtost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_C1FB360C4FCC4A2E9B09A9A2FF3B4FF5"
