@@ -49,6 +49,8 @@ namespace my { namespace gl { namespace shapes {
 		Vertex											end;
 		Colour											beginningColour;
 		Colour											endColour;
+
+		void	operator = (Line const&);
 	};
 
 }}} // namespace my::gl::shapes

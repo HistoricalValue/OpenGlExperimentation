@@ -16,6 +16,8 @@
 #include <nurbs/Knots.h>
 #include <nurbs/Knots_inl.h>
 #include <nurbs/Surface.h>
+#include <nurbs/Surface_inl.h>
+#include <nurbs/SurfaceAlgorithms.h>
 
 #include "MyWindows.h"
 

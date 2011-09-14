@@ -29,6 +29,8 @@ namespace my { namespace gl { namespace shapes {
 										Shape (Shape const&);
 
 		Colour							colour;
+	private:
+		void	operator = (Shape const&);
 	}; // class Shape
 
 }}} // namespace my::gl::shapes

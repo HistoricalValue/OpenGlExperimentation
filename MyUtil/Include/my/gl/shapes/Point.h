@@ -27,6 +27,8 @@ public:
 
 private:
 	Vertex				point;
+
+	void	operator = (Point const&);
 }; // class Point
 
 }}} // namespace my::gl::shapes
