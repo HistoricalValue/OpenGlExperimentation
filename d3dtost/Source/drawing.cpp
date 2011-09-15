@@ -191,25 +191,28 @@ static void Initialise (void) {
 	{
 		DASSERT((minx < 0 && miny < 0 && maxx > 0 && maxy > 0));
 
-		using my::gl::math::						Vector4;
-		using my::gl::math::						vec4;
+		using my::gl::math::					Vector4;
+		using my::gl::math::					vec4;
 		using ankh::surf::nurbs::				Curve;
 		using ankh::surf::nurbs::				ControlPoints;
 		using ankh::surf::nurbs::				Knots;
-		using ankh::surf::nurbs::				ControlPoints_FillRandom;
+		using ankh::surf::nurbs::				ControlPoints_FillRandomly;
+		using ankh::surf::nurbs::				ControlPoints_FillGridUniformly;
+		using ankh::surf::nurbs::				ControlPoints_VaryGrid;
 		using ankh::surf::nurbs::				Knots_FillUniformly;
 		using ankh::surf::nurbs::				Surface;
 		using ankh::surf::Traits::Precision::	Unit;
 		using ankh::surf::nurbs::algo::surf::	FirstCrossSection;
 
-		size_t const width_units(16);
-		size_t const height_units(16);
-		size_t const depth_units(16);
+		size_t const	width_units	(16);
+		size_t const	height_units(16);
+		size_t const	depth_units	(16);
 		
-		size_t const order		(0x04u);
-		size_t const numcpoints	(0x05u);
-		size_t const numcurves	(numcpoints);
-		size_t const numknots	(Curve::NumberOfKnotsFor(order, numcpoints));
+		size_t const	order		(0x04u);
+		size_t const	numcpoints	(0x05);
+		size_t const	numcurves	(numcpoints);
+		size_t const	numknots	(Curve::NumberOfKnotsFor(order, numcpoints));
+		Unit const		variation	(0.5f);
 
 		long seed;
 		{
@@ -231,14 +234,17 @@ static void Initialise (void) {
 
 		Knots_FillUniformly(knots, numknots, 0.0f, 1.0f);
 		
-		for (size_t curve_i(0u); curve_i < numcurves; ++curve_i)
-			cpoints.clear(),
-			
-			cpoints_j.push_back(
-					ControlPoints_FillRandom(
-						cpoints, numcpoints,
-						minx, maxx, miny, maxy, minz, maxz,
-						width_units, height_units, depth_units, seed + curve_i));
+		//for (size_t curve_i(0u); curve_i < numcurves; ++curve_i)
+		//	cpoints.clear(),
+		//	
+		//	cpoints_j.push_back(
+		//			ControlPoints_FillRandomly(
+		//				cpoints, numcpoints,
+		//				minx, maxx, miny, maxy, minz, maxz,
+		//				width_units, height_units, depth_units, seed + curve_i));
+		ControlPoints_VaryGrid(
+			ControlPoints_FillGridUniformly(cpoints_j, numcpoints, numcpoints, minx, maxx, minz, maxz, (miny + maxy)/2.0f),
+			variation, variation, variation, seed);
 
 		_surf = DNEWCLASS(Surface, (knots.begin(), knots.end(), knots.begin(), knots.end(), cpoints_j.begin(), cpoints_j.end()));
 
