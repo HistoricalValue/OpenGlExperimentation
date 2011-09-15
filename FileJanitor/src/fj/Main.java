@@ -18,11 +18,30 @@ public class Main {
 			fj.cleaning.Main.SetDryRun();
 			fj.tidying.Main.SetDryRun();
 		}
+		
+		
+		boolean withCleaning = false;
+		boolean withTidying = false;
+		
+		if (modargs.remove("--clean"))
+			withCleaning = true;
+		if (modargs.remove("--tidy"))
+			withTidying = true;
+		if (modargs.remove("--all")) {
+			withCleaning = true;
+			withTidying = true;
+		}
+		
 		final BufferedReader cleanConfigReader = newBufferedReader(get(GetArg(modargs, "clean:", "FileJanitor_cleaning.config")), GetDefaultCharset());
 		final BufferedReader tidyConfigReader = newBufferedReader(get(GetArg(modargs, "tidy:", "FileJanitor_tidying.config")), GetDefaultCharset());
 
-		fj.cleaning.Main.main(cleanConfigReader, modargs);
-		fj.tidying.Main.main(tidyConfigReader, modargs);
+		if (withCleaning)
+			fj.cleaning.Main.main(cleanConfigReader, modargs);
+		if (withTidying)
+			fj.tidying.Main.main(tidyConfigReader, modargs);
+		
+		if (!withCleaning && !withTidying)
+			println("No command. Try --clean, --tidy or --all");
 	}
 
 	@SuppressWarnings("UseOfSystemOutOrSystemErr")
