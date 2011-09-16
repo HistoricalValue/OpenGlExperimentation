@@ -779,7 +779,10 @@ namespace _ {
 		using namespace my::gl::math;
 
 		mat4 m(1);
-		m *= Translate(0, 0, 1);
+	//	m *= Translate(0, 0, -0.85f);
+	//	m *= Translate(0, 0, 1);
+		m *= Translate(0, 0, 0.10f);
+		m *= Rotate(Axis_X(), M_PI_8);
 		if (_::WITH_CAMERA) {
 			m *= Rotate(Axis_Y(), M_PI_4 + M_PI_8);
 		//	m *= ScaleX(0.5f);
@@ -1080,7 +1083,7 @@ namespace my {
 			_::CreateTextures(images, textures, drawData.previousTextureIndex);
 			_::ConfigureOpenGl();
 			_::SetupCamera();
-			_::SetupFrustrum(0.50f, 1.90f, -0.90f, 0.90f, -0.90f, 0.90f);
+			_::SetupFrustrum(-0.10f, 0.40f, -0.20f, 0.20f, -0.20f, 0.20f);
 
 			return &drawData;
 		}
