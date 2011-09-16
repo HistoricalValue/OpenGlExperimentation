@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////////////
 
 // CONTROL SWITCHES
-#define USE_DE_BOOR								1
+#define USE_DE_BOOR								0 // TODO figure out DEBOOR + weghted control points
 #define WITH_OPTIMISED_DE_BOOR					1
 #define WITH_FAST_CONTROL_POINT_INTERPOLATOR	1
 #define WITH_OPTIMISED_BLENDING					0
@@ -29,7 +29,7 @@ template <> struct BlendingOptimisationTraits<0> { typedef ankh::surf::nurbs::te
 #	define DE_BOOR_OR_NOT_DE_BOOR(FUNC) ankh::surf::nurbs::tesselation::curve::deboor:: FUNC <DeBoorOptimisationTraits <WITH_OPTIMISED_DE_BOOR>::Traits >
 #	define NOT_USING_DE_BOOR_CHECK()	DASSERT(!"Using De-Boor's algorithm, this function shouldn't be used")
 #else
-#	define DE_BOOR_OR_NOT_DE_BOOR(FUNC)	ankh::surf::nurbs::tesselation::blending:: FUNC <BlendingOptimisationTraits <WITH_OPTIMISED_BLENDING>::Traits >
+#	define DE_BOOR_OR_NOT_DE_BOOR(FUNC)	ankh::surf::nurbs::tesselation::curve::blending:: FUNC <BlendingOptimisationTraits <WITH_OPTIMISED_BLENDING>::Traits >
 #	define NOT_USING_DE_BOOR_CHECK()
 #endif
 
@@ -54,7 +54,7 @@ static void foreach (C const& c, F const& f)
 
 static inline
 my::gl::math::Vector4 makevector4 (ankh::math::trig::vec4 const& v) {
-	DASSERT(v.w == 1.0f);
+//	DASSERT(v.w == 1.0f);
 	return my::gl::math::Vector4::New(v.x, v.y, v.z, v.w);
 }
 
@@ -177,12 +177,12 @@ static bool VerifyMultiplicityChecker (void) {
 //////////////////////////////////////////////////////////////////////////////////////
 
 static ankh::surf::nurbs::Surface* _surf(NULL);
-static float	minx(-0.8f);
-static float	maxx( 0.8f);
-static float	miny(-0.8f);
-static float	maxy( 0.8f);
-static float	minz(-0.8f);
-static float	maxz( 0.8f);
+static float	minx(-0.1f);
+static float	maxx( 0.1f);
+static float	miny(-0.1f);
+static float	maxy( 0.1f);
+static float	minz(-0.1f);
+static float	maxz( 0.1f);
 
 template <typename T>
 static inline T& tof (T& o) { return o; }
@@ -212,7 +212,7 @@ static void Initialise (void) {
 		size_t const	numcpoints	(0x05);
 		size_t const	numcurves	(numcpoints);
 		size_t const	numknots	(Curve::NumberOfKnotsFor(order, numcpoints));
-		Unit const		variation	(0.5f);
+		Unit const		variation	(0.3f);
 
 		long seed;
 		{
@@ -242,9 +242,13 @@ static void Initialise (void) {
 		//				cpoints, numcpoints,
 		//				minx, maxx, miny, maxy, minz, maxz,
 		//				width_units, height_units, depth_units, seed + curve_i));
-		ControlPoints_VaryGrid(
-			ControlPoints_FillGridUniformly(cpoints_j, numcpoints, numcpoints, minx, maxx, minz, maxz, (miny + maxy)/2.0f),
-			variation, variation, variation, seed);
+		
+		//ControlPoints_VaryGrid(
+			ControlPoints_FillGridUniformly(cpoints_j, numcpoints, numcpoints, minx, maxx, minz, maxz, (miny + maxy)/2.0f)
+		//	,variation, variation, variation, 5.0f, seed)
+		;
+		cpoints_j.at(3).at(3).y = 0.5f;
+		cpoints_j.at(3).at(3) *= 5.0f;
 
 		_surf = DNEWCLASS(Surface, (knots.begin(), knots.end(), knots.begin(), knots.end(), cpoints_j.begin(), cpoints_j.end()));
 
@@ -284,9 +288,9 @@ void addaslinesto (my::gl::shapes::ShapeCompositionFactory& f) {
 	std::list<Line>	lines;
 #if 0
 	size_t			i(surf.GetFirstKnotJInDomainIndex());
-	size_t const	end(surf.GetLastKnotJInDomainIndex());
+	size_t const	last(surf.GetLastKnotJInDomainIndex());
 
-	for (; i != end; ++i)
+	for (; i <= last; ++i)
 		dest.clear(),
 		lines.clear(),
 		f.AddAll(	map_vec4_to_linestrip(
@@ -329,9 +333,9 @@ void addaspointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 	std::list<vec4>	dest;
 	std::list<Point>points;
 	size_t			i(surf.GetFirstKnotJInDomainIndex());
-	size_t const	end(surf.GetLastKnotJInDomainIndex());
+	size_t const	last(surf.GetLastKnotJInDomainIndex());
 
-	for (; i != end; ++i)
+	for (; i <= last; ++i)
 		dest.clear(),
 		points.clear(),
 		f.AddAll(	map_vec4_to_points(
@@ -354,19 +358,17 @@ void addcontrolpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 
 	Surface const&	surf(_::getsurf());
 	std::list<Point>points;
-	size_t			i(surf.GetFirstKnotJInDomainIndex());
-	size_t const	end(surf.GetLastKnotJInDomainIndex());
+	size_t const	end	(surf.GetControlPointsWidth());
+	size_t			i	(0);
 
-	for (; i != end; ++i) {
-		points.clear();
-		Curve const c(CrossSection(surf, i));
+	for (; i < end; ++i)
+		points.clear(),
 		f.AddAll(	map_vec4_to_points(
-						c.GetControlPointsBegin(),
-						c.GetControlPointsEnd(),
+						surf.GetControlPointsBegin(i),
+						surf.GetControlPointsEnd(i),
 						points,
 						Colour(vec4::New(0.5f, 0.7f, 0.7f)),
 						&makevector4));
-	}
 }
 
 void addknotpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
@@ -394,10 +396,10 @@ void addknotpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 		Curve const curve(CrossSection(surf, c));
 
 		size_t			i	(curve.GetFirstKnotInDomainIndex());
-		size_t const	end	(curve.GetLastKnotInDomainIndex());
+		size_t const	last(curve.GetLastKnotInDomainIndex());
 
-		for (; i <= end; ++i)
-			vectors.push_back(DE_BOOR_OR_NOT_DE_BOOR(At)(curve, i == end? i-1 : i, curve.GetKnot(i)));
+		for (; i <= last; ++i)
+			vectors.push_back(DE_BOOR_OR_NOT_DE_BOOR(At)(curve, i == last? i-1 : i, curve.GetKnot(i)));
 
 		std::list<Point> points;
 		f.AddAll(	map_vec4_to_points(
@@ -606,7 +608,7 @@ namespace _ {
 			using namespace my::gl::shapes;
 			ShapeCompositionFactory f;
 
-		//	nurbs::addcontrolpointsto(f);
+			nurbs::addcontrolpointsto(f);
 		//	nurbs::addaspointsto(f);
 		//	nurbs::addknotpointsto(f);
 
