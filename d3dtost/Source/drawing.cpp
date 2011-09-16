@@ -177,12 +177,12 @@ static bool VerifyMultiplicityChecker (void) {
 //////////////////////////////////////////////////////////////////////////////////////
 
 static ankh::surf::nurbs::Surface* _surf(NULL);
-static float	minx(-0.1f);
-static float	maxx( 0.1f);
-static float	miny(-0.1f);
-static float	maxy( 0.1f);
-static float	minz(-0.1f);
-static float	maxz( 0.1f);
+static float	minx(-0.025f);
+static float	maxx( 0.025f);
+static float	miny(-0.025f);
+static float	maxy( 0.025f);
+static float	minz(-0.025f);
+static float	maxz( 0.025f);
 
 template <typename T>
 static inline T& tof (T& o) { return o; }
@@ -192,7 +192,8 @@ static void Initialise (void) {
 		DASSERT((minx < 0 && miny < 0 && maxx > 0 && maxy > 0));
 
 		using my::gl::math::					Vector4;
-		using my::gl::math::					vec4;
+		using ankh::math::trig::				vec4;
+		using ankh::math::trig::				vec3;
 		using ankh::surf::nurbs::				Curve;
 		using ankh::surf::nurbs::				ControlPoints;
 		using ankh::surf::nurbs::				Knots;
@@ -208,8 +209,8 @@ static void Initialise (void) {
 		size_t const	height_units(16);
 		size_t const	depth_units	(16);
 		
-		size_t const	order		(0x04u);
-		size_t const	numcpoints	(0x05);
+		size_t const	order		(0x4u);
+		size_t const	numcpoints	(0x07);
 		size_t const	numcurves	(numcpoints);
 		size_t const	numknots	(Curve::NumberOfKnotsFor(order, numcpoints));
 		Unit const		variation	(0.3f);
@@ -247,8 +248,8 @@ static void Initialise (void) {
 			ControlPoints_FillGridUniformly(cpoints_j, numcpoints, numcpoints, minx, maxx, minz, maxz, (miny + maxy)/2.0f)
 		//	,variation, variation, variation, 5.0f, seed)
 		;
-		cpoints_j.at(3).at(3).y = 0.5f;
-		cpoints_j.at(3).at(3) *= 5.0f;
+		cpoints_j.at(3).at(3) = vec4(maxx, maxy, maxz, 1.0f);
+		cpoints_j.at(3).at(3) *= 2.0f;
 
 		_surf = DNEWCLASS(Surface, (knots.begin(), knots.end(), knots.begin(), knots.end(), cpoints_j.begin(), cpoints_j.end()));
 
@@ -781,7 +782,7 @@ namespace _ {
 		mat4 m(1);
 	//	m *= Translate(0, 0, -0.85f);
 	//	m *= Translate(0, 0, 1);
-		m *= Translate(0, 0, 0.10f);
+		m *= Translate(0, -0.025f, 1);
 		m *= Rotate(Axis_X(), M_PI_8);
 		if (_::WITH_CAMERA) {
 			m *= Rotate(Axis_Y(), M_PI_4 + M_PI_8);
@@ -1083,7 +1084,7 @@ namespace my {
 			_::CreateTextures(images, textures, drawData.previousTextureIndex);
 			_::ConfigureOpenGl();
 			_::SetupCamera();
-			_::SetupFrustrum(-0.10f, 0.40f, -0.20f, 0.20f, -0.20f, 0.20f);
+			_::SetupFrustrum(0.90f, 1.10f, -0.05f, 0.05f, -0.05f, 0.05f);
 
 			return &drawData;
 		}
