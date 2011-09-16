@@ -130,7 +130,7 @@ void main (void) {
 	mat4 transtest		=	AId()
 						*	projection
 						*	camera
-				//		*	ARotate(vec3(1, 1, 1), radians(axyc[0]))
+						*	ARotate(Axis_Y, radians(axyc[0]))
 				//		*	ATransform(0.5f * Axis_X, 0.5f * Axis_Y, 0.5f * Axis_Z)
 						;
 						

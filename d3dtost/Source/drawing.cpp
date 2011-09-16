@@ -247,8 +247,8 @@ static void Initialise (void) {
 			ControlPoints_FillGridUniformly(cpoints_j, numcpoints, numcpoints, minx, maxx, minz, maxz, (miny + maxy)/2.0f)
 		//	,variation, variation, variation, 5.0f, seed)
 		;
-		cpoints_j.at(3).at(3).y = 0.5f;
-		cpoints_j.at(3).at(3) *= 5.0f;
+		cpoints_j.at(2).at(2).y = 0.5f;
+	//	cpoints_j.at(2).at(2) *= 5.0f;
 
 		_surf = DNEWCLASS(Surface, (knots.begin(), knots.end(), knots.begin(), knots.end(), cpoints_j.begin(), cpoints_j.end()));
 
@@ -779,9 +779,8 @@ namespace _ {
 		using namespace my::gl::math;
 
 		mat4 m(1);
-	//	m *= Translate(0, 0, -0.85f);
-	//	m *= Translate(0, 0, 1);
-		m *= Translate(0, 0, 0.10f);
+		m *= Translate(0, 0, -0.90f);
+		m *= Translate(0, 0, 1);
 		m *= Rotate(Axis_X(), M_PI_8);
 		if (_::WITH_CAMERA) {
 			m *= Rotate(Axis_Y(), M_PI_4 + M_PI_8);
@@ -1083,7 +1082,7 @@ namespace my {
 			_::CreateTextures(images, textures, drawData.previousTextureIndex);
 			_::ConfigureOpenGl();
 			_::SetupCamera();
-			_::SetupFrustrum(-0.10f, 0.40f, -0.20f, 0.20f, -0.20f, 0.20f);
+			_::SetupFrustrum(0.05f, 0.20f, -0.20f, 0.20f, -0.20f, 0.20f);
 
 			return &drawData;
 		}
