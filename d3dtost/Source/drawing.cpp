@@ -209,7 +209,7 @@ static void Initialise (void) {
 		size_t const	height_units(16);
 		size_t const	depth_units	(16);
 		
-		size_t const	order		(0x4u);
+		size_t const	order		(0x2u);
 		size_t const	numcpoints	(0x07);
 		size_t const	numcurves	(numcpoints);
 		size_t const	numknots	(Curve::NumberOfKnotsFor(order, numcpoints));

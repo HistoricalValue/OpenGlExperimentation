@@ -25,10 +25,11 @@ CMyUtil::CMyUtil()
 namespace my {
 
 	void Initialise (void) {
+		gl::shapes::ShapeUtilities::Initialise();
 	}
 
 	void CleanUp (void) {
-
+		gl::shapes::ShapeUtilities::CleanUp();
 	}
 
 } // namespace my

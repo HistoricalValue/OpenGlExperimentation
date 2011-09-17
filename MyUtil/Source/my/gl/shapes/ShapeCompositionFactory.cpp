@@ -35,14 +35,13 @@ void ShapeCompositionFactory::Add (Shape const& shape) {
 P_INLINE
 void ShapeCompositionFactory::Reset (void) {
 	std::for_each(SHAPES.begin(), SHAPES.end(), uptr_fun(&ShapeUtilities::DisposeClonedShape));
-	SHAPES.clear();
+ 	SHAPES.clear();
 }
 
 //////////////////////////////////////////////////////////
 
 P_INLINE
 DynamicShapeComposition* ShapeCompositionFactory::Generate (void) const {
-	malloc(23472390);
 	DynamicShapeComposition* const result(DNEWCLASS(DynamicShapeComposition, (SHAPES_CONST.size())));
 
 	{

@@ -383,5 +383,8 @@
     <ClCompile Include="Source\my\gl\shapes\Point.cpp">
       <Filter>Source Files\my\gl\shapes</Filter>
     </ClCompile>
+    <ClCompile Include="Source\my\gl\shapes\ShapeUtilities.cpp">
+      <Filter>Source Files\my\gl\shapes</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

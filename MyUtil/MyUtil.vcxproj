@@ -197,6 +197,7 @@
     <ClCompile Include="Source\my\gl\shapes\Shape.cpp" />
     <ClCompile Include="Source\my\gl\shapes\ShapeComposition.cpp" />
     <ClCompile Include="Source\my\gl\shapes\ShapeCompositionFactory.cpp" />
+    <ClCompile Include="Source\my\gl\shapes\ShapeUtilities.cpp" />
     <ClCompile Include="Source\my\gl\shapes\SolidCube.cpp" />
     <ClCompile Include="Source\my\gl\shapes\SpecificNumberOfShapesComposition.cpp" />
     <ClCompile Include="Source\my\gl\shapes\Transformable.cpp" />
