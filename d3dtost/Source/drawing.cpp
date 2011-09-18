@@ -58,6 +58,15 @@ my::gl::math::Vector4 makevector4 (ankh::math::trig::vec4 const& v) {
 	return my::gl::math::Vector4::New(v.x, v.y, v.z, v.w);
 }
 
+static inline
+my::gl::shapes::Triangle maketriangle (ankh::math::types::Triangle const& t, my::gl::shapes::Colour const& c) {
+	using my::gl::shapes::	Vertex;
+	using my::gl::math::	Vector4;
+	return my::gl::shapes::Triangle(c)	.SetA(Vertex(Vector4::New(t.a.x, t.a.y, t.a.z)))
+										.SetB(Vertex(Vector4::New(t.b.x, t.b.y, t.b.z)))
+										.SetC(Vertex(Vector4::New(t.c.x, t.c.y, t.c.z)));
+}
+
 template <typename T>
 struct elcollector {
 	std::list<T> els;
@@ -222,7 +231,7 @@ static void Initialise (void) {
 		size_t const	height_units(16);
 		size_t const	depth_units	(16);
 		
-		size_t const	order		(0x02u);
+		size_t const	order		(0x04u);
 		size_t const	numcpoints	(0x07u);
 		size_t const	numcurves	(numcpoints);
 		size_t const	numknots	(Curve::NumberOfKnotsFor(order, numcpoints));
@@ -286,6 +295,34 @@ static inline ankh::surf::nurbs::Surface const& getsurf (void)
 } // _
 //////////////////////////////////////////////////////////////////////////////////////
 
+void addastrianglesto (my::gl::shapes::ShapeCompositionFactory& f) {
+	using ankh::surf::nurbs::tesselation::surf::blending::	ProduceAll;
+	using ankh::math::types::								Triangle;
+	typedef std::vector<Triangle>							Triangles;
+	using ankh::surf::nurbs::tesselation::curve::			SimpleBlendingTraits;
+	using ankh::surf::nurbs::								Surface;
+	using my::gl::shapes::									Colour;
+	using my::gl::math::									Vector4;
+
+	Surface const&	surf	(_::getsurf());
+	Colour const	colour	(Vector4::New(0.8f, 0.4f, 0.8f));
+	Triangles		triangles;
+
+	triangles.reserve((surf.GetResolutionI() - 1) * 2 + 1 + 1);	// +1 security
+
+	{
+		timer t02("surface tesselation");
+		ProduceAll<SimpleBlendingTraits>(surf, triangles);
+	}
+
+	{
+		timer t02("transfoming as triagnles to my::gl::shapes triangles (and adding to factory)");
+		Triangles::const_iterator const t_end(triangles.end());
+		for (Triangles::const_iterator t(triangles.begin()); t != t_end; ++t)
+			f.Add(maketriangle(*t, colour));
+	}
+}
+
 void addaslinesto (my::gl::shapes::ShapeCompositionFactory& f) {
 	using my::gl::shapes::Colour;
 	using my::gl::math::Vector4;
@@ -312,10 +349,10 @@ void addaslinesto (my::gl::shapes::ShapeCompositionFactory& f) {
 						lines,
 						Colour(Vector4::New(0.8f, 0.4f, 0.8f)),
 						&makevector4));
-#else
+#elif 0
 	Surface::Domain const D(surf.GetDomainOfDefinition());
 	unsigned long const t0 = ugettime();
-	for (float u(D.j.first); u <= D.j.last; u += 0.01f)
+	for (float u(D.j.first); u <= D.j.last; u += ankh::surf::Traits::Precision::step)
 		dest.clear(),
 		lines.clear(),
 		f.AddAll(	map_vec4_to_linestrip(
@@ -464,8 +501,8 @@ using namespace ::gl::ext;
 
 namespace _ {
 	static const bool	WITH_DRAW_POINTS	(true);
-	static const bool	WITH_DRAW_LINES		(true);
-	static const bool	WITH_DRAW_TRIANGLES	(false);
+	static const bool	WITH_DRAW_LINES		(false);
+	static const bool	WITH_DRAW_TRIANGLES	(true);
 	static const bool	WITH_DRAW_TEXTURED	(false);
 	//
 	static const bool	WITH_CAMERA			(false);
@@ -674,7 +711,7 @@ namespace _ {
 					ShapeCompositionFactory f;
 
 					f.Add(axs);
-					nurbs::addaslinesto(f);
+				//	nurbs::addaslinesto(f);
 
 					DynamicShapeComposition* dcomp(NULL);
 					{
@@ -717,17 +754,35 @@ namespace _ {
 			using namespace my::gl::shapes;
 			using namespace my::gl::math;
 
+			timer t02("cleaning up factory (surf triangles)");
+			ShapeCompositionFactory	f;
+			{
+				timer t03("adding surface triangles to factory");
+				nurbs::addastrianglesto(f);
+			}
+
+			DynamicShapeComposition* dcomp(NULL);
+			{
+				timer t03("producing surface triangles from factory into dynamic composition");
+				dcomp = f.Generate();
+			}
+
 			Nothing								nothing;
 			{
 				Shape& shape(
-					nothing
-				//	companions
-				//	companion0
-				//	plane
+				//	nothing
+					*dcomp
 					);
 
 				_::SetAttribute(vertexArrayId, buffer0Id, shape, POINTS_NORMALISED, false, numberOfWorldCubeLineSegments);
 			}
+
+			{
+				timer t03("destroying dynamic composition (surf triangl)");
+				f.Dispose(dcomp);
+			}
+
+			t02.restart();
 		}
 	}
 

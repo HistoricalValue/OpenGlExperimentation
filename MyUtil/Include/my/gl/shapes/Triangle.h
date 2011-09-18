@@ -27,6 +27,9 @@ namespace my { namespace gl { namespace shapes {
 		Vertex const&									GetA (void) const;
 		Vertex const&									GetB (void) const;
 		Vertex const&									GetC (void) const;
+		Triangle&										SetA (Vertex const& _a) { a = _a; return *this; }
+		Triangle&										SetB (Vertex const& _b) { b = _b; return *this; }
+		Triangle&										SetC (Vertex const& _c) { c = _c; return *this; }
 
 		// Transformable
 		void											Apply (math::Matrix4x4 const&);

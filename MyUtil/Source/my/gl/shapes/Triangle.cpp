@@ -39,9 +39,9 @@ namespace my { namespace gl { namespace shapes {
 		VertexData*		result				(NULL);
 		size_t const	requiredBytesize	(3 * sizeof(VertexData));
 
-		Colour const	colour1				(ColourFactory::Dimmer(colour));
+		Colour const	colour1				(ColourFactory::Dimmer(ColourFactory::Dimmer(colour)));
 		Colour const	colour2				(colour);
-		Colour const	colour3				(ColourFactory::Brighter(colour));
+		Colour const	colour3				(ColourFactory::Brighter(ColourFactory::Brighter(colour)));
 
 		if (bytesize >= requiredBytesize) {
 			reinterpret_assign(result, memory);

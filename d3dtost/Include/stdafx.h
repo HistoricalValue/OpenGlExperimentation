@@ -1,5 +1,7 @@
 // Surfaces Project
 // -
+// Surfaces Project
+// -
 #include <SurfacesDLL.h>
 #include <SurfacesTraits.h>
 #include <SurfacesTraits_inl.h>
@@ -19,6 +21,8 @@
 #include <nurbs/Surface_inl.h>
 #include <nurbs/SurfaceAlgorithms.h>
 #include <nurbs/SurfaceAlgorithms_inl.h>
+#include <nurbs/SurfaceTesselation.h>
+#include <nurbs/SurfaceTesselation_inl.h>
 
 #include "MyWindows.h"
 
@@ -120,3 +124,4 @@ namespace d3dtost {
 
 
 #include <Trig.h>
+#include <MathTypes.h>
