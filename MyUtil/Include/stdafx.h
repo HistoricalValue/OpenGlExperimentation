@@ -55,6 +55,7 @@
 #include <usig.h>
 #include <utypes.h>
 #include <uptr.h>
+#include <usystem.h>
 
 
 #include <PStaticAssert.h>

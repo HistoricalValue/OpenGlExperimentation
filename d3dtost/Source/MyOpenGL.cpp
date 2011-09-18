@@ -85,6 +85,8 @@ namespace my {
 							sizeof(buf)/sizeof(buf[0]) - off,
 							reinterpret_cast<char const* const>(glGetStringi(GL_EXTENSIONS, i))
 						) + 1) - 1] = '\n';
+			PASSERT(off < sizeof(buf)/sizeof(buf[0]))
+			buf[off] = '\0';
 
 			__NE()
 			my::global::logger::Get().Info(d3dtost::ConvertErrorMessage(buf));

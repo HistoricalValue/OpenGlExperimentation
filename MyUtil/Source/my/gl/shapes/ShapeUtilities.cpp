@@ -13,6 +13,7 @@ static size_t	allocations(0);
 static struct	allocation {
 	allocation* next;
 	void* mymem;
+	bool allocated;
 }* head(NULL), * next(NULL);
 static size_t left(0);
 #ifdef _DEBUG
@@ -22,6 +23,7 @@ size_t const sz_allocation(sizeof(allocation));
 static inline allocation* alInit (void* const self)
 	{ return	reinterpret_cast<allocation* const>(self)->next = NULL,
 				reinterpret_cast<allocation* const>(self)->mymem = codeshare::utilities::pointer_utilities::offset(self, sizeof(allocation)),
+				reinterpret_cast<allocation* const>(self)->allocated = false,
 				reinterpret_cast<allocation* const>(self); }
 static inline allocation* alGet (void* const mem)
 	{ return	reinterpret_cast<allocation* const>(codeshare::utilities::pointer_utilities::offset(mem, -ptrdiff_t(sizeof(allocation)))); }
@@ -87,6 +89,7 @@ void* _ShapeAlloc (size_t const bytesize) {
 	void* result(NULL);
 	if (fits) {
 		result = _::next->mymem;
+		_::next->allocated = true;
 		_::next = _::next->next = _::alInit(offset(_::next, sizeof(_::allocation) + bytesize));
 		_::left -= bytesize + sizeof(_::allocation);
 		++_::allocations;
@@ -101,8 +104,10 @@ void DisposeClonedShape (Shape* const shape) {
 
 	// Memory validation
 	PASSERT(_::alValidate(shape))
+	PASSERT(_::alGet(shape)->allocated)
 	
 	shape->~Shape();
+	_::alGet(shape)->allocated = false;
 
 	if (--_::allocations == 0)
 		Reset();

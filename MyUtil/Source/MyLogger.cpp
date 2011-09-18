@@ -25,8 +25,13 @@ namespace my {
 		UnPMessages::const_iterator const	end(messages_p->end());
 
 		_T_OFSTREAM fout(_T("log.txt"), std::ios::out | std::ios::trunc);
-		for (; ite != end; ++ite)
+		PASSERT(fout.good())
+		for (; ite != end; ++ite) {
 			fout << *ite << std::endl; // somethind in the future
+			PASSERT(fout.good())
+		}
+
+		PASSERT(fout.good())
 
 		if (isFull)
 			fout << _T("--- LOGGER WARNING ---: Logger got filled up and could not hold any more messages!!!") << std::endl;

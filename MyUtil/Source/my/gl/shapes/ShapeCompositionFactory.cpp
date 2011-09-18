@@ -1,4 +1,5 @@
 #include <stdafx.h>
+#include <PQuickDispose.h>
 
 //////////////////////////////////////////////////////////
 namespace	{
@@ -34,8 +35,23 @@ void ShapeCompositionFactory::Add (Shape const& shape) {
 
 P_INLINE
 void ShapeCompositionFactory::Reset (void) {
-	std::for_each(SHAPES.begin(), SHAPES.end(), uptr_fun(&ShapeUtilities::DisposeClonedShape));
- 	SHAPES.clear();
+	{
+		unsigned long int const t0 = ugettime();
+		std::for_each(SHAPES.begin(), SHAPES.end(), uptr_fun(&ShapeUtilities::DisposeClonedShape));
+		unsigned long int const t1 = ugettime();
+		TCHAR buf[1024];
+		_sntprintf_s(&buf[0], _countof(buf), _countof(buf), _T("it's all here: %ld\n"), t1-t0);
+		my::global::logger::Get().Info(my::String(buf));
+	}
+
+	{
+		unsigned long int const t0 = ugettime();
+		SHAPES.clear();
+		unsigned long int const t1 = ugettime();
+		TCHAR buf[1024];
+		_sntprintf_s(&buf[0], _countof(buf), _countof(buf), _T("or here: %ld\n"), t1-t0);
+		my::global::logger::Get().Info(my::String(buf));
+	}
 }
 
 //////////////////////////////////////////////////////////
@@ -74,7 +90,15 @@ ShapeCompositionFactory::ShapeCompositionFactory (void):
 P_INLINE
 ShapeCompositionFactory::~ShapeCompositionFactory (void) {
 	Reset();
-	DDELETE(reinterpret_cast<_::InstanceData* const>(data));
+
+	{
+		unsigned long int const t0 = ugettime();
+		DDELETE(reinterpret_cast<_::InstanceData* const>(data));
+		unsigned long int const t1 = ugettime();
+		TCHAR buf[1024];
+		_sntprintf_s(&buf[0], _countof(buf), _countof(buf), _T("or finally here: %ld\n"), t1-t0);
+		my::global::logger::Get().Info(my::String(buf));
+	}
 }
 
 //////////////////////////////////////////////////////////

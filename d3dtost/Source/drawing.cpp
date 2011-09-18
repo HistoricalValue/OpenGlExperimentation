@@ -64,6 +64,19 @@ struct elcollector {
 	elcollector& operator , (T const& el) { els.push_back(el); return *this; }
 }; // elcollector<T>
 
+struct timer {
+	char const* const what;
+	unsigned long int start;
+	timer (char const* const _what): what(_what), start(ugettime()) {}
+	void restart (void) { start = ugettime(); }
+	~timer (void) {
+		char buf[1024];
+		_snprintf_s(&buf[0], _countof(buf), _countof(buf), "%s took %ld milliseconds\n",
+				what, ugettime() - start);
+		my::global::log::infoA(buf);
+	}
+};
+
 } //
 
 
@@ -209,8 +222,8 @@ static void Initialise (void) {
 		size_t const	height_units(16);
 		size_t const	depth_units	(16);
 		
-		size_t const	order		(0x2u);
-		size_t const	numcpoints	(0x07);
+		size_t const	order		(0x02u);
+		size_t const	numcpoints	(0x07u);
 		size_t const	numcurves	(numcpoints);
 		size_t const	numknots	(Curve::NumberOfKnotsFor(order, numcpoints));
 		Unit const		variation	(0.3f);
@@ -333,17 +346,36 @@ void addaspointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 	Surface const&	surf(_::getsurf());
 	std::list<vec4>	dest;
 	std::list<Point>points;
+#if 0
 	size_t			i(surf.GetFirstKnotJInDomainIndex());
 	size_t const	last(surf.GetLastKnotJInDomainIndex());
 
 	for (; i <= last; ++i)
 		dest.clear(),
 		points.clear(),
-		f.AddAll(	map_vec4_to_points(
+		f.AddAll(	(
 						DE_BOOR_OR_NOT_DE_BOOR(ProduceAll)(CrossSection(surf, i), dest),
 						points,
 						Colour(Vector4::New(0.5f, 0.2f, 0.2f)),
 						&makevector4));
+#else
+	Surface::Domain const D(surf.GetDomainOfDefinition());
+	unsigned long const t0 = ugettime();
+	for (float u(D.j.first); u <= D.j.last; u += 0.01f)
+		dest.clear(),
+		points.clear(),
+		f.AddAll(	map_vec4_to_points(
+						DE_BOOR_OR_NOT_DE_BOOR(ProduceAll)(CrossSection(surf, u), dest),
+						points,
+						Colour(Vector4::New(0.5f, 0.2f, 0.2f)),
+						&makevector4));
+	unsigned long const t1 = ugettime();
+	{
+		char bug[1024];
+		_snprintf_s(&bug[0], _countof(bug), _countof(bug)-1, "tesselation took %ld miliseconds\n", t1-t0);
+		my::global::log::infoA(&bug[0]);
+	}
+#endif
 }
 
 void addcontrolpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
@@ -634,25 +666,42 @@ namespace _ {
 			using namespace my::gl::math;
 
 			Nothing nothing;
-			Axes axs;
-			ShapeCompositionFactory f;
-
-			f.Add(axs);
-			nurbs::addaslinesto(f);
-
-			DynamicShapeComposition* const dcomp(f.Generate());
-
 			{
-				Shape& shape(
-					//	axs
-					//	nothing
-						*dcomp
-					);
+				timer t00("axes cleanup");
+				Axes axs;
+				{
+					timer t02("factory cleanup");
+					ShapeCompositionFactory f;
 
-				SetAttribute(vertexArrayId, buffer0Id, shape, POINTS_NORMALISED, false, numberOfPoints);
+					f.Add(axs);
+					nurbs::addaslinesto(f);
+
+					DynamicShapeComposition* dcomp(NULL);
+					{
+						timer t01("line shapes generation");
+						dcomp = (f.Generate());
+					}
+
+					{
+						Shape& shape(
+							//	axs
+							//	nothing
+								*dcomp
+							);
+
+						SetAttribute(vertexArrayId, buffer0Id, shape, POINTS_NORMALISED, false, numberOfPoints);
+					}
+
+					{
+						timer t01("disposing of a dynamic shape composition");
+						f.Dispose(dcomp);
+					}
+
+					t02.restart();
+				}
+
+				t00.restart();
 			}
-
-			f.Dispose(dcomp);
 		}
 	}
 

@@ -7,7 +7,7 @@
 #include <PProtectedClass.h>
 #include <PTypes.h>
 
-#define MY_LIST_CAPACITY 1
+#define MY_LIST_CAPACITY 7
 
 namespace my {
 
