@@ -20,17 +20,17 @@ namespace my { namespace gl { namespace shapes {
 
 		Shape**							GetShapesBegin (void) const	{ return &GetShapesArray()[0]; }
 		Shape**							GetShapesEnd (void) const	{ return &GetShapesArray()[GetNumberOfAddedShapes()]; }
+		size_t							GetNumberOfAddedShapes (void) const;
+		size_t							GetCapacity (void) const;
+		bool							IsFull (void) const;
 
 		// Transformable
 		virtual void					Apply (math::Matrix4x4 const&);
 		virtual void					Adjust (math::Vector4 const&);
 
 	protected:
-		bool							IsFull (void) const;
 		void							AddShapeToComposition (Shape*);
 		Shape**							GetShapesArray (void) const;
-		size_t							GetCapacity (void) const;
-		size_t							GetNumberOfAddedShapes (void) const;
 										ShapeComposition (Shape** shapesArrayMemory, size_t shapesArrayMemoryBytesize);
 
 	private:

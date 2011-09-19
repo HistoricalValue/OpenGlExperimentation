@@ -27,6 +27,13 @@ namespace my { namespace gl { namespace shapes {
 //////////////////////////////////////////////////////////
 
 P_INLINE
+size_t ShapeCompositionFactory::GetNumberOfAddedShapes (void) const {
+	return SHAPES_CONST.size();
+}
+
+//////////////////////////////////////////////////////////
+
+P_INLINE
 void ShapeCompositionFactory::Add (Shape const& shape) {
 	SHAPES.push_back(ShapeUtilities::CloneShape(shape));
 }

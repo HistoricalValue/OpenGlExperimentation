@@ -19,6 +19,8 @@ public:
 
 	void						Dispose (DynamicShapeComposition*) const;
 
+	size_t						GetNumberOfAddedShapes (void) const;
+
 								ShapeCompositionFactory (void);
 								~ShapeCompositionFactory (void);
 

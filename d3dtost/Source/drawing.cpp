@@ -86,6 +86,20 @@ struct timer {
 	}
 };
 
+LPCTSTR format (LPCTSTR const fmt, ...) {
+	static TCHAR buf[1024];
+
+	va_list args;
+	va_start(args, fmt);
+
+	int const retval(_vsntprintf_s(&buf[0], _countof(buf), _countof(buf), fmt, args));
+	PASSERT(retval > 1);
+
+	va_end(args);
+
+	return &buf[0];
+}
+
 } //
 
 
@@ -772,12 +786,14 @@ namespace _ {
 			{
 				timer t03("adding surface triangles to factory");
 				nurbs::addastrianglesto(f);
+
 			}
 
 			DynamicShapeComposition* dcomp(NULL);
 			{
 				timer t03("producing surface triangles from factory into dynamic composition");
 				dcomp = f.Generate();
+				my::global::log::info(format(_T("(surface is %ld (%ld) triangles)\n"), f.GetNumberOfAddedShapes(), dcomp->GetNumberOfAddedShapes()));
 			}
 
 			Nothing								nothing;
