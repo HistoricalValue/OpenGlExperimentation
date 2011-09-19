@@ -18,6 +18,9 @@ namespace my { namespace gl { namespace shapes {
 		virtual TexturedVertexData*		GetTexturedVertexData (void* memory, size_t bytesize) const;
 		virtual size_t					GetNumberOfVertices (void) const;
 
+		Shape**							GetShapesBegin (void) const	{ return &GetShapesArray()[0]; }
+		Shape**							GetShapesEnd (void) const	{ return &GetShapesArray()[GetNumberOfAddedShapes()]; }
+
 		// Transformable
 		virtual void					Apply (math::Matrix4x4 const&);
 		virtual void					Adjust (math::Vector4 const&);

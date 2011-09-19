@@ -10,16 +10,18 @@
 namespace my { namespace gl { namespace shapes {
 
 	P_INLINE
-	VertexData::VertexData (math::Vector4 const& _position, Colour const& _colour):
+	VertexData::VertexData (math::Vector4 const& _position, Colour const& _colour, math::Vector4 const& _normal):
 		position(_position),
-		colour(_colour)
-		{ P_STATIC_ASSERT(sizeof(VertexData) == sizeof(position) + sizeof(colour)) }
+		colour(_colour),
+		normal(_normal)
+		{ P_STATIC_ASSERT(sizeof(VertexData) == sizeof(position) + sizeof(colour) + sizeof(normal)) }
 
 	P_INLINE
 	VertexData::VertexData (VertexData const& other):
 		position(other.position),
-		colour(other.colour)
-		{ P_STATIC_ASSERT(sizeof(VertexData) == sizeof(position) + sizeof(colour)) }
+		colour(other.colour),
+		normal(other.normal)
+		{ P_STATIC_ASSERT(sizeof(VertexData) == sizeof(position) + sizeof(colour) + sizeof(normal)) }
 
 	P_INLINE
 	VertexData::~VertexData (void) {
@@ -48,6 +50,11 @@ namespace my { namespace gl { namespace shapes {
 	P_INLINE
 	void* VertexData::ColourOffsetPointer (void) {
 		return codeshare::utilities::pointer_utilities::offset(ColourOffset());
+	}
+
+	P_INLINE
+	void* VertexData::NormalOffsetPointer (void) {
+		return codeshare::utilities::pointer_utilities::offset(NormalOffset());
 	}
 
 }}} // namespace my::gl::shapes

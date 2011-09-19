@@ -7,6 +7,24 @@ namespace my { namespace gl { namespace math {
 
 	///////////////////////////////////
 
+	inline
+	Vector4 const Vector4::cross_asvec3 (Vector4 const& other) const {
+		float const	u1	(v[0]/v[3]),
+					u2	(v[1]/v[3]),
+					u3	(v[2]/v[3]),
+					v1	(other.v[0]/other.v[3]),
+					v2	(other.v[1]/other.v[3]),
+					v3	(other.v[2]/other.v[3]);
+		return	Vector4(
+					u2 * v3 - u3 * v2,
+					u3 * v1 - u1 * v3,
+					u1 * v2 - u2 * v1,
+					1.0f
+				);
+	}
+
+	///////////////////////////////////
+
 	template <typename T>
 	Vector4 Vector4::operator / (T const d) const {
 		return Vector4(x()/d, y()/d, z()/d, w()/d);
@@ -347,9 +365,14 @@ namespace my { namespace gl { namespace math {
 	P_INLINE
 	Vector4 Vector4::operator - (Vector4 const& other) const {
 		return Vector4(v[0] - other.v[0], v[1] - other.v[1], v[2] - other.v[2], v[3] - other.v[3]);
-
 	}
 
+	///////////////////////////////////
+
+	P_INLINE
+	Vector4 const Vector4::sub_asvec3 (Vector4 const& other) const {
+		return Vector4(v[0]/v[3] - other.v[0]/other.v[3], v[1]/v[3] - other.v[1]/other.v[3], v[2]/v[3] - other.v[2]/other.v[3], 1.0f);
+	}
 	///////////////////////////////////
 
 #endif

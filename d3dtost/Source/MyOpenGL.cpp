@@ -48,6 +48,7 @@ namespace my {
 				bindings.push_back(std::make_pair(OpenGL::VAI_COLOUR, VAN_COLOUR));
 				bindings.push_back(std::make_pair(OpenGL::VAI_AXYC, VAN_AXYC));
 				bindings.push_back(std::make_pair(OpenGL::VAI_TEXCOORD, VAN_TEXCOORD));
+				bindings.push_back(std::make_pair(OpenGL::VAI_NORMAL, VAN_NORMAL));
 
 				programBuilder.SetVertexAttributeBindings(bindings);
 			}
@@ -229,6 +230,7 @@ namespace my {
 	OpenGL::_VAI_COLOUR const OpenGL::VAI_COLOUR;
 	OpenGL::_VAI_AXYC const OpenGL::VAI_AXYC;
 	OpenGL::_VAI_TEXCOORD const OpenGL::VAI_TEXCOORD;
+	OpenGL::_VAI_NORMAL const OpenGL::VAI_NORMAL;
 
 	OpenGL::_VAI_POSITION::operator GLuint (void) const {
 		return 0u;
@@ -244,6 +246,10 @@ namespace my {
 
 	OpenGL::_VAI_TEXCOORD::operator GLuint (void) const {
 		return 3u;
+	}
+
+	OpenGL::_VAI_NORMAL::operator GLuint (void) const {
+		return 4u;
 	}
 
 

@@ -655,6 +655,7 @@ namespace _ {
 		size_t const	stride		(textured? TexturedVertexData::Stride() : VertexData::Stride());
 		voidp const		attr1off	(textured? TexturedVertexData::PositionOffsetPointer() : VertexData::PositionOffsetPointer());
 		voidp const		attr2off	(textured? TexturedVertexData::TextureCoordinatesOffsetPointer() : VertexData::ColourOffsetPointer());
+		voidp const		attr3off	(textured? TexturedVertexData::NormalOffsetPointer() : VertexData::NormalOffsetPointer());
 		GLuint const	attr2index	(textured? GLuint(OpenGL::VAI_TEXCOORD) : GLuint(OpenGL::VAI_COLOUR));
 
 		glBufferData(GL_ARRAY_BUFFER, bytesize, data, GL_STATIC_DRAW);
@@ -663,9 +664,11 @@ namespace _ {
 
 		glVertexAttribPointer(OpenGL::VAI_POSITION,	4,	GL_FLOAT,	!normalised,	stride,	attr1off);
 		glVertexAttribPointer(attr2index,			4,	GL_FLOAT,	!normalised,	stride,	attr2off);
+		glVertexAttribPointer(OpenGL::VAI_NORMAL,	4,	GL_FLOAT,	!normalised,	stride,	attr3off);
 
 		glEnableVertexAttribArray(OpenGL::VAI_POSITION);
 		glEnableVertexAttribArray(attr2index);
+		glEnableVertexAttribArray(OpenGL::VAI_NORMAL);
 
 		numberOfPoints = count;
 	}

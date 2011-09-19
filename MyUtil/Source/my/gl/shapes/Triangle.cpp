@@ -36,19 +36,24 @@ namespace my { namespace gl { namespace shapes {
 
 	VertexData* Triangle::GetVertexData (void* const memory, size_t const bytesize) const {
 		using			codeshare::utilities::pointer_utilities::reinterpret_assign;
+		using			math::Vector4;
 		VertexData*		result				(NULL);
 		size_t const	requiredBytesize	(3 * sizeof(VertexData));
 
-		Colour const	colour1				(ColourFactory::Dimmer(ColourFactory::Dimmer(colour)));
-		Colour const	colour2				(colour);
-		Colour const	colour3				(ColourFactory::Brighter(ColourFactory::Brighter(colour)));
+		Vector4 const	normal				((b.xyzw().sub_asvec3(a.xyzw())).cross_asvec3(c.xyzw().sub_asvec3(a.xyzw())).normalised());
+		DASSERT(abs(normal.magnitude() - 1.0f) < 1e-6);
 
+		Colour const	colour1				(ColourFactory::Dimmer(colour));
+		Colour const	colour2				(colour);
+		Colour const	colour3				(ColourFactory::Brighter(colour));
+
+		
 		if (bytesize >= requiredBytesize) {
 			reinterpret_assign(result, memory);
 
-			new(&result[0]) VertexData(a.xyzw(), colour1);
-			new(&result[1]) VertexData(b.xyzw(), colour2);
-			new(&result[2]) VertexData(c.xyzw(), colour3);
+			new(&result[0]) VertexData(a.xyzw(), colour1, normal);
+			new(&result[1]) VertexData(b.xyzw(), colour2, normal);
+			new(&result[2]) VertexData(c.xyzw(), colour3, normal);
 		}
 
 		return result;

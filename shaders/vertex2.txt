@@ -109,10 +109,15 @@ vec4 Hom_True (const vec4 pos) {
 
 ///////////////////////////////////////////////////////////
 
+const vec4		pooplight = vec4(-1, -1, -1, 1);
+
+///////////////////////////////////////////////////////////
+
 in vec4			position;
 in vec4			colour;
 in vec4			axyc;
 in vec4			texcoord;
+in vec4			normal;
 
 uniform uint	textureZ;
 uniform mat4	camera;
@@ -136,6 +141,5 @@ void main (void) {
 						
 	gl_Position			= transtest * pos;
 	textureCoordinate	= vec4(texcoord.st, textureZ, 1);
-	interpolatedColour	= colour;
-
+	interpolatedColour	= colour * dot(normalize(pooplight), normalize(transtest*normal));
 }

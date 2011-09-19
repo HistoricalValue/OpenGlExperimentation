@@ -50,6 +50,7 @@ namespace my { namespace gl { namespace math {
 		Vector4											mul (float) const;					// scalar multiplication without touching w
 		float											angle (Vector4 const&) const;		// angle this^other in [-pi, pi]
 		Vector4											operator - (Vector4 const&) const;	// vector subtraction (element-by-element)
+		Vector4 const									sub_asvec3 (Vector4 const&) const;
 		Vector4											operator / (Vector4 const&) const;	// element-by-element division
 		template <typename T>
 		Vector4											operator / (T) const;				// division by scalar
@@ -59,9 +60,7 @@ namespace my { namespace gl { namespace math {
 		Vector4											add (T) const;						// adding a scalar without touching element 4 (w)
 		template <typename T>
 		void											addtothis (T);						// adding a scalar to this vector without touching element 4 (w)
-	/// TODO implement (figure out)
-	//	Vector4											rhcross (Vector4 const&) const;		// right-hand-system cross-product (x)	||a|| ||b|| sin(a^b) *directionVector
-	//	Vector4											lhcross (Vector4 const&) const;		// left-hand-system cross-product (x)
+		Vector4 const									cross_asvec3 (Vector4 const&) const;// cross product
 
 		//
 		struct MYUTIL_API Setter {
