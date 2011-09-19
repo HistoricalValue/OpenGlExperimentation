@@ -1,13 +1,16 @@
 #include "stdafx.h"
 
+#define WITH_LAME_THINGS 0
+
 #define ASSERT_INITIALISED	PASSERT(*DPTR(_DNOTNULL(_::initialised)))
 
 namespace	{
 namespace _	{
 
-size_t const	CHUNKLEN(1 << 29); // 512MB
-
 static bool*	initialised(NULL);
+
+#if WITH_LAME_THINGS == 1
+size_t const	CHUNKLEN(1 << 29); // 512MB
 static size_t	allocations(0);
 
 static struct	allocation {
@@ -32,6 +35,7 @@ static inline bool alValidate (void* const mem)
 				PASSERT_EXPR(mem < codeshare::utilities::pointer_utilities::offset(head, CHUNKLEN)),
 				PASSERT_EXPR(alGet(mem)->mymem == mem),
 				true; }
+#endif // WITH_LAME_THINGS
 
 }	// _
 }	//
@@ -43,15 +47,18 @@ namespace ShapeUtilities	{
 
 void Initialise (void) {
 	PASSERT(_::initialised == NULL)
+
+#if WITH_LAME_THINGS == 1
 	PASSERT(_::head == NULL)
 	PASSERT(_::next == NULL)
 	PASSERT(_::left == 0)
 
-	*DPTR(_DNOTNULL(_::initialised = DNEW(bool))) = true;
-
 	_::head = reinterpret_cast<_::allocation*>(DNEW(util_ui8[_::CHUNKLEN]));
 	
 	P_STATIC_ASSERT(sizeof(*_::head) < _::CHUNKLEN * sizeof(util_ui8))
+#endif // WITH_LAME_THINGS
+
+	*DPTR(_DNOTNULL(_::initialised = DNEW(bool))) = true;
 	Reset();
 }
 
@@ -59,9 +66,11 @@ void CleanUp (void) {
 	ASSERT_INITIALISED
 	Reset();
 
+#if WITH_LAME_THINGS == 1
 	_::left = 0;
 	_::next = NULL;
 	udelete(_::head);
+#endif // WITH_LAME_THINGS
 
 	*_::initialised = false;
 	udelete(_::initialised);
@@ -69,14 +78,18 @@ void CleanUp (void) {
 
 void Reset (void) {
 	ASSERT_INITIALISED
+
+#if WITH_LAME_THINGS == 1
 	PASSERT(_::allocations == 0)
 
 	_::next = _::alInit(_::head);
 	_::left = _::CHUNKLEN - sizeof(_::allocation);
+#endif // WITH_LAME_THINGS
 }
 
 void* _ShapeAlloc (size_t const bytesize) {
 	ASSERT_INITIALISED
+#if WITH_LAME_THINGS == 1
 	PASSERT(_DNOTNULL(_::head))
 	PASSERT(_DNOTNULL(_::next))
 	PASSERT(_::next->next == NULL)
@@ -96,12 +109,16 @@ void* _ShapeAlloc (size_t const bytesize) {
 	}
 
 	return result;
-//	return PASSERT_EXPR(*DPTR(_DNOTNULL(_::initialised))), DNEWARR(util_ui8, bytesize);
+#else // !WITH_LAME_THINGS
+	PASSERT(*DPTR(_DNOTNULL(_::initialised)))
+	return DNEWARR(util_ui8, bytesize);
+#endif // WITH_LAME_THINGS
 }
 
 void DisposeClonedShape (Shape* const shape) {
 	ASSERT_INITIALISED
 
+#if WITH_LAME_THINGS == 1
 	// Memory validation
 	PASSERT(_::alValidate(shape))
 	PASSERT(_::alGet(shape)->allocated)
@@ -111,9 +128,10 @@ void DisposeClonedShape (Shape* const shape) {
 
 	if (--_::allocations == 0)
 		Reset();
-
-//	DPTR(_DNOTNULL(shape))->~Shape();
-//	DDELARR(reinterpret_cast<util_ui8* const>(shape));
+#else // !WITH_LAME_THINGS
+	DPTR(_DNOTNULL(shape))->~Shape();
+	DDELARR(reinterpret_cast<util_ui8* const>(shape));
+#endif // WITH_LAME_THINGS
 }
 
 }	// ShapeUtilities

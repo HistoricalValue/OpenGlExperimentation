@@ -296,10 +296,16 @@ static inline ankh::surf::nurbs::Surface const& getsurf (void)
 //////////////////////////////////////////////////////////////////////////////////////
 
 void addastrianglesto (my::gl::shapes::ShapeCompositionFactory& f) {
-	using ankh::surf::nurbs::tesselation::surf::blending::	ProduceAll;
+//	using ankh::surf::nurbs::tesselation::surf::blending::	ProduceAll;
+	using ankh::surf::nurbs::tesselation::surf::deboor::	ProduceAll;
 	using ankh::math::types::								Triangle;
 	typedef std::vector<Triangle>							Triangles;
 	using ankh::surf::nurbs::tesselation::curve::			SimpleBlendingTraits;
+	using ankh::surf::nurbs::tesselation::curve::			SimpleInterpolatingTraits;
+	using ankh::surf::nurbs::tesselation::curve::			OptimisedBlendingTraits;
+	using ankh::surf::nurbs::tesselation::curve::			OptimisedInterpolatingTraits;
+	using ankh::surf::nurbs::algo::curve::					FastControlPointInterpolator;
+	using ankh::surf::nurbs::algo::curve::					PreciceControlPointInterpolator;
 	using ankh::surf::nurbs::								Surface;
 	using my::gl::shapes::									Colour;
 	using my::gl::math::									Vector4;
@@ -312,14 +318,18 @@ void addastrianglesto (my::gl::shapes::ShapeCompositionFactory& f) {
 
 	{
 		timer t02("surface tesselation");
-		ProduceAll<SimpleBlendingTraits>(surf, triangles);
+		ProduceAll<
+		//	SimpleBlendingTraits
+		//	OptimisedInterpolatingTraits
+			SimpleInterpolatingTraits
+			<PreciceControlPointInterpolator>
+			>(surf, triangles);
 	}
 
 	{
-		timer t02("transfoming as triagnles to my::gl::shapes triangles (and adding to factory)");
-		Triangles::const_iterator const t_end(triangles.end());
-		for (Triangles::const_iterator t(triangles.begin()); t != t_end; ++t)
-			f.Add(maketriangle(*t, colour));
+		timer t02("transfoming as triagnles to my::gl::shapes triangles (and adding to factory) (and clearing vector)");
+		for (; !triangles.empty(); triangles.pop_back())
+			f.Add(maketriangle(triangles.back(), colour));
 	}
 }
 
