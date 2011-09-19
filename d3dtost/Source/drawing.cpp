@@ -250,7 +250,8 @@ static void Initialise (void) {
 		size_t const	numcurves	(numcpoints);
 		size_t const	numknots	(Curve::NumberOfKnotsFor(order, numcpoints));
 	//	Unit const		variation	(0.00625f);
-		Unit const		variation	(0.0125f);
+	//	Unit const		variation	(0.0125f);
+		Unit const		variation	(0.05f);
 
 		long seed;
 		{
@@ -285,8 +286,8 @@ static void Initialise (void) {
 			ControlPoints_FillGridUniformly(cpoints_j, numcpoints, numcpoints, minx, maxx, minz, maxz, (miny + maxy)/2.0f)
 			,variation, variation, variation, 2.0f, seed)
 		;
-	//	cpoints_j.at(3).at(3) = vec4(maxx, maxy, maxz, 1.0f);
-	//	cpoints_j.at(3).at(3) *= 2.0f;
+		cpoints_j.at(3).at(3) = vec4(maxx, maxy, maxz, 1.0f);
+		cpoints_j.at(3).at(3) *= 2.0f;
 
 		_surf = DNEWCLASS(Surface, (knots.begin(), knots.end(), knots.begin(), knots.end(), cpoints_j.begin(), cpoints_j.end()));
 

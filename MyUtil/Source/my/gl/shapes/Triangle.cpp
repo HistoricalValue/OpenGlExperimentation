@@ -43,9 +43,9 @@ namespace my { namespace gl { namespace shapes {
 		Vector4 const	normal				((b.xyzw().sub_asvec3(a.xyzw())).cross_asvec3(c.xyzw().sub_asvec3(a.xyzw())).normalised());
 		DASSERT(abs(normal.magnitude() - 1.0f) < 1e-6);
 
-		Colour const	colour1				(ColourFactory::Dimmer(colour));
+		Colour const	colour1				(colour); // ColourFactory::Dimmer(colour));
 		Colour const	colour2				(colour);
-		Colour const	colour3				(ColourFactory::Brighter(colour));
+		Colour const	colour3				(colour); // ColourFactory::Brighter(colour));
 
 		
 		if (bytesize >= requiredBytesize) {
