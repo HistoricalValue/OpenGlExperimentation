@@ -460,8 +460,8 @@ void addcontrolpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 	for (; i < end; ++i)
 		points.clear(),
 		f.AddAll(	map_vec4_to_points(
-						surf.GetControlPointsBegin(i),
-						surf.GetControlPointsEnd(i),
+						surf.GetControlPointsJBegin(i),
+						surf.GetControlPointsJEnd(i),
 						points,
 						Colour(vec4::New(0.5f, 0.7f, 0.7f)),
 						&makevector4));
