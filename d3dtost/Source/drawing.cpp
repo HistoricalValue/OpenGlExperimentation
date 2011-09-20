@@ -505,6 +505,36 @@ void addknotpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 	}
 }
 
+void addbasecurvesto (my::gl::shapes::ShapeCompositionFactory& f) {
+	using namespace						ankh::surf::nurbs;
+	using namespace						my::gl::shapes;
+	using ankh::math::trig::			vec4;
+	using my::gl::math::				Vector4;
+	using tesselation::curve::deboor::	ProduceAll;
+	using tesselation::curve::			OptimisedInterpolatingTraits;
+	using algo::curve::					PreciceControlPointInterpolator;
+	using my::algo::					map_vec4_to_linestrip;
+
+	typedef OptimisedInterpolatingTraits<PreciceControlPointInterpolator> t;
+
+	Surface const&		surf(_::getsurf());
+	std::vector<vec4>	points;
+	std::list<Line>		lines;
+	Colour const		colour(Vector4::New(0.4f, 0.2f, 0.8f));
+
+	for (size_t i(0); i < surf.GetControlPointsWidth(); ++i) {
+		Curve const&	base		(surf._GetAlongBaseCurve(i));
+		size_t const	resolution	(base.GetResolution());
+
+		points.clear();
+		points.reserve(resolution);
+
+		lines.clear();
+
+		f.AddAll(map_vec4_to_linestrip(ProduceAll<t>(base, points), lines, colour, &makevector4));
+	}
+}
+
 //////////////////////////////////////////////////////////////////////////////////////
 //   as dasd a s   //
 }	// nurbs
@@ -526,7 +556,7 @@ using namespace ::gl::ext;
 
 namespace _ {
 	static const bool	WITH_DRAW_POINTS	(true);
-	static const bool	WITH_DRAW_LINES		(false);
+	static const bool	WITH_DRAW_LINES		(true);
 	static const bool	WITH_DRAW_TRIANGLES	(true);
 	static const bool	WITH_DRAW_TEXTURED	(false);
 	//
@@ -739,6 +769,7 @@ namespace _ {
 					ShapeCompositionFactory f;
 
 					f.Add(axs);
+					nurbs::addbasecurvesto(f);
 				//	nurbs::addaslinesto(f);
 
 					DynamicShapeComposition* dcomp(NULL);
