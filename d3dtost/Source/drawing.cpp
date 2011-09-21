@@ -312,8 +312,10 @@ static inline ankh::surf::nurbs::Surface const& getsurf (void)
 //////////////////////////////////////////////////////////////////////////////////////
 
 void addastrianglesto (my::gl::shapes::ShapeCompositionFactory& f) {
-//	using ankh::surf::nurbs::tesselation::surf::blending::	ProduceAll;
-	using ankh::surf::nurbs::tesselation::surf::deboor::	ProduceAll;
+//	using ankh::surf::nurbs::tesselation::surf::blending::	ProduceAllFromAcrossSections;
+//	using ankh::surf::nurbs::tesselation::surf::blending::	ProduceAllFromAlongSections;
+	using ankh::surf::nurbs::tesselation::surf::deboor::	ProduceAllFromAcrossSections;
+	using ankh::surf::nurbs::tesselation::surf::deboor::	ProduceAllFromAlongSections;
 	using ankh::math::types::								Triangle;
 	typedef std::vector<Triangle>							Triangles;
 	using ankh::surf::nurbs::tesselation::curve::			SimpleBlendingTraits;
@@ -334,7 +336,9 @@ void addastrianglesto (my::gl::shapes::ShapeCompositionFactory& f) {
 
 	{
 		timer t02("surface tesselation");
-		ProduceAll<
+	//	ProduceAllFromAlongSections
+		ProduceAllFromAcrossSections
+		<
 		//	SimpleBlendingTraits
 		//	OptimisedInterpolatingTraits
 			SimpleInterpolatingTraits
