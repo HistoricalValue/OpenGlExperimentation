@@ -131,6 +131,7 @@
   <ItemGroup>
     <None Include="..\shaders\vertex2.txt" />
     <None Include="Resources\appicon.ico" />
+    <None Include="seed.txt" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resources.rc">

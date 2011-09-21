@@ -79,6 +79,7 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\shaders\vertex2.txt" />
+    <None Include="seed.txt" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resources.rc">
