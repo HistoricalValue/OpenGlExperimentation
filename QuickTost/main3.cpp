@@ -1,3 +1,16 @@
+#define WITH_MS_BUG_001 0
+
+// MS BUG HAHAHAHAHAHAHHAHAHAHHAHHAHAHAHA
+#if WITH_MS_BUG_001
+template <typename T>
+class C { };
+
+
+template <typename T>
+template <>
+struct C<T>::LALOS<true> {};
+#else
+
 #include <stdio.h>
 #include <string>
 #include <iostream>
@@ -42,3 +55,5 @@ int main3 (int, char**) {
 
 	return 0;
 }
+
+#endif

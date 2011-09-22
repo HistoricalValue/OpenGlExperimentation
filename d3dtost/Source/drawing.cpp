@@ -289,7 +289,7 @@ static void Initialise (void) {
 		cpoints_j.at(3).at(3) = vec4(maxx, maxy, maxz, 1.0f);
 		cpoints_j.at(3).at(3) *= 2.0f;
 
-		_surf = DNEWCLASS(Surface, (knots.begin(), knots.end(), knots.begin(), knots.end(), cpoints_j.begin(), cpoints_j.end()));
+		_surf = DNEWCLASS(Surface, (knots.begin(), knots.end(), knots.begin(), knots.end(), cpoints_j.begin(), cpoints_j.end(), "BOB ROSS"));
 
 		DASSERT(VerifyBaseFunctions(FirstCrossSection(*_surf).m(), knots));
 
@@ -528,7 +528,7 @@ void addbasecurvesto (my::gl::shapes::ShapeCompositionFactory& f) {
 	Colour const		colour(Vector4::New(0.4f, 0.2f, 0.8f));
 
 	for (size_t i(0); i < surf.GetControlPointsWidth(); ++i) {
-		Curve const&	base		(surf._GetAlongBaseCurve(i));
+		Curve const&	base		(surf._GetAlongBase(i));
 		size_t const	resolution	(base.GetResolution());
 
 		points.clear();

@@ -142,6 +142,9 @@
     <ProjectReference Include="..\..\ankh\Images\Project\ImageLoader.vcxproj">
       <Project>{f3b33fb5-57dc-44cc-8b99-52afa5f087bf}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\ankh\Math\Project\Math.vcxproj">
+      <Project>{6e4f6764-bb80-4fa7-bdeb-296dfb306160}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\ankh\Surfaces\Project\Surfaces.vcxproj">
       <Project>{bc821220-382d-4691-8bbe-6db8f45da3f3}</Project>
     </ProjectReference>
