@@ -13,23 +13,29 @@ namespace my { namespace gl { namespace shapes {
 		Shape(colour),
 		a(math::Vector4::New(-1.0f, -1.0f, -1.0f, 1.0f)),
 		b(math::Vector4::New( 1.0f, -1.0f, -1.0f, 1.0f)),
-		c(math::Vector4::New(-1.0f,  1.0f, -1.0f, 1.0f))
+		c(math::Vector4::New(-1.0f,  1.0f, -1.0f, 1.0f)),
+		normal(math::Vector4::New(9999.0f, 9999.0f, 9999.0f, 1.0f))
 		{ P_STATIC_ASSERT(sizeof(Triangle) == 0
 				+ sizeof(Shape)
 				+ sizeof(a)
 				+ sizeof(b)
-				+ sizeof(c)) }
+				+ sizeof(c)
+				+ sizeof(normal))
+		}
 
 	Triangle::Triangle (Triangle const& other):
 		Shape(other),
 		a(other.a),
 		b(other.b),
-		c(other.c)
+		c(other.c),
+		normal(other.normal)
 		{ P_STATIC_ASSERT(sizeof(Triangle) == 0
 				+ sizeof(Shape)
 				+ sizeof(a)
 				+ sizeof(b)
-				+ sizeof(c)) }
+				+ sizeof(c)
+				+ sizeof(normal))
+		}
 
 	Triangle::~Triangle (void) {
 	}
@@ -40,12 +46,11 @@ namespace my { namespace gl { namespace shapes {
 		VertexData*		result				(NULL);
 		size_t const	requiredBytesize	(3 * sizeof(VertexData));
 
-		Vector4 const	normal				((b.xyzw().sub_asvec3(a.xyzw())).cross_asvec3(c.xyzw().sub_asvec3(a.xyzw())).normalised());
-		DASSERT(abs(normal.magnitude() - 1.0f) < 1e-6);
+		PASSERT(abs(normal.magnitude() - 1.0f) < 1e-6 || normal == Vector4::New(9999.0f, 9999.0f, 9999.0f))
 
-		Colour const	colour1				(colour); // ColourFactory::Dimmer(colour));
-		Colour const	colour2				(colour);
-		Colour const	colour3				(colour); // ColourFactory::Brighter(colour));
+		Colour const	colour1	(colour); // ColourFactory::Dimmer(colour));
+		Colour const	colour2	(colour);
+		Colour const	colour3	(colour); // ColourFactory::Brighter(colour));
 
 		
 		if (bytesize >= requiredBytesize) {
@@ -102,4 +107,12 @@ namespace my { namespace gl { namespace shapes {
 		return c;
 	}
 
+	Triangle& Triangle::RecomputeNormal (void) {
+		normal =	(a == b || a == c || b == c)?
+						math::Vector4::New(9999.0f, 9999.0f, 9999.0f, 1.0f) 
+					:
+						((b.xyzw().sub_asvec3(a.xyzw())).cross_asvec3(c.xyzw().sub_asvec3(a.xyzw())).normalised())
+					;
+		return *this;
+	}
 }}} // namespace my::gl::shapes

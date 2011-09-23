@@ -15,6 +15,8 @@ namespace my { namespace gl { namespace shapes {
 		void											operator = (Vertex const&);
 		Vertex											operator + (Vertex const&) const;
 
+		bool											operator == (Vertex const&) const;
+
 		float											x (void) const;
 		float											y (void) const;
 		float											z (void) const;

@@ -30,6 +30,8 @@ namespace my { namespace gl { namespace shapes {
 		Triangle&										SetA (Vertex const& _a) { a = _a; return *this; }
 		Triangle&										SetB (Vertex const& _b) { b = _b; return *this; }
 		Triangle&										SetC (Vertex const& _c) { c = _c; return *this; }
+		Triangle&										RecomputeNormal (void);
+		Triangle&										SetNormal (math::Vector4 const& n) { normal = n; return *this; }
 
 		// Transformable
 		void											Apply (math::Matrix4x4 const&);
@@ -39,7 +41,7 @@ namespace my { namespace gl { namespace shapes {
 		Vertex											a;
 		Vertex											b;
 		Vertex											c;
-
+		math::Vector4									normal;
 	}; // class Triangle
 
 }}} // namespace my::gl::shapes

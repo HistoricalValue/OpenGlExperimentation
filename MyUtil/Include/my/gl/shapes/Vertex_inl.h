@@ -73,6 +73,11 @@ namespace my { namespace gl { namespace shapes {
 		return Vertex(vec - other.vec);
 	}
 
+	P_INLINE
+	bool Vertex::operator == (Vertex const& other) const {
+		return vec == other.vec;
+	}
+
 }}} // namespace my::gl::shapes
 
 

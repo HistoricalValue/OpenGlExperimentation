@@ -64,7 +64,10 @@ my::gl::shapes::Triangle maketriangle (ankh::math::types::Triangle const& t, my:
 	using my::gl::math::	Vector4;
 	return my::gl::shapes::Triangle(c)	.SetA(Vertex(Vector4::New(t.a.x, t.a.y, t.a.z)))
 										.SetB(Vertex(Vector4::New(t.b.x, t.b.y, t.b.z)))
-										.SetC(Vertex(Vector4::New(t.c.x, t.c.y, t.c.z)));
+										.SetC(Vertex(Vector4::New(t.c.x, t.c.y, t.c.z)))
+									//	.SetNormal(Vector4::New(2).normalised())
+										.RecomputeNormal()
+										;
 }
 
 template <typename T>
@@ -282,12 +285,12 @@ static void Initialise (void) {
 		//				minx, maxx, miny, maxy, minz, maxz,
 		//				width_units, height_units, depth_units, seed + curve_i));
 		
-		ControlPoints_VaryGrid(
+	//	ControlPoints_VaryGrid(
 			ControlPoints_FillGridUniformly(cpoints_j, numcpoints, numcpoints, minx, maxx, minz, maxz, (miny + maxy)/2.0f)
-			,variation, variation, variation, 2.0f, seed)
+	//		,variation, variation, variation, 2.0f, seed)
 		;
 		cpoints_j.at(3).at(3) = vec4(maxx, maxy, maxz, 1.0f);
-		cpoints_j.at(3).at(3) *= 2.0f;
+		cpoints_j.at(3).at(3) *= 5.0f;
 
 		_surf = DNEWCLASS(Surface, (knots.begin(), knots.end(), knots.begin(), knots.end(), cpoints_j.begin(), cpoints_j.end(), "BOB ROSS"));
 
@@ -312,18 +315,24 @@ static inline ankh::surf::nurbs::Surface const& getsurf (void)
 //////////////////////////////////////////////////////////////////////////////////////
 
 void addastrianglesto (my::gl::shapes::ShapeCompositionFactory& f) {
-//	using ankh::surf::nurbs::tesselation::surf::blending::	ProduceAllFromAcrossSections;
-//	using ankh::surf::nurbs::tesselation::surf::blending::	ProduceAllFromAlongSections;
-	using ankh::surf::nurbs::tesselation::surf::deboor::	ProduceAllFromAcrossSections;
-	using ankh::surf::nurbs::tesselation::surf::deboor::	ProduceAllFromAlongSections;
-	using ankh::math::types::								Triangle;
-	typedef std::vector<Triangle>							Triangles;
 	using ankh::surf::nurbs::tesselation::curve::			SimpleBlendingTraits;
 	using ankh::surf::nurbs::tesselation::curve::			SimpleInterpolatingTraits;
 	using ankh::surf::nurbs::tesselation::curve::			OptimisedBlendingTraits;
 	using ankh::surf::nurbs::tesselation::curve::			OptimisedInterpolatingTraits;
 	using ankh::surf::nurbs::algo::curve::					FastControlPointInterpolator;
 	using ankh::surf::nurbs::algo::curve::					PreciceControlPointInterpolator;
+#if 1
+	using ankh::surf::nurbs::tesselation::surf::blending::	ProduceAllFromAcrossSections;
+	using ankh::surf::nurbs::tesselation::surf::blending::	ProduceAllFromAlongSections;
+	typedef SimpleBlendingTraits							t;
+#else
+	using ankh::surf::nurbs::tesselation::surf::deboor::	ProduceAllFromAcrossSections;
+	using ankh::surf::nurbs::tesselation::surf::deboor::	ProduceAllFromAlongSections;
+//	typedef OptimisedInterpolatingTraits<PreciceControlPointInterpolator>	t;
+	typedef SimpleInterpolatingTraits<PreciceControlPointInterpolator>		t;
+#endif
+	using ankh::math::types::								Triangle;
+	typedef std::vector<Triangle>							Triangles;
 	using ankh::surf::nurbs::								Surface;
 	using my::gl::shapes::									Colour;
 	using my::gl::math::									Vector4;
@@ -336,14 +345,9 @@ void addastrianglesto (my::gl::shapes::ShapeCompositionFactory& f) {
 
 	{
 		timer t02("surface tesselation");
-	//	ProduceAllFromAlongSections
-		ProduceAllFromAcrossSections
-		<
-		//	SimpleBlendingTraits
-		//	OptimisedInterpolatingTraits
-			SimpleInterpolatingTraits
-			<PreciceControlPointInterpolator>
-			>(surf, triangles);
+		ProduceAllFromAlongSections
+	//	ProduceAllFromAcrossSections
+		<t>(surf, triangles);
 	}
 
 	{
