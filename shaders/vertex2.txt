@@ -109,10 +109,6 @@ vec4 Hom_True (const vec4 pos) {
 
 ///////////////////////////////////////////////////////////
 
-const vec4		pooplight = vec4(-1, -.3f, 0, 1);
-
-///////////////////////////////////////////////////////////
-
 in vec4			position;
 in vec4			colour;
 in vec4			axyc;
@@ -123,8 +119,9 @@ uniform uint	textureZ;
 uniform mat4	camera;
 uniform mat4	projection;
 
-out vec4		interpolatedColour;
 out	vec4		textureCoordinate;
+out vec4		interpolatedNormal;
+flat out vec4	baseColour;
 
 ///////////////////////////////////////////////////////////
 
@@ -141,8 +138,6 @@ void main (void) {
 						
 	gl_Position			= transtest * pos;
 	textureCoordinate	= vec4(texcoord.st, textureZ, 1);
-	if (normal == vec4(9999.0f, 9999.0f, 9999.0f, 1.0f))
-		interpolatedColour = vec4(1.0f, 0.0f, 0.0f, 1.0f);
-	else
-		interpolatedColour = colour * dot(normalize(pooplight), normalize(transtest * normal));
+	interpolatedNormal	= transtest * normal;
+	baseColour			= colour;
 }

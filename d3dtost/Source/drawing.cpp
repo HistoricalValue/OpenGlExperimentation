@@ -318,12 +318,12 @@ static void Initialise (void) {
 		//				minx, maxx, miny, maxy, minz, maxz,
 		//				width_units, height_units, depth_units, seed + curve_i));
 		
-	//	ControlPoints_VaryGrid(
+		ControlPoints_VaryGrid(
 			ControlPoints_FillGridUniformly(cpoints_j, numcpoints, numcpoints, minx, maxx, minz, maxz, (miny + maxy)/2.0f)
-	//		,variation, variation, variation, 2.0f, seed)
+			,variation, variation, variation, 2.0f, seed)
 		;
-		cpoints_j.at(3).at(3) = vec4(maxx, maxy, maxz, 1.0f);
-		cpoints_j.at(3).at(3) *= 4.0f;
+	//	cpoints_j.at(3).at(3) = vec4(maxx, maxy, maxz, 1.0f);
+	//	cpoints_j.at(3).at(3) *= 4.0f;
 
 		_surf = DNEWCLASS(Surface, (knots.begin(), knots.end(), knots.begin(), knots.end(), cpoints_j.begin(), cpoints_j.end(), "BOB ROSS"));
 

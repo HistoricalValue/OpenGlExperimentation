@@ -1,6 +1,10 @@
 #version 330 core
 
-in		vec4			interpolatedColour;
+const vec4		pooplight = vec4(-1, -.3f, 0, 1);
+
+//in		vec4			interpolatedColour;
+flat in	vec4			baseColour;
+in		vec4			interpolatedNormal;
 in		vec4			textureCoordinate;
 uniform	sampler2DArray	textureUnit0;
 uniform	sampler2DArray	textureUnit1;
@@ -13,7 +17,7 @@ void main (void) {
 	vec3 texcoord = textureCoordinate.stp;
 
 	if (colouringSelector == 0u)
-		fragColor = interpolatedColour;
+		fragColor = baseColour * dot(normalize(pooplight), normalize(interpolatedNormal));
 	else
 	if (colouringSelector == 1u)
 		fragColor = texture(textureUnit0, texcoord);
