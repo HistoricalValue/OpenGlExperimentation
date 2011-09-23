@@ -316,7 +316,7 @@ static void Initialise (void) {
 	//		,variation, variation, variation, 2.0f, seed)
 		;
 		cpoints_j.at(3).at(3) = vec4(maxx, maxy, maxz, 1.0f);
-		cpoints_j.at(3).at(3) *= 9.0f;
+		cpoints_j.at(3).at(3) *= 4.0f;
 
 		_surf = DNEWCLASS(Surface, (knots.begin(), knots.end(), knots.begin(), knots.end(), cpoints_j.begin(), cpoints_j.end(), "BOB ROSS"));
 
@@ -531,7 +531,7 @@ void addknotpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 		size_t const	last(curve.GetLastKnotInDomainIndex());
 
 		for (; i <= last; ++i)
-			vectors.push_back(DE_BOOR_OR_NOT_DE_BOOR(At)(curve, ineffectiveNormalCalculator, i == last? i-1 : i, curve.GetKnot(i)));
+			vectors.push_back(DE_BOOR_OR_NOT_DE_BOOR(At)(curve, i == last? i-1 : i, curve.GetKnot(i)));
 
 		std::list<Point> points;
 		f.AddAll(	map_vec4_to_points(
