@@ -46,7 +46,7 @@ namespace my { namespace gl { namespace shapes {
 		VertexData*		result				(NULL);
 		size_t const	requiredBytesize	(3 * sizeof(VertexData));
 
-		PASSERT(abs(normal.magnitude() - 1.0f) < 1e-6 || normal == Vector4::New(9999.0f, 9999.0f, 9999.0f))
+		PASSERT(abs(normal.magnitude() - 1.0f) < 1e-6)
 
 		Colour const	colour1	(colour); // ColourFactory::Dimmer(colour));
 		Colour const	colour2	(colour);
@@ -108,11 +108,10 @@ namespace my { namespace gl { namespace shapes {
 	}
 
 	Triangle& Triangle::RecomputeNormal (void) {
-		normal =	(a == b || a == c || b == c)?
-						math::Vector4::New(9999.0f, 9999.0f, 9999.0f, 1.0f) 
-					:
-						((b.xyzw().sub_asvec3(a.xyzw())).cross_asvec3(c.xyzw().sub_asvec3(a.xyzw())).normalised())
-					;
+		PASSERT(!(a == b))
+		PASSERT(!(a == c))
+		PASSERT(!(b == c))
+		normal = ((b.xyzw().sub_asvec3(a.xyzw())).cross_asvec3(c.xyzw().sub_asvec3(a.xyzw())).normalised());
 		return *this;
 	}
 }}} // namespace my::gl::shapes
