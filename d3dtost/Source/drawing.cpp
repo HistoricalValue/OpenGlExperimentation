@@ -1,5 +1,31 @@
 #include "stdafx.h"
 
+// Surfaces Project
+// -
+// Surfaces Project
+// -
+#include <SurfacesDLL.h>
+#include <SurfacesTraits.h>
+#include <SurfacesTraits_inl.h>
+// - nurbs
+#include <nurbs/Algorithms.h>
+#include <nurbs/Algorithms_inl.h>
+#include <nurbs/ControlPoints.h>
+#include <nurbs/Curve.h>
+#include <nurbs/Curve_inl.h>
+#include <nurbs/CurveAlgorithms.h>
+#include <nurbs/CurveAlgorithms_inl.h>
+#include <nurbs/CurveTesselation.h>
+#include <nurbs/CurveTesselation_inl.h>
+#include <nurbs/Knots.h>
+#include <nurbs/Knots_inl.h>
+#include <nurbs/Surface.h>
+#include <nurbs/Surface_inl.h>
+#include <nurbs/SurfaceAlgorithms.h>
+#include <nurbs/SurfaceAlgorithms_inl.h>
+#include <nurbs/SurfaceTesselation.h>
+#include <nurbs/SurfaceTesselation_inl.h>
+
 //////////////////////////////////////////////////////////////////////////////////////
 
 // CONTROL SWITCHES
@@ -290,7 +316,7 @@ static void Initialise (void) {
 	//		,variation, variation, variation, 2.0f, seed)
 		;
 		cpoints_j.at(3).at(3) = vec4(maxx, maxy, maxz, 1.0f);
-		cpoints_j.at(3).at(3) *= 5.0f;
+		cpoints_j.at(3).at(3) *= 9.0f;
 
 		_surf = DNEWCLASS(Surface, (knots.begin(), knots.end(), knots.begin(), knots.end(), cpoints_j.begin(), cpoints_j.end(), "BOB ROSS"));
 
@@ -321,7 +347,7 @@ void addastrianglesto (my::gl::shapes::ShapeCompositionFactory& f) {
 	using ankh::surf::nurbs::tesselation::curve::			OptimisedInterpolatingTraits;
 	using ankh::surf::nurbs::algo::curve::					FastControlPointInterpolator;
 	using ankh::surf::nurbs::algo::curve::					PreciceControlPointInterpolator;
-#if 1
+#if 0
 	using ankh::surf::nurbs::tesselation::surf::blending::	ProduceAllFromAcrossSections;
 	using ankh::surf::nurbs::tesselation::surf::blending::	ProduceAllFromAlongSections;
 	typedef SimpleBlendingTraits							t;
@@ -345,8 +371,8 @@ void addastrianglesto (my::gl::shapes::ShapeCompositionFactory& f) {
 
 	{
 		timer t02("surface tesselation");
-		ProduceAllFromAlongSections
-	//	ProduceAllFromAcrossSections
+	//	ProduceAllFromAlongSections
+		ProduceAllFromAcrossSections
 		<t>(surf, triangles);
 	}
 
@@ -413,6 +439,7 @@ void addaspointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 	using ankh::surf::nurbs::Surface;
 	using ankh::surf::nurbs::Knots;
 	using ankh::surf::nurbs::algo::surf::CrossSection;
+	using ankh::surf::nurbs::tesselation::surf::ineffectiveNormalCalculator;
 
 	Surface const&	surf(_::getsurf());
 	std::list<vec4>	dest;
@@ -436,7 +463,7 @@ void addaspointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 		dest.clear(),
 		points.clear(),
 		f.AddAll(	map_vec4_to_points(
-						DE_BOOR_OR_NOT_DE_BOOR(ProduceAll)(CrossSection(surf, u), dest),
+						DE_BOOR_OR_NOT_DE_BOOR(ProduceAll)(CrossSection(surf, u), ineffectiveNormalCalculator, dest),
 						points,
 						Colour(Vector4::New(0.5f, 0.2f, 0.2f)),
 						&makevector4));
@@ -486,6 +513,7 @@ void addknotpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 	using ankh::surf::nurbs::Surface;
 	using ankh::surf::nurbs::Knots;
 	using ankh::surf::nurbs::algo::surf::CrossSection;
+	using ankh::surf::nurbs::tesselation::surf::ineffectiveNormalCalculator;
 
 	Surface const&	surf(_::getsurf());
 	std::list<vec4>	vectors;
@@ -503,7 +531,7 @@ void addknotpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 		size_t const	last(curve.GetLastKnotInDomainIndex());
 
 		for (; i <= last; ++i)
-			vectors.push_back(DE_BOOR_OR_NOT_DE_BOOR(At)(curve, i == last? i-1 : i, curve.GetKnot(i)));
+			vectors.push_back(DE_BOOR_OR_NOT_DE_BOOR(At)(curve, ineffectiveNormalCalculator, i == last? i-1 : i, curve.GetKnot(i)));
 
 		std::list<Point> points;
 		f.AddAll(	map_vec4_to_points(
@@ -523,6 +551,7 @@ void addbasecurvesto (my::gl::shapes::ShapeCompositionFactory& f) {
 	using tesselation::curve::			OptimisedInterpolatingTraits;
 	using algo::curve::					PreciceControlPointInterpolator;
 	using my::algo::					map_vec4_to_linestrip;
+	using ankh::surf::nurbs::tesselation::surf::ineffectiveNormalCalculator;
 
 	typedef OptimisedInterpolatingTraits<PreciceControlPointInterpolator> t;
 
@@ -540,7 +569,7 @@ void addbasecurvesto (my::gl::shapes::ShapeCompositionFactory& f) {
 
 		lines.clear();
 
-		f.AddAll(map_vec4_to_linestrip(ProduceAll<t>(base, points), lines, colour, &makevector4));
+		f.AddAll(map_vec4_to_linestrip(ProduceAll<t>(base, ineffectiveNormalCalculator, points), lines, colour, &makevector4));
 	}
 }
 
