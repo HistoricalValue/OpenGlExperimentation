@@ -85,14 +85,21 @@ my::gl::math::Vector4 makevector4 (ankh::math::trig::vec4 const& v) {
 }
 
 static inline
+my::gl::shapes::Vertex makevertex (ankh::math::types::Vertex const& v) {
+	return my::gl::shapes::Vertex(my::gl::math::Vector4::New(v.x, v.y, v.z, 1.0f));
+}
+
+static inline
 my::gl::shapes::Triangle maketriangle (ankh::math::types::Triangle const& t, my::gl::shapes::Colour const& c) {
-	using my::gl::shapes::	Vertex;
-	using my::gl::math::	Vector4;
-	return my::gl::shapes::Triangle(c)	.SetA(Vertex(Vector4::New(t.a.x, t.a.y, t.a.z)))
-										.SetB(Vertex(Vector4::New(t.b.x, t.b.y, t.b.z)))
-										.SetC(Vertex(Vector4::New(t.c.x, t.c.y, t.c.z)))
-									//	.SetNormal(Vector4::New(2).normalised())
-										.RecomputeNormal()
+	using ankh::math::types::Vertex;
+
+	return my::gl::shapes::Triangle(c)	.SetA(makevertex(t.a))
+										.SetB(makevertex(t.b))
+										.SetC(makevertex(t.c))
+										.SetNormals(
+												makevector4(*reinterpret_cast<Vertex const* const>(t.a.GetUserData())),
+												makevector4(*reinterpret_cast<Vertex const* const>(t.b.GetUserData())),
+												makevector4(*reinterpret_cast<Vertex const* const>(t.c.GetUserData())))
 										;
 }
 

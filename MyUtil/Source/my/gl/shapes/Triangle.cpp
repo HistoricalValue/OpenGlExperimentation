@@ -14,13 +14,18 @@ namespace my { namespace gl { namespace shapes {
 		a(math::Vector4::New(-1.0f, -1.0f, -1.0f, 1.0f)),
 		b(math::Vector4::New( 1.0f, -1.0f, -1.0f, 1.0f)),
 		c(math::Vector4::New(-1.0f,  1.0f, -1.0f, 1.0f)),
-		normal(math::Vector4::New(9999.0f, 9999.0f, 9999.0f, 1.0f))
+		na(math::Vector4::New(9999.0f, 9999.0f, 9999.0f, 1.0f)),
+		nb(math::Vector4::New(9999.0f, 9999.0f, 9999.0f, 1.0f)),
+		nc(math::Vector4::New(9999.0f, 9999.0f, 9999.0f, 1.0f))
 		{ P_STATIC_ASSERT(sizeof(Triangle) == 0
 				+ sizeof(Shape)
 				+ sizeof(a)
 				+ sizeof(b)
 				+ sizeof(c)
-				+ sizeof(normal))
+				+ sizeof(na)
+				+ sizeof(nb)
+				+ sizeof(nc)
+				)
 		}
 
 	Triangle::Triangle (Triangle const& other):
@@ -28,13 +33,18 @@ namespace my { namespace gl { namespace shapes {
 		a(other.a),
 		b(other.b),
 		c(other.c),
-		normal(other.normal)
+		na(other.na),
+		nb(other.nb),
+		nc(other.nc)
 		{ P_STATIC_ASSERT(sizeof(Triangle) == 0
 				+ sizeof(Shape)
 				+ sizeof(a)
 				+ sizeof(b)
 				+ sizeof(c)
-				+ sizeof(normal))
+				+ sizeof(na)
+				+ sizeof(nb)
+				+ sizeof(nc)
+				)
 		}
 
 	Triangle::~Triangle (void) {
@@ -46,7 +56,9 @@ namespace my { namespace gl { namespace shapes {
 		VertexData*		result				(NULL);
 		size_t const	requiredBytesize	(3 * sizeof(VertexData));
 
-		PASSERT(abs(normal.magnitude() - 1.0f) < 1e-6)
+		PASSERT(abs(na.magnitude() - 1.0f) < 1e-6)
+		PASSERT(abs(nb.magnitude() - 1.0f) < 1e-6)
+		PASSERT(abs(nc.magnitude() - 1.0f) < 1e-6)
 
 		Colour const	colour1	(colour); // ColourFactory::Dimmer(colour));
 		Colour const	colour2	(colour);
@@ -56,9 +68,9 @@ namespace my { namespace gl { namespace shapes {
 		if (bytesize >= requiredBytesize) {
 			reinterpret_assign(result, memory);
 
-			new(&result[0]) VertexData(a.xyzw(), colour1, normal);
-			new(&result[1]) VertexData(b.xyzw(), colour2, normal);
-			new(&result[2]) VertexData(c.xyzw(), colour3, normal);
+			new(&result[0]) VertexData(a.xyzw(), colour1, na);
+			new(&result[1]) VertexData(b.xyzw(), colour2, nb);
+			new(&result[2]) VertexData(c.xyzw(), colour3, nc);
 		}
 
 		return result;
@@ -111,7 +123,9 @@ namespace my { namespace gl { namespace shapes {
 		PASSERT(!(a == b))
 		PASSERT(!(a == c))
 		PASSERT(!(b == c))
-		normal = ((b.xyzw().sub_asvec3(a.xyzw())).cross_asvec3(c.xyzw().sub_asvec3(a.xyzw())).normalised());
+		na = ((b.xyzw().sub_asvec3(a.xyzw())).cross_asvec3(c.xyzw().sub_asvec3(a.xyzw())).normalised());
+		nb = na;
+		nc = nb;
 		return *this;
 	}
 }}} // namespace my::gl::shapes
