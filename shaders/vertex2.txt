@@ -121,6 +121,7 @@ uniform mat4	projection;
 
 out	vec4		textureCoordinate;
 out vec4		interpolatedNormal;
+out vec4		interpolatedColour;
 flat out vec4	baseColour;
 
 ///////////////////////////////////////////////////////////
@@ -140,4 +141,5 @@ void main (void) {
 	textureCoordinate	= vec4(texcoord.st, textureZ, 1);
 	interpolatedNormal	= transtest * normal;
 	baseColour			= colour;
+	interpolatedColour	= colour;
 }

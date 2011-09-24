@@ -624,8 +624,9 @@ namespace _ {
 	static const size_t TEXTURES_NUM(2);
 	static const size_t IMAGES_NUM(2);
 
-	static const GLuint COLOUR_WITH_COLOUR(0);
+	static const GLuint COLOUR_WITH_LIGHTING_AND_COLOUR(0);
 	static const GLuint COLOUR_WITH_TEXTURE(1);
+	static const GLuint COLOUR_WITH_COLOUR(2);
 
 	static const GLuint TexturesUnits[TEXTURES_NUM] =
 		{ 12, 23 };
@@ -1218,7 +1219,7 @@ namespace my {
 						-0.0f,
 						0.0f,
 						cam);
-				glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_COLOUR);
+				glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_LIGHTING_AND_COLOUR);
 				glDrawArrays(GL_TRIANGLES, 0, dd.numberOfWorldCubeLineSegments);
 			}
 

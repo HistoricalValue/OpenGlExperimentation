@@ -2,7 +2,7 @@
 
 const vec4		pooplight = vec4(-1, -.3f, 0, 1);
 
-//in		vec4			interpolatedColour;
+in		vec4			interpolatedColour;
 flat in	vec4			baseColour;
 in		vec4			interpolatedNormal;
 in		vec4			textureCoordinate;
@@ -21,6 +21,9 @@ void main (void) {
 	else
 	if (colouringSelector == 1u)
 		fragColor = texture(textureUnit0, texcoord);
+	else
+	if (colouringSelector == 2u)
+		fragColor = interpolatedColour;
 	else
 		fragColor = vec4(1.0f, 0.0f, 1.0f, 1.0f);
 
