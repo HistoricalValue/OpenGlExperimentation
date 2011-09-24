@@ -281,10 +281,13 @@ static void Initialise (void) {
 		size_t const	height_units(16);
 		size_t const	depth_units	(16);
 		
-		size_t const	order		(0x04u);
-		size_t const	numcpoints	(0x07u);
-		size_t const	numcurves	(numcpoints);
-		size_t const	numknots	(Curve::NumberOfKnotsFor(order, numcpoints));
+		size_t const	order_j			(0x04u)
+					,	order_i			(0x05u)
+					,	numcpoints_j	(0x07u)
+					,	numcpoints_i	(0x0eu)
+					,	numknots_j		(Curve::NumberOfKnotsFor(order_j, numcpoints_j))
+					,	numknots_i		(Curve::NumberOfKnotsFor(order_i, numcpoints_i))
+					;
 	//	Unit const		variation	(0.00625f);
 	//	Unit const		variation	(0.0125f);
 		Unit const		variation	(0.05f);
@@ -300,14 +303,16 @@ static void Initialise (void) {
 		}
 
 		ControlPoints				cpoints;
-		Knots						knots;
-		std::vector<ControlPoints>	cpoints_j;
+		Knots						knots_j, knots_i;
+		std::vector<ControlPoints>	cpoints_i;
 
-		cpoints_j.reserve(numcurves);
-		cpoints.reserve(numcpoints);
-		knots.reserve(numknots);
+		cpoints_i.reserve(numcpoints_i);
+		cpoints.reserve(numcpoints_j);
+		knots_j.reserve(numknots_j);
+		knots_i.reserve(numknots_i);
 
-		Knots_FillUniformly(knots, numknots, 0.0f, 1.0f);
+		Knots_FillUniformly(knots_j, numknots_j, 0.0f, 1.0f);
+		Knots_FillUniformly(knots_i, numknots_i, 0.0f, 1.0f);
 		
 		//for (size_t curve_i(0u); curve_i < numcurves; ++curve_i)
 		//	cpoints.clear(),
@@ -319,15 +324,19 @@ static void Initialise (void) {
 		//				width_units, height_units, depth_units, seed + curve_i));
 		
 	//	ControlPoints_VaryGrid(
-			ControlPoints_FillGridUniformly(cpoints_j, numcpoints, numcpoints, minx, maxx, minz, maxz, (miny + maxy)/2.0f)
+			ControlPoints_FillGridUniformly(cpoints_i, numcpoints_i, numcpoints_j, minx, maxx, minz, maxz, (miny + maxy)/2.0f)
 	//		,variation, variation, variation, 2.0f, seed)
 		;
-		cpoints_j.at(3).at(3) = vec4(maxx, maxy, maxz, 1.0f);
-		cpoints_j.at(3).at(3) *= 4.0f;
+		cpoints_i.at(3).at(3) = vec4(maxx, maxy, maxz, 1.0f);
+		cpoints_i.at(3).at(3) *= 2.0f;
 
-		_surf = DNEWCLASS(Surface, (knots.begin(), knots.end(), knots.begin(), knots.end(), cpoints_j.begin(), cpoints_j.end(), "BOB ROSS"));
+		cpoints_i.at(9).at(3).y = -maxy;
+		cpoints_i.at(9).at(3) *= 4.0f;
 
-		DASSERT(VerifyBaseFunctions(FirstCrossSection(*_surf).m(), knots));
+
+		_surf = DNEWCLASS(Surface, (knots_j.begin(), knots_j.end(), knots_i.begin(), knots_i.end(), cpoints_i.begin(), cpoints_i.end(), "BOB ROSS"));
+
+		DASSERT(VerifyBaseFunctions(FirstCrossSection(*_surf).m(), knots_i));
 
 		DASSERT(VerifyMultiplicityChecker());
 	}
