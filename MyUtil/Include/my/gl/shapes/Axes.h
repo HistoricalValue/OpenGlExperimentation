@@ -4,7 +4,7 @@
 #include <MyUtil.h>
 #include <my/gl/shapes/Shape.h>
 #include <my/gl/shapes/Line.h>
-#include <my/gl/shapes/NShapesComposition.h>
+#include <my/gl/shapes/NShapesComposition_inl.h>
 
 #include <PPlaceholder.h>
 

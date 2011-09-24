@@ -3,6 +3,7 @@
 
 #include <MyUtil.h>
 #include <my/gl/shapes/NShapesComposition.h>
+#include <PAssert.h>
 
 ///////////////////////////////////////////////////////////
 

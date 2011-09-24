@@ -1,4 +1,5 @@
 #include <stdafx.h>
+#include <my/gl/shapes/NShapesComposition_inl.h>
 
 
 namespace my { namespace gl { namespace shapes {

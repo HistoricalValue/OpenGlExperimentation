@@ -2,7 +2,7 @@
 #define __MY_UTIL__MY__GL__SHAPES__PLANE__H__
 
 #include <MyUtil.h>
-#include <my/gl/shapes/NShapesComposition.h>
+#include <my/gl/shapes/NShapesComposition_inl.h>
 #include <PTypes.h>
 
 namespace my { namespace gl { namespace shapes {
