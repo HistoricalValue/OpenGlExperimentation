@@ -29,3 +29,6 @@ QuickTost/dallocstats.txt
 FileJanitor/build
 FileJanitor/dist
 FileJanitor/nbproject/private
+Debug_Static
+ExtraLibs-Debug_Static
+*.obj

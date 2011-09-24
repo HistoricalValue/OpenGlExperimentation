@@ -15,25 +15,37 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_023436BB9A12EF33F82E351171DB4BBB"
+        "OwnerKey" = "8:_9DBE5D8335DC48BB8510D7319BCA58EE"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_0E33025E8E32480BA8640BE3AB9E8921"
+        "OwnerKey" = "8:_9DBE5D8335DC48BB8510D7319BCA58EE"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_165A20F143A68BD68923570DE70E88D5"
         "OwnerKey" = "8:_9DBE5D8335DC48BB8510D7319BCA58EE"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_2FCBF4BADC6E78D60E8E7EA1CCA075FE"
+        "MsmKey" = "8:_378AE054AE898D39952A65FF74B21F9A"
         "OwnerKey" = "8:_9DBE5D8335DC48BB8510D7319BCA58EE"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_58E4AC81C34C6FC255040D0622308B1E"
+        "MsmKey" = "8:_95EBC5957411411F30E854542B90A7D7"
         "OwnerKey" = "8:_9DBE5D8335DC48BB8510D7319BCA58EE"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_722419E1F1A7B447529228880ECC73FC"
+        "MsmKey" = "8:_9B73B4AF83F39CD08F35EBC423F8F81F"
         "OwnerKey" = "8:_9DBE5D8335DC48BB8510D7319BCA58EE"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -45,25 +57,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_BBF7ABFB7B61217976DCD9A0C236ABC1"
+        "MsmKey" = "8:_BD8D144D6A04253F09C274F613983E92"
         "OwnerKey" = "8:_9DBE5D8335DC48BB8510D7319BCA58EE"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_BE8F8D0B784F4D73A88B22167A33EC2D"
-        "OwnerKey" = "8:_9DBE5D8335DC48BB8510D7319BCA58EE"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_D818E5B3635ED9626AA349EBC21B9255"
-        "OwnerKey" = "8:_9DBE5D8335DC48BB8510D7319BCA58EE"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_F6D8B260FC76F0E62C8AB3A348A8A56D"
+        "MsmKey" = "8:_E8B74AD3E23F43098E202EED8E8C8E73"
         "OwnerKey" = "8:_9DBE5D8335DC48BB8510D7319BCA58EE"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -82,6 +82,43 @@
         "IsDebugOnly" = "11:TRUE"
         "IsReleaseOnly" = "11:FALSE"
         "OutputFilename" = "8:Debug\\ToastSetaup.msi"
+        "PackageFilesAs" = "3:2"
+        "PackageFileSize" = "3:-2147483648"
+        "CabType" = "3:1"
+        "Compression" = "3:2"
+        "SignOutput" = "11:FALSE"
+        "CertificateFile" = "8:"
+        "PrivateKeyFile" = "8:"
+        "TimeStampServer" = "8:"
+        "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.0,Profile=Client"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4 Client Profile (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.0,Profile=Client"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
+                    {
+                    "Name" = "8:Windows Installer 3.1"
+                    "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
+                    }
+                }
+            }
+        }
+        "Debug_Static"
+        {
+        "DisplayName" = "8:Debug_Static"
+        "IsDebugOnly" = "11:FALSE"
+        "IsReleaseOnly" = "11:FALSE"
+        "OutputFilename" = "8:Debug_Static\\ToastSetaup.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -170,6 +207,46 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_023436BB9A12EF33F82E351171DB4BBB"
+            {
+            "SourcePath" = "8:MyUtil.dll"
+            "TargetName" = "8:MyUtil.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_C1FB360C4FCC4A2E9B09A9A2FF3B4FF5"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0E33025E8E32480BA8640BE3AB9E8921"
+            {
+            "SourcePath" = "8:TextureManager.dll"
+            "TargetName" = "8:TextureManager.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_C1FB360C4FCC4A2E9B09A9A2FF3B4FF5"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_165A20F143A68BD68923570DE70E88D5"
             {
             "SourcePath" = "8:OPENGL32.dll"
@@ -190,10 +267,10 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2FCBF4BADC6E78D60E8E7EA1CCA075FE"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_378AE054AE898D39952A65FF74B21F9A"
             {
-            "SourcePath" = "8:Codeshare_Utilities.dll"
-            "TargetName" = "8:Codeshare_Utilities.dll"
+            "SourcePath" = "8:ImageLoader.dll"
+            "TargetName" = "8:ImageLoader.dll"
             "Tag" = "8:"
             "Folder" = "8:_C1FB360C4FCC4A2E9B09A9A2FF3B4FF5"
             "Condition" = "8:"
@@ -210,7 +287,7 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_58E4AC81C34C6FC255040D0622308B1E"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_95EBC5957411411F30E854542B90A7D7"
             {
             "SourcePath" = "8:Surfaces.dll"
             "TargetName" = "8:Surfaces.dll"
@@ -230,10 +307,10 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_722419E1F1A7B447529228880ECC73FC"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9B73B4AF83F39CD08F35EBC423F8F81F"
             {
-            "SourcePath" = "8:UtilAndDefensiveHeap.dll"
-            "TargetName" = "8:UtilAndDefensiveHeap.dll"
+            "SourcePath" = "8:Codeshare_Utilities.dll"
+            "TargetName" = "8:Codeshare_Utilities.dll"
             "Tag" = "8:"
             "Folder" = "8:_C1FB360C4FCC4A2E9B09A9A2FF3B4FF5"
             "Condition" = "8:"
@@ -250,50 +327,10 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BBF7ABFB7B61217976DCD9A0C236ABC1"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BD8D144D6A04253F09C274F613983E92"
             {
-            "SourcePath" = "8:TextureManager.dll"
-            "TargetName" = "8:TextureManager.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_C1FB360C4FCC4A2E9B09A9A2FF3B4FF5"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D818E5B3635ED9626AA349EBC21B9255"
-            {
-            "SourcePath" = "8:MyUtil.dll"
-            "TargetName" = "8:MyUtil.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_C1FB360C4FCC4A2E9B09A9A2FF3B4FF5"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F6D8B260FC76F0E62C8AB3A348A8A56D"
-            {
-            "SourcePath" = "8:ImageLoader.dll"
-            "TargetName" = "8:ImageLoader.dll"
+            "SourcePath" = "8:UtilAndDefensiveHeapD.dll"
+            "TargetName" = "8:UtilAndDefensiveHeapD.dll"
             "Tag" = "8:"
             "Folder" = "8:_C1FB360C4FCC4A2E9B09A9A2FF3B4FF5"
             "Condition" = "8:"
@@ -387,7 +424,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:ToastSetaup"
         "ProductCode" = "8:{7D692279-CC22-4B92-9E6D-C0D90B7968D1}"
-        "PackageCode" = "8:{50627BFC-D279-46BE-9ECD-A8A55F13408A}"
+        "PackageCode" = "8:{608E7F0D-54AC-4078-A534-F281740E65D7}"
         "UpgradeCode" = "8:{3F0BA946-3922-4F73-94A3-99B43A6BB778}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -917,11 +954,11 @@
         }
         "MergeModule"
         {
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_BE8F8D0B784F4D73A88B22167A33EC2D"
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_E8B74AD3E23F43098E202EED8E8C8E73"
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:TRUE"
-            "SourcePath" = "8:Microsoft_VC100_CRT_x86.msm"
+            "SourcePath" = "8:Microsoft_VC100_DebugCRT_x86.msm"
                 "Properties"
                 {
                 }
@@ -936,7 +973,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_9DBE5D8335DC48BB8510D7319BCA58EE"
             {
-            "SourcePath" = "8:..\\Release\\d3dtost.exe"
+            "SourcePath" = "8:..\\Debug_Static\\d3dtost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_C1FB360C4FCC4A2E9B09A9A2FF3B4FF5"

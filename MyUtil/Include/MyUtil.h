@@ -6,7 +6,9 @@
 // that uses this DLL. This way any other project whose source files include this file see
 // MYUTIL_API functions as being imported from a DLL, whereas this DLL sees symbols
 // defined with this macro as being exported.
-#ifdef MYUTIL_EXPORTS
+#ifdef MYUTIL_STATIC_LIB
+#define MYUTIL_API
+#elif defined(MYUTIL_EXPORTS)
 #define MYUTIL_API __declspec(dllexport)
 #else
 #define MYUTIL_API __declspec(dllimport)

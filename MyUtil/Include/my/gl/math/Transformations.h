@@ -3,6 +3,7 @@
 
 #include <MyUtil.h>
 #include <my/gl/math/Matrix4x4.h>
+#include <my/gl/math/Vector4_inl.h>
 
 ///////////////////////////////////////////////////////////
 

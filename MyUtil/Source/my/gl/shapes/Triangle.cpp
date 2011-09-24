@@ -1,6 +1,7 @@
 #include <stdafx.h>
 
 #include <PPointerUtilities_inl.h>
+#include <my/gl/math/Vector4_inl.h>
 
 namespace _ {
 	static const size_t numberOfVertices(0x3u);
