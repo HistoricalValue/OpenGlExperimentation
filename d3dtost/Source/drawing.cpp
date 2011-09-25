@@ -277,8 +277,8 @@ static bool VerifyMultiplicityChecker (void) {
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-typedef std::vector<ankh::shapes::MeshElement>			MeshElements;
-typedef std::vector<ankh::shapes::MeshAdjacencyElement>	MeshAdjacencyElements;
+typedef ankh::shapes::Mesh::Elements			MeshElements;
+typedef ankh::shapes::Mesh::AdjacencyElements	MeshAdjacencyElements;
 
 static ankh::surf::nurbs::Surface*	_surf			(NULL);
 static MeshElements*				_meshElements	(NULL);
@@ -317,14 +317,14 @@ static void Initialise (void) {
 		
 		size_t const	order_j			(0x04u)
 					,	order_i			(0x05u)
-					,	numcpoints_j	(0x07u)
-					,	numcpoints_i	(0x0eu)
+					,	numcpoints_j	(0x15u)
+					,	numcpoints_i	(0x15u)
 					,	numknots_j		(Curve::NumberOfKnotsFor(order_j, numcpoints_j))
 					,	numknots_i		(Curve::NumberOfKnotsFor(order_i, numcpoints_i))
 					;
-	//	Unit const		variation	(0.00625f);
+		Unit const		variation	(0.00625f);
 	//	Unit const		variation	(0.0125f);
-		Unit const		variation	(0.05f);
+	//	Unit const		variation	(0.05f);
 
 		long seed;
 		{
@@ -357,15 +357,18 @@ static void Initialise (void) {
 		//				minx, maxx, miny, maxy, minz, maxz,
 		//				width_units, height_units, depth_units, seed + curve_i));
 		
-	//	ControlPoints_VaryGrid(
+		ControlPoints_VaryGrid(
 			ControlPoints_FillGridUniformly(cpoints_i, numcpoints_i, numcpoints_j, minx, maxx, minz, maxz, (miny + maxy)/2.0f)
-	//		,variation, variation, variation, 2.0f, seed)
+			,variation, variation, variation, 1.2f, seed)
 		;
-		cpoints_i.at(3).at(3) = vec4(maxx, maxy, maxz, 1.0f);
-		cpoints_i.at(3).at(3) *= 2.0f;
+	//	cpoints_i.at(3).at(3) = vec4(maxx, maxy, maxz, 1.0f);
+	//	cpoints_i.at(3).at(3) *= 2.0f;
 
-		cpoints_i.at(9).at(3).y = -maxy;
-		cpoints_i.at(9).at(3) *= 4.0f;
+	//	cpoints_i.at(9).at(3).y = -maxy;
+	//	cpoints_i.at(9).at(3) *= 4.0f;
+
+	//	cpoints_i.at(15).at(3).y = maxy;
+	//	cpoints_i.at(15).at(3) *= 0.5f;
 
 
 		_surf = DNEWCLASS(Surface, (knots_j.begin(), knots_j.end(), knots_i.begin(), knots_i.end(), cpoints_i.begin(), cpoints_i.end(), "BOB ROSS"));
@@ -407,11 +410,11 @@ static inline void tesselate (void) {
 	using ankh::surf::nurbs::algo::curve::					PreciceControlPointInterpolator;
 #if 0
 	using ankh::surf::nurbs::tesselation::surf::blending::	ProduceAllFromAcrossSections;
-//	using ankh::surf::nurbs::tesselation::surf::blending::	ProduceAllFromAlongSections;
+	using ankh::surf::nurbs::tesselation::surf::blending::	ProduceAllFromAlongSections;
 	typedef SimpleBlendingTraits							t;
 #else
 	using ankh::surf::nurbs::tesselation::surf::deboor::	ProduceAllFromAcrossSections;
-//	using ankh::surf::nurbs::tesselation::surf::deboor::	ProduceAllFromAlongSections;
+	using ankh::surf::nurbs::tesselation::surf::deboor::	ProduceAllFromAlongSections;
 //	typedef OptimisedInterpolatingTraits<PreciceControlPointInterpolator>	t;
 	typedef SimpleInterpolatingTraits<PreciceControlPointInterpolator>		t;
 #endif
@@ -424,20 +427,28 @@ static inline void tesselate (void) {
 	using my::gl::math::									Vector4;
 	using my::gl::shapes::									Line;
 	using my::gl::shapes::									Vertex;
+	using ankh::shapes::									Mesh;
 
 	Surface const&			surf	(_::getsurf());
 
 	size_t const			meshElementsMinCapacity((surf.GetResolutionI() - 1) * 2 + 1 + 1),	// +1 security
 							adjacenciesMinCapacity(meshElementsMinCapacity * 3);	// generally will by the number of mesh elements times 3
 
-	_::meshElements().reserve(meshElementsMinCapacity);	
-	_::adjacencies().reserve(adjacenciesMinCapacity);
+	// if they were vectors...
+//	_::meshElements().reserve(meshElementsMinCapacity);
+//	_::adjacencies().reserve(adjacenciesMinCapacity);
 
 	{
 		timer t02("surface tesselation");
-	//	ProduceAllFromAlongSections
-		ProduceAllFromAcrossSections
+		ProduceAllFromAlongSections
+	//	ProduceAllFromAcrossSections
 		<t>(surf, _::meshElements(), _::adjacencies());
+	}
+
+	{
+		timer t02("creating mesh, storing binary, and cleaning mesh up");
+		Mesh mesh(_::meshElements());
+		mesh.StoreBin("./surface_bin.msh");
 	}
 }
 
@@ -862,7 +873,7 @@ namespace _ {
 			using namespace my::gl::shapes;
 			ShapeCompositionFactory f;
 
-			nurbs::addcontrolpointsto(f);
+		//	nurbs::addcontrolpointsto(f);
 		//	nurbs::addaspointsto(f);
 		//	nurbs::addknotpointsto(f);
 
@@ -899,7 +910,7 @@ namespace _ {
 					f.Add(axs);
 				//	nurbs::addbasecurvesto(f);
 				//	nurbs::addaslinesto(f);
-					nurbs::addnormalsto(f);
+				//	nurbs::addnormalsto(f);
 
 					DynamicShapeComposition* dcomp(NULL);
 					{

@@ -121,7 +121,7 @@ namespace my {
 		if (initialised) {
 			glClearColor(0.3f, 0.3f, 0.3f, 1.0f);  __NE()
 
-			initialised = ::gl::ext::Initialise();
+			initialised = Images_gl_ext_Initialise();
 
 			if (initialised) {
 				my::gl::shaders::ShaderManager	shaderManager;
@@ -150,14 +150,14 @@ namespace my {
 						_::InfologAllExtensions();
 					}
 					else {
-						::gl::ext::CleanUp();
+						Images_gl_ext_CleanUp();
 						if (context)
 							wglDeleteContext(context);
 						my::global::logger::Get().Error(d3dtost::ConvertErrorMessage(programBuilder.GetErrorMessage()));
 					}
 				}
 				else {
-					::gl::ext::CleanUp();
+					Images_gl_ext_CleanUp();
 					if (context)
 						wglDeleteContext(context);
 					// error reported in _::InstallShaders()
@@ -179,7 +179,7 @@ namespace my {
 		PASSERT(IsInitialised())
 		PASSERT( wglGetCurrentContext() == context )
 		// destroy shaders
-		::gl::ext::CleanUp();
+		Images_gl_ext_CleanUp();
 		if (context)
 			wglDeleteContext(context);
 		initialised = false;
