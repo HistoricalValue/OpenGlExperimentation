@@ -26,6 +26,13 @@
 #include <nurbs/SurfaceTesselation.h>
 #include <nurbs/SurfaceTesselation_inl.h>
 
+
+//
+#include <Mesh.h>
+//
+#include <my/algo/ShapeProducers.h>
+
+
 //////////////////////////////////////////////////////////////////////////////////////
 
 // CONTROL SWITCHES
@@ -85,21 +92,26 @@ my::gl::math::Vector4 makevector4 (ankh::math::trig::vec4 const& v) {
 }
 
 static inline
+my::gl::math::Vector4 makevector4fromvertexwithnormal (ankh::surf::Traits::VertexWithNormal const& vwn)
+	{ return my::gl::math::Vector4::New(vwn.v.x, vwn.v.y, vwn.v.z, 1.0f); }
+
+
+static inline
 my::gl::shapes::Vertex makevertex (ankh::math::types::Vertex const& v) {
 	return my::gl::shapes::Vertex(my::gl::math::Vector4::New(v.x, v.y, v.z, 1.0f));
 }
 
 static inline
-my::gl::shapes::Triangle maketriangle (ankh::math::types::Triangle const& t, my::gl::shapes::Colour const& c) {
+my::gl::shapes::Triangle maketriangle (ankh::shapes::MeshElement const& e, my::gl::shapes::Colour const& c) {
 	using ankh::math::types::Vertex;
 
-	return my::gl::shapes::Triangle(c)	.SetA(makevertex(t.a))
-										.SetB(makevertex(t.b))
-										.SetC(makevertex(t.c))
+	return my::gl::shapes::Triangle(c)	.SetA(makevertex(e.a))
+										.SetB(makevertex(e.b))
+										.SetC(makevertex(e.c))
 										.SetNormals(
-												makevector4(*reinterpret_cast<Vertex const* const>(t.a.GetUserData())),
-												makevector4(*reinterpret_cast<Vertex const* const>(t.b.GetUserData())),
-												makevector4(*reinterpret_cast<Vertex const* const>(t.c.GetUserData())))
+												makevector4(e.GetNormal(0)),
+												makevector4(e.GetNormal(1)),
+												makevector4(e.GetNormal(2)))
 										;
 }
 
@@ -375,27 +387,29 @@ void addastrianglesto (my::gl::shapes::ShapeCompositionFactory& f) {
 #endif
 	using ankh::math::types::								Triangle;
 	typedef std::vector<Triangle>							Triangles;
+	using ankh::shapes::									MeshElement;
+	typedef std::vector<MeshElement>						MeshElements;
 	using ankh::surf::nurbs::								Surface;
 	using my::gl::shapes::									Colour;
 	using my::gl::math::									Vector4;
 
 	Surface const&	surf	(_::getsurf());
 	Colour const	colour	(Vector4::New(0.8f, 0.4f, 0.8f));
-	Triangles		triangles;
+	MeshElements	meshElements;
 
-	triangles.reserve((surf.GetResolutionI() - 1) * 2 + 1 + 1);	// +1 security
+	meshElements.reserve((surf.GetResolutionI() - 1) * 2 + 1 + 1);	// +1 security
 
 	{
 		timer t02("surface tesselation");
 	//	ProduceAllFromAlongSections
 		ProduceAllFromAcrossSections
-		<t>(surf, triangles);
+		<t>(surf, meshElements);
 	}
 
 	{
 		timer t02("transfoming as triagnles to my::gl::shapes triangles (and adding to factory) (and clearing vector)");
-		for (; !triangles.empty(); triangles.pop_back())
-			f.Add(maketriangle(triangles.back(), colour));
+		for (; !meshElements.empty(); meshElements.pop_back())
+			f.Add(maketriangle(meshElements.back(), colour));
 	}
 }
 
@@ -456,10 +470,11 @@ void addaspointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 	using ankh::surf::nurbs::Knots;
 	using ankh::surf::nurbs::algo::surf::CrossSection;
 	using ankh::surf::nurbs::tesselation::surf::ineffectiveNormalCalculator;
+	using ankh::surf::Traits::VertexWithNormal;
 
-	Surface const&	surf(_::getsurf());
-	std::list<vec4>	dest;
-	std::list<Point>points;
+	Surface const&				surf(_::getsurf());
+	std::list<VertexWithNormal>	dest;
+	std::list<Point>			points;
 #if 0
 	size_t			i(surf.GetFirstKnotJInDomainIndex());
 	size_t const	last(surf.GetLastKnotJInDomainIndex());
@@ -482,7 +497,7 @@ void addaspointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 						DE_BOOR_OR_NOT_DE_BOOR(ProduceAll)(CrossSection(surf, u), ineffectiveNormalCalculator, dest),
 						points,
 						Colour(Vector4::New(0.5f, 0.2f, 0.2f)),
-						&makevector4));
+						&makevector4fromvertexwithnormal));
 	unsigned long const t1 = ugettime();
 	{
 		char bug[1024];
@@ -568,13 +583,14 @@ void addbasecurvesto (my::gl::shapes::ShapeCompositionFactory& f) {
 	using algo::curve::					PreciceControlPointInterpolator;
 	using my::algo::					map_vec4_to_linestrip;
 	using ankh::surf::nurbs::tesselation::surf::ineffectiveNormalCalculator;
+	using ankh::surf::Traits::			VertexWithNormal;
 
 	typedef OptimisedInterpolatingTraits<PreciceControlPointInterpolator> t;
 
-	Surface const&		surf(_::getsurf());
-	std::vector<vec4>	points;
-	std::list<Line>		lines;
-	Colour const		colour(Vector4::New(0.4f, 0.2f, 0.8f));
+	Surface const&					surf(_::getsurf());
+	std::vector<VertexWithNormal>	points;
+	std::list<Line>					lines;
+	Colour const					colour(Vector4::New(0.4f, 0.2f, 0.8f));
 
 	for (size_t i(0); i < surf.GetControlPointsWidth(); ++i) {
 		Curve const&	base		(surf._GetAlongBase(i));
@@ -585,7 +601,7 @@ void addbasecurvesto (my::gl::shapes::ShapeCompositionFactory& f) {
 
 		lines.clear();
 
-		f.AddAll(map_vec4_to_linestrip(ProduceAll<t>(base, ineffectiveNormalCalculator, points), lines, colour, &makevector4));
+		f.AddAll(map_vec4_to_linestrip(ProduceAll<t>(base, ineffectiveNormalCalculator, points), lines, colour, &makevector4fromvertexwithnormal));
 	}
 }
 

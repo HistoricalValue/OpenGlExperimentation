@@ -17,7 +17,9 @@ void main (void) {
 	vec3 texcoord = textureCoordinate.stp;
 
 	if (colouringSelector == 0u)
-		fragColor = baseColour * dot(normalize(pooplight), normalize(interpolatedNormal));
+		fragColor =		baseColour
+						* dot(normalize(pooplight), normalize(interpolatedNormal))
+						;
 	else
 	if (colouringSelector == 1u)
 		fragColor = texture(textureUnit0, texcoord);

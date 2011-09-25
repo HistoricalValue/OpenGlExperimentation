@@ -35,6 +35,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Math", "..\ankh\Math\Projec
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Meshes", "..\ankh\Meshes\Project\Meshes.vcxproj", "{8346784F-011E-422A-B0CC-F383A21C4B69}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BuiltinShapes", "..\ankh\BuiltinShapes\Project\BuiltinShapes.vcxproj", "{FD870F35-31E9-4ACC-AD24-CD7F9A29BF25}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Static|Win32 = Debug_Static|Win32
@@ -202,6 +204,18 @@ Global
 		{8346784F-011E-422A-B0CC-F383A21C4B69}.Release|Win32.ActiveCfg = Release|Win32
 		{8346784F-011E-422A-B0CC-F383A21C4B69}.Release|Win32.Build.0 = Release|Win32
 		{8346784F-011E-422A-B0CC-F383A21C4B69}.Release|x64.ActiveCfg = Release|Win32
+		{FD870F35-31E9-4ACC-AD24-CD7F9A29BF25}.Debug_Static|Win32.ActiveCfg = Debug|Win32
+		{FD870F35-31E9-4ACC-AD24-CD7F9A29BF25}.Debug_Static|Win32.Build.0 = Debug|Win32
+		{FD870F35-31E9-4ACC-AD24-CD7F9A29BF25}.Debug_Static|x64.ActiveCfg = Debug|Win32
+		{FD870F35-31E9-4ACC-AD24-CD7F9A29BF25}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FD870F35-31E9-4ACC-AD24-CD7F9A29BF25}.Debug|Win32.Build.0 = Debug|Win32
+		{FD870F35-31E9-4ACC-AD24-CD7F9A29BF25}.Debug|x64.ActiveCfg = Debug|Win32
+		{FD870F35-31E9-4ACC-AD24-CD7F9A29BF25}.Profile|Win32.ActiveCfg = Release|Win32
+		{FD870F35-31E9-4ACC-AD24-CD7F9A29BF25}.Profile|Win32.Build.0 = Release|Win32
+		{FD870F35-31E9-4ACC-AD24-CD7F9A29BF25}.Profile|x64.ActiveCfg = Release|Win32
+		{FD870F35-31E9-4ACC-AD24-CD7F9A29BF25}.Release|Win32.ActiveCfg = Release|Win32
+		{FD870F35-31E9-4ACC-AD24-CD7F9A29BF25}.Release|Win32.Build.0 = Release|Win32
+		{FD870F35-31E9-4ACC-AD24-CD7F9A29BF25}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -219,5 +233,6 @@ Global
 		{F2D735A6-3645-4A06-B368-BCC38D42EFEE} = {798A8E2D-6334-463B-939D-A667599D620E}
 		{6E4F6764-BB80-4FA7-BDEB-296DFB306160} = {798A8E2D-6334-463B-939D-A667599D620E}
 		{8346784F-011E-422A-B0CC-F383A21C4B69} = {798A8E2D-6334-463B-939D-A667599D620E}
+		{FD870F35-31E9-4ACC-AD24-CD7F9A29BF25} = {798A8E2D-6334-463B-939D-A667599D620E}
 	EndGlobalSection
 EndGlobal
