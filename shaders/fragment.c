@@ -1,6 +1,6 @@
 #version 330 core
 
-const vec4		pooplight = vec4(-1, -.3f, 0, 1);
+uniform vec4			pooplight;
 
 in		vec4			interpolatedColour;
 flat in	vec4			baseColour;
@@ -18,7 +18,7 @@ void main (void) {
 
 	if (colouringSelector == 0u)
 		fragColor =		baseColour
-						* dot(normalize(pooplight), normalize(interpolatedNormal))
+						* dot(normalize(vec4(pooplight.xyz * 1000.0f, 1.0f)), normalize(interpolatedNormal))
 						;
 	else
 	if (colouringSelector == 1u)

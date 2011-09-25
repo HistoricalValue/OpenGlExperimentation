@@ -30,6 +30,7 @@ namespace my {
 		static GLuint textureZLocation(-1);
 		static GLuint cameraLocation  (-1);
 		static GLuint projectionLocation(-1);
+		static GLuint poopLightLocation(-1);
 
 		static bool InstallShaders (
 				my::gl::shaders::ProgramBuilder&	programBuilder,
@@ -144,6 +145,7 @@ namespace my {
 						_::textureZLocation = programBuilder.GetUniformLocation("textureZ");
 						_::cameraLocation	= programBuilder.GetUniformLocation("camera");
 						_::projectionLocation	= programBuilder.GetUniformLocation("projection");
+						_::poopLightLocation = programBuilder.GetUniformLocation("pooplight");
 
 						_::InfologAllExtensions();
 					}
@@ -302,6 +304,12 @@ namespace my {
 	OpenGL::_VUL_PROJECTION::operator GLuint (void) const {
 		PASSERT(_::projectionLocation != -1)
 		return _::projectionLocation;
+	}
+
+	OpenGL::_VUL_POOPLIGHT const OpenGL::VUL_POOPLIGHT;
+	OpenGL::_VUL_POOPLIGHT::operator GLuint (void) const {
+		PASSERT(_::poopLightLocation != -1)
+		return _::poopLightLocation;
 	}
 
 

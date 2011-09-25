@@ -102,6 +102,23 @@ my::gl::shapes::Vertex makevertex (ankh::math::types::Vertex const& v) {
 }
 
 static inline
+my::gl::shapes::Line makenormallineformeshelementvertex (ankh::shapes::MeshElement const& v, size_t const i) {
+	using namespace ankh::math::trig;
+	
+	vec3 const line_begin(v.GetVertex(i));
+	vec3 n(v.GetNormal(i));
+	normalise(&n);
+	n *= 0.0025f;
+	vec3 const line_end(line_begin + n);
+
+	return my::gl::shapes::Line(makevertex(line_begin), makevertex(line_end),
+		my::gl::shapes::ColourFactory::Dimmer(
+			my::gl::shapes::ColourFactory::Red()
+		)
+	);
+}
+
+static inline
 my::gl::shapes::Triangle maketriangle (ankh::shapes::MeshElement const& e, my::gl::shapes::Colour const& c) {
 	using ankh::math::types::Vertex;
 
@@ -260,7 +277,12 @@ static bool VerifyMultiplicityChecker (void) {
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-static ankh::surf::nurbs::Surface* _surf(NULL);
+typedef std::vector<ankh::shapes::MeshElement>			MeshElements;
+typedef std::vector<ankh::shapes::MeshAdjacencyElement>	MeshAdjacencyElements;
+
+static ankh::surf::nurbs::Surface*	_surf			(NULL);
+static MeshElements*				_meshElements	(NULL);
+static MeshAdjacencyElements*		_adjacencies	(NULL);
 static float	minx(-0.025f);
 static float	maxx( 0.025f);
 static float	miny(-0.025f);
@@ -347,6 +369,8 @@ static void Initialise (void) {
 
 
 		_surf = DNEWCLASS(Surface, (knots_j.begin(), knots_j.end(), knots_i.begin(), knots_i.end(), cpoints_i.begin(), cpoints_i.end(), "BOB ROSS"));
+		_meshElements = DNEW(MeshElements);
+		_adjacencies = DNEW(MeshAdjacencyElements);
 
 		DASSERT(VerifyBaseFunctions(FirstCrossSection(*_surf).m(), knots_i));
 
@@ -356,6 +380,8 @@ static void Initialise (void) {
 }
 
 static void CleanUp (void) {
+	udelete(_adjacencies);
+	udelete(_meshElements);
 	udelete(_surf);
 }
 
@@ -364,11 +390,15 @@ static void CleanUp (void) {
 static inline ankh::surf::nurbs::Surface const& getsurf (void)
 	{ return *DPTR(_DNOTNULL(_surf)); }
 
-//////////////////////////////////////////////////////////////////////////////////////
-} // _
+static inline MeshElements& meshElements (void)
+	{ return *DPTR(_DNOTNULL(_meshElements)); }
+
+static inline MeshAdjacencyElements& adjacencies (void)
+	{ return *DPTR(_DNOTNULL(_adjacencies)); }
+
 //////////////////////////////////////////////////////////////////////////////////////
 
-void addastrianglesto (my::gl::shapes::ShapeCompositionFactory& f) {
+static inline void tesselate (void) {
 	using ankh::surf::nurbs::tesselation::curve::			SimpleBlendingTraits;
 	using ankh::surf::nurbs::tesselation::curve::			SimpleInterpolatingTraits;
 	using ankh::surf::nurbs::tesselation::curve::			OptimisedBlendingTraits;
@@ -377,39 +407,62 @@ void addastrianglesto (my::gl::shapes::ShapeCompositionFactory& f) {
 	using ankh::surf::nurbs::algo::curve::					PreciceControlPointInterpolator;
 #if 0
 	using ankh::surf::nurbs::tesselation::surf::blending::	ProduceAllFromAcrossSections;
-	using ankh::surf::nurbs::tesselation::surf::blending::	ProduceAllFromAlongSections;
+//	using ankh::surf::nurbs::tesselation::surf::blending::	ProduceAllFromAlongSections;
 	typedef SimpleBlendingTraits							t;
 #else
 	using ankh::surf::nurbs::tesselation::surf::deboor::	ProduceAllFromAcrossSections;
-	using ankh::surf::nurbs::tesselation::surf::deboor::	ProduceAllFromAlongSections;
+//	using ankh::surf::nurbs::tesselation::surf::deboor::	ProduceAllFromAlongSections;
 //	typedef OptimisedInterpolatingTraits<PreciceControlPointInterpolator>	t;
 	typedef SimpleInterpolatingTraits<PreciceControlPointInterpolator>		t;
 #endif
 	using ankh::math::types::								Triangle;
 	typedef std::vector<Triangle>							Triangles;
 	using ankh::shapes::									MeshElement;
-	typedef std::vector<MeshElement>						MeshElements;
+	using ankh::shapes::									MeshAdjacencyElement;
 	using ankh::surf::nurbs::								Surface;
 	using my::gl::shapes::									Colour;
 	using my::gl::math::									Vector4;
+	using my::gl::shapes::									Line;
+	using my::gl::shapes::									Vertex;
 
-	Surface const&	surf	(_::getsurf());
-	Colour const	colour	(Vector4::New(0.8f, 0.4f, 0.8f));
-	MeshElements	meshElements;
+	Surface const&			surf	(_::getsurf());
 
-	meshElements.reserve((surf.GetResolutionI() - 1) * 2 + 1 + 1);	// +1 security
+	size_t const			meshElementsMinCapacity((surf.GetResolutionI() - 1) * 2 + 1 + 1),	// +1 security
+							adjacenciesMinCapacity(meshElementsMinCapacity * 3);	// generally will by the number of mesh elements times 3
+
+	_::meshElements().reserve(meshElementsMinCapacity);	
+	_::adjacencies().reserve(adjacenciesMinCapacity);
 
 	{
 		timer t02("surface tesselation");
 	//	ProduceAllFromAlongSections
 		ProduceAllFromAcrossSections
-		<t>(surf, meshElements);
+		<t>(surf, _::meshElements(), _::adjacencies());
 	}
+}
 
-	{
-		timer t02("transfoming as triagnles to my::gl::shapes triangles (and adding to factory) (and clearing vector)");
-		for (; !meshElements.empty(); meshElements.pop_back())
-			f.Add(maketriangle(meshElements.back(), colour));
+//////////////////////////////////////////////////////////////////////////////////////
+} // _
+//////////////////////////////////////////////////////////////////////////////////////
+
+void addastrianglesto (my::gl::shapes::ShapeCompositionFactory&	f)
+{
+	using my::gl::shapes::Colour;
+	using my::gl::math::Vector4;
+
+	Colour const			colour	(Vector4::New(0.8f, 0.4f, 0.8f));
+	timer t02("transfoming as triagnles to my::gl::shapes triangles (and adding to factory)");
+	_::MeshElements::const_iterator const end(_::meshElements().end());
+	for (_::MeshElements::const_iterator i(_::meshElements().begin()); i != end; ++i)
+		f.Add(maketriangle(*i, colour));
+}
+
+void addnormalsto (my::gl::shapes::ShapeCompositionFactory& f) {
+	_::MeshElements::const_iterator const end(_::meshElements().end());
+	for (_::MeshElements::const_iterator i(_::meshElements().begin()); i != end; ++i) {
+		f.Add(makenormallineformeshelementvertex(*i, 0));
+		f.Add(makenormallineformeshelementvertex(*i, 1));
+		f.Add(makenormallineformeshelementvertex(*i, 2));
 	}
 }
 
@@ -644,6 +697,8 @@ namespace _ {
 	static const GLuint COLOUR_WITH_TEXTURE(1);
 	static const GLuint COLOUR_WITH_COLOUR(2);
 
+	static const float POOP_LIGHT[4] = { -0.030f, 0.030f, 0.0f, 1.0f };
+
 	static const GLuint TexturesUnits[TEXTURES_NUM] =
 		{ 12, 23 };
 
@@ -811,6 +866,8 @@ namespace _ {
 		//	nurbs::addaspointsto(f);
 		//	nurbs::addknotpointsto(f);
 
+			f.Add(Point(Vertex(my::gl::math::Vector4::New(_::POOP_LIGHT)), ColourFactory::White()));
+
 			DynamicShapeComposition* const dcomp(f.Generate());
 
 			SetAttribute(vertexArrayId, buffer0Id, *dcomp, POINTS_NORMALISED, false, numberOfPointPoints);
@@ -840,8 +897,9 @@ namespace _ {
 					ShapeCompositionFactory f;
 
 					f.Add(axs);
-					nurbs::addbasecurvesto(f);
+				//	nurbs::addbasecurvesto(f);
 				//	nurbs::addaslinesto(f);
+					nurbs::addnormalsto(f);
 
 					DynamicShapeComposition* dcomp(NULL);
 					{
@@ -889,7 +947,6 @@ namespace _ {
 			{
 				timer t03("adding surface triangles to factory");
 				nurbs::addastrianglesto(f);
-
 			}
 
 			DynamicShapeComposition* dcomp(NULL);
@@ -1199,6 +1256,9 @@ namespace my {
 				my::global::log::info(&msg[0]);
 			}
 
+			// Set directional light direction
+			glUniform4f(OpenGL::VUL_POOPLIGHT, _::POOP_LIGHT[0], _::POOP_LIGHT[1], _::POOP_LIGHT[2], _::POOP_LIGHT[3]);
+
 			// Draw points
 			if (_::WITH_DRAW_POINTS) {
 				PASSERT(glIsVertexArray(dd.vertexArrayIds[0] == GL_TRUE))
@@ -1292,6 +1352,7 @@ namespace my {
 			glGenBuffers(sizeof(bufferIds)/sizeof(bufferIds[0]), &bufferIds[0]);
 
 			nurbs::_::Initialise();
+			nurbs::_::tesselate();
 
 			///////////////////////////
 			// VAO#0: Points

@@ -6,6 +6,7 @@
 #include <my/gl/shapes/Shape.h>
 #include <algorithm>
 #include <ufunctors.h>
+#include <list>
 
 namespace my { namespace gl { namespace shapes {
 
@@ -31,7 +32,7 @@ public:
 	ShapeCompositionFactory&	AddAll (ContainerType const& container);
 
 private:
-	void* const data;
+	std::list<Shape*> shapes;
 };
 
 }}} // namespace my::gl::shapes

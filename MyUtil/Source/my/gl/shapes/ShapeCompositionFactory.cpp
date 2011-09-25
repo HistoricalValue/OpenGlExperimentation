@@ -7,11 +7,9 @@ namespace _ {
 //////////////////////////////////////////////////////////
 
 typedef std::list<my::gl::shapes::Shape*> ShapesList;
-struct InstanceData {
-	ShapesList		shapes;
-};
-#define SHAPES			(DPTR(reinterpret_cast<_::InstanceData* const>(data))->shapes)
-#define SHAPES_CONST	(DPTR(reinterpret_cast<_::InstanceData const* const>(data))->shapes)
+
+#define SHAPES			shapes
+#define SHAPES_CONST	static_cast<_::ShapesList const&>(shapes)
 
 //////////////////////////////////////////////////////////
 }
@@ -89,7 +87,7 @@ void ShapeCompositionFactory::Dispose (DynamicShapeComposition* const comp) cons
 
 P_INLINE
 ShapeCompositionFactory::ShapeCompositionFactory (void):
-	data(DNEW(_::InstanceData))
+	shapes()
 	{ }
 
 //////////////////////////////////////////////////////////
@@ -97,15 +95,6 @@ ShapeCompositionFactory::ShapeCompositionFactory (void):
 P_INLINE
 ShapeCompositionFactory::~ShapeCompositionFactory (void) {
 	Reset();
-
-	{
-		unsigned long int const t0 = ugettime();
-		DDELETE(reinterpret_cast<_::InstanceData* const>(data));
-		unsigned long int const t1 = ugettime();
-		TCHAR buf[1024];
-		_sntprintf_s(&buf[0], _countof(buf), _countof(buf), _T("or finally here: %ld\n"), t1-t0);
-		my::global::logger::Get().Info(my::String(buf));
-	}
 }
 
 //////////////////////////////////////////////////////////
