@@ -283,27 +283,21 @@ static bool VerifyMultiplicityChecker (void) {
 //////////////////////////////////////////////////////////////////////////////////////
 
 typedef ankh::shapes::Mesh::Elements			MeshElements;
-typedef ankh::shapes::Mesh::AdjacencyElements	MeshAdjacencyElements;
-
-struct MyMesh {
-	ankh::shapes::Mesh*		mesh; 
-	MeshAdjacencyElements*	adjacencies;
-};
 
 static ankh::surf::nurbs::Surface*	_surf(NULL);
-static MyMesh*						_mesh(NULL);
+static ankh::shapes::Mesh*			_mesh(NULL);
 
 static inline ankh::surf::nurbs::Surface const& getsurf (void)
 	{ return *DPTR(_DNOTNULL(_surf)); }
 
 static inline void unew_mesh (void)
-	{ DASSERT(!_mesh); _mesh = DNEW(MyMesh), _mesh->mesh = DNEW(ankh::shapes::Mesh), _mesh->adjacencies = DNEW(MeshAdjacencyElements); }
+	{ unew(_mesh); }
 static inline void udelete_mesh (void)
-	{ DASSERTPTR(DNULLCHECK(_mesh)); DDELETE(_mesh->adjacencies); DDELETE(_mesh->mesh); uzeromemory(_mesh); udelete(_mesh); }
-static inline MyMesh& getmesh (void)
+	{ udelete(_mesh); }
+static inline ankh::shapes::Mesh& getmesh (void)
 	{ return *DPTR(DNULLCHECK(_mesh)); }
 static inline MeshElements const& meshElements (void)
-	{ return _::getmesh().mesh->GetElements(); }
+	{ return _::getmesh().GetElements(); }
 
 static float	minx(-0.025f);
 static float	maxx( 0.025f);
@@ -339,14 +333,14 @@ static void Initialise (void) {
 		
 		size_t const	order_j			(0x04u)
 					,	order_i			(0x05u)
-					,	numcpoints_j	(0x15u)
+					,	numcpoints_j	(0x10u)
 					,	numcpoints_i	(0x15u)
 					,	numknots_j		(Curve::NumberOfKnotsFor(order_j, numcpoints_j))
 					,	numknots_i		(Curve::NumberOfKnotsFor(order_i, numcpoints_i))
 					;
-		Unit const		variation	(0.00625f);
+	//	Unit const		variation	(0.00625f);
 	//	Unit const		variation	(0.0125f);
-	//	Unit const		variation	(0.05f);
+		Unit const		variation	(0.05f);
 
 		long seed;
 		{
@@ -379,18 +373,18 @@ static void Initialise (void) {
 		//				minx, maxx, miny, maxy, minz, maxz,
 		//				width_units, height_units, depth_units, seed + curve_i));
 		
-		ControlPoints_VaryGrid(
+	//	ControlPoints_VaryGrid(
 			ControlPoints_FillGridUniformly(cpoints_i, numcpoints_i, numcpoints_j, minx, maxx, minz, maxz, (miny + maxy)/2.0f)
-			,variation, variation, variation, 1.2f, seed)
+	//		,variation, variation, variation, 1.2f, seed)
 		;
-	//	cpoints_i.at(3).at(3) = vec4(maxx, maxy, maxz, 1.0f);
-	//	cpoints_i.at(3).at(3) *= 2.0f;
+		cpoints_i.at(3).at(3) = vec4(maxx, maxy, maxz, 1.0f);
+		cpoints_i.at(3).at(3) *= 2.0f;
 
-	//	cpoints_i.at(9).at(3).y = -maxy;
-	//	cpoints_i.at(9).at(3) *= 4.0f;
+		cpoints_i.at(9).at(3).y = -maxy;
+		cpoints_i.at(9).at(3) *= 4.0f;
 
-	//	cpoints_i.at(15).at(3).y = maxy;
-	//	cpoints_i.at(15).at(3) *= 0.5f;
+		cpoints_i.at(15).at(3).y = maxy;
+		cpoints_i.at(15).at(3) *= 0.5f;
 
 
 		_surf = DNEWCLASS(Surface, (knots_j.begin(), knots_j.end(), knots_i.begin(), knots_i.end(), cpoints_i.begin(), cpoints_i.end(), "BOB ROSS"));
@@ -408,6 +402,45 @@ static void CleanUp (void) {
 	ankh::shapes::MeshLoader::SingletonDestroy();
 	udelete_mesh();
 	udelete(_surf);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+static inline void printmeshinfo (void) {
+	using ankh::shapes::Mesh;
+	using ankh::math::types::Vertex;
+
+	Mesh& m(getmesh());
+	MeshElements const& els(m.GetElements());
+
+	typedef MeshElements::const_iterator  ite_t;
+	
+	float minx(FLT_MAX), maxx(-FLT_MAX), miny(FLT_MAX), maxy(-FLT_MAX), minz(FLT_MAX), maxz(-FLT_MAX);
+
+	ite_t const els_end(els.end());
+	for (ite_t el(els.begin()); el != els_end; ++el)
+		for (unsigned int i(0); i < 3; ++i) {
+			const Vertex& v(el->GetVertex(i));
+			if (v.x < minx)
+				minx = v.x;
+			if (v.x > maxx)
+				maxx = v.x;
+			if (v.y < miny)
+				miny = v.y;
+			if (v.y > maxy)
+				maxy = v.y;
+			if (v.z < minz)
+				minz = v.z;
+			if (v.z > maxz)
+				maxz = v.z;
+		}
+
+	{
+		TCHAR buf[1024];
+		_sntprintf_s(&buf[0], _countof(buf), _countof(buf)-1, _T("max<%f %f %f>    min<%f %f %f>\n"),
+				maxx, maxy, maxz, minx, miny, minz);
+		my::global::log::info(&buf[0]);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -440,7 +473,7 @@ static inline void tesselate (void) {
 	using my::gl::shapes::									Vertex;
 	using ankh::shapes::									Mesh;
 
-	Surface const&			surf	(_::getsurf());
+	Surface const&			surf	(getsurf());
 
 	size_t const			meshElementsMinCapacity((surf.GetResolutionI() - 1) * 2 + 1 + 1),	// +1 security
 							adjacenciesMinCapacity(meshElementsMinCapacity * 3);	// generally will by the number of mesh elements times 3
@@ -451,21 +484,21 @@ static inline void tesselate (void) {
 
 	{
 		MeshElements			elements;
-		MeshAdjacencyElements	adjacencies;
 
 		timer t02("surface tesselation");
 		ProduceAllFromAlongSections
 	//	ProduceAllFromAcrossSections
-		<t>(surf, elements, adjacencies);
+		<t>(surf, elements);
 
-		_::getmesh().mesh->Update(elements);
-		_::getmesh().adjacencies->operator =(adjacencies);
+		getmesh().Update(elements);
 	}
 
 	{
 		timer t02("creating mesh, storing binary, and cleaning mesh up");
-		_::getmesh().mesh->StoreBin("./surface_bin.msh");
+		getmesh().StoreBin("./surface_bin.msh");
 	}
+
+	printmeshinfo();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -474,8 +507,9 @@ static inline void load (std::string const& path) {
 	using namespace ankh::shapes;
 	Mesh* m(MeshLoader::GetSingleton().Load(path));
 	DASSERT(m);
-	DPTR(_::getmesh().mesh)->operator =(*DPTR(m));
+	getmesh() =(*DPTR(m));
 	MeshLoader::GetSingleton().Unload(m);
+	printmeshinfo();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
