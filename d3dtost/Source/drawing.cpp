@@ -29,6 +29,7 @@
 
 //
 #include <Mesh.h>
+#include <MeshLoader.h>
 //
 #include <my/algo/ShapeProducers.h>
 
@@ -80,6 +81,10 @@ static inline I& _NOTEND (I& i, I const& end) {
 }
 
 namespace {
+
+template <typename T1, typename T2> static inline
+void ofequaltypes (T1&, T2& o2)
+	{ utypecheck<T1>(o2); }
 
 template <typename C, typename F>
 static void foreach (C const& c, F const& f)
@@ -280,9 +285,26 @@ static bool VerifyMultiplicityChecker (void) {
 typedef ankh::shapes::Mesh::Elements			MeshElements;
 typedef ankh::shapes::Mesh::AdjacencyElements	MeshAdjacencyElements;
 
-static ankh::surf::nurbs::Surface*	_surf			(NULL);
-static MeshElements*				_meshElements	(NULL);
-static MeshAdjacencyElements*		_adjacencies	(NULL);
+struct MyMesh {
+	ankh::shapes::Mesh*		mesh; 
+	MeshAdjacencyElements*	adjacencies;
+};
+
+static ankh::surf::nurbs::Surface*	_surf(NULL);
+static MyMesh*						_mesh(NULL);
+
+static inline ankh::surf::nurbs::Surface const& getsurf (void)
+	{ return *DPTR(_DNOTNULL(_surf)); }
+
+static inline void unew_mesh (void)
+	{ DASSERT(!_mesh); _mesh = DNEW(MyMesh), _mesh->mesh = DNEW(ankh::shapes::Mesh), _mesh->adjacencies = DNEW(MeshAdjacencyElements); }
+static inline void udelete_mesh (void)
+	{ DASSERTPTR(DNULLCHECK(_mesh)); DDELETE(_mesh->adjacencies); DDELETE(_mesh->mesh); uzeromemory(_mesh); udelete(_mesh); }
+static inline MyMesh& getmesh (void)
+	{ return *DPTR(DNULLCHECK(_mesh)); }
+static inline MeshElements const& meshElements (void)
+	{ return _::getmesh().mesh->GetElements(); }
+
 static float	minx(-0.025f);
 static float	maxx( 0.025f);
 static float	miny(-0.025f);
@@ -372,8 +394,8 @@ static void Initialise (void) {
 
 
 		_surf = DNEWCLASS(Surface, (knots_j.begin(), knots_j.end(), knots_i.begin(), knots_i.end(), cpoints_i.begin(), cpoints_i.end(), "BOB ROSS"));
-		_meshElements = DNEW(MeshElements);
-		_adjacencies = DNEW(MeshAdjacencyElements);
+		unew_mesh();
+		ankh::shapes::MeshLoader::SingletonCreate();
 
 		DASSERT(VerifyBaseFunctions(FirstCrossSection(*_surf).m(), knots_i));
 
@@ -383,21 +405,10 @@ static void Initialise (void) {
 }
 
 static void CleanUp (void) {
-	udelete(_adjacencies);
-	udelete(_meshElements);
+	ankh::shapes::MeshLoader::SingletonDestroy();
+	udelete_mesh();
 	udelete(_surf);
 }
-
-//////////////////////////////////////////////////////////////////////////////////////
-
-static inline ankh::surf::nurbs::Surface const& getsurf (void)
-	{ return *DPTR(_DNOTNULL(_surf)); }
-
-static inline MeshElements& meshElements (void)
-	{ return *DPTR(_DNOTNULL(_meshElements)); }
-
-static inline MeshAdjacencyElements& adjacencies (void)
-	{ return *DPTR(_DNOTNULL(_adjacencies)); }
 
 //////////////////////////////////////////////////////////////////////////////////////
 
@@ -439,17 +450,32 @@ static inline void tesselate (void) {
 //	_::adjacencies().reserve(adjacenciesMinCapacity);
 
 	{
+		MeshElements			elements;
+		MeshAdjacencyElements	adjacencies;
+
 		timer t02("surface tesselation");
 		ProduceAllFromAlongSections
 	//	ProduceAllFromAcrossSections
-		<t>(surf, _::meshElements(), _::adjacencies());
+		<t>(surf, elements, adjacencies);
+
+		_::getmesh().mesh->Update(elements);
+		_::getmesh().adjacencies->operator =(adjacencies);
 	}
 
 	{
 		timer t02("creating mesh, storing binary, and cleaning mesh up");
-		Mesh mesh(_::meshElements());
-		mesh.StoreBin("./surface_bin.msh");
+		_::getmesh().mesh->StoreBin("./surface_bin.msh");
 	}
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+static inline void load (std::string const& path) {
+	using namespace ankh::shapes;
+	Mesh* m(MeshLoader::GetSingleton().Load(path));
+	DASSERT(m);
+	DPTR(_::getmesh().mesh)->operator =(*DPTR(m));
+	MeshLoader::GetSingleton().Unload(m);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -1364,6 +1390,7 @@ namespace my {
 
 			nurbs::_::Initialise();
 			nurbs::_::tesselate();
+		//	nurbs::_::load("moon_528.msh");
 
 			///////////////////////////
 			// VAO#0: Points
