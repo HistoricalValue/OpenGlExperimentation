@@ -2,6 +2,76 @@
 
 namespace my { namespace gl { namespace math {
 
+	bool Matrix4x4::isInversible (void) const {
+		return det() != 0.0f;
+	}
+
+	Matrix4x4 Matrix4x4::inverse (void) const {
+		PASSERT(isInversible())
+		return adjugate() * (1/det());
+	}
+
+	float Matrix4x4::det (void) const {
+		return a11 * cofactor(0,0) + a12 * cofactor(0,1) + a13 * cofactor(0,2) + a14 * cofactor(0,3);
+	}
+
+	Matrix4x4 Matrix4x4::adjugate (void) const {
+		return cofactor_matrix().transpose();
+	}
+	
+	Matrix4x4 Matrix4x4::cofactor_matrix (void) const {
+		return	Matrix4x4(	1.0f, -1.0f, 1.0f, -1.0f,
+							-1.0f, 1.0f, -1.0f, 1.0f,
+							1.0f, -1.0f, 1.0f, -1.0f,
+							-1.0f, 1.0f, -1.0f, 1.0f)
+					.mul(minor_matrix());
+	}
+
+	Matrix4x4 Matrix4x4::minor_matrix (void) const {
+		return	Matrix4x4(
+					minor(0,0), minor(0,1), minor(0,2), minor(0,3),
+					minor(1,0), minor(1,1), minor(1,2), minor(1,3),
+					minor(2,0), minor(2,1), minor(2,2), minor(2,3),
+					minor(3,0), minor(3,1), minor(3,2), minor(3,3));
+	}
+
+	float Matrix4x4::cofactor (size_t const i, size_t const j) const {
+		return float(((i + j) % 2) == 0? 0.0f : -1.0f) * minor(i, j);
+	}
+
+	float Matrix4x4::mat2_det (float const a, float const b, float const c, float const d) {
+		return a*d - c*b;
+	}
+
+	float Matrix4x4::get (size_t const i, size_t const j) const {
+		PASSERT(i < 4)
+		PASSERT(j < 4)
+		return as_float_array_16()[i*4 + j];
+	}
+
+	float Matrix4x4::minor (size_t const i, size_t const j) const {
+		PASSERT(i < 4)
+		PASSERT(j < 4)
+		
+		size_t row0(0), row1(1), col0(0), col1(1);
+		switch (i) {
+			case 0:		++row0;
+			case 1:		++row1;
+			case 2:		break;
+			default:	PASSERT(false);
+		}
+		switch (j) {
+			case 0:		++col0;
+			case 1:		++col1;
+			case 2:		break;
+			default:	PASSERT(false);
+		}
+
+		float const	a(get(row0, col0)), b(get(row0, col1)), c(get(row1, col0)), d(get(row1, col1));
+
+		return mat2_det(a, b, c, d);
+	}
+
 	Vector4 Matrix4x4::operator [] (size_t const i) const {
 		return transpose().row(i);
 	}
@@ -150,14 +220,14 @@ namespace my { namespace gl { namespace math {
 //			);
 //	}
 
-//	Matrix4x4 Matrix4x4::operator * (float const f) const {
-//		return Matrix4x4(
-//			a11 * f, a12 * f, a13 * f, a14 * f,
-//			a21 * f, a22 * f, a23 * f, a24 * f,
-//			a31 * f, a32 * f, a33 * f, a34 * f,
-//			a41 * f, a42 * f, a43 * f, a44 * f
-//			);
-//	}
+	Matrix4x4 Matrix4x4::operator * (float const f) const {
+		return Matrix4x4(
+			a11 * f, a12 * f, a13 * f, a14 * f,
+			a21 * f, a22 * f, a23 * f, a24 * f,
+			a31 * f, a32 * f, a33 * f, a34 * f,
+			a41 * f, a42 * f, a43 * f, a44 * f
+			);
+	}
 
 	Vector4 Matrix4x4::operator * (Vector4 const& vec4) const {
 		float const v0(vec4[0]);
@@ -171,6 +241,15 @@ namespace my { namespace gl { namespace math {
 			a41*v0 + a42*v1 + a43*v2 + a44*v3
 			);
 	}
+
+	Matrix4x4 Matrix4x4::mul (Matrix4x4 const& other) const {
+		return	Matrix4x4(
+					a11*other.a11, a12*other.a12, a13*other.a13, a14*other.a14,
+					a21*other.a21, a12*other.a22, a13*other.a23, a14*other.a24,
+					a31*other.a31, a12*other.a32, a13*other.a33, a14*other.a34,
+					a41*other.a41, a12*other.a42, a13*other.a43, a14*other.a44);
+	}
+
 //
 //	void Matrix4x4::mul (float const with[4], float result[4]) const {
 //		float const w1 = with[0];

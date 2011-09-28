@@ -18,6 +18,7 @@ void main (void) {
 
 	if (colouringSelector == 0u)
 		fragColor =		baseColour
+						* 2.0f
 						* dot(normalize(vec4(pooplight.xyz * 1000.0f, 1.0f)), normalize(interpolatedNormal))
 						;
 	else

@@ -333,7 +333,7 @@ static void Initialise (void) {
 		
 		size_t const	order_j			(0x04u)
 					,	order_i			(0x05u)
-					,	numcpoints_j	(0x10u)
+					,	numcpoints_j	(0x07u)
 					,	numcpoints_i	(0x15u)
 					,	numknots_j		(Curve::NumberOfKnotsFor(order_j, numcpoints_j))
 					,	numknots_i		(Curve::NumberOfKnotsFor(order_i, numcpoints_i))
@@ -385,7 +385,6 @@ static void Initialise (void) {
 
 		cpoints_i.at(15).at(3).y = maxy;
 		cpoints_i.at(15).at(3) *= 0.5f;
-
 
 		_surf = DNEWCLASS(Surface, (knots_j.begin(), knots_j.end(), knots_i.begin(), knots_i.end(), cpoints_i.begin(), cpoints_i.end(), "BOB ROSS"));
 		unew_mesh();
@@ -768,7 +767,7 @@ namespace _ {
 	static const GLuint COLOUR_WITH_TEXTURE(1);
 	static const GLuint COLOUR_WITH_COLOUR(2);
 
-	static const float POOP_LIGHT[4] = { -0.030f, 0.030f, 0.0f, 1.0f };
+	static const float POOP_LIGHT[4] = { 3.0f, 1.0f, 0.0f, 1.0f };
 
 	static const GLuint TexturesUnits[TEXTURES_NUM] =
 		{ 12, 23 };

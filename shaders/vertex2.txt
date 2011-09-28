@@ -130,16 +130,20 @@ void main (void) {
 
 	vec4 pos			=	Hom_True(position);
 						
-	mat4 transtest		=	AId()
-						*	projection
+	mat4 transmodel		=	AId()
 						*	camera
 						*	ARotate(Axis_Y, radians(axyc[0]))
 				//		*	ATransform(0.5f * Axis_X, 0.5f * Axis_Y, 0.5f * Axis_Z)
 						;
+
+	mat4 transtest		=	AId()
+						*	projection
+						*	transmodel
+						;
 						
 	gl_Position			= transtest * pos;
 	textureCoordinate	= vec4(texcoord.st, textureZ, 1);
-	interpolatedNormal	= transtest * normal;
+	interpolatedNormal	= transpose(inverse(transmodel)) * normal;
 	baseColour			= colour;
 	interpolatedColour	= colour;
 }

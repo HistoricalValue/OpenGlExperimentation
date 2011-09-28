@@ -28,6 +28,7 @@ namespace my { namespace gl { namespace math {
 		Vector4					operator * (Vector4 const&) const;
 
 		void					mul (float const with[4], float result[4]) const;
+		Matrix4x4				mul (Matrix4x4 const& other) const;		// element by element
 
 		float const*			as_float_array_16 (void) const;		// [row][column]
 
@@ -37,8 +38,23 @@ namespace my { namespace gl { namespace math {
 
 		Vector4					operator [] (size_t i) const;		// column vector
 		Vector4					row (size_t i) const;				// row vector
+		float					get (size_t i, size_t j) const;
 
 		Matrix4x4				transpose (void) const;
+
+		float					minor (size_t i, size_t j) const;	// determinant of the matrix by removing row i and column j
+		Matrix4x4				minor_matrix (void) const;
+		float					cofactor (size_t i, size_t j) const;
+		Matrix4x4				cofactor_matrix (void) const;
+		Matrix4x4				adjugate (void) const;
+		float					det (void) const;
+		Matrix4x4				inverse (void) const;
+		bool					isInversible (void) const;
+
+		// as mat3 methods
+
+		static float			mat2_det (float a11_a, float a12_b, float a21_c, float a22_d);
+
 	private:
 		float const a11;
 		float const a12;
