@@ -1,16 +1,20 @@
 #version 330 core
 
+// uniform inputs
 uniform vec4			pooplight;
-
-in		vec4			interpolatedColour;
-flat in	vec4			baseColour;
-in		vec4			interpolatedNormal;
-in		vec4			textureCoordinate;
 uniform	sampler2DArray	textureUnit0;
 uniform	sampler2DArray	textureUnit1;
 uniform	sampler2DArray	textureUnit2;
 uniform	sampler2DArray	textureUnit3;
 uniform	uint			colouringSelector;
+
+// inputs from previous stages
+in		vec4			interpolatedColour;
+flat in	vec4			baseColour;
+in		vec4			interpolatedNormal;
+in		vec4			textureCoordinate;
+
+// ouputs
 out		vec4			fragColor;
 
 void main (void) {
@@ -29,7 +33,6 @@ void main (void) {
 		fragColor = interpolatedColour;
 	else
 		fragColor = vec4(1.0f, 0.0f, 1.0f, 1.0f);
-
 }
 
 

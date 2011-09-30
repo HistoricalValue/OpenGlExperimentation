@@ -141,7 +141,8 @@ void main (void) {
 						*	transmodel
 						;
 						
-	gl_Position			= transtest * pos;
+	gl_Position			=		transtest * 
+								pos;
 	textureCoordinate	= vec4(texcoord.st, textureZ, 1);
 	interpolatedNormal	= transpose(inverse(transmodel)) * normal;
 	baseColour			= colour;
