@@ -5,7 +5,7 @@
 #include <cstdio>
 #include <PAssert.h>
 
-#include <SurfacesTraits.h>
+#include <SurfacesTools.h>
 
 namespace {
 
@@ -22,7 +22,7 @@ my::gl::math::Vector4 makevector4 (ankh::math::trig::vec4 const& v)
 	{ return my::gl::math::Vector4::New(v.x, v.y, v.z, v.w); }
 
 static inline
-my::gl::math::Vector4 makevector4fromvertexwithnormal (ankh::surf::Traits::VertexWithNormal const& vwn)
+my::gl::math::Vector4 makevector4fromvertexwithnormal (ankh::surfaces::VertexWithNormal const& vwn)
 	{ return my::gl::math::Vector4::New(vwn.v.x, vwn.v.y, vwn.v.z, 1.0f); }
 
 

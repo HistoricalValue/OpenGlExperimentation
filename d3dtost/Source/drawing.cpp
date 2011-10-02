@@ -14,10 +14,10 @@
 using namespace ::gl::ext;
 
 namespace _ {
-	static const bool	WITH_DRAW_POINTS	(false);
-	static const bool	WITH_DRAW_LINES		(false);
-	static const bool	WITH_DRAW_TRIANGLES	(false);
-	static const bool	WITH_DRAW_TEXTURED	(true);
+	static const bool	WITH_DRAW_POINTS	(true);
+	static const bool	WITH_DRAW_LINES		(true);
+	static const bool	WITH_DRAW_TRIANGLES	(true);
+	static const bool	WITH_DRAW_TEXTURED	(false);
 	//
 	static const bool	WITH_CAMERA			(false);
 
