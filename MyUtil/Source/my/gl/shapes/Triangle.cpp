@@ -17,7 +17,10 @@ namespace my { namespace gl { namespace shapes {
 		c(math::Vector4::New(-1.0f,  1.0f, -1.0f, 1.0f)),
 		na(math::Vector4::New(9999.0f, 9999.0f, 9999.0f, 1.0f)),
 		nb(math::Vector4::New(9999.0f, 9999.0f, 9999.0f, 1.0f)),
-		nc(math::Vector4::New(9999.0f, 9999.0f, 9999.0f, 1.0f))
+		nc(math::Vector4::New(9999.0f, 9999.0f, 9999.0f, 1.0f)),
+		col_a(colour),
+		col_b(colour),
+		col_c(colour)
 		{ P_STATIC_ASSERT(sizeof(Triangle) == 0
 				+ sizeof(Shape)
 				+ sizeof(a)
@@ -26,6 +29,9 @@ namespace my { namespace gl { namespace shapes {
 				+ sizeof(na)
 				+ sizeof(nb)
 				+ sizeof(nc)
+				+ sizeof(col_a)
+				+ sizeof(col_b)
+				+ sizeof(col_c)
 				)
 		}
 
@@ -36,7 +42,10 @@ namespace my { namespace gl { namespace shapes {
 		c(other.c),
 		na(other.na),
 		nb(other.nb),
-		nc(other.nc)
+		nc(other.nc),
+		col_a(other.col_a),
+		col_b(other.col_b),
+		col_c(other.col_c)
 		{ P_STATIC_ASSERT(sizeof(Triangle) == 0
 				+ sizeof(Shape)
 				+ sizeof(a)
@@ -45,6 +54,9 @@ namespace my { namespace gl { namespace shapes {
 				+ sizeof(na)
 				+ sizeof(nb)
 				+ sizeof(nc)
+				+ sizeof(col_a)
+				+ sizeof(col_b)
+				+ sizeof(col_c)
 				)
 		}
 
@@ -60,18 +72,13 @@ namespace my { namespace gl { namespace shapes {
 		PASSERT(abs(na.magnitude() - 1.0f) < 1e-6)
 		PASSERT(abs(nb.magnitude() - 1.0f) < 1e-6)
 		PASSERT(abs(nc.magnitude() - 1.0f) < 1e-6)
-
-		Colour const	colour1	(colour); // ColourFactory::Dimmer(colour));
-		Colour const	colour2	(colour);
-		Colour const	colour3	(colour); // ColourFactory::Brighter(colour));
-
 		
 		if (bytesize >= requiredBytesize) {
 			reinterpret_assign(result, memory);
 
-			new(&result[0]) VertexData(a.xyzw(), colour1, na);
-			new(&result[1]) VertexData(b.xyzw(), colour2, nb);
-			new(&result[2]) VertexData(c.xyzw(), colour3, nc);
+			new(&result[0]) VertexData(a.xyzw(), col_a, na);
+			new(&result[1]) VertexData(b.xyzw(), col_b, nb);
+			new(&result[2]) VertexData(c.xyzw(), col_c, nc);
 		}
 
 		return result;

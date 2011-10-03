@@ -624,7 +624,8 @@ namespace my {
 						-0.0f,
 						0.0f,
 						cam);
-				glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_LIGHTING_AND_COLOUR);
+			//	glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_LIGHTING_AND_COLOUR);
+				glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_COLOUR);
 				glDrawArrays(GL_TRIANGLES, 0, dd.numberOfWorldCubeLineSegments);
 			}
 

@@ -36,6 +36,17 @@ namespace my { namespace gl { namespace shapes {
 																	math::Vector4 const& _nc)
 															{ return na = _na, nb = _nb, nc = _nc, *this;}
 
+		Triangle&										SetColourA (Colour const& col)	{ col_a = col; return *this; }
+		Triangle&										SetColourB (Colour const& col)	{ col_b = col; return *this; }
+		Triangle&										SetColourC (Colour const& col)	{ col_c = col; return *this; }
+		Colour const&									GetColourA (void) const	{ return col_a; }
+		Colour const&									GetColourB (void) const	{ return col_b; }
+		Colour const&									GetColourC (void) const	{ return col_c; }
+		Triangle&										AdjustColourA (float f)	{ SetColourA(GetColourA() * f); return *this; }
+		Triangle&										AdjustColourB (float f)	{ SetColourA(GetColourB() * f); return *this; }
+		Triangle&										AdjustColourC (float f)	{ SetColourA(GetColourC() * f); return *this; }
+
+
 		// Transformable
 		void											Apply (math::Matrix4x4 const&);
 		void											Adjust (math::Vector4 const&);
@@ -45,6 +56,7 @@ namespace my { namespace gl { namespace shapes {
 		Vertex											b;
 		Vertex											c;
 		math::Vector4									na, nb, nc; // normals
+		Colour											col_a, col_b, col_c;
 	}; // class Triangle
 
 }}} // namespace my::gl::shapes

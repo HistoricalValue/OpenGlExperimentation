@@ -50,6 +50,8 @@ my::gl::shapes::Line makenormallineformeshelementvertex (ankh::shapes::MeshEleme
 static inline
 my::gl::shapes::Triangle maketriangle (ankh::shapes::MeshElement const& e, my::gl::shapes::Colour const& c) {
 	using ankh::math::types::Vertex;
+	DASSERT(e.HasNormals());
+	DASSERT(e.HasAmbientOcclusion());
 
 	return my::gl::shapes::Triangle(c)	.SetA(makevertex(e.a))
 										.SetB(makevertex(e.b))
@@ -58,6 +60,9 @@ my::gl::shapes::Triangle maketriangle (ankh::shapes::MeshElement const& e, my::g
 												makevector4(e.GetNormal(0)),
 												makevector4(e.GetNormal(1)),
 												makevector4(e.GetNormal(2)))
+										.AdjustColourA(e.GetAmbientOcclusion(0))
+										.AdjustColourB(e.GetAmbientOcclusion(1))
+										.AdjustColourC(e.GetAmbientOcclusion(2))
 										;
 }
 

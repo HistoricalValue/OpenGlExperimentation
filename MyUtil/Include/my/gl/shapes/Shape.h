@@ -23,6 +23,7 @@ namespace my { namespace gl { namespace shapes {
 
 		void							SetColour (Colour const&);
 		Colour const&					GetColour (void) const;
+		Shape const&					AdjustColour (float f)		{ SetColour(GetColour() * f); return *this; }
 
 	protected:
 										Shape (Colour const& colour);

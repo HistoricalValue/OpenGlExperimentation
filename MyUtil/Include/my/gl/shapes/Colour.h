@@ -19,6 +19,7 @@ namespace my { namespace gl { namespace shapes {
 		float											GetAlpha (void) const;
 
 		Colour											operator * (math::Vector4 const& mod) const;
+		Colour											operator * (float f) const { return Colour(colour * f); }
 
 		math::Vector4									operator - (Colour const&) const;
 		Colour											operator + (math::Vector4 const&) const;

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include <SurfacesFacade.h>
+#include <AmbientOcclusion.h>
 
 //
 #include <Mesh.h>
@@ -276,9 +277,10 @@ void Initialise (void) {
 					,	numknots_j		(Curve::NumberOfKnotsFor(order_j, numcpoints_j))
 					,	numknots_i		(Curve::NumberOfKnotsFor(order_i, numcpoints_i))
 					;
-	//	Unit const		variation	(0.00625f);
+	//	Unit const		variation	(0.0f);
+		Unit const		variation	(0.00625f);
 	//	Unit const		variation	(0.0125f);
-		Unit const		variation	(0.05f);
+	//	Unit const		variation	(0.05f);
 
 		long seed;
 		{
@@ -311,18 +313,18 @@ void Initialise (void) {
 		//				minx, maxx, miny, maxy, minz, maxz,
 		//				width_units, height_units, depth_units, seed + curve_i));
 		
-	//	VaryGrid(
+		VaryGrid(
 			FillGridUniformly(cpoints_i, numcpoints_i, numcpoints_j, _::minx, _::maxx, _::minz, _::maxz, (_::miny + _::maxy)/2.0f)
-	//		,variation, variation, variation, 1.2f, seed)
+			,variation, variation, variation, 1.2f, false, seed)
 		;
-		cpoints_i.at(3).at(3) = vec4(_::maxx, _::maxy, _::maxz, 1.0f);
-		cpoints_i.at(3).at(3) *= 2.0f;
-
-		cpoints_i.at(9).at(3).y = -_::maxy;
-		cpoints_i.at(9).at(3) *= 4.0f;
-
-		cpoints_i.at(15).at(5).y = _::maxy;
-		cpoints_i.at(15).at(5) *= 0.5f;
+	//	cpoints_i.at(3).at(3) = vec4(_::maxx, _::maxy, _::maxz, 1.0f);
+	//	cpoints_i.at(3).at(3) *= 2.0f;
+	//
+	//	cpoints_i.at(9).at(3).y = -_::maxy;
+	//	cpoints_i.at(9).at(3) *= 4.0f;
+	//
+	//	cpoints_i.at(15).at(5).y = _::maxy;
+	//	cpoints_i.at(15).at(5) *= 0.5f;
 
 		_::_surf = DNEWCLASS(Surface, (knots_j.begin(), knots_j.end(), knots_i.begin(), knots_i.end(), cpoints_i.begin(), cpoints_i.end(), "BOB ROSS"));
 		_::unew_mesh();
@@ -370,7 +372,7 @@ void tesselate (void) {
 	using ankh::shapes::			Mesh;
 	using ankh::surfaces::			TesselationParameters;
 
-	TesselationParameters const tp(1e-1f);
+	TesselationParameters const tp(5e-1f);
 
 	Surface const&			surf	(_::getsurf());
 
@@ -384,10 +386,15 @@ void tesselate (void) {
 	{
 		_::MeshElements			elements;
 
-		timer t02("surface tesselation");
-		ProduceAllFromAlongSections
-	//	ProduceAllFromAcrossSections
-		<t>(surf, tp, elements);
+		{	timer t03("surface tesselation");
+			ProduceAllFromAlongSections
+		//	ProduceAllFromAcrossSections
+			<t>(surf, tp, elements);
+		}
+
+		{	timer t03("compute and update AO for tesselated mesh");
+			ankh::ao::InsertAmbientOcclusionFactors(elements);
+		}
 
 		_::getmesh().Update(elements);
 	}
