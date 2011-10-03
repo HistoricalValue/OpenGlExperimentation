@@ -7,6 +7,9 @@ using namespace ::gl::ext;
 
 namespace my { namespace gl { namespace adapters {
 
+bool Buffer::InvariantsHold (void) const
+	{ return (!IsCommitted() || entries.size() == 0); }
+
 void Buffer::Bind (void) const
 	{ glBindBuffer(GL_ARRAY_BUFFER, id); }
 
