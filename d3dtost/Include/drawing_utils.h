@@ -99,6 +99,35 @@ struct timer {
 	}
 };
 
+template <const bool inv, typename T> struct inverser;
+template <typename T> struct inverser<false, T>	{ T const& a, b; inverser (T const& _a, T const& _b): a(_a), b(_b) {} };
+template <typename T> struct inverser<true, T>	{ T const& a, b; inverser (T const& _a, T const& _b): a(_b), b(_a) {} };
+template <const bool inv, typename T> inverser<inv, T> const makeinverser (T const& a, T const& b) { return inverser<inv,T>(a, b); }
+
+template <typename T>
+class Range {
+public:
+						Range (void) {}
+						Range (Range const&) {}
+	virtual				~Range (void) {}
+
+	virtual	bool		lt (T const& a, T const& b) const	{ return a < b; }
+	virtual bool		eq (T const& a, T const& b) const	{ return a == b; }
+			bool		le (T const& a, T const& b) const	{ return lt(a, b) || eq(a, b); }
+			bool		gt (T const& a, T const& b) const	{ return !le(a, b); }
+			bool		ge (T const& a, T const& b) const	{ return gt(a, b) || eq(a, b); }
+};
+
+template <typename T>
+class InverseRange: public Range<T> {
+public:
+	typedef	Range<T>	Base;
+						InverseRange (void): Base() {}
+						InverseRange (InverseRange const& o): Base(o) {}
+	virtual				~InverseRange (void) {}
+
+	virtual	bool		lt (T const& a, T const& b) const	{ return Base::lt(b, a); }
+};
 
 } //
 

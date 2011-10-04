@@ -269,6 +269,9 @@ void Initialise (void) {
 		size_t const	width_units	(16);
 		size_t const	height_units(16);
 		size_t const	depth_units	(16);
+
+		const bool		inverseX(false);
+		const bool		inverseZ(true);
 		
 		size_t const	order_j			(0x04u)
 					,	order_i			(0x05u)
@@ -314,8 +317,14 @@ void Initialise (void) {
 		//				width_units, height_units, depth_units, seed + curve_i));
 		
 		VaryGrid(
-			FillGridUniformly(cpoints_i, numcpoints_i, numcpoints_j, _::minx, _::maxx, _::minz, _::maxz, (_::miny + _::maxy)/2.0f)
-			,variation, variation, variation, 1.2f, false, seed)
+			FillGridUniformly(	cpoints_i,
+								numcpoints_i,
+								numcpoints_j,
+								makeinverser<inverseX>(_::minx, _::maxx).a, makeinverser<inverseX>(_::minx, _::maxx).b,
+								makeinverser<inverseZ>(_::minz, _::maxz).a, makeinverser<inverseZ>(_::minz, _::maxz).b,
+								(_::miny + _::maxy)/2.0f,
+								inverseZ)
+			,variation, variation, variation, 1.5f, false, seed)
 		;
 	//	cpoints_i.at(3).at(3) = vec4(_::maxx, _::maxy, _::maxz, 1.0f);
 	//	cpoints_i.at(3).at(3) *= 2.0f;
@@ -372,7 +381,7 @@ void tesselate (void) {
 	using ankh::shapes::			Mesh;
 	using ankh::surfaces::			TesselationParameters;
 
-	TesselationParameters const tp(5e-1f);
+	TesselationParameters const tp(1e-1f);
 
 	Surface const&			surf	(_::getsurf());
 
