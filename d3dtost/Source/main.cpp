@@ -80,7 +80,6 @@ namespace _ {
 			return line0 == std::string("// yes");
 		}
 	} BE_A_SHADER_COMPILER;
-
 }
 
 

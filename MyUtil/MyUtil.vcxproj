@@ -248,6 +248,7 @@
     <ClCompile Include="Source\my\gl\textures\TextureUnit.cpp" />
     <ClCompile Include="Source\my\gl\textures\TextureUnitManager.cpp" />
     <ClCompile Include="Source\my\gl\textures\TextureUnitWrapper.cpp" />
+    <ClCompile Include="Source\random.cpp" />
     <ClCompile Include="Source\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">Create</PrecompiledHeader>

@@ -271,7 +271,7 @@ void Initialise (void) {
 		size_t const	depth_units	(16);
 
 		const bool		inverseX(false);
-		const bool		inverseZ(true);
+		const bool		inverseZ(false);
 		
 		size_t const	order_j			(0x04u)
 					,	order_i			(0x05u)
@@ -323,6 +323,7 @@ void Initialise (void) {
 								makeinverser<inverseX>(_::minx, _::maxx).a, makeinverser<inverseX>(_::minx, _::maxx).b,
 								makeinverser<inverseZ>(_::minz, _::maxz).a, makeinverser<inverseZ>(_::minz, _::maxz).b,
 								(_::miny + _::maxy)/2.0f,
+								inverseX,
 								inverseZ)
 			,variation, variation, variation, 1.5f, false, seed)
 		;
@@ -381,7 +382,7 @@ void tesselate (void) {
 	using ankh::shapes::			Mesh;
 	using ankh::surfaces::			TesselationParameters;
 
-	TesselationParameters const tp(1e-1f);
+	TesselationParameters const tp(4e-1f);
 
 	Surface const&			surf	(_::getsurf());
 
@@ -403,6 +404,14 @@ void tesselate (void) {
 
 		{	timer t03("compute and update AO for tesselated mesh");
 			ankh::ao::InsertAmbientOcclusionFactors(elements);
+		}
+
+		{	timer t03("write AO factors to file");
+			_::MeshElements::const_iterator end(elements.end()), i(elements.begin());
+			std::ofstream fout("./AOS.txt");
+			DASSERT(fout.good());
+			for (; i != end; ++i)
+				fout << i->GetAmbientOcclusion(0) << ", " << i->GetAmbientOcclusion(1) << ", " << i->GetAmbientOcclusion(2) << std::endl;
 		}
 
 		_::getmesh().Update(elements);

@@ -386,5 +386,8 @@
     <ClCompile Include="Source\my\gl\shapes\ShapeUtilities.cpp">
       <Filter>Source Files\my\gl\shapes</Filter>
     </ClCompile>
+    <ClCompile Include="Source\random.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
