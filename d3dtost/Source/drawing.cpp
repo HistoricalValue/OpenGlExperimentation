@@ -624,8 +624,8 @@ namespace my {
 						-0.0f,
 						0.0f,
 						cam);
-				glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_LIGHTING_AND_COLOUR);
-			//	glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_COLOUR);
+			//	glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_LIGHTING_AND_COLOUR);
+				glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_COLOUR);
 				glDrawArrays(GL_TRIANGLES, 0, dd.numberOfWorldCubeLineSegments);
 			}
 
@@ -682,8 +682,8 @@ namespace my {
 			glGenBuffers(sizeof(bufferIds)/sizeof(bufferIds[0]), &bufferIds[0]);
 
 			nurbs::Initialise();
-			nurbs::tesselate();
-		//	nurbs::load("moon_528.msh");
+		//	nurbs::tesselate();
+			nurbs::load("surface_bin.msh");
 
 			///////////////////////////
 			// VAO#0: Points

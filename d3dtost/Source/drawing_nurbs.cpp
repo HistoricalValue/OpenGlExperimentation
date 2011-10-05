@@ -275,7 +275,7 @@ void Initialise (void) {
 		
 		size_t const	order_j			(0x04u)
 					,	order_i			(0x05u)
-					,	numcpoints_j	(0x10u)
+					,	numcpoints_j	(0x7u)
 					,	numcpoints_i	(0x15u)
 					,	numknots_j		(Curve::NumberOfKnotsFor(order_j, numcpoints_j))
 					,	numknots_i		(Curve::NumberOfKnotsFor(order_i, numcpoints_i))
@@ -316,25 +316,24 @@ void Initialise (void) {
 		//				minx, maxx, miny, maxy, minz, maxz,
 		//				width_units, height_units, depth_units, seed + curve_i));
 		
-		VaryGrid(
+	//	VaryGrid(
 			FillGridUniformly(	cpoints_i,
 								numcpoints_i,
 								numcpoints_j,
 								makeinverser<inverseX>(_::minx, _::maxx).a, makeinverser<inverseX>(_::minx, _::maxx).b,
 								makeinverser<inverseZ>(_::minz, _::maxz).a, makeinverser<inverseZ>(_::minz, _::maxz).b,
 								(_::miny + _::maxy)/2.0f,
-								inverseX,
-								inverseZ)
-			,variation, variation, variation, 1.5f, false, seed)
+								ankh::surfaces::Precision(5e-9f))
+	//		,variation, variation, variation, 1.5f, false, seed)
 		;
-	//	cpoints_i.at(3).at(3) = vec4(_::maxx, _::maxy, _::maxz, 1.0f);
-	//	cpoints_i.at(3).at(3) *= 2.0f;
-	//
-	//	cpoints_i.at(9).at(3).y = -_::maxy;
-	//	cpoints_i.at(9).at(3) *= 4.0f;
-	//
-	//	cpoints_i.at(15).at(5).y = _::maxy;
-	//	cpoints_i.at(15).at(5) *= 0.5f;
+		cpoints_i.at(3).at(3) = vec4(_::maxx, _::maxy, _::maxz, 1.0f);
+		cpoints_i.at(3).at(3) *= 2.0f;
+	
+		cpoints_i.at(9).at(3).y = -_::maxy;
+		cpoints_i.at(9).at(3) *= 4.0f;
+	
+		cpoints_i.at(15).at(5).y = _::maxy;
+		cpoints_i.at(15).at(5) *= 0.5f;
 
 		_::_surf = DNEWCLASS(Surface, (knots_j.begin(), knots_j.end(), knots_i.begin(), knots_i.end(), cpoints_i.begin(), cpoints_i.end(), "BOB ROSS"));
 		_::unew_mesh();
