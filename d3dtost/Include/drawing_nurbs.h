@@ -13,6 +13,7 @@ extern void tesselate (void);
 extern void load (std::string const& path);
 
 extern void addastrianglesto (my::gl::shapes::ShapeCompositionFactory&	f);
+extern void addnormalsto (my::gl::shapes::ShapeCompositionFactory& f);
 
 }}} // my::drawing::nurbs
 

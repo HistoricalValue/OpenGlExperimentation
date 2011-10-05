@@ -271,7 +271,7 @@ void Initialise (void) {
 		size_t const	depth_units	(16);
 
 		const bool		inverseX(false);
-		const bool		inverseZ(false);
+		const bool		inverseZ(true);
 		
 		size_t const	order_j			(0x04u)
 					,	order_i			(0x05u)
@@ -381,7 +381,7 @@ void tesselate (void) {
 	using ankh::shapes::			Mesh;
 	using ankh::surfaces::			TesselationParameters;
 
-	TesselationParameters const tp(4e-1f);
+	TesselationParameters const tp(4e-1f, false, ankh::surfaces::DefaultPrecision());
 
 	Surface const&			surf	(_::getsurf());
 

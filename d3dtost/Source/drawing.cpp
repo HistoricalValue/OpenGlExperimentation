@@ -4,6 +4,8 @@
 #include <drawing_utils.h>
 
 
+#define WITH_NORMALS	1
+
 #define DONT	if (false)
 #define DO		if (true)
 
@@ -226,7 +228,7 @@ namespace _ {
 					f.Add(axs);
 				//	nurbs::addbasecurvesto(f);
 				//	nurbs::addaslinesto(f);
-#ifdef WITH_NORMALS
+#if WITH_NORMALS == 1
 					nurbs::addnormalsto(f);
 #endif
 
@@ -682,8 +684,8 @@ namespace my {
 			glGenBuffers(sizeof(bufferIds)/sizeof(bufferIds[0]), &bufferIds[0]);
 
 			nurbs::Initialise();
-		//	nurbs::tesselate();
-			nurbs::load("surface_bin.msh");
+			nurbs::tesselate();
+		//	nurbs::load("meshes/bumps_1122_with_ao.msh");
 
 			///////////////////////////
 			// VAO#0: Points
