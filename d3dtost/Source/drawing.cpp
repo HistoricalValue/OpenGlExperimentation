@@ -633,7 +633,8 @@ namespace my {
 						cam);
 			//	glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_LIGHTING_AND_COLOUR);
 			//	glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_COLOUR);
-				glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_AMBIENT_OCCLUSION);
+			//	glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_AMBIENT_OCCLUSION);
+				glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_COLOUR_AND_AMBIENT_OCCLUSION);
 				glDrawArrays(GL_TRIANGLES, 0, dd.numberOfWorldCubeLineSegments);
 			}
 
@@ -690,8 +691,8 @@ namespace my {
 			glGenBuffers(sizeof(bufferIds)/sizeof(bufferIds[0]), &bufferIds[0]);
 
 			nurbs::Initialise();
-			nurbs::tesselate();
-		//	nurbs::load("meshes/bumps_1122_with_ao.msh");
+		//	nurbs::tesselate();
+			nurbs::load("meshes/bumps_1122_with_ao.msh");
 
 			///////////////////////////
 			// VAO#0: Points

@@ -32,12 +32,14 @@ void main (void) {
 	else
 	if (colouringSelector == 2u)
 		fragColor = interpolatedColour;
+	else
 	if (colouringSelector == 3u)
 		fragColor = interpolatedColour * interpolatedAmbientOcclusionFactor;
+	else
 	if (colouringSelector == 4u)
 		fragColor = vec4(1, 1, 1, 1) * interpolatedAmbientOcclusionFactor;
 	else
-		fragColor = vec4(1.0f, 0.0f, 1.0f, 1.0f);
+		fragColor = vec4(0.0f, 1.0f, 1.0f, 1.0f);
 }
 
 
