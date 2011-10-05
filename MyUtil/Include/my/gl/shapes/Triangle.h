@@ -3,6 +3,7 @@
 
 #include <MyUtil.h>
 #include <my/gl/shapes/Shape.h>
+#include <PAssert.h>
 
 namespace my { namespace gl { namespace shapes {
 
@@ -46,6 +47,8 @@ namespace my { namespace gl { namespace shapes {
 		Triangle&										AdjustColourB (float f)	{ SetColourA(GetColourB() * f); return *this; }
 		Triangle&										AdjustColourC (float f)	{ SetColourA(GetColourC() * f); return *this; }
 
+		Triangle&										SetAO (size_t const i, float const _ao)
+															{ PASSERT(i < 3) ao[i] = _ao; return *this; }
 
 		// Transformable
 		void											Apply (math::Matrix4x4 const&);
@@ -55,8 +58,9 @@ namespace my { namespace gl { namespace shapes {
 		Vertex											a;
 		Vertex											b;
 		Vertex											c;
-		math::Vector4									na, nb, nc; // normals
-		Colour											col_a, col_b, col_c;
+		math::Vector4									na, nb, nc;				// normals
+		Colour											col_a, col_b, col_c;	// colour per vertex
+		float											ao[3];
 	}; // class Triangle
 
 }}} // namespace my::gl::shapes

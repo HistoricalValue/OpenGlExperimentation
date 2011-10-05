@@ -13,6 +13,7 @@ in		vec4			interpolatedColour;
 flat in	vec4			baseColour;
 in		vec4			interpolatedNormal;
 in		vec4			textureCoordinate;
+in		float			interpolatedAmbientOcclusionFactor;
 
 // ouputs
 out		vec4			fragColor;
@@ -31,6 +32,10 @@ void main (void) {
 	else
 	if (colouringSelector == 2u)
 		fragColor = interpolatedColour;
+	if (colouringSelector == 3u)
+		fragColor = interpolatedColour * interpolatedAmbientOcclusionFactor;
+	if (colouringSelector == 4u)
+		fragColor = vec4(1, 1, 1, 1) * interpolatedAmbientOcclusionFactor;
 	else
 		fragColor = vec4(1.0f, 0.0f, 1.0f, 1.0f);
 }

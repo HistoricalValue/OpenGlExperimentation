@@ -20,7 +20,8 @@ namespace my { namespace gl { namespace shapes {
 		nc(math::Vector4::New(9999.0f, 9999.0f, 9999.0f, 1.0f)),
 		col_a(colour),
 		col_b(colour),
-		col_c(colour)
+		col_c(colour),
+		ao()
 		{ P_STATIC_ASSERT(sizeof(Triangle) == 0
 				+ sizeof(Shape)
 				+ sizeof(a)
@@ -32,7 +33,9 @@ namespace my { namespace gl { namespace shapes {
 				+ sizeof(col_a)
 				+ sizeof(col_b)
 				+ sizeof(col_c)
+				+ sizeof(ao)
 				)
+			ao[0] = ao[1] = ao[2] = 1.0f;
 		}
 
 	Triangle::Triangle (Triangle const& other):
@@ -45,7 +48,8 @@ namespace my { namespace gl { namespace shapes {
 		nc(other.nc),
 		col_a(other.col_a),
 		col_b(other.col_b),
-		col_c(other.col_c)
+		col_c(other.col_c),
+		ao()
 		{ P_STATIC_ASSERT(sizeof(Triangle) == 0
 				+ sizeof(Shape)
 				+ sizeof(a)
@@ -57,7 +61,11 @@ namespace my { namespace gl { namespace shapes {
 				+ sizeof(col_a)
 				+ sizeof(col_b)
 				+ sizeof(col_c)
+				+ sizeof(ao)
 				)
+			ao[0] = other.ao[0];
+			ao[1] = other.ao[1];
+			ao[2] = other.ao[2];
 		}
 
 	Triangle::~Triangle (void) {
@@ -76,9 +84,9 @@ namespace my { namespace gl { namespace shapes {
 		if (bytesize >= requiredBytesize) {
 			reinterpret_assign(result, memory);
 
-			new(&result[0]) VertexData(a.xyzw(), col_a, na);
-			new(&result[1]) VertexData(b.xyzw(), col_b, nb);
-			new(&result[2]) VertexData(c.xyzw(), col_c, nc);
+			new(&result[0]) VertexData(a.xyzw(), col_a, na, ao[0]);
+			new(&result[1]) VertexData(b.xyzw(), col_b, nb, ao[1]);
+			new(&result[2]) VertexData(c.xyzw(), col_c, nc, ao[2]);
 		}
 
 		return result;

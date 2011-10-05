@@ -4,7 +4,7 @@
 #include <drawing_utils.h>
 
 
-#define WITH_NORMALS	1
+#define WITH_NORMALS	1-1
 
 #define DONT	if (false)
 #define DO		if (true)
@@ -31,9 +31,11 @@ namespace _ {
 	static const size_t TEXTURES_NUM(2);
 	static const size_t IMAGES_NUM(2);
 
-	static const GLuint COLOUR_WITH_LIGHTING_AND_COLOUR(0);
-	static const GLuint COLOUR_WITH_TEXTURE(1);
-	static const GLuint COLOUR_WITH_COLOUR(2);
+	static const GLuint COLOUR_WITH_LIGHTING_AND_COLOUR				(0u);
+	static const GLuint COLOUR_WITH_TEXTURE							(1u);
+	static const GLuint COLOUR_WITH_COLOUR							(2u);
+	static const GLuint COLOUR_WITH_COLOUR_AND_AMBIENT_OCCLUSION	(3u);
+	static const GLuint COLOUR_WITH_AMBIENT_OCCLUSION				(4u);
 
 	static const float POOP_LIGHT[4] = { 3.0f, 1.0f, 0.0f, 1.0f };
 
@@ -156,6 +158,7 @@ namespace _ {
 		voidp const		attr1off	(textured? TexturedVertexData::PositionOffsetPointer() : VertexData::PositionOffsetPointer());
 		voidp const		attr2off	(textured? TexturedVertexData::TextureCoordinatesOffsetPointer() : VertexData::ColourOffsetPointer());
 		voidp const		attr3off	(textured? TexturedVertexData::NormalOffsetPointer() : VertexData::NormalOffsetPointer());
+		voidp const		attr4off	(textured? TexturedVertexData::AOOffsetPointer() : VertexData::AOOffsetPointer());
 		GLuint const	attr2index	(textured? GLuint(OpenGL::VAI_TEXCOORD) : GLuint(OpenGL::VAI_COLOUR));
 
 		glBufferData(GL_ARRAY_BUFFER, bytesize, data, GL_STATIC_DRAW);
@@ -165,10 +168,12 @@ namespace _ {
 		glVertexAttribPointer(OpenGL::VAI_POSITION,	4,	GL_FLOAT,	!normalised,	stride,	attr1off);
 		glVertexAttribPointer(attr2index,			4,	GL_FLOAT,	!normalised,	stride,	attr2off);
 		glVertexAttribPointer(OpenGL::VAI_NORMAL,	4,	GL_FLOAT,	!normalised,	stride,	attr3off);
+		glVertexAttribPointer(OpenGL::VAI_AOFACTOR,	1,	GL_FLOAT,	!normalised,	stride, attr4off);
 
-		glEnableVertexAttribArray(OpenGL::VAI_POSITION);
-		glEnableVertexAttribArray(attr2index);
-		glEnableVertexAttribArray(OpenGL::VAI_NORMAL);
+		glEnableVertexAttribArray(OpenGL::VAI_POSITION	);
+		glEnableVertexAttribArray(attr2index			);
+		glEnableVertexAttribArray(OpenGL::VAI_NORMAL	);
+		glEnableVertexAttribArray(OpenGL::VAI_AOFACTOR	);
 
 		numberOfPoints = count;
 	}
@@ -627,7 +632,8 @@ namespace my {
 						0.0f,
 						cam);
 			//	glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_LIGHTING_AND_COLOUR);
-				glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_COLOUR);
+			//	glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_COLOUR);
+				glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_AMBIENT_OCCLUSION);
 				glDrawArrays(GL_TRIANGLES, 0, dd.numberOfWorldCubeLineSegments);
 			}
 

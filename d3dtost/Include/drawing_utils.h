@@ -60,9 +60,9 @@ my::gl::shapes::Triangle maketriangle (ankh::shapes::MeshElement const& e, my::g
 												makevector4(e.GetNormal(0)),
 												makevector4(e.GetNormal(1)),
 												makevector4(e.GetNormal(2)))
-										.AdjustColourA(e.GetAmbientOcclusion(0))
-										.AdjustColourB(e.GetAmbientOcclusion(1))
-										.AdjustColourC(e.GetAmbientOcclusion(2))
+										.SetAO(0, e.GetAmbientOcclusion(0))
+										.SetAO(1, e.GetAmbientOcclusion(1))
+										.SetAO(2, e.GetAmbientOcclusion(2))
 										;
 }
 

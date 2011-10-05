@@ -114,6 +114,7 @@ in vec4			colour;
 in vec4			axyc;
 in vec4			texcoord;
 in vec4			normal;
+in float		ambientOcclusionFactor;
 
 uniform uint	textureZ;
 uniform mat4	camera;
@@ -123,6 +124,7 @@ out	vec4		textureCoordinate;
 out vec4		interpolatedNormal;
 out vec4		interpolatedColour;
 flat out vec4	baseColour;
+out float		interpolatedAmbientOcclusionFactor;
 
 ///////////////////////////////////////////////////////////
 
@@ -148,4 +150,6 @@ void main (void) {
 	interpolatedNormal	= transpose(inverse(transmodel)) * normal;
 	baseColour			= colour;
 	interpolatedColour	= colour;
+
+	interpolatedAmbientOcclusionFactor	= ambientOcclusionFactor;
 }

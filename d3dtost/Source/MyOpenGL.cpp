@@ -50,6 +50,7 @@ namespace my {
 				bindings.push_back(std::make_pair(OpenGL::VAI_AXYC, VAN_AXYC));
 				bindings.push_back(std::make_pair(OpenGL::VAI_TEXCOORD, VAN_TEXCOORD));
 				bindings.push_back(std::make_pair(OpenGL::VAI_NORMAL, VAN_NORMAL));
+				bindings.push_back(std::make_pair(OpenGL::VAI_AOFACTOR, VAN_AOFACTOR "asdijasidjsa"));
 
 				programBuilder.SetVertexAttributeBindings(bindings);
 			}
@@ -233,6 +234,7 @@ namespace my {
 	OpenGL::_VAI_AXYC const OpenGL::VAI_AXYC;
 	OpenGL::_VAI_TEXCOORD const OpenGL::VAI_TEXCOORD;
 	OpenGL::_VAI_NORMAL const OpenGL::VAI_NORMAL;
+	OpenGL::_VAI_AOFACTOR const OpenGL::VAI_AOFACTOR;
 
 	OpenGL::_VAI_POSITION::operator GLuint (void) const {
 		return 0u;
@@ -252,6 +254,10 @@ namespace my {
 
 	OpenGL::_VAI_NORMAL::operator GLuint (void) const {
 		return 4u;
+	}
+
+	OpenGL::_VAI_AOFACTOR::operator GLuint (void) const {
+		return 5u;
 	}
 
 
