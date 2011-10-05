@@ -14,6 +14,7 @@ namespace my { namespace gl { namespace shapes {
 	static const size_t __PositionOffset	(0u);
 	static const size_t __ColourOffset		(1u);
 	static const size_t __NormalOffset		(2u);
+	static const size_t __AOOffset			(3u);
 
 	P_INLINE
 	size_t VertexData::Offset (size_t i) {
@@ -22,26 +23,32 @@ namespace my { namespace gl { namespace shapes {
 		const size_t sVector4		(sizeof(math::Vector4 const));
 		const size_t sPosition		(sVector4);
 		const size_t sFloat4		(sizeof(float[4]));
+		const size_t sFloat			(sizeof(float));
 		const size_t sNormal		(sizeof(math::Vector4 const));
+		const size_t sAO			(sizeof(float const));
 
-		P_STATIC_ASSERT(sVertexData == sPosition + sColour + sNormal)
+		P_STATIC_ASSERT(sVertexData == sPosition + sColour + sNormal + sAO)
 		P_STATIC_ASSERT(sPosition == sVector4)
 		P_STATIC_ASSERT(sColour == sVector4)
 		P_STATIC_ASSERT(sNormal == sVector4)
 		P_STATIC_ASSERT(sVector4 == sFloat4)
+		P_STATIC_ASSERT(sAO == sFloat)
 
 		const size_t positionOffset	(offsetof(VertexData, position));
 		const size_t colourOffset	(offsetof(VertexData, colour));
 		const size_t normalOffset	(offsetof(VertexData, normal));
+		const size_t aoOffset		(offsetof(VertexData, ambientOcclusion));
 
 		P_STATIC_ASSERT(positionOffset != 0 || colourOffset == sPosition)
 		P_STATIC_ASSERT(colourOffset != 0 || positionOffset == sColour)
 		P_STATIC_ASSERT(normalOffset != 0 || normalOffset == sNormal)
+		P_STATIC_ASSERT(aoOffset != 0 || aoOffset == sAO)
 
 		return
 				i == __PositionOffset?	positionOffset:
 				i == __ColourOffset?	colourOffset:
 				i == __NormalOffset?	normalOffset:
+				i == __AOOffset?		aoOffset:
 				-1;
 	}
 
@@ -57,12 +64,23 @@ namespace my { namespace gl { namespace shapes {
 		return Offset(__NormalOffset);
 	}
 
+	size_t VertexData::AOOffset (void) {
+		return Offset(__AOOffset);
+	}
 
 
-	TexturedVertexData::TexturedVertexData (math::Vector4 const& _position, math::Vector4 const& _textureCoordinate, math::Vector4 const& _normal):
+	TexturedVertexData::TexturedVertexData (math::Vector4 const& _position, math::Vector4 const& _textureCoordinate, math::Vector4 const& _normal, float const ao):
 		position			(_position),
 		textureCoordinate	(_textureCoordinate),
-		normal				(_normal)
+		normal				(_normal),
+		ambientOcclusion	(ao)
+		{}
+
+	TexturedVertexData::TexturedVertexData (TexturedVertexData const& d):
+		position			(d.position			),
+		textureCoordinate	(d.textureCoordinate),	
+		normal				(d.normal			),	
+		ambientOcclusion	(d.ambientOcclusion	)
 		{}
 
 	void* TexturedVertexData::TextureCoordinatesOffsetPointer (void) {
@@ -91,6 +109,14 @@ namespace my { namespace gl { namespace shapes {
 
 	size_t TexturedVertexData::PositionOffset (void) {
 		return offsetof(TexturedVertexData, position);
+	}
+	
+	void* TexturedVertexData::AOOffsetPointer (void) {
+		return codeshare::utilities::pointer_utilities::offset(AOOffset());
+	}
+
+	size_t TexturedVertexData::AOOffset (void) {
+		return offsetof(TexturedVertexData, ambientOcclusion);
 	}
 
 }}} // namespace my::gl::shapes

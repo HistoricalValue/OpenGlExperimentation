@@ -10,18 +10,20 @@
 namespace my { namespace gl { namespace shapes {
 
 	P_INLINE
-	VertexData::VertexData (math::Vector4 const& _position, Colour const& _colour, math::Vector4 const& _normal):
+	VertexData::VertexData (math::Vector4 const& _position, Colour const& _colour, math::Vector4 const& _normal, float const ao):
 		position(_position),
 		colour(_colour),
-		normal(_normal)
-		{ P_STATIC_ASSERT(sizeof(VertexData) == sizeof(position) + sizeof(colour) + sizeof(normal)) }
+		normal(_normal),
+		ambientOcclusion(ao)
+		{ P_STATIC_ASSERT(sizeof(VertexData) == sizeof(position) + sizeof(colour) + sizeof(normal) + sizeof(ambientOcclusion)) }
 
 	P_INLINE
 	VertexData::VertexData (VertexData const& other):
 		position(other.position),
 		colour(other.colour),
-		normal(other.normal)
-		{ P_STATIC_ASSERT(sizeof(VertexData) == sizeof(position) + sizeof(colour) + sizeof(normal)) }
+		normal(other.normal),
+		ambientOcclusion(other.ambientOcclusion)
+		{ P_STATIC_ASSERT(sizeof(VertexData) == sizeof(position) + sizeof(colour) + sizeof(normal) + sizeof(ambientOcclusion)) }
 
 	P_INLINE
 	VertexData::~VertexData (void) {
@@ -55,6 +57,11 @@ namespace my { namespace gl { namespace shapes {
 	P_INLINE
 	void* VertexData::NormalOffsetPointer (void) {
 		return codeshare::utilities::pointer_utilities::offset(NormalOffset());
+	}
+
+	P_INLINE
+	void* VertexData::AOOffsetPointer (void) {
+		return codeshare::utilities::pointer_utilities::offset(AOOffset());
 	}
 
 }}} // namespace my::gl::shapes
