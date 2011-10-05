@@ -381,7 +381,7 @@ void tesselate (void) {
 	using ankh::shapes::			Mesh;
 	using ankh::surfaces::			TesselationParameters;
 
-	TesselationParameters const tp(4e-1f, false, ankh::surfaces::DefaultPrecision());
+	TesselationParameters const tp(9e-1f, false, ankh::surfaces::DefaultPrecision());
 
 	Surface const&			surf	(_::getsurf());
 
@@ -425,9 +425,9 @@ void tesselate (void) {
 	_::printmeshinfo();
 }
 
-void load (std::string const& path) {
+void load (char const* const id) {
 	using namespace ankh::shapes;
-	Mesh* m(MeshLoader::GetSingleton().Load(path));
+	Mesh* m(MeshLoader::GetSingleton().Load(std::string("../meshes/") + id + ".msh"));
 	DASSERT(m);
 	_::getmesh() =(*DPTR(m));
 	MeshLoader::GetSingleton().Unload(m);

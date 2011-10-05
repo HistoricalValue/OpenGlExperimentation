@@ -22,7 +22,7 @@ void main (void) {
 	vec3 texcoord = textureCoordinate.stp;
 
 	if (colouringSelector == 0u)
-		fragColor =		baseColour
+		fragColor =		interpolatedColour
 						* 2.0f
 						* dot(normalize(vec4(pooplight.xyz * 1000.0f, 1.0f)), normalize(interpolatedNormal))
 						;
@@ -38,6 +38,13 @@ void main (void) {
 	else
 	if (colouringSelector == 4u)
 		fragColor = vec4(1, 1, 1, 1) * interpolatedAmbientOcclusionFactor;
+	else
+	if (colouringSelector == 5u)
+		fragColor =		interpolatedColour
+						* 2.0f
+						* dot(normalize(vec4(pooplight.xyz * 1000.0f, 1.0f)), normalize(interpolatedNormal))
+						* interpolatedAmbientOcclusionFactor
+						;
 	else
 		fragColor = vec4(0.0f, 1.0f, 1.0f, 1.0f);
 }

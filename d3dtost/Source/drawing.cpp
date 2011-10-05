@@ -2,9 +2,9 @@
 
 #include <drawing_nurbs.h>
 #include <drawing_utils.h>
+#include <options.h>
 
-
-#define WITH_NORMALS	1-1
+#define WITH_NORMALS	1
 
 #define DONT	if (false)
 #define DO		if (true)
@@ -30,12 +30,6 @@ namespace _ {
 	static const size_t VTOs(1);
 	static const size_t TEXTURES_NUM(2);
 	static const size_t IMAGES_NUM(2);
-
-	static const GLuint COLOUR_WITH_LIGHTING_AND_COLOUR				(0u);
-	static const GLuint COLOUR_WITH_TEXTURE							(1u);
-	static const GLuint COLOUR_WITH_COLOUR							(2u);
-	static const GLuint COLOUR_WITH_COLOUR_AND_AMBIENT_OCCLUSION	(3u);
-	static const GLuint COLOUR_WITH_AMBIENT_OCCLUSION				(4u);
 
 	static const float POOP_LIGHT[4] = { 3.0f, 1.0f, 0.0f, 1.0f };
 
@@ -604,7 +598,7 @@ namespace my {
 						-0.0f,
 						0.0f,
 						cam);
-				glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_COLOUR);
+				glUniform1ui(OpenGL::VUL_COLSELTR, Options::LineShapeColouringMethod());
 				glDrawArrays(GL_POINTS, 0, dd.numberOfPointPoints);
 			}
 
@@ -617,7 +611,7 @@ namespace my {
 						-0.0f,
 						0.0f,
 						cam);
-				glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_COLOUR);
+				glUniform1ui(OpenGL::VUL_COLSELTR, Options::LineShapeColouringMethod());
 				glDrawArrays(GL_LINES, 0, dd.numberOfPoints);
 			}
 
@@ -631,10 +625,7 @@ namespace my {
 						-0.0f,
 						0.0f,
 						cam);
-			//	glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_LIGHTING_AND_COLOUR);
-			//	glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_COLOUR);
-			//	glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_AMBIENT_OCCLUSION);
-				glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_COLOUR_AND_AMBIENT_OCCLUSION);
+				glUniform1ui(OpenGL::VUL_COLSELTR, Options::TriangleShapeColouringMethod());
 				glDrawArrays(GL_TRIANGLES, 0, dd.numberOfWorldCubeLineSegments);
 			}
 
@@ -647,7 +638,7 @@ namespace my {
 						-0.0f,
 						0.0f,
 						cam);
-				glUniform1ui(OpenGL::VUL_COLSELTR, _::COLOUR_WITH_TEXTURE);
+				glUniform1ui(OpenGL::VUL_COLSELTR, Options::TexturedTriangleShapeColouringMethod());
 				glUniform1i(OpenGL::VUL_SAMPLER0, _::GetTextureIndex(dt));
 				glDrawArrays(GL_TRIANGLES, 0, dd.numberOfTexturedSegments);
 			}
@@ -691,8 +682,8 @@ namespace my {
 			glGenBuffers(sizeof(bufferIds)/sizeof(bufferIds[0]), &bufferIds[0]);
 
 			nurbs::Initialise();
-		//	nurbs::tesselate();
-			nurbs::load("meshes/bumps_1122_with_ao.msh");
+			nurbs::tesselate();
+		//	nurbs::load("bumps_44892_with_ao17");
 
 			///////////////////////////
 			// VAO#0: Points
