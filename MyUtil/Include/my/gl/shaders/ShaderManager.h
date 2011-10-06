@@ -10,7 +10,7 @@ namespace my { namespace gl { namespace shaders {
 
 	class MYUTIL_API ShaderManager {
 	public:
-		typedef codeshare::utilities::StaticCString<4096>	SourceText;
+		typedef codeshare::utilities::StaticCString<ProgramBuilder::MAX_SOURCE_TEXT_LENGTH>	SourceText;
 
 		char const*										GetVertexShaderSource (void) const;
 		char const*										GetFragmentShaderSource (void) const;

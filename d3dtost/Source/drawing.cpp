@@ -2,10 +2,13 @@
 
 #include <drawing_nurbs.h>
 #include <drawing_utils.h>
-#include <options.h>
+#include <Options.h>
 
 #define WITH_NORMALS	1
 #define	WITH_GRID		1
+
+//	#define NURBS_LOAD_FROM	"surface_bin"
+//	#define NURBS_LOAD_FROM	"bumps_1122_with_ao"
 
 #define DONT	if (false)
 #define DO		if (true)
@@ -64,7 +67,7 @@ namespace _ {
 		// ----
 		// we want one round per second => w = rad/sec = 2pi/sec => ang = w*sec = 2pi*sec = 360*sec (%360)
 		// 360 * dt * 1e-3  = 0.360 * dt
-		float const result(.045f * dt_milli);
+		float const result(.010f * dt_milli);
 		return result - floorf(result/360.f)*360.f;
 	}
 
@@ -407,7 +410,8 @@ namespace _ {
 	//	m *= Translate(0, 0, -0.85f);
 	//	m *= Translate(0, 0, 1);
 		m *= Translate(0, -0.025f, 1);
-		m *= Rotate(Axis_X(), M_PI_8);
+	//	m *= Rotate(Axis_X(), M_PI_8);
+		m *= Rotate(Axis_X(), M_PI_4);
 		if (_::WITH_CAMERA) {
 			m *= Rotate(Axis_Y(), M_PI_4 + M_PI_8);
 		//	m *= ScaleX(0.5f);
@@ -599,7 +603,7 @@ namespace my {
 						-0.0f,
 						0.0f,
 						cam);
-				glUniform1ui(OpenGL::VUL_COLSELTR, Options::LineShapeColouringMethod());
+				glUniform1ui(OpenGL::VUL_COLSELTR, Options::PointShapeColouringMethod());
 				glDrawArrays(GL_POINTS, 0, dd.numberOfPointPoints);
 			}
 
@@ -631,13 +635,13 @@ namespace my {
 				#if WITH_GRID == 1
 				glUniform1ui(OpenGL::VUL_COLSELTR, Options::TriangleShapeGridColouringMethod());
 				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	DASSERT(glGetError() == GL_NO_ERROR);
-				glEnable(GL_LINE_SMOOTH);	DASSERT(glGetError() == GL_NO_ERROR);
+			//	glEnable(GL_LINE_SMOOTH);	DASSERT(glGetError() == GL_NO_ERROR);
 				glEnable(GL_POLYGON_OFFSET_LINE);
-				glPolygonOffset(1, 1);
+				glLineWidth(0.2f);
+				glPolygonOffset(-1, -1);
 				glDrawArrays(GL_TRIANGLES, 0, dd.numberOfWorldCubeLineSegments);	DASSERT(glGetError() == GL_NO_ERROR);
-				glDisable(GL_POLYGON_OFFSET_LINE);
 				glDisable(GL_POLYGON_OFFSET_LINE);	DASSERT(glGetError() == GL_NO_ERROR);
-				glDisable(GL_LINE_SMOOTH);	DASSERT(glGetError() == GL_NO_ERROR);
+			//	glDisable(GL_LINE_SMOOTH);	DASSERT(glGetError() == GL_NO_ERROR);
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	DASSERT(glGetError() == GL_NO_ERROR);
 				#endif
 			}
@@ -695,8 +699,11 @@ namespace my {
 			glGenBuffers(sizeof(bufferIds)/sizeof(bufferIds[0]), &bufferIds[0]);
 
 			nurbs::Initialise();
+		#ifdef NURBS_LOAD_FROM
+			nurbs::load(NURBS_LOAD_FROM);
+		#else
 			nurbs::tesselate();
-		//	nurbs::load("bumps_44892_with_ao17");
+		#endif
 
 			///////////////////////////
 			// VAO#0: Points

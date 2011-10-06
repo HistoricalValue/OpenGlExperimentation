@@ -12,7 +12,7 @@ namespace my { namespace gl { namespace shaders {
 
 
 	// --------------------------------
-	typedef char ErrorMessage[MY__GL__SHADERS__PROGRAM_BUILDER__MAX_SOURCE_TEXT_LENGTH];
+	typedef char ErrorMessage[ProgramBuilder::MAX_SOURCE_TEXT_LENGTH];
 
 
 

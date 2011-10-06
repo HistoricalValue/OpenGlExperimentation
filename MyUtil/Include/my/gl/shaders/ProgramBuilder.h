@@ -4,13 +4,12 @@
 #include <MyUtil.h>
 #include <MyGL.h>
 
-#define MY__GL__SHADERS__PROGRAM_BUILDER__MAX_SOURCE_TEXT_LENGTH	4095
-
 namespace my { namespace gl { namespace shaders {
 
 	class MYUTIL_API ProgramBuilder {
 	public:
-		typedef char									SourceText[MY__GL__SHADERS__PROGRAM_BUILDER__MAX_SOURCE_TEXT_LENGTH + 1];
+		static const size_t								MAX_SOURCE_TEXT_LENGTH = (1<<16);
+		typedef char									SourceText[MAX_SOURCE_TEXT_LENGTH + 1];
 
 		void											SetVertexShaderSource (char const* source);		// copied
 		void											SetFragmentShaderSource (char const* source);	// copied

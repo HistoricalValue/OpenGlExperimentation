@@ -50,7 +50,7 @@
     <ClCompile Include="Source\drawing_nurbs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\options.cpp">
+    <ClCompile Include="Source\Options.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -85,7 +85,7 @@
     <ClInclude Include="Include\drawing_utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\options.h">
+    <ClInclude Include="Include\Options.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

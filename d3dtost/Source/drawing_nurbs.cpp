@@ -10,6 +10,7 @@
 #include <my/algo/ShapeProducers.h>
 
 #include <drawing_utils.h>
+#include <drawing_nurbs.h>
 
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -326,14 +327,14 @@ void Initialise (void) {
 								ankh::surfaces::Precision(5e-9f))
 			,variation, variation, variation, 1.5f, false, seed)
 		;
-	//	cpoints_i.at(3).at(3) = vec4(_::maxx, _::maxy, _::maxz, 1.0f);
-	//	cpoints_i.at(3).at(3) *= 2.0f;
-	//
-	//	cpoints_i.at(9).at(3).y = -_::maxy;
-	//	cpoints_i.at(9).at(3) *= 4.0f;
-	//
-	//	cpoints_i.at(15).at(5).y = _::maxy;
-	//	cpoints_i.at(15).at(5) *= 0.5f;
+		cpoints_i.at(3).at(3) = vec4(_::maxx, _::maxy, _::maxz, 1.0f);
+		cpoints_i.at(3).at(3) *= 2.0f;
+	
+		cpoints_i.at(9).at(3).y = -_::maxy;
+		cpoints_i.at(9).at(3) *= 4.0f;
+	
+		cpoints_i.at(15).at(5).y = _::maxy;
+		cpoints_i.at(15).at(5) *= 0.5f;
 
 		_::_surf = DNEWCLASS(Surface, (knots_j.begin(), knots_j.end(), knots_i.begin(), knots_i.end(), cpoints_i.begin(), cpoints_i.end(), "BOB ROSS"));
 		_::unew_mesh();
@@ -427,7 +428,17 @@ void tesselate (void) {
 
 void load (char const* const id) {
 	using namespace ankh::shapes;
-	Mesh* m(MeshLoader::GetSingleton().Load(std::string("../meshes/") + id + ".msh"));
+	static const char mesh_bin_id[] = "surface_bin";
+	static const size_t mesh_bin_id_length = sizeof(mesh_bin_id)/sizeof(mesh_bin_id[0]);
+
+	std::string loadpath((
+					strncmp(id, mesh_bin_id, mesh_bin_id_length) == 0?
+						std::string(id) :
+						std::string("../meshes/") + id
+				) + ".msh");
+
+	Mesh* m(MeshLoader::GetSingleton().Load(loadpath));
+
 	DASSERT(m);
 	_::getmesh() =(*DPTR(m));
 	MeshLoader::GetSingleton().Unload(m);

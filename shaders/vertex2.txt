@@ -129,12 +129,11 @@ out float		interpolatedAmbientOcclusionFactor;
 ///////////////////////////////////////////////////////////
 
 void main (void) {
-
 	vec4 pos			=	Hom_True(position);
 						
 	mat4 transmodel		=	AId()
 						*	camera
-				//		*	ARotate(Axis_Y, radians(axyc[0]))
+						*	ARotate(Axis_Y, radians(axyc[0]))
 				//		*	ARotate(Axis_X, M_PI)
 				//		*	ATransform(0.5f * Axis_X, 0.5f * Axis_Y, 0.5f * Axis_Z)
 						;

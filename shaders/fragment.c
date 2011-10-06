@@ -18,6 +18,9 @@ in		float			interpolatedAmbientOcclusionFactor;
 // ouputs
 out		vec4			fragColor;
 
+vec4	ColourFromRgb (uint r, uint g, uint b)
+			{ return vec4(float(r)/255.0f, float(g)/255.0f, float(b)/255.0f, 1.0f); }
+
 void main (void) {
 	vec3 texcoord = textureCoordinate.stp;
 
@@ -45,6 +48,12 @@ void main (void) {
 						* dot(normalize(vec4(pooplight.xyz * 1000.0f, 1.0f)), normalize(interpolatedNormal))
 						* interpolatedAmbientOcclusionFactor
 						;
+	else
+	if (colouringSelector == 6u)
+		fragColor = vec4(0, 0, 0, 1);
+	else
+	if (colouringSelector == 7u)
+		fragColor = ColourFromRgb(0x4fu, 0x4fu, 0xffu);
 	else
 		fragColor = vec4(0.0f, 1.0f, 1.0f, 1.0f);
 }

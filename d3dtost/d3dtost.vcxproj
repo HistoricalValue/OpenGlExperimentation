@@ -157,7 +157,7 @@
     <ClCompile Include="Source\MyOpenGl.cpp" />
     <ClCompile Include="Source\MyWindow.cpp" />
     <ClCompile Include="Source\main.cpp" />
-    <ClCompile Include="Source\options.cpp" />
+    <ClCompile Include="Source\Options.cpp" />
     <ClCompile Include="Source\Setup.cpp" />
     <ClCompile Include="Source\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -173,7 +173,7 @@
     <ClInclude Include="Include\MyLocalGlobalInstances.h" />
     <ClInclude Include="Include\MyOpenGL.h" />
     <ClInclude Include="Include\MyWindow.h" />
-    <ClInclude Include="Include\options.h" />
+    <ClInclude Include="Include\Options.h" />
     <ClInclude Include="Include\resource.h" />
     <ClInclude Include="Include\Setup.h" />
     <ClInclude Include="Include\stdafx.h" />

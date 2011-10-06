@@ -13,6 +13,7 @@
 #include <usystem.h>
 #include <ubinaryio.h>
 #include <usystem.h>
+#include <uinit.h>
 #pragma warning( pop )
 
 

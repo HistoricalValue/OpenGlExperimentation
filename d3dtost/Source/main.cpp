@@ -113,6 +113,7 @@ namespace my {
 
 		dinit(&_::ddebug::onError);
 		dsetassertfunc(&_::ddebug::asserter);
+		UtilPackage::Initialise();
 		d3dtost::Initialise();
 
 		{
@@ -151,6 +152,7 @@ namespace my {
 		}
 
 		d3dtost::CleanUp();
+		UtilPackage::CleanUp();
 		dclose();
 		system("pause");
 		_::info_console = NULL;
