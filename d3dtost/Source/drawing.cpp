@@ -5,10 +5,13 @@
 #include <Options.h>
 
 #define WITH_NORMALS	1
-#define	WITH_GRID		1
+#define	WITH_GRID		0
 
 //	#define NURBS_LOAD_FROM	"surface_bin"
 //	#define NURBS_LOAD_FROM	"bumps_1122_with_ao"
+//	#define NURBS_LOAD_FROM "moon_valley_bumps_1700_with_ao17_aotime891116ms"
+//	#define NURBS_LOAD_FROM "moon_valley_bumps_1700_with_ao9_aotime455218ms"
+	#define NURBS_LOAD_FROM "savidised_moon_valley_bumps_1700_with_ao9_aotime455218ms"
 
 #define DONT	if (false)
 #define DO		if (true)
@@ -67,7 +70,7 @@ namespace _ {
 		// ----
 		// we want one round per second => w = rad/sec = 2pi/sec => ang = w*sec = 2pi*sec = 360*sec (%360)
 		// 360 * dt * 1e-3  = 0.360 * dt
-		float const result(.010f * dt_milli);
+		float const result(.045f * dt_milli);
 		return result - floorf(result/360.f)*360.f;
 	}
 
@@ -410,8 +413,8 @@ namespace _ {
 	//	m *= Translate(0, 0, -0.85f);
 	//	m *= Translate(0, 0, 1);
 		m *= Translate(0, -0.025f, 1);
-	//	m *= Rotate(Axis_X(), M_PI_8);
-		m *= Rotate(Axis_X(), M_PI_4);
+		m *= Rotate(Axis_X(), M_PI_8);
+	//	m *= Rotate(Axis_X(), M_PI_4);
 		if (_::WITH_CAMERA) {
 			m *= Rotate(Axis_Y(), M_PI_4 + M_PI_8);
 		//	m *= ScaleX(0.5f);

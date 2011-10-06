@@ -80,6 +80,15 @@ namespace _ {
 			return line0 == std::string("// yes");
 		}
 	} BE_A_SHADER_COMPILER;
+
+	struct {
+		operator bool (void) const {
+			std::ifstream ifs("../shaders/vertex.c");
+			std::string line0;
+			getline(ifs, line0);
+			return line0 == std::string("// mesh tool");
+		}
+	} BE_A_MESH_TOOL;
 }
 
 
@@ -141,9 +150,13 @@ namespace my {
 				window.SetMainLoopCallback(&_::Callbacks::MainLoop, &mainLoopClosure);
 
 				extern void TestCompileShaders (void);
+				extern void MeshProcess (void);
 
 				if (_::BE_A_SHADER_COMPILER)
 					TestCompileShaders();
+				else
+				if (_::BE_A_MESH_TOOL)
+					MeshProcess();
 				else
 					window.MainLoop(lpCmdLine, nCmdShow);
 

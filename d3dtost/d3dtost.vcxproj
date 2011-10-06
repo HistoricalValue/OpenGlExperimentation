@@ -152,6 +152,7 @@
     <ClCompile Include="ShaderCompiler.cpp" />
     <ClCompile Include="Source\drawing.cpp" />
     <ClCompile Include="Source\drawing_nurbs.cpp" />
+    <ClCompile Include="Source\MeshTool.cpp" />
     <ClCompile Include="Source\MyConsole.cpp" />
     <ClCompile Include="Source\MyDirect3D9.cpp" />
     <ClCompile Include="Source\MyOpenGl.cpp" />
