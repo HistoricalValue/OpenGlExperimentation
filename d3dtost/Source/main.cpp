@@ -125,6 +125,12 @@ namespace my {
 		UtilPackage::Initialise();
 		d3dtost::Initialise();
 
+		if (_::BE_A_MESH_TOOL) {
+			extern void MeshProcess (void);
+			console << _T("Being a MESH TOOL\n");
+			MeshProcess();
+		}
+		else
 		{
 
 			my::Window		window(hInstance);
@@ -150,13 +156,9 @@ namespace my {
 				window.SetMainLoopCallback(&_::Callbacks::MainLoop, &mainLoopClosure);
 
 				extern void TestCompileShaders (void);
-				extern void MeshProcess (void);
 
 				if (_::BE_A_SHADER_COMPILER)
 					TestCompileShaders();
-				else
-				if (_::BE_A_MESH_TOOL)
-					MeshProcess();
 				else
 					window.MainLoop(lpCmdLine, nCmdShow);
 

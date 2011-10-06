@@ -353,7 +353,7 @@ void CleanUp (void) {
 	udelete(_::_surf);
 }
 
-void tesselate (void) {
+void tesselate (ankh::surfaces::TesselationParameters const* const _tp) {
 	using ankh::surfaces::tesselation::	SimpleBlendingTraits;
 	using ankh::surfaces::tesselation::	SimpleInterpolatingTraits;
 	using ankh::surfaces::tesselation::	OptimisedBlendingTraits;
@@ -382,7 +382,8 @@ void tesselate (void) {
 	using ankh::shapes::			Mesh;
 	using ankh::surfaces::			TesselationParameters;
 
-	TesselationParameters const tp(9e-1f, false, ankh::surfaces::DefaultPrecision());
+	TesselationParameters const defaulttp(9e-1f, false, ankh::surfaces::DefaultPrecision());
+	TesselationParameters const& tp(_tp == NULL? defaulttp : *_tp);
 
 	Surface const&			surf	(_::getsurf());
 

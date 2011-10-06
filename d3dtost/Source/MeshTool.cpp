@@ -1,6 +1,7 @@
 #include <stdafx.h>
 #include <Mesh.h>
 #include <MeshLoader.h>
+#include <drawing_nurbs.h>
 
 using namespace ankh;
 using namespace shapes;
@@ -14,32 +15,6 @@ static char const* const meshesnames[] = {
 };
 
 static void Savidise (Mesh* const m) {
-	typedef Mesh::Elements::const_iterator ite_t;
-	Mesh::Elements inverted;
-
-	ite_t const end(m->GetElements().end());
-	for (ite_t el(m->GetElements().begin()); el != end; ++el) {
-		inverted.push_back(MeshElement(Triangle(el->a, el->c, el->b)));
-		if (el->HasAmbientOcclusion()) {
-			inverted.back().MakeAmbientOcclusion();
-			inverted.back().SetAmbientOcclusion(0, el->GetAmbientOcclusion(0));
-			inverted.back().SetAmbientOcclusion(1, el->GetAmbientOcclusion(1));
-			inverted.back().SetAmbientOcclusion(2, el->GetAmbientOcclusion(2));
-		}
-		if (el->HasNormals()) {
-			inverted.back().MakeNormals();
-			inverted.back().SetNormal(0, -el->GetNormal(0));
-			inverted.back().SetNormal(1, -el->GetNormal(1));
-			inverted.back().SetNormal(2, -el->GetNormal(2));
-		}
-	}
-
-	m->Update(inverted);
-}
-
-namespace my {
-
-void MeshProcess (void) {
 	for (char const* const* meshname = &meshesnames[0]; meshname < &meshesnames[_countof(meshesnames)]; ++meshname) {
 		std::string const path		(std::string("../meshes/") + *meshname + ".msh");
 		std::string const outpath	(std::string("../meshes/") + "savidised_" + *meshname + ".msh");
@@ -48,7 +23,29 @@ void MeshProcess (void) {
 		DASSERT(m);
 
 		std::cout << "Savidiing " << *meshname << " . . . ";
-		Savidise(m);
+		{
+			typedef Mesh::Elements::const_iterator ite_t;
+			Mesh::Elements inverted;
+
+			ite_t const end(m->GetElements().end());
+			for (ite_t el(m->GetElements().begin()); el != end; ++el) {
+				inverted.push_back(MeshElement(Triangle(el->a, el->c, el->b)));
+				if (el->HasAmbientOcclusion()) {
+					inverted.back().MakeAmbientOcclusion();
+					inverted.back().SetAmbientOcclusion(0, el->GetAmbientOcclusion(0));
+					inverted.back().SetAmbientOcclusion(1, el->GetAmbientOcclusion(1));
+					inverted.back().SetAmbientOcclusion(2, el->GetAmbientOcclusion(2));
+				}
+				if (el->HasNormals()) {
+					inverted.back().MakeNormals();
+					inverted.back().SetNormal(0, -el->GetNormal(0));
+					inverted.back().SetNormal(1, -el->GetNormal(1));
+					inverted.back().SetNormal(2, -el->GetNormal(2));
+				}
+			}
+
+			m->Update(inverted);
+		}
 
 		std::cout << "storing . . . ";
 		m->StoreBin(outpath);
@@ -58,6 +55,19 @@ void MeshProcess (void) {
 
 		std::cout << "done" << std::endl;
 	}
+
+}
+
+static void Tesselate (void) {
+	my::drawing::nurbs::Initialise();
+	my::drawing::nurbs::tesselate(&ankh::surfaces::TesselationParameters(1e-2f, false, ankh::surfaces::DefaultPrecision()));
+	my::drawing::nurbs::CleanUp();
+}
+
+namespace my {
+
+void MeshProcess (void) {
+	Tesselate();
 } // MeshProcess()
 
 } // my

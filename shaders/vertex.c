@@ -1,3 +1,5 @@
+// mesh tool
+
 #version 330 core
 
 in vec4			position;

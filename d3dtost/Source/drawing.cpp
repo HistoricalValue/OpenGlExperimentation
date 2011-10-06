@@ -11,7 +11,6 @@
 //	#define NURBS_LOAD_FROM	"bumps_1122_with_ao"
 //	#define NURBS_LOAD_FROM "moon_valley_bumps_1700_with_ao17_aotime891116ms"
 //	#define NURBS_LOAD_FROM "moon_valley_bumps_1700_with_ao9_aotime455218ms"
-	#define NURBS_LOAD_FROM "savidised_moon_valley_bumps_1700_with_ao9_aotime455218ms"
 
 #define DONT	if (false)
 #define DO		if (true)
