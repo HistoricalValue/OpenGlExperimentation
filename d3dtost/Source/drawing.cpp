@@ -5,6 +5,7 @@
 #include <options.h>
 
 #define WITH_NORMALS	1
+#define	WITH_GRID		1
 
 #define DONT	if (false)
 #define DO		if (true)
@@ -627,6 +628,18 @@ namespace my {
 						cam);
 				glUniform1ui(OpenGL::VUL_COLSELTR, Options::TriangleShapeColouringMethod());
 				glDrawArrays(GL_TRIANGLES, 0, dd.numberOfWorldCubeLineSegments);
+				#if WITH_GRID == 1
+				glUniform1ui(OpenGL::VUL_COLSELTR, Options::TriangleShapeGridColouringMethod());
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	DASSERT(glGetError() == GL_NO_ERROR);
+				glEnable(GL_LINE_SMOOTH);	DASSERT(glGetError() == GL_NO_ERROR);
+				glEnable(GL_POLYGON_OFFSET_LINE);
+				glPolygonOffset(1, 1);
+				glDrawArrays(GL_TRIANGLES, 0, dd.numberOfWorldCubeLineSegments);	DASSERT(glGetError() == GL_NO_ERROR);
+				glDisable(GL_POLYGON_OFFSET_LINE);
+				glDisable(GL_POLYGON_OFFSET_LINE);	DASSERT(glGetError() == GL_NO_ERROR);
+				glDisable(GL_LINE_SMOOTH);	DASSERT(glGetError() == GL_NO_ERROR);
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	DASSERT(glGetError() == GL_NO_ERROR);
+				#endif
 			}
 
 			// and textured triangles too
