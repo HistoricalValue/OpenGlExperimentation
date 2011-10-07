@@ -13,7 +13,6 @@
 
 #include <SurfaceTesselation.h>
 
-
 //////////////////////////////////////////////////////////////////////////////////////
 
 // CONTROL SWITCHES
@@ -383,7 +382,7 @@ void tesselate (ankh::nurbs::TesselationParameters const* const _tp) {
 	using ankh::shapes::			Mesh;
 	using ankh::nurbs::			TesselationParameters;
 
-	TesselationParameters const defaulttp(2e-1f, false, ankh::nurbs::DefaultPrecision());
+	TesselationParameters const defaulttp(2.0f, false, ankh::nurbs::DefaultPrecision());
 	TesselationParameters const& tp(_tp == NULL? defaulttp : *_tp);
 
 	Surface const&			surf	(_::getsurf());

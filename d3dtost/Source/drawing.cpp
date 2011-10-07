@@ -9,7 +9,7 @@
 
 //	#define NURBS_LOAD_FROM	"surface_bin"
 //	#define NURBS_LOAD_FROM	"bumps_1122_with_ao"
-#define NURBS_LOAD_FROM "moon_valley_bumps_12610_with_ao9_aotime345431ms"
+//	#define NURBS_LOAD_FROM "moon_valley_bumps_12610_with_ao9_aotime345431ms"
 
 #define DONT	if (false)
 #define DO		if (true)

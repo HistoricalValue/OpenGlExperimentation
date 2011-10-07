@@ -105,6 +105,10 @@ namespace my { namespace global {
 			_::info_console->WriteToOutputStreamA(msg);
 		}
 	} // namespace log
+
+	Console&	GetConsole (void)
+					{ return *DNULLCHECK(_::info_console); }
+
 }} // namespace my::global
 
 namespace my {
