@@ -15,6 +15,8 @@ static char const* const meshesnames[] = {
 };
 
 static void Savidise (void) {
+	MeshLoader::SingletonCreate();
+
 	for (char const* const* meshname = &meshesnames[0]; meshname < &meshesnames[_countof(meshesnames)]; ++meshname) {
 		std::string const path		(std::string("../meshes/") + *meshname + ".msh");
 		std::string const outpath	(std::string("../meshes/") + "savidised_" + *meshname + ".msh");
@@ -59,6 +61,7 @@ static void Savidise (void) {
 		my::global::GetConsole() << "done\n";
 	}
 
+	MeshLoader::SingletonDestroy();
 }
 
 static void Tesselate (void) {
