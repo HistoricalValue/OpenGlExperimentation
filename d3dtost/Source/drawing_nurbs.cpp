@@ -1,6 +1,5 @@
 #include "stdafx.h"
 
-#include <SurfacesFacade.h>
 #include <AmbientOcclusion.h>
 
 //
@@ -11,6 +10,8 @@
 
 #include <drawing_utils.h>
 #include <drawing_nurbs.h>
+
+#include <SurfaceTesselation.h>
 
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -25,28 +26,28 @@
 
 // CONTROL SWITCHES RESULTS
 #if WITH_FAST_CONTROL_POINT_INTERPOLATOR == 1
-#	define CONTROL_POINT_INTERPOLATION	&ankh::surfaces::algo::FastControlPointInterpolation
+#	define CONTROL_POINT_INTERPOLATION	&ankh::nurbs::algo::FastControlPointInterpolation
 #elif WITH_FAST_CONTROL_POINT_INTERPOLATOR == 0
-#	define CONTROL_POINT_INTERPOLATION	&ankh::surfaces::algo::PreciceControlPointInterpolation
+#	define CONTROL_POINT_INTERPOLATION	&ankh::nurbs::algo::PreciceControlPointInterpolation
 #else
 #	error "wat"
 #endif
 
 template <const int WithOptimisedDeBoor> struct DeBoorOptimisationTraits;
 template <> struct DeBoorOptimisationTraits<1> {
-	typedef ankh::surfaces::tesselation::OptimisedInterpolatingTraits<CONTROL_POINT_INTERPOLATION>	Traits; };
+	typedef ankh::nurbs::tesselation::OptimisedInterpolatingTraits<CONTROL_POINT_INTERPOLATION>	Traits; };
 template <> struct DeBoorOptimisationTraits<0> {
-	typedef ankh::surfaces::tesselation::SimpleInterpolatingTraits<CONTROL_POINT_INTERPOLATION>		Traits; };
+	typedef ankh::nurbs::tesselation::SimpleInterpolatingTraits<CONTROL_POINT_INTERPOLATION>		Traits; };
 
 template <const int WithOptimisedBlending> struct BlendingOptimisationTraits;
-template <> struct BlendingOptimisationTraits<1> { typedef ankh::surfaces::tesselation::OptimisedBlendingTraits		Traits; };
-template <> struct BlendingOptimisationTraits<0> { typedef ankh::surfaces::tesselation::SimpleBlendingTraits		Traits; };
+template <> struct BlendingOptimisationTraits<1> { typedef ankh::nurbs::tesselation::OptimisedBlendingTraits		Traits; };
+template <> struct BlendingOptimisationTraits<0> { typedef ankh::nurbs::tesselation::SimpleBlendingTraits		Traits; };
 
 #if USE_DE_BOOR
-#	define DE_BOOR_OR_NOT_DE_BOOR(FUNC) ankh::surfaces::tesselation::deboor:: FUNC <DeBoorOptimisationTraits <WITH_OPTIMISED_DE_BOOR>::Traits >
+#	define DE_BOOR_OR_NOT_DE_BOOR(FUNC) ankh::nurbs::tesselation::deboor:: FUNC <DeBoorOptimisationTraits <WITH_OPTIMISED_DE_BOOR>::Traits >
 #	define NOT_USING_DE_BOOR_CHECK()	DASSERT(!"Using De-Boor's algorithm, this function shouldn't be used")
 #else
-#	define DE_BOOR_OR_NOT_DE_BOOR(FUNC)	ankh::surfaces::tesselation::blending:: FUNC <BlendingOptimisationTraits <WITH_OPTIMISED_BLENDING>::Traits >
+#	define DE_BOOR_OR_NOT_DE_BOOR(FUNC)	ankh::nurbs::tesselation::blending:: FUNC <BlendingOptimisationTraits <WITH_OPTIMISED_BLENDING>::Traits >
 #	define NOT_USING_DE_BOOR_CHECK()
 #endif
 
@@ -74,13 +75,13 @@ namespace nurbs {
 namespace _ {
 //////////////////////////////////////////////////////////////////////////////////////
 
-static bool VerifyBaseFunctions (short const m, std::vector<ankh::surfaces::Unit> const& knots) {
+static bool VerifyBaseFunctions (short const m, std::vector<ankh::nurbs::Unit> const& knots) {
 	using ankh::math::trig::vec4;
-	using ankh::surfaces::Curve;
-	using ankh::surfaces::algo::simple::N;
-	using ankh::surfaces::Unit;
-	using ankh::surfaces::DefaultPrecision;
-	using ankh::surfaces::TesselationParameters;
+	using ankh::nurbs::Curve;
+	using ankh::nurbs::algo::simple::N;
+	using ankh::nurbs::Unit;
+	using ankh::nurbs::DefaultPrecision;
+	using ankh::nurbs::TesselationParameters;
 
 	DASSERT(m >= 1);
 	size_t const l(knots.size() - 1);
@@ -154,7 +155,7 @@ nexter<T> makenexter (T const& init) { return nexter<T>(init); }
 
 static bool VerifyMultiplicityChecker (void) {
 	typedef std::vector<float>	Knots;
-	using ankh::surfaces::Knots_IsMultiplicityLessThanOrEqualTo;
+	using ankh::nurbs::Knots_IsMultiplicityLessThanOrEqualTo;
 
 	Knots knots(20);
 
@@ -176,10 +177,10 @@ static bool VerifyMultiplicityChecker (void) {
 
 typedef ankh::shapes::Mesh::Elements			MeshElements;
 
-static ankh::surfaces::Surface*	_surf(NULL);
+static ankh::nurbs::Surface*	_surf(NULL);
 static ankh::shapes::Mesh*		_mesh(NULL);
 
-static inline ankh::surfaces::Surface const& getsurf (void)
+static inline ankh::nurbs::Surface const& getsurf (void)
 	{ return *DPTR(_DNOTNULL(_surf)); }
 
 static inline void unew_mesh (void)
@@ -255,17 +256,17 @@ void Initialise (void) {
 		using my::gl::math::		Vector4;
 		using ankh::math::trig::	vec4;
 		using ankh::math::trig::	vec3;
-		using ankh::surfaces::		Curve;
-		using ankh::surfaces::		ControlPoints;
-		using ankh::surfaces::		Knots;
-		using ankh::surfaces::		FillRandomly;
-		using ankh::surfaces::		FillGridUniformly;
-		using ankh::surfaces::		VaryGrid;
-		using ankh::surfaces::		FillUniformly;
-		using ankh::surfaces::		Surface;
-		using ankh::surfaces::		Unit;
-		using ankh::surfaces::algo::FirstCrossSection;
-		using ankh::surfaces::		ControlPointsGrid;
+		using ankh::nurbs::		Curve;
+		using ankh::nurbs::		ControlPoints;
+		using ankh::nurbs::		Knots;
+		using ankh::nurbs::		FillRandomly;
+		using ankh::nurbs::		FillGridUniformly;
+		using ankh::nurbs::		VaryGrid;
+		using ankh::nurbs::		FillUniformly;
+		using ankh::nurbs::		Surface;
+		using ankh::nurbs::		Unit;
+		using ankh::nurbs::algo::FirstCrossSection;
+		using ankh::nurbs::		ControlPointsGrid;
 
 		size_t const	width_units	(16);
 		size_t const	height_units(16);
@@ -324,7 +325,7 @@ void Initialise (void) {
 								makeinverser<inverseX>(_::minx, _::maxx).a, makeinverser<inverseX>(_::minx, _::maxx).b,
 								makeinverser<inverseZ>(_::minz, _::maxz).a, makeinverser<inverseZ>(_::minz, _::maxz).b,
 								(_::miny + _::maxy)/2.0f,
-								ankh::surfaces::Precision(5e-9f))
+								ankh::nurbs::Precision(5e-9f))
 			,variation, variation, variation, 1.5f, false, seed)
 		;
 		cpoints_i.at(3).at(3) = vec4(_::maxx, _::maxy, _::maxz, 1.0f);
@@ -353,20 +354,20 @@ void CleanUp (void) {
 	udelete(_::_surf);
 }
 
-void tesselate (ankh::surfaces::TesselationParameters const* const _tp) {
-	using ankh::surfaces::tesselation::	SimpleBlendingTraits;
-	using ankh::surfaces::tesselation::	SimpleInterpolatingTraits;
-	using ankh::surfaces::tesselation::	OptimisedBlendingTraits;
-	using ankh::surfaces::tesselation::	OptimisedInterpolatingTraits;
-	using ankh::surfaces::algo::		FastControlPointInterpolation;
-	using ankh::surfaces::algo::		PreciceControlPointInterpolation;
+void tesselate (ankh::nurbs::TesselationParameters const* const _tp) {
+	using ankh::nurbs::tesselation::	SimpleBlendingTraits;
+	using ankh::nurbs::tesselation::	SimpleInterpolatingTraits;
+	using ankh::nurbs::tesselation::	OptimisedBlendingTraits;
+	using ankh::nurbs::tesselation::	OptimisedInterpolatingTraits;
+	using ankh::nurbs::algo::		FastControlPointInterpolation;
+	using ankh::nurbs::algo::		PreciceControlPointInterpolation;
 #if 0
-	using ankh::surfaces::tesselation::blending::	ProduceAllFromAcrossSections;
-	using ankh::surfaces::tesselation::blending::	ProduceAllFromAlongSections;
+	using ankh::nurbs::tesselation::blending::	ProduceAllFromAcrossSections;
+	using ankh::nurbs::tesselation::blending::	ProduceAllFromAlongSections;
 	typedef SimpleBlendingTraits							t;
 #else
-	using ankh::surfaces::tesselation::deboor::	ProduceAllFromAcrossSections;
-	using ankh::surfaces::tesselation::deboor::	ProduceAllFromAlongSections;
+	using ankh::nurbs::tesselation::deboor::	ProduceAllFromAcrossSections;
+	using ankh::nurbs::tesselation::deboor::	ProduceAllFromAlongSections;
 //	typedef OptimisedInterpolatingTraits<FastControlPointInterpolation>		t;
 	typedef SimpleInterpolatingTraits<PreciceControlPointInterpolation>		t;
 #endif
@@ -374,15 +375,15 @@ void tesselate (ankh::surfaces::TesselationParameters const* const _tp) {
 	typedef std::vector<Triangle>	Triangles;
 	using ankh::shapes::			MeshElement;
 	using ankh::shapes::			MeshAdjacencyElement;
-	using ankh::surfaces::			Surface;
+	using ankh::nurbs::			Surface;
 	using my::gl::shapes::			Colour;
 	using my::gl::math::			Vector4;
 	using my::gl::shapes::			Line;
 	using my::gl::shapes::			Vertex;
 	using ankh::shapes::			Mesh;
-	using ankh::surfaces::			TesselationParameters;
+	using ankh::nurbs::			TesselationParameters;
 
-	TesselationParameters const defaulttp(9e-1f, false, ankh::surfaces::DefaultPrecision());
+	TesselationParameters const defaulttp(2e-1f, false, ankh::nurbs::DefaultPrecision());
 	TesselationParameters const& tp(_tp == NULL? defaulttp : *_tp);
 
 	Surface const&			surf	(_::getsurf());
@@ -467,16 +468,28 @@ void addnormalsto (my::gl::shapes::ShapeCompositionFactory& f) {
 	}
 }
 
+void addaoraysto (my::gl::shapes::ShapeComposition& f) {
+	_::MeshElements const&			elements	(_::meshElements()				);
+	size_t const					middleIndex	(_::meshElements().size() / 2	);
+	_::MeshElements::const_iterator	i			(_::meshElements().begin()		);
+
+	std::advance(i, middleIndex);
+
+	ankh::shapes::MeshElement const& middle(*i);
+
+	
+}
+
 void addcontrolpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 	using my::gl::shapes::Colour;
 	using my::gl::math::vec4;
-	using ankh::surfaces::Curve;
+	using ankh::nurbs::Curve;
 	using my::algo::map_vec4_to_points;
 	using my::gl::shapes::Point;
-	using ankh::surfaces::Curve;
-	using ankh::surfaces::Surface;
-	using ankh::surfaces::Knots;
-	using ankh::surfaces::algo::CrossSection;
+	using ankh::nurbs::Curve;
+	using ankh::nurbs::Surface;
+	using ankh::nurbs::Knots;
+	using ankh::nurbs::algo::CrossSection;
 
 	Surface const&	surf(_::getsurf());
 	std::list<Point>points;
@@ -497,14 +510,14 @@ void addknotpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 	using my::gl::shapes::Colour;
 	using my::gl::math::Vector4;
 	using ankh::math::trig::vec4;
-	using ankh::surfaces::Curve;
+	using ankh::nurbs::Curve;
 	using my::algo::map_vec4_to_points;
 	using my::gl::shapes::Point;
-	using ankh::surfaces::Curve;
-	using ankh::surfaces::Surface;
-	using ankh::surfaces::Knots;
-	using ankh::surfaces::algo::CrossSection;
-	using ankh::surfaces::tesselation::IneffectiveNormalCalculator;
+	using ankh::nurbs::Curve;
+	using ankh::nurbs::Surface;
+	using ankh::nurbs::Knots;
+	using ankh::nurbs::algo::CrossSection;
+	using ankh::nurbs::tesselation::IneffectiveNormalCalculator;
 
 	Surface const&	surf(_::getsurf());
 	std::list<vec4>	vectors;
@@ -534,18 +547,18 @@ void addknotpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 }
 
 void addbasecurvesto (my::gl::shapes::ShapeCompositionFactory& f) {
-	using namespace						ankh::surfaces;
+	using namespace						ankh::nurbs;
 	using namespace						my::gl::shapes;
 	using ankh::math::trig::			vec4;
 	using my::gl::math::				Vector4;
 	using tesselation::deboor::			ProduceAll;
 	using tesselation::					OptimisedInterpolatingTraits;
-	using ankh::surfaces::algo::		PreciceControlPointInterpolation;
+	using ankh::nurbs::algo::		PreciceControlPointInterpolation;
 	using my::algo::					map_vec4_to_linestrip;
-	using ankh::surfaces::tesselation::	IneffectiveNormalCalculator;
-	using ankh::surfaces::				VertexWithNormal;
-	using ankh::surfaces::				TesselationParameters;
-	using ankh::surfaces::tesselation::	Resolution;
+	using ankh::nurbs::tesselation::	IneffectiveNormalCalculator;
+	using ankh::nurbs::				VertexWithNormal;
+	using ankh::nurbs::				TesselationParameters;
+	using ankh::nurbs::tesselation::	Resolution;
 
 	typedef OptimisedInterpolatingTraits<&PreciceControlPointInterpolation> t;
 

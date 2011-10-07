@@ -9,7 +9,7 @@ namespace my { namespace drawing { namespace nurbs {
 extern void Initialise (void);
 extern void CleanUp (void);
 
-extern void tesselate (ankh::surfaces::TesselationParameters const* const = NULL);
+extern void tesselate (ankh::nurbs::TesselationParameters const* const = NULL);
 extern void load (char const* id);
 
 extern void addastrianglesto (my::gl::shapes::ShapeCompositionFactory& f);
