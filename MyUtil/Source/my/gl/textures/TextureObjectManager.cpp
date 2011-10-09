@@ -1,8 +1,7 @@
 #include <stdafx.h>
 
 #include <my/gl/textures/TextureObject_inl.h>
-
-#define __NGLE()	PASSERT(!my::openglutil::GlErrorsHandled(::my::global::errorHandler::Get()))
+#include <nmutil/OpenGlExtensionManager.h>
 
 namespace my { namespace gl { namespace textures {
 
@@ -27,7 +26,7 @@ namespace my { namespace gl { namespace textures {
 		void Create (TextureObject* const placeIn, size_t const bytesize) {
 
 			TextureObject::Id textureId(0xffffffff); {
-				glGenTextures(1, &textureId); __NGLE()
+				::gl::ext::glGenTextures(1, &textureId);
 			}
 
 			size_t const requiredBytesize(sizeof(*placeIn));

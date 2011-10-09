@@ -1,5 +1,7 @@
 #include <stdafx.h>
 
+#include <my/gl/math/Transformations.h>
+
 ///////////////////////////////////////////////////////////
 
 namespace my { namespace gl { namespace math {

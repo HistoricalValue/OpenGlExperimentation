@@ -5,8 +5,7 @@
 #define WGL_CONTEXT_PROFILE_MASK_ARB   0x9126
 #define WGL_CONTEXT_CORE_PROFILE_BIT_ARB 0x00000001
 
-
-#define __NE()	PASSERT(!my::openglutil::GlErrorsHandled(&_::GlErrorHandler))
+using namespace ::gl::ext;
 
 namespace my {
 
@@ -64,6 +63,7 @@ namespace my {
 
 		static void InfologAllExtensions (void) {
 			using ::gl::ext::glGetStringi;
+			using ::gl::ext::glGetIntegerv;
 
 			char buf[1<<17]; // 128KiB
 			size_t off(0);
@@ -71,7 +71,7 @@ namespace my {
 			{ // first log number of texture units
 				GLint iCombinedUnits(-1);
 				GLint iUnits(-1);
-				glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &iCombinedUnits); __NE()
+				glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &iCombinedUnits);
 
 				int result(_snprintf_s(&buf[off], sizeof(buf) - off * sizeof(buf[0]), 70,
 						"number of texture units: %d\nnumber of combined texture unuts: %d\n", iUnits, iCombinedUnits));
@@ -80,7 +80,7 @@ namespace my {
 			}
 
 			GLint nNumExtensions;
-			glGetIntegerv(GL_NUM_EXTENSIONS, &nNumExtensions); __NE()
+			glGetIntegerv(GL_NUM_EXTENSIONS, &nNumExtensions);
 
 			for(GLint i = 0; i < nNumExtensions && off < sizeof(buf)/sizeof(buf[0]); i++)
 				buf[(off += codeshare::utilities::csconcat(
@@ -91,7 +91,6 @@ namespace my {
 			PASSERT(off < sizeof(buf)/sizeof(buf[0]))
 			buf[off] = '\0';
 
-			__NE()
 			my::global::logger::Get().Info(d3dtost::ConvertErrorMessage(buf));
 		}
 	}
@@ -120,9 +119,10 @@ namespace my {
 		initialised = device && _::gl::CreateContext(device, context) || true;
 
 		if (initialised) {
-			glClearColor(0.3f, 0.3f, 0.3f, 1.0f);  __NE()
-
+			PASSERT(!Images_gl_ext_IsInitialised())
 			initialised = Images_gl_ext_Initialise();
+			
+			glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 
 			if (initialised) {
 				my::gl::shaders::ShaderManager	shaderManager;

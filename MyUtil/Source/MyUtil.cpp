@@ -2,7 +2,8 @@
 //
 
 #include <stdafx.h>
-
+#include <MyUtil.h>
+#include <my/gl/shapes/ShapeUtilities.h>
 
 // This is an example of an exported variable
 MYUTIL_API int nMyUtil=0;

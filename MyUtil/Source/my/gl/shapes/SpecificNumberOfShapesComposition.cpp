@@ -1,5 +1,7 @@
 #include <stdafx.h>
 
+#include <my/gl/shapes/SpecificNumberOfShapesComposition.h>
+
 namespace my { namespace gl { namespace shapes {
 
 SpecificNumberOfShapesComposition::SpecificNumberOfShapesComposition (size_t const numberOfShapes):

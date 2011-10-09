@@ -3,9 +3,10 @@
 #include <drawing_nurbs.h>
 #include <drawing_utils.h>
 #include <Options.h>
+#include <my/gl/adapters/Buffer.h>
 
-#define WITH_NORMALS	0
-#define	WITH_GRID		0
+#define WITH_NORMALS	1
+#define	WITH_GRID		1
 
 //	#define NURBS_LOAD_FROM	"surface_bin"
 //	#define NURBS_LOAD_FROM	"bumps_1122_with_ao"

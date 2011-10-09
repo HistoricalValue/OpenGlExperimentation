@@ -1,5 +1,7 @@
 #include <stdafx.h>
 
+#include <my/gl/math/Vector4.h>
+
 namespace my { namespace gl { namespace math {
 
 	Vector4::Vector4 (float const x, float const y, float const z, float const w):

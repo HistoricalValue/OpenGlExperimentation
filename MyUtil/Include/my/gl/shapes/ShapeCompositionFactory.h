@@ -32,7 +32,10 @@ public:
 	ShapeCompositionFactory&	AddAll (ContainerType const& container);
 
 private:
+#pragma warning( push )
+#pragma warning( disable: 4251 )
 	std::list<Shape*> shapes;
+#pragma warning( pop )
 };
 
 }}} // namespace my::gl::shapes

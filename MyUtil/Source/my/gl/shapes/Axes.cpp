@@ -1,5 +1,6 @@
 #include <stdafx.h>
 
+#include <my/gl/shapes/Axes.h>
 #include <my/gl/math/Vector4_inl.h>
 #include <my/gl/shapes/NShapesComposition_inl.h>
 

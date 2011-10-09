@@ -2,8 +2,7 @@
 #define __MY__GL__SHADRES__SHADER_COMPILER__H__
 
 #include <MyUtil.h>
-#include <Windows.h>
-#include <GL/gl.h>
+#include <nmutil/OpenGlExtensions.h>
 
 namespace my { namespace gl { namespace shaders {
 

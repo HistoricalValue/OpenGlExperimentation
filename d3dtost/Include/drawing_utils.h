@@ -1,7 +1,6 @@
 #ifndef DRAWING_UTILS_H
 #define DRAWING_UTILS_H
 
-#include <Windows.h>
 #include <cstdio>
 #include <PAssert.h>
 

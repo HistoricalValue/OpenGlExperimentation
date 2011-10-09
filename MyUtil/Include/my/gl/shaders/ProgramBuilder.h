@@ -2,7 +2,7 @@
 #define __MY__GL__SHADERS__PROGRAM_BUILDER__H__
 
 #include <MyUtil.h>
-#include <MyGL.h>
+#include <nmutil/OpenGlExtensions.h>
 
 namespace my { namespace gl { namespace shaders {
 

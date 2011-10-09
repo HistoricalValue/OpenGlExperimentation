@@ -4,6 +4,7 @@
 #include <my/gl/shapes/Colour.h>
 #include <PConfigurations.h>
 #include <PStaticAssert.h>
+#include <my/gl/shapes/Shape.h>
 
 #if defined(P_INLINING) || defined(__MY_UTIL__MY__GL__SHAPES__COLOUR__DEFINING)
 

@@ -1,6 +1,6 @@
 #include <stdafx.h>
 #include <my/gl/shapes/NShapesComposition_inl.h>
-
+#include <my/gl/shapes/Plane.h>
 
 namespace my { namespace gl { namespace shapes {
 

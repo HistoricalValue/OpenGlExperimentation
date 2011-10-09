@@ -1,5 +1,7 @@
 #include <stdafx.h>
 
+#include <my/gl/math/Matrix4x4.h>
+
 namespace my { namespace gl { namespace math {
 
 	bool Matrix4x4::isInversible (void) const {

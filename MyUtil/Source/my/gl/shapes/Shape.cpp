@@ -1,5 +1,7 @@
 #include <stdafx.h>
 
+#include <my/gl/shapes/Shape.h>
+
 namespace my { namespace gl { namespace shapes {
 
 	Shape::Shape (Colour const& _colour):

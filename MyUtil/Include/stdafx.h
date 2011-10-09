@@ -3,11 +3,15 @@
 // are changed infrequently
 //
 
-#pragma once
+#ifndef STDAFX_H
+#define STDAFX_H
+
+#ifdef _MSC_VER
+//#	pragma once
+#	pragma warning( push, 0 )
+#endif
 
 #include <MyWindows.h>
-
-#include <ImageLoaderTraits_inl.h>
 
 // C RunTime Header Files
 #include <stdlib.h>
@@ -28,35 +32,14 @@
 #include <vector>
 #include <map>
 #include <fstream>
-
 #include <functional>
-
-
 #include <sstream>
-
-#include <MyGL.h>
-
-#include <my/gl/mygl.h>
-#include <glt.h>
-#include <MyUtil.h>
-#include <MyLogger.h>
-#include <MyWinUtils.h>
-#include <MyOpenGLUtils.h>
-#include <MyGlobalInstances.h>
-#include <my/gl/shapes/DynamicShapeComposition.h>
-#include <my/gl/shapes/ShapeCompositionFactory.h>
-#include <my/gl/shapes/ShapeUtilities.h>
-#include <my/gl/math/Transformations.h>
-#include <my/gl/shapes/Point.h>
-
-#include <nmutil/OpenGlExtensionManager.h>
 
 #include <ufunctors.h>
 #include <usig.h>
 #include <utypes.h>
 #include <uptr.h>
 #include <usystem.h>
-
 
 #include <PStaticAssert.h>
 #include <PProtectedClass_inl.h>
@@ -70,5 +53,8 @@
 #include <PPointerUtilities_inl.h>
 #include <PConfigurations.h>
 
-#include <IL/il.h>
+#ifdef _MSC_VER
+#	pragma warning( pop )
+#endif
 
+#endif // STDAFX_H

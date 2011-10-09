@@ -1,6 +1,10 @@
 #include <stdafx.h>
 #include <PQuickDispose.h>
 
+#include <my/gl/shapes/ShapeCompositionFactory.h>
+#include <my/gl/shapes/ShapeUtilities.h>
+#include <MyGlobalInstances.h>
+
 //////////////////////////////////////////////////////////
 namespace	{
 namespace _ {

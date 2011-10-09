@@ -1,5 +1,8 @@
 #include <stdafx.h>
 
+#include <my/gl/shaders/ShaderCompiler.h>
+#include <MyOpenGLUtils.h>
+#include <nmutil/OpenGlExtensionManager.h>
 
 #define __UNLESS_GL_ERROR	\
 		if (_::GlErrorsHandled(&_::ErrorHandler)) {} else

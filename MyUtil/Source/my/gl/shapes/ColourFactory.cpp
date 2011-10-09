@@ -1,5 +1,6 @@
 #include <stdafx.h>
 
+#include <my/gl/shapes/ColourFactory.h>
 
 namespace _ {
 

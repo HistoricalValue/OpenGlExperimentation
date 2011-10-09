@@ -1,5 +1,6 @@
 #include <stdafx.h>
 
+#include <MyLogger.h>
 
 #ifdef LOGGER_WITH_PROTECTED_LIST
 #	define LOGGER__GET_MESSAGES_VAL_INTO(INTO)			{ P_PROTECTED_CLASS_VAL(messages, INTO) }

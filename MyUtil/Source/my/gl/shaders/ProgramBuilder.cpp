@@ -1,6 +1,11 @@
 #include <stdafx.h>
 #include <PCString_inl.h>
 
+#include <my/gl/shaders/ProgramBuilder.h>
+#include <nmutil/OpenGlExtensionManager.h>
+#include <my/gl/shaders/ShaderCompiler.h>
+#include <MyOpenGLUtils.h>
+
 namespace my { namespace gl { namespace shaders {
 
 

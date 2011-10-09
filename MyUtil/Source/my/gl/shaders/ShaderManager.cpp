@@ -2,6 +2,8 @@
 
 #include <PCString_inl.h>
 
+#include <my/gl/shaders/ShaderManager.h>
+
 namespace _ {
 
 const char* const VERTEX_SHADER_SOURCE_PATH		=	//	"../shaders/vertex.c"

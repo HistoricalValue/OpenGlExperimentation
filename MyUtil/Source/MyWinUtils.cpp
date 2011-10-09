@@ -1,5 +1,8 @@
 #include <stdafx.h>
 
+#include <MyWinUtils.h>
+#include <MyUtil.h>
+
 namespace my {
 	namespace winutil {
 

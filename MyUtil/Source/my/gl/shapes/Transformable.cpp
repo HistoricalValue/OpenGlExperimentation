@@ -1,5 +1,7 @@
 #include <stdafx.h>
 
+#include <my/gl/shapes/Transformable.h>
+
 namespace my { namespace gl { namespace shapes {
 
 	Transformable::Transformable (void) {

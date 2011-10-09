@@ -2,6 +2,10 @@
 
 #include <PPointerUtilities_inl.h>
 
+#include <my/gl/shapes/Triangle.h>
+#include <my/gl/shapes/SolidCube.h>
+#include <my/gl/shapes/ColourFactory.h>
+
 #define OFFSETS_STATIC_CHECKS																					\
 		using codeshare::utilities::pointer_utilities::offset;													\
 		size_t const off00(offsetof(SolidCube, triangle00));													\

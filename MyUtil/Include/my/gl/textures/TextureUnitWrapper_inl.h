@@ -48,7 +48,7 @@ namespace my { namespace gl { namespace textures {
 		TextureUnitId GetActive (void) {
 			GLint activeTextureUnit(0xffffffff);
 
-			glGetIntegerv(GL_ACTIVE_TEXTURE, &activeTextureUnit);
+			::gl::ext::glGetIntegerv(GL_ACTIVE_TEXTURE, &activeTextureUnit);
 
 			PASSERT(activeTextureUnit != 0xffffffff);
 			PASSERT(IsValid(activeTextureUnit));

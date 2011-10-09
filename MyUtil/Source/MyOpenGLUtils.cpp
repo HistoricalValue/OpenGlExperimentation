@@ -1,11 +1,12 @@
 #include <stdafx.h>
-
+#include <nmutil/OpenGlExtensionManager.h>
 
 #ifndef P_INLINING
 #	define __MY_OPEN_GL_UTILS__DEFINING_CONST_STRINGS
 #endif
 
 #include <MyOpenGLUtils_inl.h>
+#include <nmutil/OpenGlExtensionManager.h>
 
 namespace my { namespace openglutil {
 
@@ -58,7 +59,7 @@ namespace my { namespace openglutil {
 		GLenum errors[1024];
 		int i(0);
 
-		for (; (errors[i] = glGetError()) != GL_NO_ERROR && i < sizeof(errors)/sizeof(errors[0]) && i < 16; ++i)
+		for (; (errors[i] = ::gl::ext::glGetError()) != GL_NO_ERROR && i < sizeof(errors)/sizeof(errors[0]) && i < 16; ++i)
 			;
 
 		bool messageHandled(i > 0);

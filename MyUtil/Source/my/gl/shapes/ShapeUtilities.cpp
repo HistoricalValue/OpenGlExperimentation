@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include <my/gl/shapes/ShapeUtilities.h>
+
 #define WITH_LAME_THINGS 0
 
 #define ASSERT_INITIALISED	PASSERT(*DPTR(_DNOTNULL(_::initialised)))

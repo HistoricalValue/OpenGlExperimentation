@@ -1,5 +1,6 @@
 #include <stdafx.h>
 
+#include <my/gl/shapes/ShapeComposition.h>
 
 #define FOR_EACH_SHAPE		for (Shape* const* shape = &shapes[0]; shape < &shapes[i]; ++shape)
 

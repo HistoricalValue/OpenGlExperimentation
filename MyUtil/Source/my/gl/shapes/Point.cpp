@@ -1,5 +1,7 @@
 #include <stdafx.h>
 
+#include <my/gl/shapes/Point.h>
+
 namespace my { namespace gl { namespace shapes {
 
 //////////////////////////////////////////////////////////

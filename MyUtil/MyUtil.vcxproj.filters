@@ -61,6 +61,12 @@
     <Filter Include="Header Files\my\algo">
       <UniqueIdentifier>{1e420400-2dc1-4b04-bdcf-22af86acd3b3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\my\gl\adapters">
+      <UniqueIdentifier>{13bd5cb2-d1ba-4a2a-a169-73c92ffa402f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\my\gl\adapters">
+      <UniqueIdentifier>{db39c52d-1212-439c-b246-642ebcbca338}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -121,9 +127,6 @@
       <Filter>Header Files\my\gl\shaders</Filter>
     </ClInclude>
     <ClInclude Include="Include\glt.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\MyGL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\my\gl\shapes\Cube.h">
@@ -267,6 +270,12 @@
     <ClInclude Include="Include\my\gl\shapes\ShapeCompositionFactory_inl.h">
       <Filter>Header Files\my\gl\shapes</Filter>
     </ClInclude>
+    <ClInclude Include="Include\my\gl\adapters\Buffer.h">
+      <Filter>Header Files\my\gl\adapters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\Program Files\Microsoft SDKs\Windows\v7.0A\Include\gl\GL.h">
+      <Filter>Header Files\gl</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\MyLogger.cpp">
@@ -388,6 +397,9 @@
     </ClCompile>
     <ClCompile Include="Source\random.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\my\gl\adapters\Buffer.cpp">
+      <Filter>Source Files\my\gl\adapters</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

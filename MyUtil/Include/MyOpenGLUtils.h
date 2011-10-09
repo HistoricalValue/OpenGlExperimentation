@@ -6,8 +6,8 @@
 
 #include <PConfigurations.h>
 
-#include <gl/GL.h>
-#include <gl/GLU.h>
+#include <nmutil/OpenGlExtensions.h>
+
 
 #if defined( P_INLINING )
 #	define __MY_OPEN_GL_UTILS__CONST_STRING_LINKING		P_INLINE

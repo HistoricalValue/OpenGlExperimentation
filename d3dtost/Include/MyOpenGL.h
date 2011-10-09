@@ -2,7 +2,6 @@
 #define __MY_OPEN_GL__H__
 
 #include "MyWindow.h"
-#include "MyGL.h"
 
 #define VAN_POSITION	"position"
 #define VAN_COLOUR		"colour"

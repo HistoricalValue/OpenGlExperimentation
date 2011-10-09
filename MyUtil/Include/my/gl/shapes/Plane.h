@@ -4,6 +4,7 @@
 #include <MyUtil.h>
 #include <my/gl/shapes/NShapesComposition_inl.h>
 #include <PTypes.h>
+#include <my/gl/shapes/Triangle.h>
 
 namespace my { namespace gl { namespace shapes {
 

@@ -2,7 +2,6 @@
 #define __MY_UTIL__GLT__H__
 
 #include <MyUtil.h>
-#include <MyGL.h>
 #include <ImageDecoder.h>
 
 namespace glt {

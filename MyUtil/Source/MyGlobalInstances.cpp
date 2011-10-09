@@ -1,5 +1,6 @@
 #include <stdafx.h>
 
+#include <MyGlobalInstances.h>
 
 #define __TRIVIAL_IMPLEMENTATION												\
 		static Value* value(NULL);												\

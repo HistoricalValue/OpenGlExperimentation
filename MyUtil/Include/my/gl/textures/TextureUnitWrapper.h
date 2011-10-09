@@ -4,6 +4,8 @@
 #include <MyUtil.h>
 #include <PConfigurations.h>
 
+#include <MyOpenGLUtils.h>
+
 #ifdef P_INLINING
 #	define __MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL__LINKAGE	P_INLINE
 #else

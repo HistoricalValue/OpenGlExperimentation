@@ -1,4 +1,7 @@
 #include <stdafx.h>
+#include <glt.h>
+
+#include <ImageLoaderTraits_inl.h>
 
 namespace glt {
 

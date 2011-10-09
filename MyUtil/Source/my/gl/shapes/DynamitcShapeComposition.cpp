@@ -1,5 +1,8 @@
 #include <stdafx.h>
 
+#include <my/gl/shapes/DynamicShapeComposition.h>
+#include <my/gl/shapes/ShapeUtilities.h>
+
 //////////////////////////////////////////////////////////
 
 namespace my { namespace gl { namespace shapes {

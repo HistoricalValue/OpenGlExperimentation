@@ -3,6 +3,7 @@
 
 #include <MyUtil.h>
 #include <my/gl/math/Vector4.h>
+#include <my/gl/shapes/Transformable.h>
 
 namespace my { namespace gl { namespace shapes {
 
