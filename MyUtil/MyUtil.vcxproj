@@ -149,6 +149,7 @@
     <ClInclude Include="Include\MyWinUtils.h" />
     <ClInclude Include="Include\my\algo\ShapeProducers.h" />
     <ClInclude Include="Include\my\gl\adapters\Buffer.h" />
+    <ClInclude Include="Include\my\gl\adapters\BufferManager.h" />
     <ClInclude Include="Include\my\gl\math\Matrix4x4.h" />
     <ClInclude Include="Include\my\gl\math\Transformations.h" />
     <ClInclude Include="Include\my\gl\math\Vector4.h" />
@@ -201,6 +202,7 @@
     <ClInclude Include="Include\targetver.h" />
     <ClCompile Include="Source\ankh\shapes\Buffer.cpp" />
     <ClCompile Include="Source\my\gl\adapters\Buffer.cpp" />
+    <ClCompile Include="Source\my\gl\adapters\BufferManager.cpp" />
     <ClCompile Include="Source\my\gl\math\Transformations.cpp" />
     <ClCompile Include="Source\my\gl\shapes\Axes.cpp" />
     <ClCompile Include="Source\my\gl\shapes\ColourFactory.cpp" />

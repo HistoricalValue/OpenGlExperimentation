@@ -24,10 +24,14 @@ public:
 		size_t const	numberOfElements;
 		size_t const	bytesize;
 		Deleter* const	deleter;
+		ptrdiff_t const	offset;		// offset in buffer, after aligning
 
-		Entry (void* const _data, size_t const _numberOfElements, size_t const _bytesize, Deleter* const _deleter):
-			data(_data), numberOfElements(_numberOfElements), bytesize(_bytesize), deleter(_deleter) {}
-		Entry (Entry const& e): data(e.data), numberOfElements(e.numberOfElements), bytesize(e.bytesize), deleter(e.deleter) {}
+		Entry	WithOffset(ptrdiff_t const offset) const
+					{ return Entry(data, numberOfElements, bytesize, deleter, offset); }
+
+		Entry (void* const _data, size_t const _numberOfElements, size_t const _bytesize, Deleter* const _deleter, ptrdiff_t const _offset = -1):
+			data(_data), numberOfElements(_numberOfElements), bytesize(_bytesize), deleter(_deleter), offset(_offset) {}
+		Entry (Entry const& e): data(e.data), numberOfElements(e.numberOfElements), bytesize(e.bytesize), deleter(e.deleter), offset(e.offset) {}
 	};
 
 	size_t		Add (Entry const& entry);
@@ -39,12 +43,22 @@ public:
 
 	void		Commit (void);
 	
+	bool		InvariantsHold (void) const
+					{ return (!IsCommitted() || entries.size() == 0); }
+
+	void		Clear (void);
+
+	GLuint		GetId (void) const
+					{ return id; }
+
+	void		Bind (void) const;
+	bool		IsBound (void) const;
+	void		Unbind (void) const;
 
 private:
 	friend class BufferManager;
 	Buffer (GLuint const _id):
 		id(_id),
-		offset(0),
 		entries(),
 		committed(false),
 		totalBytesize(0u)
@@ -55,7 +69,6 @@ private:
 	typedef std::list<Entry>	Entries;
 
 	GLuint const			id;
-	size_t					offset;
 	#pragma warning( push )
 	#pragma warning( disable: 4251 )
 	Entries					entries;
@@ -64,18 +77,11 @@ private:
 	size_t					totalBytesize;
 
 	~Buffer (void) {
-		Entries::const_iterator const entries_end(entries.end());
-		for (Entries::const_iterator i(entries.begin()); i != entries_end; ++i)
-			i->deleter->operator ()(i->data);
-	}
-};
+		PASSERT(InvariantsHold())
 
-// linkage specified in forward declaration
-class BufferManager {
-public:
-	USINGLETON_APISTYLE_DECLARE_PUBLICSTDMETHODS
-	USINGLETON_APISTYLE_DECLARE_GETTER(BufferManager)
-private:
+		if (!IsCommitted())
+			Clear();
+	}
 };
 
 }}} // my::gl::adapters

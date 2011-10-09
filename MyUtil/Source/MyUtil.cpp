@@ -4,6 +4,7 @@
 #include <stdafx.h>
 #include <MyUtil.h>
 #include <my/gl/shapes/ShapeUtilities.h>
+#include <my/gl/adapters/BufferManager.h>
 
 // This is an example of an exported variable
 MYUTIL_API int nMyUtil=0;
@@ -27,9 +28,12 @@ namespace my {
 
 	void Initialise (void) {
 		gl::shapes::ShapeUtilities::Initialise();
+		gl::adapters::BufferManager::SingletonCreate();
+
 	}
 
 	void CleanUp (void) {
+		gl::adapters::BufferManager::SingletonDestroy();
 		gl::shapes::ShapeUtilities::CleanUp();
 	}
 

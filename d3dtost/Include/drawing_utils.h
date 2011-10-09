@@ -5,6 +5,7 @@
 #include <PAssert.h>
 
 #include <SurfacesTools.h>
+#include <my/gl/adapters/BufferManager.h>
 
 namespace {
 
@@ -126,6 +127,11 @@ public:
 	virtual				~InverseRange (void) {}
 
 	virtual	bool		lt (T const& a, T const& b) const	{ return Base::lt(b, a); }
+};
+
+
+struct IneffectiveBufferEntryDeleter: ::my::gl::adapters::Buffer::Deleter {
+	void operator () (GLvoid*) {}
 };
 
 } //
