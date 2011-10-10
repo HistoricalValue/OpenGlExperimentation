@@ -6,6 +6,7 @@
 #include <my/gl/adapters/Buffer.h>
 #include <my/gl/adapters/BufferManager.h>
 #include <ufiles.h>
+#include <uderivablecheck.h>
 
 #define WITH_NORMALS	1
 #define	WITH_GRID		1
