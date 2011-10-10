@@ -1,8 +1,6 @@
 #include <stdafx.h>
 #include <glt.h>
 
-#include <ImageLoaderTraits_inl.h>
-
 namespace glt {
 
 // Define targa header. This is only used locally.
@@ -45,7 +43,7 @@ static inline bool successful_whole_read (GenericReader& r, void* const buf, siz
 }
 
 ankh::images::Image* TGADecoder::Decode (
-		ankh::images::GenericReader&				reader,
+		GenericReader&								reader,
 		ankh::images::ImageCharacteristics const&	imgchar) {
 	DASSERT(imgchar.fmt == handledFormat);
 
@@ -96,7 +94,7 @@ ankh::images::Image* TGADecoder::Decode (
 		default:
 			DASSERT(!"Invalid program state");
 	}
-	DASSERT(ankh::images::PixelFormats::Bytesize(pixelFormat) == depth);
+	DASSERT(ankh::images::Bytesize(pixelFormat) == depth);
 
 	using ankh::images::Image;
 	// Allocate an image

@@ -23,7 +23,7 @@ namespace glt {
 	public:
 
 		virtual ankh::images::Image* Decode (
-				ankh::images::GenericReader&,
+				GenericReader&,
 				ankh::images::ImageCharacteristics const&);
 		virtual ankh::images::ImageFormatId const& GetFormatId (void) const;
 		virtual bool CanHandleFormat (ankh::images::ImageFormatId const& fmt) const;
