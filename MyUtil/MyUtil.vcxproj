@@ -200,7 +200,6 @@
     <ClInclude Include="Include\my\gl\textures\TextureUnit_inl.h" />
     <ClInclude Include="Include\stdafx.h" />
     <ClInclude Include="Include\targetver.h" />
-    <ClCompile Include="Source\ankh\shapes\Buffer.cpp" />
     <ClCompile Include="Source\my\gl\adapters\Buffer.cpp" />
     <ClCompile Include="Source\my\gl\adapters\BufferManager.cpp" />
     <ClCompile Include="Source\my\gl\math\Transformations.cpp" />

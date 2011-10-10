@@ -303,6 +303,7 @@ void Initialise (void) {
 		cpoints_i.reserve(numcpoints_i);
 		cpoints.reserve(numcpoints_j);
 		knots_j.reserve(numknots_j);
+
 		knots_i.reserve(numknots_i);
 
 		FillUniformly(knots_j, numknots_j, 0.0f, 1.0f);
@@ -337,8 +338,8 @@ void Initialise (void) {
 		cpoints_i.at(15).at(5) *= 0.5f;
 
 		_::_surf = DNEWCLASS(Surface, (knots_j.begin(), knots_j.end(), knots_i.begin(), knots_i.end(), cpoints_i.begin(), cpoints_i.end(), "BOB ROSS"));
-		_::unew_mesh();
 		ankh::shapes::MeshLoader::SingletonCreate();
+		_::unew_mesh();
 
 		DASSERT(_::VerifyBaseFunctions(FirstCrossSection(*_::_surf).m(), knots_i));
 
@@ -348,8 +349,8 @@ void Initialise (void) {
 }
 
 void CleanUp (void) {
-	ankh::shapes::MeshLoader::SingletonDestroy();
 	_::udelete_mesh();
+	ankh::shapes::MeshLoader::SingletonDestroy();
 	udelete(_::_surf);
 }
 

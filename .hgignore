@@ -32,3 +32,5 @@ FileJanitor/nbproject/private
 Debug_Static
 ExtraLibs-Debug_Static
 *.obj
+meshes
+FileJanitor.jar
