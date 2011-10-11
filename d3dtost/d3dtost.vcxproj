@@ -209,6 +209,9 @@
     <ProjectReference Include="..\..\ankh\Meshes\Project\Meshes.vcxproj">
       <Project>{8346784f-011e-422a-b0cc-f383a21c4b69}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\ankh\NURBS\Project\Nurbs.vcxproj">
+      <Project>{bc821220-382d-4691-8bbe-6db8f45da3f3}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\ankh\Properties\Project\Properties.vcxproj">
       <Project>{4f23ca23-4f87-47db-9af2-70c328513d9a}</Project>
     </ProjectReference>

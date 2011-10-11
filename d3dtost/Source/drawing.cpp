@@ -31,10 +31,12 @@ using my::gl::adapters::BufferManager;
 
 
 namespace _ {
-	static const bool	WITH_DRAW_POINTS	(false);
-	static const bool	WITH_DRAW_LINES		(false);
-	static const bool	WITH_DRAW_TRIANGLES	(false);
-	static const bool	WITH_DRAW_TEXTURED	(true);
+	static const bool	TEST_TEXTURES		(false);
+
+	static const bool	WITH_DRAW_POINTS	(!TEST_TEXTURES);
+	static const bool	WITH_DRAW_LINES		(!TEST_TEXTURES);
+	static const bool	WITH_DRAW_TRIANGLES	(!TEST_TEXTURES);
+	static const bool	WITH_DRAW_TEXTURED	(TEST_TEXTURES);
 	//
 	static const bool	WITH_CAMERA			(false);
 
