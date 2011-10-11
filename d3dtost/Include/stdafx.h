@@ -4,7 +4,7 @@
 
 #include "nmutil/OpenGlExtensionManager.h"
 
-#include "TextureUnitManager_inl.h"
+#include "TextureUnitManager.h"
 #include "ImageDecoder.h"
 #include "TextureManager.h"
 #include "ImageLoader.h"
