@@ -10,8 +10,12 @@ using namespace trig;
 using namespace types;
 
 static char const* const meshesnames[] = {
-	"moon_valley_bumps_1700_with_ao17_aotime891116ms",
-	"moon_valley_bumps_1700_with_ao9_aotime455218ms"
+	"moon_vallye_bumps_prec2e1_triangles480_ao9_aotime397",
+	"moon_vallye_bumps_prec1e1_triangles442_ao9_aotime464",
+	"moon_vallye_bumps_prec5e-1_triangles1768_ao9_aotime7052",
+	"moon_vallye_bumps_prec4e-1_triangles3876_ao9_aotime33140",
+	"moon_vallye_bumps_prec3e-1_triangles6939_ao9_aotime104954",
+	"moon_vallye_bumps_prec2e-1_triangles12610_ao9_aotime343817"
 };
 
 static void Savidise (void) {

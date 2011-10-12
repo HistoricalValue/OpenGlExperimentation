@@ -63,13 +63,13 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>.\Include;..\MyUtil\Include;..\..\ankh\Images\Include;..\..\ankh\Textures\Include;..\..\ankh\Surfaces\Include;$(DELTA)UtilLib\Include;$(DELTA)DebugLib\Include;$(DELTA)FileReadersLib\Include;..\freeglut-2.6.0\include;..\..\ankh\Math\Include;..\..\ankh\Meshes\Include;..\..\ankh\BoundingVolumes\Include;..\..\ankh\Properties\Include;$(IncludePath)</IncludePath>
+    <IncludePath>.\Include;..\MyUtil\Include;..\..\ankh\Images\Include;..\..\ankh\Textures\Include;..\..\ankh\NURBS\Include;$(DELTA)UtilLib\Include;$(DELTA)DebugLib\Include;$(DELTA)FileReadersLib\Include;..\freeglut-2.6.0\include;..\..\ankh\Math\Include;..\..\ankh\Meshes\Include;..\..\ankh\BoundingVolumes\Include;..\..\ankh\Properties\Include;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <LibraryPath>..\ExtraLibs-Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>.\Include;..\MyUtil\Include;..\..\ankh\Images\Include;..\..\ankh\Textures\Include;..\..\ankh\Surfaces\Include;$(DELTA)UtilLib\Include;$(DELTA)DebugLib\Include;$(DELTA)FileReadersLib\Include;..\freeglut-2.6.0\include;..\..\ankh\Math\Include;..\..\ankh\Meshes\Include;..\..\ankh\BoundingVolumes\Include;..\..\ankh\Properties\Include;$(IncludePath)</IncludePath>
+    <IncludePath>.\Include;..\MyUtil\Include;..\..\ankh\Images\Include;..\..\ankh\Textures\Include;..\..\ankh\NURBS\Include;$(DELTA)UtilLib\Include;$(DELTA)DebugLib\Include;$(DELTA)FileReadersLib\Include;..\freeglut-2.6.0\include;..\..\ankh\Math\Include;..\..\ankh\Meshes\Include;..\..\ankh\BoundingVolumes\Include;..\..\ankh\Properties\Include;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <LibraryPath>..\ExtraLibs-Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>

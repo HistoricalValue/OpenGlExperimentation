@@ -1,6 +1,7 @@
 #include <stdafx.h>
 
 #include <PConfigurations.h>
+#include <my/gl/Shapes/Line.h>
 
 #ifndef P_INLINING
 #	define __MY_UTIL__MY__GL__SHAPES__LINE__DEFINING
