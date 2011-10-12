@@ -78,7 +78,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;D3D_DEBUG_INFO;UTILITIES__IMPORTS;TEXTURE_MANAGER__IMPORTS;IMAGE_LOADER__IMPORTS;SURFACES__IMPORTS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;D3D_DEBUG_INFO;UTILITIES__IMPORTS;TEXTURE_MANAGER__IMPORTS;IMAGE_LOADER__IMPORTS;NURBS__IMPORTS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
@@ -97,7 +97,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;D3D_DEBUG_INFO;UTILITIES__IMPORTS;TEXTURE_MANAGER__STATIC_LIB;IMAGE_LOADER__STATIC_LIB;SURFACES__STATIC_LIB;MYUTIL_STATIC_LIB;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;D3D_DEBUG_INFO;UTILITIES__IMPORTS;TEXTURE_MANAGER__STATIC_LIB;IMAGE_LOADER__STATIC_LIB;NURBS__STATIC_LIB;MYUTIL_STATIC_LIB;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
@@ -117,7 +117,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;D3D_DEBUG_INFO;UTILITIES__IMPORTS;TEXTURE_MANAGER__IMPORTS;IMAGE_LOADER__IMPORTS;SURFACES__IMPORTS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;D3D_DEBUG_INFO;UTILITIES__IMPORTS;TEXTURE_MANAGER__IMPORTS;IMAGE_LOADER__IMPORTS;NURBS__IMPORTS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
