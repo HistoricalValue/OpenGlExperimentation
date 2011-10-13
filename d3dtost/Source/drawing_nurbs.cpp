@@ -20,6 +20,7 @@
 #define WITH_OPTIMISED_DE_BOOR					1
 #define WITH_FAST_CONTROL_POINT_INTERPOLATOR	1
 #define WITH_OPTIMISED_BLENDING					0
+#define WITH_MESH_AO_CREATOR					1
 
 //////////////////////////////////////////////////////////////////////////////////////
 
@@ -375,13 +376,13 @@ void tesselate (ankh::nurbs::TesselationParameters const* const _tp) {
 	typedef std::vector<Triangle>	Triangles;
 	using ankh::shapes::			MeshElement;
 	using ankh::shapes::			MeshAdjacencyElement;
-	using ankh::nurbs::			Surface;
+	using ankh::nurbs::				Surface;
 	using my::gl::shapes::			Colour;
 	using my::gl::math::			Vector4;
 	using my::gl::shapes::			Line;
 	using my::gl::shapes::			Vertex;
 	using ankh::shapes::			Mesh;
-	using ankh::nurbs::			TesselationParameters;
+	using ankh::nurbs::				TesselationParameters;
 
 	TesselationParameters const defaulttp(2e1f, false, ankh::nurbs::DefaultPrecision());
 	TesselationParameters const& tp(_tp == NULL? defaulttp : *_tp);
@@ -404,19 +405,37 @@ void tesselate (ankh::nurbs::TesselationParameters const* const _tp) {
 			<t>(surf, tp, elements);
 		}
 
-		{	timer t03("compute and update AO for tesselated mesh");
-			ankh::ao::InsertAmbientOcclusionFactors(elements);
+		if (WITH_MESH_AO_CREATOR) {
+		}
+		else {
+			{	timer t04("compute and update AO for tesselated mesh");
+				ankh::ao::InsertAmbientOcclusionFactors(elements);
+			}
+			{	timer t04("write AO factors to file");
+				_::MeshElements::const_iterator end(elements.end()), i(elements.begin());
+				std::ofstream fout("./AOS.txt");
+				DASSERT(fout.good());
+				for (; i != end; ++i)
+					fout << i->GetAmbientOcclusion(0) << ", " << i->GetAmbientOcclusion(1) << ", " << i->GetAmbientOcclusion(2) << std::endl;
+			}
 		}
 
-		{	timer t03("write AO factors to file");
-			_::MeshElements::const_iterator end(elements.end()), i(elements.begin());
-			std::ofstream fout("./AOS.txt");
-			DASSERT(fout.good());
-			for (; i != end; ++i)
-				fout << i->GetAmbientOcclusion(0) << ", " << i->GetAmbientOcclusion(1) << ", " << i->GetAmbientOcclusion(2) << std::endl;
+		if (WITH_MESH_AO_CREATOR) {
+			ankh::ao::AmbientOcclusionCreatorFactory::Initialise();
+			// TODO weird AOcretor API: AO needs the mesh, so it takes it in the form of MeshELements. Then,
+			// it is set in the Mesh, and then the mesh updated with the same MeshElements. It's a hole.
+			_::getmesh().SetAmbientOcclusionCreator(ankh::ao::AmbientOcclusionCreatorFactory::New(&elements));
 		}
 
-		_::getmesh().Update(elements);
+		{
+			std::string msg(std::string("updating mesh") + (WITH_MESH_AO_CREATOR? " and calculating AOs too" : ""));
+			timer t03(msg.c_str());
+			_::getmesh().Update(elements);
+		}
+
+		if (WITH_MESH_AO_CREATOR) {
+			ankh::ao::AmbientOcclusionCreatorFactory::CleanUp();
+		}
 	}
 
 	{
