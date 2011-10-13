@@ -420,11 +420,14 @@ void tesselate (ankh::nurbs::TesselationParameters const* const _tp) {
 			}
 		}
 
+		ankh::shapes::Mesh::AmbientOcclusionCreator* aoc(NULL);
+
 		if (WITH_MESH_AO_CREATOR) {
 			ankh::ao::AmbientOcclusionCreatorFactory::Initialise();
+			aoc = (ankh::ao::AmbientOcclusionCreatorFactory::New(&elements));
 			// TODO weird AOcretor API: AO needs the mesh, so it takes it in the form of MeshELements. Then,
 			// it is set in the Mesh, and then the mesh updated with the same MeshElements. It's a hole.
-			_::getmesh().SetAmbientOcclusionCreator(ankh::ao::AmbientOcclusionCreatorFactory::New(&elements));
+			_::getmesh().SetAmbientOcclusionCreator(aoc);
 		}
 
 		{
@@ -434,6 +437,8 @@ void tesselate (ankh::nurbs::TesselationParameters const* const _tp) {
 		}
 
 		if (WITH_MESH_AO_CREATOR) {
+			_::getmesh().SetAmbientOcclusionCreator(NULL);
+			ankh::ao::AmbientOcclusionCreatorFactory::Delete(aoc);
 			ankh::ao::AmbientOcclusionCreatorFactory::CleanUp();
 		}
 	}
