@@ -19,6 +19,7 @@ extern void tesselate (ankh::nurbs::Surface const& surf, ankh::nurbs::Tesselatio
 extern void generateindexedbuffer (void);
 extern void computeboundinvolume (void);
 extern void generateaabb (ankh::shapes::MeshAABBTree&);
+extern void fairprepareao (void);
 extern void updateao (ankh::shapes::Mesh::AmbientOcclusionCreator const&);
 extern void updateaotraditional (void);
 //

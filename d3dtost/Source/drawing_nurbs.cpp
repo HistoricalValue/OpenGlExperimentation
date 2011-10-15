@@ -247,6 +247,11 @@ void generateaabb (ankh::shapes::MeshAABBTree& aabb) {
 	aabb(_::getmesh());
 }
 
+void fairprepareao (void) {
+	_::getmesh().ResetCreators();
+	_::getmesh().SelectiveUpdate(false, false, true);
+}
+
 void updateao (ankh::shapes::Mesh::AmbientOcclusionCreator const& aoc) {
 	_::getmesh().SetAmbientOcclusionCreator(&aoc);
 	{	timer t00("updating ambient occlusion", _::timesFillingCallback);
