@@ -34,3 +34,4 @@ ExtraLibs-Debug_Static
 *.obj
 meshes
 FileJanitor.jar
+d3dtost/Console_log.txt

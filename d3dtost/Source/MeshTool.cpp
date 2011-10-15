@@ -21,6 +21,7 @@ using namespace my::drawing::nurbs;
 using namespace volumes;
 
 static void Savidise (std::list<std::string> const& generatedIds) {
+	BoundingVolume::SingletonCreate();
 	MeshLoader::SingletonCreate();
 
 	for (std::list<std::string>::const_iterator meshname(generatedIds.begin()); meshname != generatedIds.end(); ++meshname) {
@@ -65,6 +66,7 @@ static void Savidise (std::list<std::string> const& generatedIds) {
 	}
 
 	MeshLoader::SingletonDestroy();
+	BoundingVolume::SingletonDestroy();
 }
 
 static void IdForStep (char (*buf)[1024], char const* const base, float const step)
@@ -102,42 +104,48 @@ static inline void WriteAllMeshesStats (MeshesStats const& allstats) {
 	my::global::GetConsole() << " done\n";
 }
 
-static void Tesselate (std::list<std::string>& generatedIds) {
-	Unit steps[] = { 2e0f, 1e0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f };
+static void Tesselate (std::list<std::string>& generatedIds, bool const doWork) {
+	Unit steps[] = { 2e0f }; //, 1e0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f };
 	MeshesStats	allstats;
 	Surface bob(BobRoss());
 
 	Initialise();
 
 	FOREACH(Unit, steps, step) {
-		allstats.New(*step);
-
-		SetTimesList(allstats.GetTimesList());
-
-		tesselate(bob, &TesselationParameters(*step, false, DefaultPrecision()));
-		generateindexedbuffer();
-		computeboundinvolume();
-		
-		{
-			MeshAABBTree aabb;
-			generateaabb(aabb);
-			ComputeMeshAmbientOcclusion aoc(ComputeMeshAmbientOcclusion::Sampling9, &aabb);
-			updateao(aoc);
-		}
-		{
-			updateaotraditional();
-		}
-
-		allstats.SetNumEls(GetNumberOfMeshElements());
-
 		{	char buf[1024];
 			IdForStep(&buf, "moon_valley", *step);
-			store(&buf[0]);
 			generatedIds.push_back(&buf[0]);
+		}
+		if (doWork) {
+			allstats.New(*step);
+
+			SetTimesList(allstats.GetTimesList());
+
+			tesselate(bob, &TesselationParameters(*step, false, DefaultPrecision()));
+			generateindexedbuffer();
+			computeboundinvolume();
+		
+			{
+				updateaotraditional();
+			}
+			{
+				MeshAABBTree aabb;
+				generateaabb(aabb);
+				ComputeMeshAmbientOcclusion aoc(ComputeMeshAmbientOcclusion::Sampling9, &aabb);
+				updateao(aoc);
+			}
+
+			allstats.SetNumEls(GetNumberOfMeshElements());
+
+			store(generatedIds.back().c_str());
 		}
 	}
 
-	WriteAllMeshesStats(allstats);
+	if (doWork)
+		WriteAllMeshesStats(allstats);
+	else
+		my::global::GetConsole() << "skipping work...\n";
+
 	CleanUp();
 }
 
@@ -146,7 +154,7 @@ namespace my {
 void MeshProcess (void) {
 	std::list<std::string> generatedIds;
 
-	Tesselate(generatedIds);
+	Tesselate(generatedIds, true);
 	Savidise(generatedIds);
 }
 

@@ -141,7 +141,7 @@ namespace my {
 
 		if (_::BE_A_MESH_TOOL) {
 			extern void MeshProcess (void);
-			console << _T("Being a MESH TOOL\n");
+			console << "Being a MESH TOOL\n";
 			MeshProcess();
 		}
 		else
@@ -158,7 +158,7 @@ namespace my {
 					&& opengl.Initialise()
 					&& opengl.IsValid()
 				) {
-				console << _T("Hello comrades\n");// << std::endl;
+				console << "Hello comrades\n";// << std::endl;
 
 				_::DrawData drawData;
 				drawData.Set(my::drawing::setup());

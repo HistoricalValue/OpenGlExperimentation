@@ -259,7 +259,7 @@ void updateaotraditional (void) {
 	_::getmesh().SetAmbientOcclusionCreator(aoc);
 	ankh::ao::AmbientOcclusionCreatorFactory::Delete(aoc);
 
-	{	timer t00("updating ambient occlusion (traditional)");
+	{	timer t00("updating ambient occlusion (traditional)", _::timesFillingCallback);
 		_::getmesh().SelectiveUpdate(false, false, true);
 	}
 }
@@ -354,6 +354,7 @@ void Initialise (void) {
 	using namespace ankh::nurbs;
 	using namespace ankh::nurbs::algo;
 
+	ankh::shapes::volumes::BoundingVolume::SingletonCreate();
 	ankh::shapes::MeshLoader::SingletonCreate();
 	ankh::ao::AmbientOcclusionCreatorFactory::Initialise();
 	_::unew_mesh();
@@ -369,6 +370,7 @@ void CleanUp (void) {
 	_::udelete_mesh();
 	ankh::ao::AmbientOcclusionCreatorFactory::CleanUp();
 	ankh::shapes::MeshLoader::SingletonDestroy();
+	ankh::shapes::volumes::BoundingVolume::SingletonDestroy();
 	udeleteunlessnull(_::timesFillingCallback);
 }
 

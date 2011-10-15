@@ -12,8 +12,11 @@ namespace my {
 	Console::Console (void):
 		outProxy(),
 		errProxy(),
-		consoleCreated()
+		consoleCreated(),
+		log("Console_log.txt", std::ios::out | std::ios::trunc)
 	{
+		PASSERT(!log.bad())
+
 		consoleCreated = AllocConsole() == TRUE;
 		if (!consoleCreated)
 			_T_STR errstr(LastErrorString());
@@ -45,6 +48,8 @@ namespace my {
 
 	#ifdef _UNICODE
 	void Console::WriteToOutputStreamA (char const* const str) {
+		log << str;
+
 		PASSERT(IsValid())
 		DWORD const	charsToWrite	(strlen(str));
 		DWORD		charsWritten	(0);
