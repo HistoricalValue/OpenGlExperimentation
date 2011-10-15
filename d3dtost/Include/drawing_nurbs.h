@@ -15,12 +15,16 @@ extern ankh::nurbs::Surface const	BobRoss (void);
 
 // after tesselation, the following group operates on the produced mesh
 extern void tesselate (ankh::nurbs::Surface const& surf, ankh::nurbs::TesselationParameters const* const = NULL);
-extern void store (char const* id);
-extern void load (char const* id);
+//
 extern void generateindexedbuffer (void);
 extern void computeboundinvolume (void);
 extern void generateaabb (ankh::shapes::MeshAABBTree&);
 extern void updateao (ankh::shapes::Mesh::AmbientOcclusionCreator const&);
+extern void updateaotraditional (void);
+//
+extern void store (char const* id);
+extern void load (char const* id);
+extern void loadinto (char const* id, ankh::shapes::Mesh&);
 //
 extern void addnormalsto (my::gl::shapes::ShapeCompositionFactory& f);
 extern void addastrianglesto (my::gl::shapes::ShapeCompositionFactory& f);

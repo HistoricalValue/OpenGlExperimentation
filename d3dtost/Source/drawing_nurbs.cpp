@@ -12,6 +12,7 @@
 #include <drawing_nurbs.h>
 
 #include <SurfaceTesselation.h>
+#include <../_trash/AmbientOcclusion.h>
 
 //////////////////////////////////////////////////////////////////////////////////////
 
@@ -248,8 +249,19 @@ void generateaabb (ankh::shapes::MeshAABBTree& aabb) {
 
 void updateao (ankh::shapes::Mesh::AmbientOcclusionCreator const& aoc) {
 	_::getmesh().SetAmbientOcclusionCreator(&aoc);
-	timer t00("updating ambient occlusion", _::timesFillingCallback);
-	_::getmesh().SelectiveUpdate(false, false, true);
+	{	timer t00("updating ambient occlusion", _::timesFillingCallback);
+		_::getmesh().SelectiveUpdate(false, false, true);
+	}
+}
+
+void updateaotraditional (void) {
+	ankh::shapes::Mesh::AmbientOcclusionCreator* const aoc(ankh::ao::AmbientOcclusionCreatorFactory::New(ankh::ao::SamplingRate_9, &_::getmesh().GetElements()));
+	_::getmesh().SetAmbientOcclusionCreator(aoc);
+	ankh::ao::AmbientOcclusionCreatorFactory::Delete(aoc);
+
+	{	timer t00("updating ambient occlusion (traditional)");
+		_::getmesh().SelectiveUpdate(false, false, true);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -343,6 +355,7 @@ void Initialise (void) {
 	using namespace ankh::nurbs::algo;
 
 	ankh::shapes::MeshLoader::SingletonCreate();
+	ankh::ao::AmbientOcclusionCreatorFactory::Initialise();
 	_::unew_mesh();
 
 	DASSERT(_::VerifyBaseFunctions(
@@ -354,6 +367,7 @@ void Initialise (void) {
 
 void CleanUp (void) {
 	_::udelete_mesh();
+	ankh::ao::AmbientOcclusionCreatorFactory::CleanUp();
 	ankh::shapes::MeshLoader::SingletonDestroy();
 	udeleteunlessnull(_::timesFillingCallback);
 }
@@ -458,7 +472,7 @@ void store (char const* const id) {
 	}
 }
 
-void load (char const* const id) {
+void loadinto (char const* const id, ankh::shapes::Mesh& into) {
 	using namespace ankh::shapes;
 
 	std::string loadpath;
@@ -467,10 +481,13 @@ void load (char const* const id) {
 	Mesh* m(MeshLoader::GetSingleton().Load(loadpath));
 
 	DASSERT(m);
-	_::getmesh() =(*DPTR(m));
+	into =(*DPTR(m));
 
 	MeshLoader::GetSingleton().Unload(m);
+}
 
+void load (char const* const id) {
+	loadinto(id, _::getmesh());
 	LogInfo_MeshStats();
 }
 

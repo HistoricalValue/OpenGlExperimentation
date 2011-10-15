@@ -9,6 +9,8 @@
 #include <BuiltinShapesBoundingVolume.h>
 #include <ComputeMeshAmbientOcclusion.h>
 
+#include <cstdio>
+
 using namespace ankh;
 using namespace shapes;
 using namespace math;
@@ -18,38 +20,26 @@ using namespace nurbs;
 using namespace my::drawing::nurbs;
 using namespace volumes;
 
-static char const* const meshesnames[] = {
-	"moon_vallye_bumps_prec2e1_triangles480_ao9_aotime397",
-	"moon_vallye_bumps_prec1e1_triangles442_ao9_aotime464",
-	"moon_vallye_bumps_prec5e-1_triangles1768_ao9_aotime7052",
-	"moon_vallye_bumps_prec4e-1_triangles3876_ao9_aotime33140",
-	"moon_vallye_bumps_prec3e-1_triangles6939_ao9_aotime104954",
-	"moon_vallye_bumps_prec2e-1_triangles12610_ao9_aotime343817"
-};
-
-#define FOREACH_MESHNAME(VARNAME)	\
-	for (char const* const* VARNAME = &meshesnames[0]; VARNAME < &meshesnames[_countof(meshesnames)]; ++ VARNAME)
-
-static void Savidise (void) {
+static void Savidise (std::list<std::string> const& generatedIds) {
 	MeshLoader::SingletonCreate();
 
-	FOREACH_MESHNAME(meshname) {
+	for (std::list<std::string>::const_iterator meshname(generatedIds.begin()); meshname != generatedIds.end(); ++meshname) {
 		std::string const path		(std::string("../meshes/") + *meshname + ".msh");
 		std::string const outpath	(std::string("../meshes/") + "savidised_" + *meshname + ".msh");
 
-		my::global::GetConsole() << "Savidising " << *meshname << " . . . ";
+		my::global::GetConsole() << "Savidising " << meshname->c_str() << " . . . ";
 
 		my::global::GetConsole() << "loading . . . ";
-		Mesh* const m = MeshLoader::GetSingleton().Load(path);
-		DASSERT(m);
+		Mesh m;
+		loadinto(meshname->c_str(), m);
 
 		my::global::GetConsole() << "savidising . . . ";
 		{
 			typedef Mesh::Elements::const_iterator ite_t;
 			Mesh::Elements inverted;
 
-			ite_t const end(m->GetElements().end());
-			for (ite_t el(m->GetElements().begin()); el != end; ++el) {
+			ite_t const end(m.GetElements().end());
+			for (ite_t el(m.GetElements().begin()); el != end; ++el) {
 				inverted.push_back(MeshElement(Triangle(el->a, el->c, el->b)));
 				if (el->HasAmbientOcclusion()) {
 					inverted.back().MakeAmbientOcclusion();
@@ -65,14 +55,11 @@ static void Savidise (void) {
 				}
 			}
 
-			m->Update(inverted);
+			m.Update(inverted);
 		}
 
 		my::global::GetConsole() << "storing . . . ";
-		m->StoreBin(outpath);
-
-		my::global::GetConsole() << "unloading . . . ";
-		MeshLoader::GetSingleton().Unload(m);
+		m.StoreBin(outpath);
 
 		my::global::GetConsole() << "done\n";
 	}
@@ -91,14 +78,32 @@ struct MeshStats {
 struct MeshesStats {
 	typedef std::pair<Unit, MeshStats>	MeshStatsPerStep;
 	std::list<MeshStatsPerStep>			stats;
+	typedef std::list<MeshStatsPerStep>::const_iterator	Iterator;
 
 	void		New (Unit const step) { stats.push_back(MeshStatsPerStep(step, MeshStats())); }
 	TimesList*	GetTimesList (void) { return &stats.back().second.times; }
 	void		SetNumEls (size_t const els) { stats.back().second.numberOfMeshElements = els; }
 };
 
-static void Tesselate (void) {
-	Unit steps[] = { 2e0f, 1e0f, 5e-1f }; //, 4e-1f, 3e-1f, 2e-1f };
+static inline void WriteAllMeshesStats (MeshesStats const& allstats) {
+	std::ofstream fout("../meshes/generation_stats.txt", std::ios::out | std::ios::trunc);
+	DASSERT(!fout.bad());
+
+	my::global::GetConsole() << "writing stats . . ." ;
+
+	for (MeshesStats::Iterator i(allstats.stats.begin()); i != allstats.stats.end(); ++i) {
+		fout << " === Tesselation with step " << i->first << " ===" << std::endl
+			<< i->second.numberOfMeshElements << " number of elements" << std::endl;
+		for (TimesList::const_iterator j(i->second.times.begin()); j != i->second.times.end(); ++j)
+			fout << "\t" << j->first << ": " << j->second << " miliseconds" << std::endl;
+		fout << std::endl;
+	}
+
+	my::global::GetConsole() << " done\n";
+}
+
+static void Tesselate (std::list<std::string>& generatedIds) {
+	Unit steps[] = { 2e0f, 1e0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f };
 	MeshesStats	allstats;
 	Surface bob(BobRoss());
 
@@ -112,27 +117,37 @@ static void Tesselate (void) {
 		tesselate(bob, &TesselationParameters(*step, false, DefaultPrecision()));
 		generateindexedbuffer();
 		computeboundinvolume();
-		MeshAABBTree aabb;
-		generateaabb(aabb);
-		ComputeMeshAmbientOcclusion aoc(ComputeMeshAmbientOcclusion::Sampling9, &aabb);
-		updateao(aoc);
 		
+		{
+			MeshAABBTree aabb;
+			generateaabb(aabb);
+			ComputeMeshAmbientOcclusion aoc(ComputeMeshAmbientOcclusion::Sampling9, &aabb);
+			updateao(aoc);
+		}
+		{
+			updateaotraditional();
+		}
+
 		allstats.SetNumEls(GetNumberOfMeshElements());
 
 		{	char buf[1024];
 			IdForStep(&buf, "moon_valley", *step);
 			store(&buf[0]);
+			generatedIds.push_back(&buf[0]);
 		}
 	}
 
+	WriteAllMeshesStats(allstats);
 	CleanUp();
 }
 
 namespace my {
 
 void MeshProcess (void) {
-//	Savidise();
-	Tesselate();
+	std::list<std::string> generatedIds;
+
+	Tesselate(generatedIds);
+	Savidise(generatedIds);
 }
 
 } // my
