@@ -9,6 +9,12 @@
 
 namespace {
 
+template <typename SurfaceType> static inline std::vector<ankh::nurbs::Unit> const KnotsI (SurfaceType const& s)
+	{ return std::vector<ankh::nurbs::Unit>(s.GetKnotsIBegin(), s.GetKnotsIEnd()); }
+
+template <typename T>
+T const* castconst (T* ptr) { return static_cast<T const* const>(ptr); }
+
 template <typename t>
 struct TypeOf { typedef t T; };
 

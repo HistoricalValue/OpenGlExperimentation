@@ -764,7 +764,7 @@ namespace my {
 				#ifdef NURBS_LOAD_FROM
 					nurbs::load(NURBS_LOAD_FROM);
 				#else
-					nurbs::tesselate();
+					nurbs::tesselate(nurbs::BobRoss());
 				#endif
 			}
 

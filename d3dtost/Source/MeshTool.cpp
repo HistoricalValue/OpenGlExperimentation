@@ -7,12 +7,16 @@
 #include <drawing_nurbs.h>
 #include <drawing_utils.h>
 #include <BuiltinShapesBoundingVolume.h>
+#include <ComputeMeshAmbientOcclusion.h>
 
 using namespace ankh;
 using namespace shapes;
 using namespace math;
 using namespace trig;
 using namespace types;
+using namespace nurbs;
+using namespace my::drawing::nurbs;
+using namespace volumes;
 
 static char const* const meshesnames[] = {
 	"moon_vallye_bumps_prec2e1_triangles480_ao9_aotime397",
@@ -76,39 +80,52 @@ static void Savidise (void) {
 	MeshLoader::SingletonDestroy();
 }
 
-static void IdForStep (char (*buf)[1024], char const* const base, float const step) {
-	_snprintf_s(&(*buf)[0], countof(*buf), countof(*buf) - 1u, "%s_%3.1f", base, step);
-}
+static void IdForStep (char (*buf)[1024], char const* const base, float const step)
+	{ _snprintf_s(&(*buf)[0], countof(*buf), countof(*buf) - 1u, "%s_%3.1f", base, step); }
 
-struct MeshTimingsEntry {
-	std::list<std::pair<std::string, unsigned long int> >	times;
-	unsigned long int										numberOfMeshElements;
+struct MeshStats {
+	TimesList			times;
+	unsigned long int	numberOfMeshElements;
+};
+
+struct MeshesStats {
+	typedef std::pair<Unit, MeshStats>	MeshStatsPerStep;
+	std::list<MeshStatsPerStep>			stats;
+
+	void		New (Unit const step) { stats.push_back(MeshStatsPerStep(step, MeshStats())); }
+	TimesList*	GetTimesList (void) { return &stats.back().second.times; }
+	void		SetNumEls (size_t const els) { stats.back().second.numberOfMeshElements = els; }
 };
 
 static void Tesselate (void) {
-	using ankh::nurbs::Unit;
 	Unit steps[] = { 2e0f, 1e0f, 5e-1f }; //, 4e-1f, 3e-1f, 2e-1f };
-	typedef std::pair<Unit, MeshTimingsEntry>	MeshTimingsForUnit;
-	typedef std::list<MeshTimingsForUnit>		MeshTimingsPerUnit;
+	MeshesStats	allstats;
+	Surface bob(BobRoss());
 
-	MeshTimingsPerUnit	timings;
-
-	my::drawing::nurbs::Initialise();
+	Initialise();
 
 	FOREACH(Unit, steps, step) {
-		timings.push_back(MeshTimingsForUnit(*step, MeshTimingsEntry()));
+		allstats.New(*step);
 
-		my::drawing::nurbs::SetTimesList(&timings.back().second.times);
-		my::drawing::nurbs::tesselate(&ankh::nurbs::TesselationParameters(*step, false, ankh::nurbs::DefaultPrecision()));
+		SetTimesList(allstats.GetTimesList());
+
+		tesselate(bob, &TesselationParameters(*step, false, DefaultPrecision()));
+		generateindexedbuffer();
+		computeboundinvolume();
+		MeshAABBTree aabb;
+		generateaabb(aabb);
+		ComputeMeshAmbientOcclusion aoc(ComputeMeshAmbientOcclusion::Sampling9, &aabb);
+		updateao(aoc);
 		
-		timings.back().second.numberOfMeshElements = my::drawing::nurbs::GetNumberOfMeshElements();
+		allstats.SetNumEls(GetNumberOfMeshElements());
 
-		{	char buf[1024]; IdForStep(&buf, "moon_valley", *step);
-			my::drawing::nurbs::store(&buf[0]);
+		{	char buf[1024];
+			IdForStep(&buf, "moon_valley", *step);
+			store(&buf[0]);
 		}
 	}
 
-	my::drawing::nurbs::CleanUp();
+	CleanUp();
 }
 
 namespace my {

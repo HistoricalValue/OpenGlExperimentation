@@ -4,6 +4,7 @@
 #include <Mesh.h>
 #include <MeshLoader.h>
 #include <ComputeMeshAmbientOcclusion.h>
+#include <BuiltinShapesBoundingVolume.h>
 //
 #include <my/algo/ShapeProducers.h>
 
@@ -175,11 +176,7 @@ static bool VerifyMultiplicityChecker (void) {
 
 typedef ankh::shapes::Mesh::Elements			MeshElements;
 
-static ankh::nurbs::Surface*	_surf(NULL);
 static ankh::shapes::Mesh*		_mesh(NULL);
-
-static inline ankh::nurbs::Surface const& getsurf (void)
-	{ return *DPTR(_DNOTNULL(_surf)); }
 
 static inline void unew_mesh (void)
 	{ unew(_mesh); }
@@ -227,119 +224,143 @@ static inline void ResetTimes (void)
 } // _
 //////////////////////////////////////////////////////////////////////////////////////
 
+void SetTimesList (TimesList* const tl)
+	{ _::SetTimes(DNULLCHECK(tl)); }
+
+unsigned long int GetNumberOfMeshElements (void)
+	{ return _::getmesh().GetElements().size(); }
+
+void generateindexedbuffer (void)
+	{ timer t00("generating indexed buffer", _::timesFillingCallback); _::getmesh().GetIndexBuffer(); }
+
+void computeboundinvolume (void) {
+	timer t00("computing bounding volume", _::timesFillingCallback);
+	ankh::shapes::volumes::BoundingVolume* const volume(ankh::shapes::volumes::BuiltinShapes::Triangles(_::getmesh().GetElements()));
+	_::getmesh().SetBoundingVolume(*DPTR(DNULLCHECK(castconst(volume))));
+	DDELETE(volume);
+}
+
+void generateaabb (ankh::shapes::MeshAABBTree& aabb) {
+	DASSERT(_::getmesh().GetBoundingVolume());
+	timer t00("generate aabb", _::timesFillingCallback);
+	aabb(_::getmesh());
+}
+
+void updateao (ankh::shapes::Mesh::AmbientOcclusionCreator const& aoc) {
+	_::getmesh().SetAmbientOcclusionCreator(&aoc);
+	timer t00("updating ambient occlusion", _::timesFillingCallback);
+	_::getmesh().SelectiveUpdate(false, false, true);
+}
+
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
 
-void Initialise (void) {
+ankh::nurbs::Surface const BobRoss (void) {
+	using namespace my::gl::math;
+	using namespace ankh::math;
+	using namespace trig;
+	using namespace types;
+	using namespace ankh::nurbs;
 
+	DASSERT((_::minx < 0 && _::miny < 0 && _::maxx > 0 && _::maxy > 0));
+
+	size_t const	width_units	(16);
+	size_t const	height_units(16);
+	size_t const	depth_units	(16);
+
+	const bool		inverseX(false);
+	const bool		inverseZ(false);
+		
+	size_t const	order_j			(0x04u)
+				,	order_i			(0x05u)
+				,	numcpoints_j	(0x10u)
+				,	numcpoints_i	(0x15u)
+				,	numknots_j		(Curve::NumberOfKnotsFor(order_j, numcpoints_j))
+				,	numknots_i		(Curve::NumberOfKnotsFor(order_i, numcpoints_i))
+				;
+//	Unit const		variation	(0.0f);
+	Unit const		variation	(0.00625f);
+//	Unit const		variation	(0.0125f);
+//	Unit const		variation	(0.05f);
+
+	long seed;
 	{
-		DASSERT((_::minx < 0 && _::miny < 0 && _::maxx > 0 && _::maxy > 0));
+		std::ifstream fin("./seed.txt", std::ios::in);
+		DASSERT(!fin.bad());
 
-		using my::gl::math::		Vector4;
-		using ankh::math::trig::	vec4;
-		using ankh::math::trig::	vec3;
-		using ankh::nurbs::		Curve;
-		using ankh::nurbs::		ControlPoints;
-		using ankh::nurbs::		Knots;
-		using ankh::nurbs::		FillRandomly;
-		using ankh::nurbs::		FillGridUniformly;
-		using ankh::nurbs::		VaryGrid;
-		using ankh::nurbs::		FillUniformly;
-		using ankh::nurbs::		Surface;
-		using ankh::nurbs::		Unit;
-		using ankh::nurbs::algo::FirstCrossSection;
-		using ankh::nurbs::		ControlPointsGrid;
-
-		size_t const	width_units	(16);
-		size_t const	height_units(16);
-		size_t const	depth_units	(16);
-
-		const bool		inverseX(false);
-		const bool		inverseZ(false);
-		
-		size_t const	order_j			(0x04u)
-					,	order_i			(0x05u)
-					,	numcpoints_j	(0x10u)
-					,	numcpoints_i	(0x15u)
-					,	numknots_j		(Curve::NumberOfKnotsFor(order_j, numcpoints_j))
-					,	numknots_i		(Curve::NumberOfKnotsFor(order_i, numcpoints_i))
-					;
-	//	Unit const		variation	(0.0f);
-		Unit const		variation	(0.00625f);
-	//	Unit const		variation	(0.0125f);
-	//	Unit const		variation	(0.05f);
-
-		long seed;
-		{
-			std::ifstream fin("./seed.txt", std::ios::in);
-			DASSERT(!fin.bad());
-
-			std::string str;
-			std::getline(fin, str);
-			seed = atol(str.c_str());
-		}
-
-		ControlPoints				cpoints;
-		Knots						knots_j, knots_i;
-		ControlPointsGrid			cpoints_i;
-
-		cpoints_i.reserve(numcpoints_i);
-		cpoints.reserve(numcpoints_j);
-		knots_j.reserve(numknots_j);
-
-		knots_i.reserve(numknots_i);
-
-		FillUniformly(knots_j, numknots_j, 0.0f, 1.0f);
-		FillUniformly(knots_i, numknots_i, 0.0f, 1.0f);
-		
-		//for (size_t curve_i(0u); curve_i < numcurves; ++curve_i)
-		//	cpoints.clear(),
-		//	
-		//	cpoints_j.push_back(
-		//			ControlPoints_FillRandomly(
-		//				cpoints, numcpoints,
-		//				minx, maxx, miny, maxy, minz, maxz,
-		//				width_units, height_units, depth_units, seed + curve_i));
-		
-		VaryGrid(
-			FillGridUniformly(	cpoints_i,
-								numcpoints_i,
-								numcpoints_j,
-								makeinverser<inverseX>(_::minx, _::maxx).a, makeinverser<inverseX>(_::minx, _::maxx).b,
-								makeinverser<inverseZ>(_::minz, _::maxz).a, makeinverser<inverseZ>(_::minz, _::maxz).b,
-								(_::miny + _::maxy)/2.0f,
-								ankh::nurbs::Precision(5e-9f))
-			,variation, variation, variation, 1.5f, false, seed)
-		;
-		cpoints_i.at(3).at(3) = vec4(_::maxx, _::maxy, _::maxz, 1.0f);
-		cpoints_i.at(3).at(3) *= 2.0f;
-	
-		cpoints_i.at(9).at(3).y = -_::maxy;
-		cpoints_i.at(9).at(3) *= 4.0f;
-	
-		cpoints_i.at(15).at(5).y = _::maxy;
-		cpoints_i.at(15).at(5) *= 0.5f;
-
-		_::_surf = DNEWCLASS(Surface, (knots_j.begin(), knots_j.end(), knots_i.begin(), knots_i.end(), cpoints_i.begin(), cpoints_i.end(), "BOB ROSS"));
-		ankh::shapes::MeshLoader::SingletonCreate();
-		_::unew_mesh();
-
-		DASSERT(_::VerifyBaseFunctions(FirstCrossSection(*_::_surf).m(), knots_i));
-
-		DASSERT(_::VerifyMultiplicityChecker());
+		std::string str;
+		std::getline(fin, str);
+		seed = atol(str.c_str());
 	}
 
+	ControlPoints				cpoints;
+	Knots						knots_j, knots_i;
+	ControlPointsGrid			cpoints_i;
+
+	cpoints_i.reserve(numcpoints_i);
+	cpoints.reserve(numcpoints_j);
+	knots_j.reserve(numknots_j);
+
+	knots_i.reserve(numknots_i);
+
+	FillUniformly(knots_j, numknots_j, 0.0f, 1.0f);
+	FillUniformly(knots_i, numknots_i, 0.0f, 1.0f);
+		
+	//for (size_t curve_i(0u); curve_i < numcurves; ++curve_i)
+	//	cpoints.clear(),
+	//	
+	//	cpoints_j.push_back(
+	//			ControlPoints_FillRandomly(
+	//				cpoints, numcpoints,
+	//				minx, maxx, miny, maxy, minz, maxz,
+	//				width_units, height_units, depth_units, seed + curve_i));
+		
+	VaryGrid(
+		FillGridUniformly(	cpoints_i,
+							numcpoints_i,
+							numcpoints_j,
+							makeinverser<inverseX>(_::minx, _::maxx).a, makeinverser<inverseX>(_::minx, _::maxx).b,
+							makeinverser<inverseZ>(_::minz, _::maxz).a, makeinverser<inverseZ>(_::minz, _::maxz).b,
+							(_::miny + _::maxy)/2.0f,
+							ankh::nurbs::Precision(5e-9f))
+		,variation, variation, variation, 1.5f, false, seed)
+	;
+	cpoints_i.at(3).at(3) = trig::vec4(_::maxx, _::maxy, _::maxz, 1.0f);
+	cpoints_i.at(3).at(3) *= 2.0f;
+	
+	cpoints_i.at(9).at(3).y = -_::maxy;
+	cpoints_i.at(9).at(3) *= 4.0f;
+	
+	cpoints_i.at(15).at(5).y = _::maxy;
+		cpoints_i.at(15).at(5) *= 0.5f;
+
+	return Surface(knots_j.begin(), knots_j.end(), knots_i.begin(), knots_i.end(), cpoints_i.begin(), cpoints_i.end(), "BOB ROSS");
+}
+
+void Initialise (void) {
+	using namespace ankh::nurbs;
+	using namespace ankh::nurbs::algo;
+
+	ankh::shapes::MeshLoader::SingletonCreate();
+	_::unew_mesh();
+
+	DASSERT(_::VerifyBaseFunctions(
+			FirstCrossSection(BobRoss()).m(),
+			KnotsI(BobRoss())));
+
+	DASSERT(_::VerifyMultiplicityChecker());
 }
 
 void CleanUp (void) {
 	_::udelete_mesh();
 	ankh::shapes::MeshLoader::SingletonDestroy();
-	udelete(_::_surf);
 	udeleteunlessnull(_::timesFillingCallback);
 }
 
-void tesselate (ankh::nurbs::TesselationParameters const* const _tp) {
+//////////////////////////////////////////////////////////////////////////////////////
+
+void tesselate (ankh::nurbs::Surface const& surf, ankh::nurbs::TesselationParameters const* const _tp) {
 	using ankh::nurbs::tesselation::	SimpleBlendingTraits;
 	using ankh::nurbs::tesselation::	SimpleInterpolatingTraits;
 	using ankh::nurbs::tesselation::	OptimisedBlendingTraits;
@@ -372,14 +393,14 @@ void tesselate (ankh::nurbs::TesselationParameters const* const _tp) {
 	TesselationParameters const defaulttp(2e1f, false, ankh::nurbs::DefaultPrecision());
 	TesselationParameters const& tp(_tp == NULL? defaulttp : *_tp);
 
-	Surface const&			surf	(_::getsurf());
-
 	size_t const			meshElementsMinCapacity((surf.GetResolutionI(tp) - 1) * 2 + 1 + 1),	// +1 security
 							adjacenciesMinCapacity(meshElementsMinCapacity * 3);	// generally will by the number of mesh elements times 3
 
 	// if they were vectors...
 //	_::meshElements().reserve(meshElementsMinCapacity);
 //	_::adjacencies().reserve(adjacenciesMinCapacity);
+
+	_::getmesh().ResetCreators();
 
 	{
 		_::MeshElements elements;
@@ -400,6 +421,7 @@ void tesselate (ankh::nurbs::TesselationParameters const* const _tp) {
 	LogInfo_MeshStats();
 }
 
+//////////////////////////////////////////////////////////////////////////////////////
 
 static inline void getpathformesh (std::string& into, char const* const id, char const* const ext) {
 	static const char	mesh_bin_id[] = "surface_bin",
@@ -454,8 +476,7 @@ void load (char const* const id) {
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-void SetTimesList (TimesList* const tl)
-	{ _::SetTimes(DNULLCHECK(tl)); }
+
 
 //////////////////////////////////////////////////////////////////////////////////////
 
@@ -499,10 +520,6 @@ void LogInfo_MeshStats(void) {
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-unsigned long int GetNumberOfMeshElements (void) {
-	return _::getmesh().GetElements().size();
-}
-
 //////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -539,7 +556,7 @@ void addaoraysto (my::gl::shapes::ShapeComposition& f) {
 	
 }
 
-void addcontrolpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
+void addcontrolpointsto (ankh::nurbs::Surface const& surf, my::gl::shapes::ShapeCompositionFactory& f) {
 	using my::gl::shapes::Colour;
 	using my::gl::math::vec4;
 	using ankh::nurbs::Curve;
@@ -550,7 +567,6 @@ void addcontrolpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 	using ankh::nurbs::Knots;
 	using ankh::nurbs::algo::CrossSection;
 
-	Surface const&	surf(_::getsurf());
 	std::list<Point>points;
 	size_t const	end	(surf.GetControlPointsWidth());
 	size_t			i	(0);
@@ -565,7 +581,7 @@ void addcontrolpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 						&makevector4));
 }
 
-void addknotpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
+void addknotpointsto (ankh::nurbs::Surface const& surf, my::gl::shapes::ShapeCompositionFactory& f) {
 	using my::gl::shapes::Colour;
 	using my::gl::math::Vector4;
 	using ankh::math::trig::vec4;
@@ -578,7 +594,6 @@ void addknotpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 	using ankh::nurbs::algo::CrossSection;
 	using ankh::nurbs::tesselation::IneffectiveNormalCalculator;
 
-	Surface const&	surf(_::getsurf());
 	std::list<vec4>	vectors;
 	std::list<Point>points;
 	size_t			c(surf.GetFirstKnotJInDomainIndex());
@@ -605,7 +620,7 @@ void addknotpointsto (my::gl::shapes::ShapeCompositionFactory& f) {
 	}
 }
 
-void addbasecurvesto (my::gl::shapes::ShapeCompositionFactory& f) {
+void addbasecurvesto (ankh::nurbs::Surface const& surf, my::gl::shapes::ShapeCompositionFactory& f) {
 	using namespace						ankh::nurbs;
 	using namespace						my::gl::shapes;
 	using ankh::math::trig::			vec4;
@@ -621,7 +636,6 @@ void addbasecurvesto (my::gl::shapes::ShapeCompositionFactory& f) {
 
 	typedef OptimisedInterpolatingTraits<&PreciceControlPointInterpolation> t;
 
-	Surface const&						surf(_::getsurf());
 	std::vector<VertexWithNormal>		points;
 	std::list<Line>						lines;
 	Colour const						colour(Vector4::New(0.4f, 0.2f, 0.8f));
