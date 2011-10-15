@@ -1,6 +1,6 @@
 #pragma once
 
-#include "MyWindows.h"
+#include "PWindows.h"
 
 namespace d3dtost {
 	void Initialise (void);

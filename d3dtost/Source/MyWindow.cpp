@@ -1,12 +1,16 @@
 #include "stdafx.h"
 
+#include "TheCursed.h"
+
+#include "PWindowsUtilities.h"
+using namespace codeshare::utilities::windows_utilities;
 
 #define __LOG_WIN_ERROR(ERRMSG)												\
 	{																		\
 		DWORD const		errcode(GetLastError());							\
-		LPTSTR const	errstring(my::winutil::ErrorToString(errcode));		\
+		TCHAR* const	errstring(ErrorToString(errcode));					\
 		my::global::logger::Get().Error(my::String(_T(ERRMSG)) + errstring);\
-		my::winutil::ReleaseErrorString(errstring);							\
+		ReleaseErrorString(errstring);										\
 	}																		\
 
 
@@ -27,29 +31,29 @@ namespace {
 		__in  LPARAM lParam
 	) {
 		LRESULT result;
-		enum my::winutil::MessageType msg(static_cast<enum my::winutil::MessageType>(uMsg));
+		MessageType msg(static_cast<MessageType>(uMsg));
 		PASSERT(static_cast<UINT>(msg) == uMsg);
 
-		if (my::winutil::IsUnknownMessageType(uMsg)) {
+		if (IsUnknownMessageType(uMsg)) {
 			int nothing(0xbeac0ul);
 		}
 
 
 		switch (msg) {
-			case my::winutil::MY_WM_DESTROY: {
+			case MY_WM_DESTROY: {
 				PostQuitMessage(0);
 				__window_destroyed = true;
 				result = 0;
 				break;
 			}
-			case my::winutil::MY_WM_PAINT: {
+			case MY_WM_PAINT: {
 				if (__main_loop_callback)
 					(*__main_loop_callback)(__main_loop_callback_env);
 
 				result = 0;
 				break;
 			}
-			case my::winutil::MY_WM_ERASEBKGND: {
+			case MY_WM_ERASEBKGND: {
 				result = 0;
 				break;
 			}
@@ -109,7 +113,7 @@ namespace {
 	}
 
 	HICON GetApplicationIcon (my::Window::ModuleHandle const& hInstance) {
-		LPTSTR iconId(MAKEINTRESOURCE(IDI_ISILAL));
+		TCHAR* iconId(MAKEINTRESOURCE(IDI_ISILAL));
 		HICON const result(LoadIcon(hInstance, iconId));
 
 		if (result == NULL)
@@ -121,7 +125,7 @@ namespace {
 
 	HCURSOR GetApplicationCursor (my::Window::ModuleHandle const& hInstance) {
 		UNREFERENCED_PARAMETER(hInstance);
-		LPTSTR const		cursorId(MAKEINTRESOURCE(IDC_IBEAM));
+		TCHAR* const		cursorId(MAKEINTRESOURCE(IDC_IBEAM));
 		HCURSOR const		result(LoadCursor(NULL, cursorId));
 
 		if (result == NULL)
@@ -156,7 +160,7 @@ namespace {
 			__LOG_WIN_ERROR("Could not unregister window class. Error by windows: ")
 //		PASSERT(result)
 
-		my::winutil::nullify(*wclass);
+		nullify(*wclass);
 	}
 
 	void CreateMyWindow (
@@ -164,8 +168,8 @@ namespace {
 			my::Window::ModuleHandle const _module_handle,
 			my::Window::WindowHandle* const _window_handle_ptr) {
 		DWORD const		window_extended_styles		(0);
-		LPCTSTR const	window_class				(reinterpret_cast<LPCTSTR>(_window_class)); // (_T("d3dtost main window"));
-		LPCTSTR const	_MY_WINDOW_NAME				(_T("Universe Control"));
+		TCHAR const* const	window_class				(reinterpret_cast<TCHAR const*>(_window_class)); // (_T("d3dtost main window"));
+		TCHAR const* const	_MY_WINDOW_NAME				(_T("Universe Control"));
 		DWORD const		window_style				(0
 														| WS_BORDER // The window has a thin-line border.
 														| WS_CLIPCHILDREN // Excludes the area occupied by child windows when drawing occurs within the parent window.
@@ -219,7 +223,7 @@ namespace {
 			PASSERT(destroyed == TRUE);
 		}
 
-		my::winutil::nullify(*window_handle_ptr);
+		nullify(*window_handle_ptr);
 
 		return result;
 	} // DestroyMyWindow
@@ -273,7 +277,7 @@ namespace my {
 		main_loop_callback_data = data;
 	}
 
-	void Window::MainLoop (LPTSTR const command_line, int const show_command) {
+	void Window::MainLoop (TCHAR* const command_line, int const show_command) {
 		MSG msg;
 		BOOL b;
 		bool done = false;

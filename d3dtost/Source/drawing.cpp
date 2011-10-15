@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include "TheCursed.h"
+
 #include <drawing_nurbs.h>
 #include <drawing_utils.h>
 #include <Options.h>

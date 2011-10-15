@@ -145,8 +145,6 @@
     <ClInclude Include="Include\MyOpenGLUtils_inl.h" />
     <ClInclude Include="Include\MyString.h" />
     <ClInclude Include="Include\MyUtil.h" />
-    <ClInclude Include="Include\MyWindows.h" />
-    <ClInclude Include="Include\MyWinUtils.h" />
     <ClInclude Include="Include\my\algo\ShapeProducers.h" />
     <ClInclude Include="Include\my\gl\adapters\Buffer.h" />
     <ClInclude Include="Include\my\gl\adapters\BufferManager.h" />
@@ -212,23 +210,11 @@
     <ClInclude Include="Include\my\gl\textures\TextureData.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\dllmain.cpp">
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">false</CompileAsManaged>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">
-      </PrecompiledHeader>
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</CompileAsManaged>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="Source\glt.cpp" />
     <ClCompile Include="Source\MyGlobalInstances.cpp" />
     <ClCompile Include="Source\MyOpenGLUtils.cpp" />
     <ClCompile Include="Source\MyUtil.cpp" />
     <ClCompile Include="Source\MyLogger.cpp" />
-    <ClCompile Include="Source\MyWinUtils.cpp" />
     <ClCompile Include="Source\my\gl\math\Matrix4x4.cpp" />
     <ClCompile Include="Source\my\gl\math\Vector4.cpp" />
     <ClCompile Include="Source\my\gl\shaders\ProgramBuilder.cpp" />

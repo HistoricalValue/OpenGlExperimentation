@@ -10,10 +10,19 @@ extern void Initialise (void);
 extern void CleanUp (void);
 
 extern void tesselate (ankh::nurbs::TesselationParameters const* const = NULL);
+extern void store (char const* id);
 extern void load (char const* id);
 
 extern void addastrianglesto (my::gl::shapes::ShapeCompositionFactory& f);
 extern void addnormalsto (my::gl::shapes::ShapeCompositionFactory& f);
+
+typedef std::list<std::pair<std::string, unsigned long> >	TimesList;
+extern void SetTimesList (TimesList*);
+extern void UnsetTimesList (void);
+
+extern void LogInfo_MeshStats (void);
+
+extern unsigned long int	GetNumberOfMeshElements (void);
 
 }}} // my::drawing::nurbs
 

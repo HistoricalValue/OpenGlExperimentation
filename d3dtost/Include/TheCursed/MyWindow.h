@@ -1,6 +1,6 @@
 #pragma once
 
-#include "MyWindows.h"
+#include <PWindows.h>
 
 namespace my {
 
@@ -19,7 +19,7 @@ namespace my {
 
 		bool											IsValid (void) const;
 
-		void											MainLoop (LPTSTR command_line, int show_command);
+		void											MainLoop (TCHAR* command_line, int show_command);
 		void											SetMainLoopCallback (void (*cb) (void*), void* data = NULL);
 
 

@@ -1,4 +1,11 @@
 #include "stdafx.h"
+#include "TheCursed.h"
+#include "PWindowsUtilities.h"
+
+using codeshare::utilities::windows_utilities::LastErrorString;
+using codeshare::utilities::windows_utilities::isnull;
+using codeshare::utilities::windows_utilities::ErrorToString;
+using codeshare::utilities::windows_utilities::ReleaseErrorString;
 
 namespace my {
 
@@ -9,18 +16,18 @@ namespace my {
 	{
 		consoleCreated = AllocConsole() == TRUE;
 		if (!consoleCreated)
-			_T_STR errstr(my::winutil::LastErrorString());
+			_T_STR errstr(LastErrorString());
 		PASSERT(consoleCreated)
 
 		outProxy = GetStdHandle(STD_OUTPUT_HANDLE);
-		if (my::winutil::isnull(outProxy))
-			_T_STR errstr(my::winutil::LastErrorString());
-		PASSERT(!my::winutil::isnull(outProxy))
+		if (isnull(outProxy))
+			_T_STR errstr(LastErrorString());
+		PASSERT(!isnull(outProxy))
 
 		errProxy = GetStdHandle(STD_ERROR_HANDLE);
-		if (my::winutil::isnull(errProxy))
-			_T_STR errstr(my::winutil::LastErrorString());
-		PASSERT(!my::winutil::isnull(errProxy))
+		if (isnull(errProxy))
+			_T_STR errstr(LastErrorString());
+		PASSERT(!isnull(errProxy))
 	}
 
 	Console::~Console (void) {
@@ -45,15 +52,15 @@ namespace my {
 		PASSERT(worked == FALSE || charsToWrite == charsWritten)
 		if (worked == FALSE) {
 			DWORD const		error		(GetLastError());
-			LPTSTR const	errorstring	(my::winutil::ErrorToString(error));
+			TCHAR* const	errorstring	(ErrorToString(error));
 			my::global::logger::Get().Error(errorstring);
-			my::winutil::ReleaseErrorString(errorstring);
+			ReleaseErrorString(errorstring);
 		}
 		PASSERT(worked == TRUE)
 	}
 	#endif
 
-	void Console::WriteToOutputStream (LPCTSTR const str) {
+	void Console::WriteToOutputStream (TCHAR const* const str) {
 		PASSERT(IsValid())
 		DWORD const	charsToWrite	(_tcsclen(str));
 		DWORD		charsWritten	(0);
@@ -61,14 +68,14 @@ namespace my {
 		PASSERT(worked == FALSE || charsToWrite == charsWritten)
 		if (worked == FALSE) {
 			DWORD const		error		(GetLastError());
-			LPTSTR const	errorstring	(my::winutil::ErrorToString(error));
+			TCHAR* const	errorstring	(ErrorToString(error));
 			my::global::logger::Get().Error(errorstring);
-			my::winutil::ReleaseErrorString(errorstring);
+			ReleaseErrorString(errorstring);
 		}
 		PASSERT(worked == TRUE)
 	}
 
-	void Console::WriteToErrorStream (LPCTSTR const str) {
+	void Console::WriteToErrorStream (TCHAR const* const str) {
 		PASSERT(IsValid())
 		DWORD const	charsToWrite	(_tcsclen(str));
 		DWORD		charsWritten	(0);
@@ -76,10 +83,10 @@ namespace my {
 		PASSERT(worked == FALSE || charsToWrite == charsWritten)
 		if (worked == FALSE) {
 			DWORD const		error		(GetLastError());
-			LPTSTR const	errorstring	(my::winutil::ErrorToString(error));
+			TCHAR* const	errorstring	(ErrorToString(error));
 			::n = 12;
 			my::global::logger::Get().Error(errorstring);
-			my::winutil::ReleaseErrorString(errorstring);
+			ReleaseErrorString(errorstring);
 		}
 		PASSERT(worked == TRUE)
 	}

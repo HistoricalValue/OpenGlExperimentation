@@ -1,7 +1,3 @@
-
-
-#include "MyWindows.h"
-
 #include "nmutil/OpenGlExtensionManager.h"
 
 #include "TextureUnitManager.h"
@@ -22,18 +18,12 @@
 #include <stdlib.h>
 #include <malloc.h>
 #include <memory.h>
-#include <tchar.h>
-#include "Setup.h"
 
 
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
 #include <stdint.h>
-
-
-#include <d3d9.h>
-
 
 #include <string>
 #include <list>
@@ -60,19 +50,9 @@
 #include "glt.h"
 #include "MyUtil.h"
 #include "MyLogger.h"
-#include "MyWinUtils.h"
 #include "MyList.h"
 #include "MyOpenGLUtils.h"
 #include "MyGlobalInstances.h"
-
-
-#include "MyWindow.h"
-#include "MyGlobalInstances.h"
-#include "MyDirect3D9.h"
-#include "MyOpenGL.h"
-#include "MyConsole.h"
-#include "MyLocalGlobalInstances.h"
-
 
 #include "resource.h"
 
@@ -89,11 +69,6 @@
 #include "PSystem.h"
 #include "PGlobalSingleAllocationBuffer.h"
 #include "PPlaceholder_inl.h"
-
-namespace d3dtost {
-	extern LPWSTR ConvertErrorMessage (char const* const msg);
-}
-
 
 #include <Trig.h>
 #include <MathTypes.h>

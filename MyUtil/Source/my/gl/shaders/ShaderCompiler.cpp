@@ -11,7 +11,7 @@ namespace _ {
 
 	using my::openglutil::GlErrorsHandled;
 
-	static void ErrorHandler (LPCTSTR const error) {
+	static void ErrorHandler (TCHAR const* const error) {
 		PASSERT(false)
 	}
 

@@ -1,5 +1,7 @@
 #include <stdafx.h>
 
+#include "TheCursed.h"
+
 static char const* const VertexShaderSourcePath		= "../shaders/vertex2.txt";
 static char const* const FragmentShaderSourcePath	= "../shaders/fragment.c";
 

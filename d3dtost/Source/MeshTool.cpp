@@ -1,7 +1,12 @@
 #include <stdafx.h>
+
+#include "TheCursed.h"
+
 #include <Mesh.h>
 #include <MeshLoader.h>
 #include <drawing_nurbs.h>
+#include <drawing_utils.h>
+#include <BuiltinShapesBoundingVolume.h>
 
 using namespace ankh;
 using namespace shapes;
@@ -18,10 +23,13 @@ static char const* const meshesnames[] = {
 	"moon_vallye_bumps_prec2e-1_triangles12610_ao9_aotime343817"
 };
 
+#define FOREACH_MESHNAME(VARNAME)	\
+	for (char const* const* VARNAME = &meshesnames[0]; VARNAME < &meshesnames[_countof(meshesnames)]; ++ VARNAME)
+
 static void Savidise (void) {
 	MeshLoader::SingletonCreate();
 
-	for (char const* const* meshname = &meshesnames[0]; meshname < &meshesnames[_countof(meshesnames)]; ++meshname) {
+	FOREACH_MESHNAME(meshname) {
 		std::string const path		(std::string("../meshes/") + *meshname + ".msh");
 		std::string const outpath	(std::string("../meshes/") + "savidised_" + *meshname + ".msh");
 
@@ -68,17 +76,46 @@ static void Savidise (void) {
 	MeshLoader::SingletonDestroy();
 }
 
+static void IdForStep (char (*buf)[1024], char const* const base, float const step) {
+	_snprintf_s(&(*buf)[0], countof(*buf), countof(*buf) - 1u, "%s_%3.1f", base, step);
+}
+
+struct MeshTimingsEntry {
+	std::list<std::pair<std::string, unsigned long int> >	times;
+	unsigned long int										numberOfMeshElements;
+};
+
 static void Tesselate (void) {
+	using ankh::nurbs::Unit;
+	Unit steps[] = { 2e0f, 1e0f, 5e-1f }; //, 4e-1f, 3e-1f, 2e-1f };
+	typedef std::pair<Unit, MeshTimingsEntry>	MeshTimingsForUnit;
+	typedef std::list<MeshTimingsForUnit>		MeshTimingsPerUnit;
+
+	MeshTimingsPerUnit	timings;
+
 	my::drawing::nurbs::Initialise();
-	my::drawing::nurbs::tesselate(&ankh::nurbs::TesselationParameters(1e-2f, false, ankh::nurbs::DefaultPrecision()));
+
+	FOREACH(Unit, steps, step) {
+		timings.push_back(MeshTimingsForUnit(*step, MeshTimingsEntry()));
+
+		my::drawing::nurbs::SetTimesList(&timings.back().second.times);
+		my::drawing::nurbs::tesselate(&ankh::nurbs::TesselationParameters(*step, false, ankh::nurbs::DefaultPrecision()));
+		
+		timings.back().second.numberOfMeshElements = my::drawing::nurbs::GetNumberOfMeshElements();
+
+		{	char buf[1024]; IdForStep(&buf, "moon_valley", *step);
+			my::drawing::nurbs::store(&buf[0]);
+		}
+	}
+
 	my::drawing::nurbs::CleanUp();
 }
 
 namespace my {
 
 void MeshProcess (void) {
-	Savidise();
-//	Tesselate();
-} // MeshProcess()
+//	Savidise();
+	Tesselate();
+}
 
 } // my

@@ -9,6 +9,14 @@
 
 namespace {
 
+template <typename t>
+struct TypeOf { typedef t T; };
+
+template <typename T, const size_t N>
+typename TypeOf<char (*)[N]>::T CountOfHelper ( UNALIGNED T (& arr)[N] );
+
+#define countof(ARR)	sizeof(*CountOfHelper(ARR))
+
 template <typename T1, typename T2> static inline
 void ofequaltypes (T1&, T2& o2)
 	{ utypecheck<T1>(o2); }
@@ -72,13 +80,15 @@ struct elcollector {
 	elcollector& operator , (T const& el) { els.push_back(el); return *this; }
 };
 
-LPCTSTR format (LPCTSTR const fmt, ...) {
-	static TCHAR buf[1024];
+template <typename CharType>
+static
+CharType const* format (CharType const* const fmt, ...) {
+	static CharType buf[1024];
 
 	va_list args;
 	va_start(args, fmt);
 
-	int const retval(_vsntprintf_s(&buf[0], _countof(buf), _countof(buf), fmt, args));
+	int const retval(_vsntprintf_s(&buf[0], countof(buf), countof(buf), fmt, args));
 	PASSERT(retval > 1);
 
 	va_end(args);
@@ -88,14 +98,31 @@ LPCTSTR format (LPCTSTR const fmt, ...) {
 
 struct timer {
 	char const* const what;
-	unsigned long int start;
-	timer (char const* const _what): what(_what), start(ugettime()) {}
+	unsigned long int start, diff;
+	bool done;
+	struct Callback { virtual void operator () (timer const&) const = 0; virtual ~Callback (void){} };
+	Callback const* const callback;
+
+	timer (char const* const _what, Callback const* const _callback = NULL):
+		what(_what),
+		start(ugettime()),
+		diff(-1),
+		done(false),
+		callback(_callback) {}
+
 	void restart (void) { start = ugettime(); }
+
 	~timer (void) {
+		done = true;
+		diff = ugettime() - start;
+
 		char buf[1024];
 		_snprintf_s(&buf[0], _countof(buf), _countof(buf), "%s took %ld milliseconds\n",
-				what, ugettime() - start);
+				what, diff);
 		my::global::log::infoA(buf);
+
+		if (callback)
+			(*callback)(*this);
 	}
 };
 
@@ -135,5 +162,8 @@ struct IneffectiveBufferEntryDeleter: ::my::gl::adapters::Buffer::Deleter {
 };
 
 } //
+
+#define FOREACH(ARRT, ARR, VARNAME)	\
+	for (UPTR( ARRT ) VARNAME (( & ARR [0] )) ; VARNAME < & ARR [ countof( ARR ) ] ; ++ VARNAME )
 
 #endif

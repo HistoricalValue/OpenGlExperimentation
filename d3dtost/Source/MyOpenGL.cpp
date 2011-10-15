@@ -1,6 +1,14 @@
 #include "stdafx.h"
+#include "TheCursed.h"
 
 #include "PCString_inl.h"
+#include "PWindowsUtilities.h"
+
+//using codeshare::utilities::windows_utilities::LastErrorString;
+//using codeshare::utilities::windows_utilities::isnull;
+using codeshare::utilities::windows_utilities::ErrorToString;
+using codeshare::utilities::windows_utilities::ReleaseErrorString;
+
 
 #define WGL_CONTEXT_PROFILE_MASK_ARB   0x9126
 #define WGL_CONTEXT_CORE_PROFILE_BIT_ARB 0x00000001
@@ -12,7 +20,7 @@ namespace my {
 	namespace _ {
 		///////////////////////////////////
 		static _T_STR GlErrorMessage;
-		static inline void GlErrorHandler (LPCTSTR const msg) {
+		static inline void GlErrorHandler (TCHAR const* const msg) {
 			GlErrorMessage = msg;
 		}
 
@@ -218,8 +226,8 @@ namespace my {
 		_::DrawChar(c, px, py);
 	}
 
-	void OpenGL::PutString (LPCTSTR const str) {
-		LPCTSTR charptr(&str[0]);
+	void OpenGL::PutString (TCHAR const* const str) {
+		TCHAR const* charptr(&str[0]);
 		while ((*charptr) != '\0')
 			PutChar(*charptr++);
 	}
@@ -366,8 +374,8 @@ namespace my {
 
 				// make that the pixel format of the device context
 				bresult = SetPixelFormat(device, iPixelFormat, &pfd);
-				{ LPTSTR msg = my::winutil::ErrorToString(GetLastError());
-					my::winutil::ReleaseErrorString(msg); }
+				{ TCHAR* msg = ErrorToString(GetLastError());
+					ReleaseErrorString(msg); }
 
 				if (bresult == FALSE)
 					return false;
@@ -382,15 +390,15 @@ namespace my {
 					int attribs[] = {WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB, 0};
 					context = wglCreateContextAttribsARB(device, context, &attribs[0]);
 				}
-				{ LPTSTR msg = my::winutil::ErrorToString(GetLastError());
-					my::winutil::ReleaseErrorString(msg); }
+				{ TCHAR* msg = ErrorToString(GetLastError());
+					ReleaseErrorString(msg); }
 
 				if (!wglCreateContextAttribsARB && false)
 					return false;
 
 				bresult = wglMakeCurrent(device, context);
-				{ LPTSTR msg = my::winutil::ErrorToString(GetLastError());
-					my::winutil::ReleaseErrorString(msg); }
+				{ TCHAR* msg = ErrorToString(GetLastError());
+					ReleaseErrorString(msg); }
 				if (bresult == FALSE)
 					return false;
 

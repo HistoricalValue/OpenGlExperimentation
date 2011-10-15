@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\The Cursed">
+      <UniqueIdentifier>{0522bd32-5487-45fd-9966-f1b283e0db4d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\main.cpp">
@@ -61,24 +64,6 @@
     <ClInclude Include="Include\stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Setup.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\MyWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\MyDirect3D9.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\MyOpenGL.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\MyConsole.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\MyLocalGlobalInstances.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Include\resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -90,6 +75,27 @@
     </ClInclude>
     <ClInclude Include="Include\Options.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\TheCursed.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\TheCursed\MyConsole.h">
+      <Filter>Header Files\The Cursed</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\TheCursed\MyWindow.h">
+      <Filter>Header Files\The Cursed</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\TheCursed\MyLocalGlobalInstances.h">
+      <Filter>Header Files\The Cursed</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\TheCursed\MyOpenGL.h">
+      <Filter>Header Files\The Cursed</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\TheCursed\Setup.h">
+      <Filter>Header Files\The Cursed</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\TheCursed\MyDirect3D9.h">
+      <Filter>Header Files\The Cursed</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

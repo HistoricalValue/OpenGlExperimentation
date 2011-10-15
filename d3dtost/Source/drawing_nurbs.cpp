@@ -1,10 +1,9 @@
 #include "stdafx.h"
-
-#include <AmbientOcclusion.h>
-
+#include "TheCursed.h"
 //
 #include <Mesh.h>
 #include <MeshLoader.h>
+#include <ComputeMeshAmbientOcclusion.h>
 //
 #include <my/algo/ShapeProducers.h>
 
@@ -20,7 +19,6 @@
 #define WITH_OPTIMISED_DE_BOOR					1
 #define WITH_FAST_CONTROL_POINT_INTERPOLATOR	1
 #define WITH_OPTIMISED_BLENDING					0
-#define WITH_MESH_AO_CREATOR					1
 
 //////////////////////////////////////////////////////////////////////////////////////
 
@@ -201,42 +199,27 @@ static float	maxz( 0.025f);
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-static inline void printmeshinfo (void) {
-	using ankh::shapes::Mesh;
-	using ankh::math::types::Vertex;
+static struct TimesFillingCallback: public timer::Callback {
+	TimesList&	times;
 
-	Mesh& m(getmesh());
-	MeshElements const& els(m.GetElements());
+	virtual void operator () (timer const& t) const
+		{ PASSERT(t.done) times.push_back(std::make_pair(std::string(t.what), t.diff)); }
 
-	typedef MeshElements::const_iterator  ite_t;
-	
-	float minx(FLT_MAX), maxx(-FLT_MAX), miny(FLT_MAX), maxy(-FLT_MAX), minz(FLT_MAX), maxz(-FLT_MAX);
+	UOVERLOADED_VOID_ASSIGN_VIA_COPY_CONSTRUCTOR(TimesFillingCallback)
+	TimesFillingCallback (TimesList& _times): times(_times) {}
+	TimesFillingCallback (TimesFillingCallback const& c): times(c.times) {}
+	virtual ~TimesFillingCallback (void) {}
+}* timesFillingCallback(NULL);
 
-	ite_t const els_end(els.end());
-	for (ite_t el(els.begin()); el != els_end; ++el)
-		for (unsigned int i(0); i < 3; ++i) {
-			const Vertex& v(el->GetVertex(i));
-			if (v.x < minx)
-				minx = v.x;
-			if (v.x > maxx)
-				maxx = v.x;
-			if (v.y < miny)
-				miny = v.y;
-			if (v.y > maxy)
-				maxy = v.y;
-			if (v.z < minz)
-				minz = v.z;
-			if (v.z > maxz)
-				maxz = v.z;
-		}
-
-	{
-		TCHAR buf[1024];
-		_sntprintf_s(&buf[0], _countof(buf), _countof(buf)-1, _T("max<%f %f %f>    min<%f %f %f>\n"),
-				maxx, maxy, maxz, minx, miny, minz);
-		my::global::log::info(&buf[0]);
-	}
+static inline void SetTimes (TimesList* const _times) {
+	if (timesFillingCallback)
+		*DPTR(timesFillingCallback) = TimesFillingCallback(*DNULLCHECK(_times));
+	else
+		timesFillingCallback = DNEWCLASS(TimesFillingCallback, (*DNULLCHECK(_times)));
 }
+
+static inline void ResetTimes (void)
+	{ udelete(timesFillingCallback); }
 
 //////////////////////////////////////////////////////////////////////////////////////
 
@@ -353,6 +336,7 @@ void CleanUp (void) {
 	_::udelete_mesh();
 	ankh::shapes::MeshLoader::SingletonDestroy();
 	udelete(_::_surf);
+	udeleteunlessnull(_::timesFillingCallback);
 }
 
 void tesselate (ankh::nurbs::TesselationParameters const* const _tp) {
@@ -360,8 +344,8 @@ void tesselate (ankh::nurbs::TesselationParameters const* const _tp) {
 	using ankh::nurbs::tesselation::	SimpleInterpolatingTraits;
 	using ankh::nurbs::tesselation::	OptimisedBlendingTraits;
 	using ankh::nurbs::tesselation::	OptimisedInterpolatingTraits;
-	using ankh::nurbs::algo::		FastControlPointInterpolation;
-	using ankh::nurbs::algo::		PreciceControlPointInterpolation;
+	using ankh::nurbs::algo::			FastControlPointInterpolation;
+	using ankh::nurbs::algo::			PreciceControlPointInterpolation;
 #if 0
 	using ankh::nurbs::tesselation::blending::	ProduceAllFromAcrossSections;
 	using ankh::nurbs::tesselation::blending::	ProduceAllFromAlongSections;
@@ -370,7 +354,8 @@ void tesselate (ankh::nurbs::TesselationParameters const* const _tp) {
 	using ankh::nurbs::tesselation::deboor::	ProduceAllFromAcrossSections;
 	using ankh::nurbs::tesselation::deboor::	ProduceAllFromAlongSections;
 //	typedef OptimisedInterpolatingTraits<FastControlPointInterpolation>		t;
-	typedef SimpleInterpolatingTraits<PreciceControlPointInterpolation>		t;
+	typedef OptimisedInterpolatingTraits<PreciceControlPointInterpolation>	t;
+//	typedef SimpleInterpolatingTraits<PreciceControlPointInterpolation>		t;
 #endif
 	using ankh::math::types::		Triangle;
 	typedef std::vector<Triangle>	Triangles;
@@ -397,79 +382,129 @@ void tesselate (ankh::nurbs::TesselationParameters const* const _tp) {
 //	_::adjacencies().reserve(adjacenciesMinCapacity);
 
 	{
-		_::MeshElements			elements;
+		_::MeshElements elements;
 
-		{	timer t03("surface tesselation");
-			ProduceAllFromAlongSections
-		//	ProduceAllFromAcrossSections
+		{	timer t03("surface tesselation", _::timesFillingCallback);
+		//	ProduceAllFromAlongSections
+			ProduceAllFromAcrossSections
 			<t>(surf, tp, elements);
 		}
 
-		if (WITH_MESH_AO_CREATOR) {
-		}
-		else {
-			{	timer t04("compute and update AO for tesselated mesh");
-				ankh::ao::InsertAmbientOcclusionFactors(elements);
-			}
-			{	timer t04("write AO factors to file");
-				_::MeshElements::const_iterator end(elements.end()), i(elements.begin());
-				std::ofstream fout("./AOS.txt");
-				DASSERT(fout.good());
-				for (; i != end; ++i)
-					fout << i->GetAmbientOcclusion(0) << ", " << i->GetAmbientOcclusion(1) << ", " << i->GetAmbientOcclusion(2) << std::endl;
-			}
-		}
-
-		ankh::shapes::Mesh::AmbientOcclusionCreator* aoc(NULL);
-
-		if (WITH_MESH_AO_CREATOR) {
-			ankh::ao::AmbientOcclusionCreatorFactory::Initialise();
-			aoc = (ankh::ao::AmbientOcclusionCreatorFactory::New(&elements));
-			// TODO weird AOcretor API: AO needs the mesh, so it takes it in the form of MeshELements. Then,
-			// it is set in the Mesh, and then the mesh updated with the same MeshElements. It's a hole.
-			_::getmesh().SetAmbientOcclusionCreator(aoc);
-		}
-
 		{
-			std::string msg(std::string("updating mesh") + (WITH_MESH_AO_CREATOR? " and calculating AOs too" : ""));
-			timer t03(msg.c_str());
+			std::string msg(std::string("updating mesh with produced mesh elements"));
+			timer t03(msg.c_str(), _::timesFillingCallback);
 			_::getmesh().Update(elements);
 		}
+	}
 
-		if (WITH_MESH_AO_CREATOR) {
-			_::getmesh().SetAmbientOcclusionCreator(NULL);
-			ankh::ao::AmbientOcclusionCreatorFactory::Delete(aoc);
-			ankh::ao::AmbientOcclusionCreatorFactory::CleanUp();
-		}
+	LogInfo_MeshStats();
+}
+
+
+static inline void getpathformesh (std::string& into, char const* const id, char const* const ext) {
+	static const char	mesh_bin_id[] = "surface_bin",
+						meshes_folder_path[] = "../meshes/";
+	static const size_t	mesh_bin_id_length = countof(mesh_bin_id),
+						meshes_folder_path_length = countof(meshes_folder_path);
+
+	const size_t totalLength = meshes_folder_path_length + strlen(id) + strlen(ext) + 2;
+	into.reserve(totalLength);
+
+	if (strncmp(id, mesh_bin_id, mesh_bin_id_length) == 0)
+		into.clear();
+	else
+		into = meshes_folder_path;
+
+	into += id;
+	into += ".";
+	into += ext;
+}
+
+void store (char const* const id) {
+	{	
+		std::string path;
+		getpathformesh(path, id, "msh");
+		timer t02("storing binary mesh", _::timesFillingCallback);
+		_::getmesh().StoreBin(path);
 	}
 
 	{
-		timer t02("creating mesh, storing binary, and cleaning mesh up");
-		_::getmesh().StoreBin("./surface_bin.msh");
-		_::getmesh().StoreText("./surface_txt.msh");
+		std::string path;
+		getpathformesh(path, id, "txt");
+		timer t02("storing text mesh", _::timesFillingCallback);
+		_::getmesh().StoreText(path);
 	}
-
-	_::printmeshinfo();
 }
 
 void load (char const* const id) {
 	using namespace ankh::shapes;
-	static const char mesh_bin_id[] = "surface_bin";
-	static const size_t mesh_bin_id_length = sizeof(mesh_bin_id)/sizeof(mesh_bin_id[0]);
 
-	std::string loadpath((
-					strncmp(id, mesh_bin_id, mesh_bin_id_length) == 0?
-						std::string(id) :
-						std::string("../meshes/") + id
-				) + ".msh");
+	std::string loadpath;
+	getpathformesh(loadpath, id, "msh");
 
 	Mesh* m(MeshLoader::GetSingleton().Load(loadpath));
 
 	DASSERT(m);
 	_::getmesh() =(*DPTR(m));
+
 	MeshLoader::GetSingleton().Unload(m);
-	_::printmeshinfo();
+
+	LogInfo_MeshStats();
 }
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+void SetTimesList (TimesList* const tl)
+	{ _::SetTimes(DNULLCHECK(tl)); }
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+void LogInfo_MeshStats(void) {
+	// TODO do with bounding volumes
+	using ankh::shapes::Mesh;
+	using ankh::math::types::Vertex;
+
+	Mesh& m(_::getmesh());
+	_::MeshElements const& els(m.GetElements());
+
+	typedef _::MeshElements::const_iterator  ite_t;
+	
+	float minx(FLT_MAX), maxx(-FLT_MAX), miny(FLT_MAX), maxy(-FLT_MAX), minz(FLT_MAX), maxz(-FLT_MAX);
+
+	ite_t const els_end(els.end());
+	for (ite_t el(els.begin()); el != els_end; ++el)
+		for (unsigned int i(0); i < 3; ++i) {
+			const Vertex& v(el->GetVertex(i));
+			if (v.x < minx)
+				minx = v.x;
+			if (v.x > maxx)
+				maxx = v.x;
+			if (v.y < miny)
+				miny = v.y;
+			if (v.y > maxy)
+				maxy = v.y;
+			if (v.z < minz)
+				minz = v.z;
+			if (v.z > maxz)
+				maxz = v.z;
+		}
+
+	{
+		TCHAR buf[1024];
+		_sntprintf_s(&buf[0], _countof(buf), _countof(buf)-1, _T("%ld triangles, max<%f %f %f>    min<%f %f %f>\n"),
+				els.size(), maxx, maxy, maxz, minx, miny, minz);
+		my::global::log::info(&buf[0]);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+unsigned long int GetNumberOfMeshElements (void) {
+	return _::getmesh().GetElements().size();
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
+
 
 void addastrianglesto (my::gl::shapes::ShapeCompositionFactory&	f)
 {

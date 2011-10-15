@@ -11,8 +11,6 @@
 #	pragma warning( push, 0 )
 #endif
 
-#include <MyWindows.h>
-
 // C RunTime Header Files
 #include <stdlib.h>
 #include <malloc.h>
@@ -22,10 +20,6 @@
 #include <assert.h>
 #include <string.h>
 #include <math.h>
-
-
-#include <d3d9.h>
-
 
 #include <string>
 #include <list>

@@ -13,7 +13,7 @@ namespace my {
 
 
 		namespace errorHandler {
-			typedef void (*ErrorHandler) (LPCTSTR msg);
+			typedef void (*ErrorHandler) (TCHAR const* msg);
 
 			MYUTIL_API ErrorHandler						Get (void);
 			MYUTIL_API void								Set (ErrorHandler);

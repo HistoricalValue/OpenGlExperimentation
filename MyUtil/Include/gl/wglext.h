@@ -30,11 +30,6 @@ extern "C" {
 
 /* Function declaration macros - to move into glplatform.h */
 
-#if defined(_WIN32) && !defined(APIENTRY) && !defined(__CYGWIN__) && !defined(__SCITECH_SNAP__)
-#define WIN32_LEAN_AND_MEAN 1
-#include <windows.h>
-#endif
-
 #ifndef APIENTRY
 #define APIENTRY
 #endif

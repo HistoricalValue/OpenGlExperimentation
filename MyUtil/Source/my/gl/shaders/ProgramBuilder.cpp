@@ -45,7 +45,7 @@ namespace my { namespace gl { namespace shaders {
 				ProgramBuilder::SourceText		infoLog,
 				size_t&							infoLogHead);
 		using openglutil::GlErrorsHandled;
-		static void DefaultGlErrorHandler (LPCTSTR);
+		static void DefaultGlErrorHandler (TCHAR const*);
 		static bool CreateProgramAndLinkShaders (GLuint const program, GLuint vertexShader, GLuint fragmentShader, ErrorMessage);
 
 		using codeshare::utilities::csconcat;
@@ -224,7 +224,7 @@ namespace my { namespace gl { namespace shaders {
 			return result;
 		}
 
-		void DefaultGlErrorHandler (LPCTSTR const errorMessage) {
+		void DefaultGlErrorHandler (TCHAR const* const errorMessage) {
 			PASSERT(false)
 		}
 

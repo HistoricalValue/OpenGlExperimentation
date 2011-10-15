@@ -1,6 +1,6 @@
 #pragma once
 
-#include <MyWindows.h>
+#include <PTypes.h>
 #include <string>
 
 namespace my {
@@ -16,7 +16,7 @@ namespace my {
 														String (_T_STR const& other):
 															_T_STR(other)
 															{}
-														String (LPCTSTR const str):
+														String (TCHAR const* const str):
 															_T_STR(str)
 															{}
 														~String (void)

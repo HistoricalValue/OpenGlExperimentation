@@ -169,15 +169,16 @@
   <ItemGroup>
     <ClInclude Include="Include\drawing_nurbs.h" />
     <ClInclude Include="Include\drawing_utils.h" />
-    <ClInclude Include="Include\MyConsole.h" />
-    <ClInclude Include="Include\MyDirect3D9.h" />
-    <ClInclude Include="Include\MyLocalGlobalInstances.h" />
-    <ClInclude Include="Include\MyOpenGL.h" />
-    <ClInclude Include="Include\MyWindow.h" />
+    <ClInclude Include="Include\TheCursed\MyConsole.h" />
+    <ClInclude Include="Include\TheCursed\MyDirect3D9.h" />
+    <ClInclude Include="Include\TheCursed\MyLocalGlobalInstances.h" />
+    <ClInclude Include="Include\TheCursed\MyOpenGL.h" />
+    <ClInclude Include="Include\TheCursed\MyWindow.h" />
     <ClInclude Include="Include\Options.h" />
     <ClInclude Include="Include\resource.h" />
-    <ClInclude Include="Include\Setup.h" />
+    <ClInclude Include="Include\TheCursed\Setup.h" />
     <ClInclude Include="Include\stdafx.h" />
+    <ClInclude Include="Include\TheCursed.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\shaders\vertex2.txt" />

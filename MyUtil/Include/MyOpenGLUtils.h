@@ -2,11 +2,9 @@
 #define __MY_UTIL__MY_OPEN_GL_UTIL__H__
 
 #include <MyUtil.h>
-#include <MyWindows.h>
-
 #include <PConfigurations.h>
-
 #include <nmutil/OpenGlExtensions.h>
+#include <Ptchar.h>
 
 
 #if defined( P_INLINING )
@@ -33,10 +31,10 @@ namespace my {
 		P_INLINE
 		MYUTIL_API enum GlConst ToGlConst (GLenum const&);
 
-		MYUTIL_API LPCTSTR GlConstString (enum GlConst const& k);
+		MYUTIL_API TCHAR const* GlConstString (enum GlConst const& k);
 
 		template <enum GlConst const K>
-		__MY_OPEN_GL_UTILS__CONST_STRING_LINKING LPCTSTR GlConstString (void);
+		__MY_OPEN_GL_UTILS__CONST_STRING_LINKING TCHAR const* GlConstString (void);
 
 
 		enum GlError {
@@ -49,10 +47,10 @@ namespace my {
 			MY_GL_OUT_OF_MEMORY		= GL_OUT_OF_MEMORY		// There is not enough memory left to execute the function. The state of OpenGL is undefined, except for the state of the error flags, after this error is recorded.
 		};
 
-		MYUTIL_API LPCTSTR GlErrorString (enum GlError const& e);
+		MYUTIL_API TCHAR const* GlErrorString (enum GlError const& e);
 
 		template <enum GlError const E>
-		__MY_OPEN_GL_UTILS__CONST_STRING_LINKING LPCTSTR GlErrorString (void);
+		__MY_OPEN_GL_UTILS__CONST_STRING_LINKING TCHAR const* GlErrorString (void);
 
 
 		// ----------------------------
@@ -74,7 +72,7 @@ namespace my {
 
 		// ----------------------------
 
-		MYUTIL_API bool GlErrorsHandled (void (*handler) (LPCTSTR));
+		MYUTIL_API bool GlErrorsHandled (void (*handler) (TCHAR const*));
 
 	} // namespace openglutil
 } // namespace my

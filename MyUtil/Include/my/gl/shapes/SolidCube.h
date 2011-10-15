@@ -4,7 +4,6 @@
 
 #include <MyUtil.h>
 #include <my/gl/shapes/Shape.h>
-#include <MyWindows.h>
 #include <my/gl/shapes/Colour.h>
 #include <my/gl/shapes/Triangle.h>
 

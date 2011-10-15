@@ -16,7 +16,7 @@ namespace my {
 	// Stringification for compile-time constants
 
 #	define __MY_OPEN_GL_UTILS__GL_CONSTANT_STRING_DEFINITION(FNAME, KONST)	\
-			template<> LPCTSTR FNAME < KONST > (void) { return _T(#KONST); }
+			template<> TCHAR const* FNAME < KONST > (void) { return _T(#KONST); }
 
 
 

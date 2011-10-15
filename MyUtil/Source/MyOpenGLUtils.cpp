@@ -18,7 +18,7 @@ namespace my { namespace openglutil {
 #define __GL_CONST_CASE(KONST) case MY_##KONST: return GlConstString<MY_##KONST>();
 
 
-	LPCTSTR GlConstString (enum GlConst const& konst) {
+	TCHAR const* GlConstString (enum GlConst const& konst) {
 		switch (konst) {
 			__GL_CONST_CASE(GL_ALPHA_TEST)
 			__GL_CONST_CASE(GL_AUTO_NORMAL)
@@ -40,7 +40,7 @@ namespace my { namespace openglutil {
 #define __GL_ERROR_CASE(GLERR) case GLERR: return GlErrorString<GLERR>();
 
 
-	LPCTSTR GlErrorString (enum GlError const& glerr) {
+	TCHAR const* GlErrorString (enum GlError const& glerr) {
 		switch (glerr) {
 			__GL_ERROR_CASE(MY_GL_INVALID_ENUM)
 			__GL_ERROR_CASE(MY_GL_INVALID_VALUE)
@@ -55,7 +55,7 @@ namespace my { namespace openglutil {
 
 
 
-	bool GlErrorsHandled (void (* const handler) (LPCTSTR errors)) {
+	bool GlErrorsHandled (void (* const handler) (TCHAR const* errors)) {
 		GLenum errors[1024];
 		int i(0);
 
@@ -71,7 +71,7 @@ namespace my { namespace openglutil {
 					messageLength += _tcslen(GlErrorString(static_cast<GlError>(errors[j])));
 			}
 
-			LPCTSTR const prefix(_T("Errors by OpenGL:\n"));
+			TCHAR const* const prefix(_T("Errors by OpenGL:\n"));
 			unsigned int const prefixLength(_tcsclen(prefix));
 			unsigned int available(
 					prefixLength +
@@ -79,7 +79,7 @@ namespace my { namespace openglutil {
 					(i * (1 + 1))	// \t and \n
 					+ 1);			// EOS
 			// Get static buffer for string
-			LPTSTR message(codeshare::utilities::GlobalSingleAllocationBuffer::Get().AsArrayOf<TCHAR>(available));
+			TCHAR* message(codeshare::utilities::GlobalSingleAllocationBuffer::Get().AsArrayOf<TCHAR>(available));
 
 			// EOS reserved
 			--available;
@@ -88,7 +88,7 @@ namespace my { namespace openglutil {
 			j += prefixLength;
 
 			for (int k(0); k < i; ++k) {
-				LPCTSTR const errorString(GlErrorString(static_cast<GlError>(errors[k])));
+				TCHAR const* const errorString(GlErrorString(static_cast<GlError>(errors[k])));
 				size_t const errorStringLength(_tcsclen(errorString));
 				PASSERT(available - j > 1)
 				message[j] = '\t';

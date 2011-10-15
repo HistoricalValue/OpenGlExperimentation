@@ -1,9 +1,9 @@
 #ifndef __MY__CONSOLE__H__
 #define __MY__CONSOLE__H__
 
-#include "MyWindows.h"
-
+#include <tchar.h>
 #include <ostream>
+#include <PWindows.h>
 
 namespace my {
 
@@ -12,9 +12,9 @@ namespace my {
 													Console (void);
 													~Console (void);
 
-	void											WriteToOutputStream (LPCTSTR);
+	void											WriteToOutputStream (TCHAR const*);
 	void											WriteToOutputStreamA (char const*);
-	void											WriteToErrorStream (LPCTSTR);
+	void											WriteToErrorStream (TCHAR const*);
 
 	bool											IsValid (void) const;
 

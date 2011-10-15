@@ -1,7 +1,7 @@
 #ifndef __MY_OPEN_GL__H__
 #define __MY_OPEN_GL__H__
 
-#include "MyWindow.h"
+#include <TheCursed.h>
 
 #define VAN_POSITION	"position"
 #define VAN_COLOUR		"colour"
@@ -26,7 +26,7 @@ namespace my {
 		void											CleanUp (void); // called at destruction time, if needed
 
 		void											PutChar (TCHAR);
-		void											PutString (LPCTSTR);
+		void											PutString (TCHAR const*);
 
 		void											Reset (void);
 

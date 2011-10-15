@@ -1,6 +1,8 @@
 #include "stdafx.h"
+#include "TheCursed.h"
 
-
+#include "PWindowsUtilities.h"
+using namespace codeshare::utilities::windows_utilities;
 
 #if defined (UNICODE) || defined(_UNICODE)
 #	define CONVERT_ERROR_MESSAGE(MSG)	ConvertErrorMessage((MSG))
@@ -70,18 +72,18 @@ namespace d3dtost {
 
 			if (requiredLength == 0) {
 				wmsg = _T("Failed in translating an error message from MB to Unicode");
-				LPTSTR const errorString(my::winutil::ErrorToString(GetLastError()));
+				TCHAR* const errorString(ErrorToString(GetLastError()));
 				assert(false);
-				my::winutil::ReleaseErrorString(errorString);
+				ReleaseErrorString(errorString);
 			}
 			else {
 				LPVOID const mem(HeapAlloc(GetProcessHeap(),HEAP_NO_SERIALIZE | HEAP_ZERO_MEMORY, requiredLength + 1));
 
 				if (mem == NULL) {
 					wmsg = _T("Failed in allocating enough memory for error message conversion");
-					LPTSTR const errorString(my::winutil::ErrorToString(GetLastError()));
+					TCHAR* const errorString(ErrorToString(GetLastError()));
 					assert(false);
-					my::winutil::ReleaseErrorString(errorString);
+					ReleaseErrorString(errorString);
 				}
 				else {
 					wmsg = reinterpret_cast<LPWSTR>(mem);
@@ -97,9 +99,9 @@ namespace d3dtost {
 
 					if (writenChars == 0) {
 						wmsg = _T("Could not conver MB message to Unicode");
-						LPTSTR const errorString(my::winutil::ErrorToString(GetLastError()));
+						TCHAR* const errorString(ErrorToString(GetLastError()));
 						assert(false);
-						my::winutil::ReleaseErrorString(errorString);
+						ReleaseErrorString(errorString);
 					}
 					else {
 						assert(writenChars == requiredLength);
@@ -128,7 +130,7 @@ namespace d3dtost {
 	}
 
 	static void OnError (char const* const msg) {
-		LPTSTR wmsg(CONVERT_ERROR_MESSAGE(msg));
+		TCHAR* wmsg(CONVERT_ERROR_MESSAGE(msg));
 		pLogger->Error(wmsg);
 		HeapFree(GetProcessHeap(), HEAP_NO_SERIALIZE, wmsg);
 		wmsg = NULL;

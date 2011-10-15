@@ -1,3 +1,6 @@
+#if 0
+
+#else
 template <bool condition> struct STATIC_ASSERTION_FAILURE;
 template <> struct STATIC_ASSERTION_FAILURE<true> {};
 #define STATIC_ASSERT(COND) { typedef char __static_assertion_failure_pointless_type##__LINE__ [sizeof(STATIC_ASSERTION_FAILURE<COND>)]; }
@@ -22,3 +25,5 @@ int main4 (int, char**) {
 
 	return checkedreturn<int>(reterner<typeequality<double,double>::result>::f());
 }
+
+#endif

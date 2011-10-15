@@ -1,4 +1,6 @@
 #include "stdafx.h"
+#include <d3d9.h>
+#include "TheCursed.h"
 
 #define __NEW_ERROR(MSG) \
 		(new ::codeshare::utilities::Error(_T(__FILE__), __LINE__, codeshare::utilities::String(_T(MSG))))

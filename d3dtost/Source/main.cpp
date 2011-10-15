@@ -1,5 +1,15 @@
 #include "stdafx.h"
 
+#if defined(INTERNAL_H)
+#	error early shit
+#endif
+
+#if defined(_WINDOWS_)
+#	error shit
+#endif
+
+#include "TheCursed.h"
+
 #define WITH_TRIPLE_CLEANUP 0
 
 // notes: http://www.youtube.com/watch?v=6RbT0zWTb8g&feature=player_embedded
@@ -95,7 +105,7 @@ namespace _ {
 // implement global instances
 namespace my { namespace global {
 	namespace log {
-		void info (LPCTSTR msg) {
+		void info (TCHAR const* msg) {
 			_::info_console->WriteToOutputStream(_T("[INFO]: "));
 			_::info_console->WriteToOutputStream(msg);
 		}
@@ -116,7 +126,7 @@ namespace my {
 	int APIENTRY WinMain (
 			HINSTANCE hInstance,
 			HINSTANCE hPrevInstance,
-			LPTSTR    lpCmdLine,
+			TCHAR*    lpCmdLine,
 			int       nCmdShow) {
 
 		_::Console		console;
@@ -185,7 +195,7 @@ namespace my {
 int APIENTRY _tWinMain(
 		HINSTANCE hInstance,
 		HINSTANCE hPrevInstance,
-		LPTSTR    lpCmdLine,
+		TCHAR*    lpCmdLine,
 		int       nCmdShow) {
 	// run main twice, so as to ensure clean-up works correctly
 	return
