@@ -20,7 +20,7 @@ extern void generateindexedbuffer (void);
 extern void computeboundinvolume (void);
 extern void generateaabb (ankh::shapes::MeshAABBTree&);
 extern void fairprepareao (void);
-extern void updateao (ankh::shapes::Mesh::AmbientOcclusionCreator const&);
+extern void updateao (ankh::shapes::Mesh::AmbientOcclusionCreator const&, char const* method = NULL);
 extern void updateaotraditional (void);
 //
 extern void store (char const* id);
@@ -32,6 +32,7 @@ extern void addastrianglesto (my::gl::shapes::ShapeCompositionFactory& f);
 //
 extern unsigned long int	GetNumberOfMeshElements (void);
 extern void					LogInfo_MeshStats (void);
+extern void					ExtractAOInto (std::vector<float>&);
 //
 typedef std::list<std::pair<std::string, unsigned long> >	TimesList;
 extern void SetTimesList (TimesList*);

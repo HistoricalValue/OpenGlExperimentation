@@ -6,6 +6,9 @@
 
 #include <SurfacesTools.h>
 #include <my/gl/adapters/BufferManager.h>
+#include <ComputeMeshAmbientOcclusion.h>
+
+#include <functional>
 
 namespace {
 
@@ -171,5 +174,50 @@ struct IneffectiveBufferEntryDeleter: ::my::gl::adapters::Buffer::Deleter {
 
 #define FOREACH(ARRT, ARR, VARNAME)	\
 	for (UPTR( ARRT ) VARNAME (( & ARR [0] )) ; VARNAME < & ARR [ countof( ARR ) ] ; ++ VARNAME )
+
+namespace {
+static inline void ExtractAmbientOcclusions (std::vector<float>& into, ankh::shapes::Mesh const& m) {
+	DASSERT(into.empty());
+	into.reserve(m.GetElements().size());
+
+	ankh::shapes::Mesh::Elements::const_iterator const elements_end(m.GetElements().end());
+
+	for (ankh::shapes::Mesh::Elements::const_iterator i(m.GetElements().begin()); i != elements_end; ++i) {
+		DASSERT(i->HasAmbientOcclusion());
+		into.push_back(i->GetAmbientOcclusion(0u));
+		into.push_back(i->GetAmbientOcclusion(1u));
+		into.push_back(i->GetAmbientOcclusion(2u));
+	}
+}
+
+template <typename FloatIterType>
+class EqualityAsserterAOCreator: public ankh::shapes::Mesh::AmbientOcclusionCreator {
+public:
+	virtual void operator () (ankh::shapes::MeshElement const& el, float (*&ao)[3]) const {
+		delegatee(el, ao);
+		DASSERT(aos != aos_end && std::equal_to<float>()((*ao)[0], *aos++));
+		DASSERT(aos != aos_end && std::equal_to<float>()((*ao)[1], *aos++));
+		DASSERT(aos != aos_end && std::equal_to<float>()((*ao)[2], *aos++));
+	}
+
+	EqualityAsserterAOCreator (ankh::shapes::Mesh::AmbientOcclusionCreator const* const _delegatee, FloatIterType const& _aos, FloatIterType const& _aos_end):
+		delegatee	(*DNULLCHECK(_delegatee)),
+		aos			(_aos),
+		aos_end		(_aos_end)
+		{}
+
+	EqualityAsserterAOCreator*	Clone (void) const
+		{ return DNEWCLASS(EqualityAsserterAOCreator, (&delegatee, aos, aos_end)); }
+
+private:
+	ankh::shapes::Mesh::AmbientOcclusionCreator const&	delegatee;
+	mutable FloatIterType								aos;
+	FloatIterType const									aos_end;
+
+	EqualityAsserterAOCreator (EqualityAsserterAOCreator const&);
+	void operator = (EqualityAsserterAOCreator const&);
+};
+
+} //
 
 #endif

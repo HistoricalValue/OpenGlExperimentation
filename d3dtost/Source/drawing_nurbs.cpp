@@ -252,9 +252,10 @@ void fairprepareao (void) {
 	_::getmesh().SelectiveUpdate(false, false, true);
 }
 
-void updateao (ankh::shapes::Mesh::AmbientOcclusionCreator const& aoc) {
+void updateao (ankh::shapes::Mesh::AmbientOcclusionCreator const& aoc, char const* const method) {
 	_::getmesh().SetAmbientOcclusionCreator(&aoc);
-	{	timer t00("updating ambient occlusion", _::timesFillingCallback);
+	{	std::string msg(std::string("updating ambient occlusion") + (method? std::string(" (") + method + ")" : std::string("")));
+		timer t00(msg.c_str(), _::timesFillingCallback);
 		_::getmesh().SelectiveUpdate(false, false, true);
 	}
 }
@@ -544,6 +545,12 @@ void LogInfo_MeshStats(void) {
 
 //////////////////////////////////////////////////////////////////////////////////////
 
+void ExtractAOInto (std::vector<float>& into) {
+	ExtractAmbientOcclusions(into, _::getmesh());
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
 
 

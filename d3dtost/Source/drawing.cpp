@@ -10,12 +10,11 @@
 #include <ufiles.h>
 #include <uderivablecheck.h>
 
-#define WITH_NORMALS	1
-#define	WITH_GRID		1
+#define WITH_NORMALS	1-1
+#define	WITH_GRID		1-1
 
 //	#define NURBS_LOAD_FROM	"surface_bin"
-//	#define NURBS_LOAD_FROM	"bumps_1122_with_ao"
-//	#define NURBS_LOAD_FROM "moon_valley_bumps_12610_with_ao9_aotime345431ms"
+	#define NURBS_LOAD_FROM	"moon_valley_1.0"
 
 #define DONT	if (false)
 #define DO		if (true)

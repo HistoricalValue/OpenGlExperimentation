@@ -105,7 +105,7 @@ static inline void WriteAllMeshesStats (MeshesStats const& allstats) {
 }
 
 static void Tesselate (std::list<std::string>& generatedIds, bool const doWork) {
-	Unit steps[] = { 2e0f };//, 1e0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f };
+	Unit steps[] = { 2e-1f }; // { 2e0f, 1e0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f };
 	MeshesStats	allstats;
 	Surface bob(BobRoss());
 
@@ -125,7 +125,7 @@ static void Tesselate (std::list<std::string>& generatedIds, bool const doWork) 
 			generateindexedbuffer();
 			computeboundinvolume();
 		
-			{
+			if (false) {
 				fairprepareao();
 				updateaotraditional();
 			}
@@ -133,8 +133,22 @@ static void Tesselate (std::list<std::string>& generatedIds, bool const doWork) 
 				fairprepareao();
 				MeshAABBTree aabb;
 				generateaabb(aabb);
-				ComputeMeshAmbientOcclusion aoc(ComputeMeshAmbientOcclusion::Sampling9, &aabb);
-				updateao(aoc);
+
+				struct { std::vector<float> trad, nu, alt; } aos;
+
+				// Do with alt
+				{	fairprepareao();
+					ComputeMeshAmbientOcclusionAlt aoc(ComputeMeshAmbientOcclusion::Sampling9, &aabb);
+					updateao(aoc, "ALT");
+					ExtractAOInto(aos.alt);	}
+
+				// Do with nu
+				{	fairprepareao();
+					ComputeMeshAmbientOcclusion aoc(ComputeMeshAmbientOcclusion::Sampling9, &aabb);
+					updateao(aoc, "NU");
+					ExtractAOInto(aos.nu); }
+
+				DASSERT(std::equal(aos.alt.begin(), aos.alt.end(), aos.nu.begin()));
 			}
 
 			allstats.SetNumEls(GetNumberOfMeshElements());
