@@ -260,14 +260,16 @@ void updateao (ankh::shapes::Mesh::AmbientOcclusionCreator const& aoc, char cons
 	}
 }
 
-void updateaotraditional (void) {
-	ankh::shapes::Mesh::AmbientOcclusionCreator* const aoc(ankh::ao::AmbientOcclusionCreatorFactory::New(ankh::ao::SamplingRate_9, &_::getmesh().GetElements()));
+void updateaotraditional (ankh::ao::ProduceIntersectionData_Into& into) {
+	ankh::shapes::Mesh::AmbientOcclusionCreator* const aoc(ankh::ao::AmbientOcclusionCreatorFactory::New(ankh::ao::SamplingRate_9, &_::getmesh().GetElements(), &into));
 	_::getmesh().SetAmbientOcclusionCreator(aoc);
 	ankh::ao::AmbientOcclusionCreatorFactory::Delete(aoc);
 
 	{	timer t00("updating ambient occlusion (traditional)", _::timesFillingCallback);
 		_::getmesh().SelectiveUpdate(false, false, true);
 	}
+
+	DASSERT(into.size() == _::getmesh().GetElements().size());
 }
 
 //////////////////////////////////////////////////////////////////////////////////////

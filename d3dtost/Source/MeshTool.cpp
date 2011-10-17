@@ -105,7 +105,7 @@ static inline void WriteAllMeshesStats (MeshesStats const& allstats) {
 }
 
 static void Tesselate (std::list<std::string>& generatedIds, bool const doWork) {
-	Unit steps[] = { 2e-1f }; // { 2e0f, 1e0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f };
+	Unit steps[] = { 2e-0f }; // { 2e0f, 1e0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f };
 	MeshesStats	allstats;
 	Surface bob(BobRoss());
 
@@ -125,9 +125,11 @@ static void Tesselate (std::list<std::string>& generatedIds, bool const doWork) 
 			generateindexedbuffer();
 			computeboundinvolume();
 		
-			if (false) {
+			ao::ProduceIntersectionData_Into intersectionData;
+
+			{
 				fairprepareao();
-				updateaotraditional();
+				updateaotraditional(intersectionData);
 			}
 			{
 				fairprepareao();
@@ -138,7 +140,7 @@ static void Tesselate (std::list<std::string>& generatedIds, bool const doWork) 
 
 				// Do with alt
 				{	fairprepareao();
-					ComputeMeshAmbientOcclusionAlt aoc(ComputeMeshAmbientOcclusion::Sampling9, &aabb);
+					ComputeMeshAmbientOcclusionAlt aoc(&intersectionData, ComputeMeshAmbientOcclusion::Sampling9, &aabb);
 					updateao(aoc, "ALT");
 					ExtractAOInto(aos.alt);	}
 
