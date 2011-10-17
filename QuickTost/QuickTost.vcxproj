@@ -60,7 +60,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)..\..\ankh\Images\Include;$(ProjectDir)..\..\ankh\Textures\Include;$(ProjectDir)..\MyUtil\Include;$(ProjectDir)..\Codeshare\isi_branch\Utilities\Include;$(ProjectDir)..\..\ankh\Math\Include;$(ProjectDir)..\..\ankh\BoundingVolumes\Include;$(ProjectDir)..\..\ankh\Meshes\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)..\..\ankh\Images\Include;$(ProjectDir)..\..\ankh\Textures\Include;$(ProjectDir)..\MyUtil\Include;$(ProjectDir)..\Codeshare\isi_branch\Utilities\Include;$(ProjectDir)..\..\ankh\Math\Include;$(ProjectDir)..\..\ankh\BoundingVolumes\Include;$(ProjectDir)..\..\ankh\Meshes\Include;$(PropertiesDir)..\..\ankh\Properties\Include;$(PropertiesDir)..\..\ankh\NURBS\Include;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">
@@ -70,7 +70,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)..\..\ankh\Images\Include;$(ProjectDir)..\..\ankh\Textures\Include;$(ProjectDir)..\MyUtil\Include;$(ProjectDir)..\Codeshare\isi_branch\Utilities\Include;$(ProjectDir)..\..\ankh\Math\Include;$(ProjectDir)..\..\ankh\BoundingVolumes\Include;$(ProjectDir)..\..\ankh\Meshes\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)..\..\ankh\Images\Include;$(ProjectDir)..\..\ankh\Textures\Include;$(ProjectDir)..\MyUtil\Include;$(ProjectDir)..\Codeshare\isi_branch\Utilities\Include;$(ProjectDir)..\..\ankh\Math\Include;$(ProjectDir)..\..\ankh\BoundingVolumes\Include;$(ProjectDir)..\..\ankh\Meshes\Include;$(PropertiesDir)..\..\ankh\Properties\Include;$(PropertiesDir)..\..\ankh\NURBS\Include;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

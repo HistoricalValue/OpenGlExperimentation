@@ -764,6 +764,7 @@ namespace my {
 					nurbs::load(NURBS_LOAD_FROM);
 				#else
 					nurbs::tesselate(nurbs::BobRoss());
+					{ ankh::ao::MeshIntersectionData into; nurbs::updateaotraditional(into); }
 				#endif
 			}
 

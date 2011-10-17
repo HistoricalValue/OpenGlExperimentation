@@ -21,7 +21,7 @@ extern void computeboundinvolume (void);
 extern void generateaabb (ankh::shapes::MeshAABBTree&);
 extern void fairprepareao (void);
 extern void updateao (ankh::shapes::Mesh::AmbientOcclusionCreator const&, char const* method = NULL);
-extern void updateaotraditional (ankh::ao::ProduceIntersectionData_Into& into);
+extern void updateaotraditional (ankh::ao::MeshIntersectionData& into);
 //
 extern void store (char const* id);
 extern void load (char const* id);

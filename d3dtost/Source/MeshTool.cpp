@@ -125,13 +125,13 @@ static void Tesselate (std::list<std::string>& generatedIds, bool const doWork) 
 			generateindexedbuffer();
 			computeboundinvolume();
 
-			ao::ProduceIntersectionData_Into intersectionData;
+			ao::MeshIntersectionData intersectionData;
 
 			{
 				fairprepareao();
 				updateaotraditional(intersectionData);
 			}
-			{
+			if (false) {
 				fairprepareao();
 				MeshAABBTree aabb;
 				generateaabb(aabb);

@@ -260,7 +260,7 @@ void updateao (ankh::shapes::Mesh::AmbientOcclusionCreator const& aoc, char cons
 	}
 }
 
-void updateaotraditional (ankh::ao::ProduceIntersectionData_Into& into) {
+void updateaotraditional (ankh::ao::MeshIntersectionData& into) {
 	ankh::shapes::Mesh::AmbientOcclusionCreator* const aoc(ankh::ao::AmbientOcclusionCreatorFactory::New(ankh::ao::SamplingRate_9, &_::getmesh().GetElements(), &into));
 	_::getmesh().SetAmbientOcclusionCreator(aoc);
 	ankh::ao::AmbientOcclusionCreatorFactory::Delete(aoc);
