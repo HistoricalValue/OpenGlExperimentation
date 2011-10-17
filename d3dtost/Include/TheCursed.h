@@ -6,9 +6,9 @@
 // of its effects. So, if some file needs the original
 // Windows functionality, it has to stay uncontaminated
 // from the PWindows.h inclusion.
-// 
+//
 // Therefore, The Cursed shoul never be included in
-// other header files in fear of including them in 
+// other header files in fear of including them in
 // sources that want to aboid PWindows.h. Those who need
 // The Cursed should only include them locally, in
 // a source file.

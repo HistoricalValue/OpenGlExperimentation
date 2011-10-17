@@ -129,7 +129,7 @@ namespace my {
 		if (initialised) {
 			PASSERT(!Images_gl_ext_IsInitialised())
 			initialised = Images_gl_ext_Initialise();
-			
+
 			glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 
 			if (initialised) {

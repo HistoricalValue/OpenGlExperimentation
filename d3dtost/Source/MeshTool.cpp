@@ -124,7 +124,7 @@ static void Tesselate (std::list<std::string>& generatedIds, bool const doWork) 
 			tesselate(bob, &TesselationParameters(*step, false, DefaultPrecision()));
 			generateindexedbuffer();
 			computeboundinvolume();
-		
+
 			ao::ProduceIntersectionData_Into intersectionData;
 
 			{

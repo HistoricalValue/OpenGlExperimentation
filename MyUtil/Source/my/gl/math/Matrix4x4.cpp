@@ -20,7 +20,7 @@ namespace my { namespace gl { namespace math {
 	Matrix4x4 Matrix4x4::adjugate (void) const {
 		return cofactor_matrix().transpose();
 	}
-	
+
 	Matrix4x4 Matrix4x4::cofactor_matrix (void) const {
 		return	Matrix4x4(	1.0f, -1.0f, 1.0f, -1.0f,
 							-1.0f, 1.0f, -1.0f, 1.0f,
@@ -54,7 +54,7 @@ namespace my { namespace gl { namespace math {
 	float Matrix4x4::minor (size_t const i, size_t const j) const {
 		PASSERT(i < 4)
 		PASSERT(j < 4)
-		
+
 		size_t row0(0), row1(1), col0(0), col1(1);
 		switch (i) {
 			case 0:		++row0;

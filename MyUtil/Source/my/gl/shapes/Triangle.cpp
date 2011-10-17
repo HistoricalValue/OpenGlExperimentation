@@ -82,7 +82,7 @@ namespace my { namespace gl { namespace shapes {
 		PASSERT(abs(na.magnitude() - 1.0f) < 1e-6)
 		PASSERT(abs(nb.magnitude() - 1.0f) < 1e-6)
 		PASSERT(abs(nc.magnitude() - 1.0f) < 1e-6)
-		
+
 		if (bytesize >= requiredBytesize) {
 			reinterpret_assign(result, memory);
 

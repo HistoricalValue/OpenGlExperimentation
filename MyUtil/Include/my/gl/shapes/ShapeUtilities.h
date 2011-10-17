@@ -7,7 +7,7 @@
 namespace my { namespace gl { namespace shapes {
 
 namespace ShapeUtilities {
-	
+
 	extern MYUTIL_API void	Initialise (void);
 	extern MYUTIL_API void	CleanUp (void);
 	extern MYUTIL_API void*	_ShapeAlloc (size_t);

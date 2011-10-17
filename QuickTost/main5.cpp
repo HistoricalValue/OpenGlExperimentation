@@ -56,7 +56,7 @@ static Surface MakeSurface (void) {
 
 	FillUniformly(knots_j, numknots_j, 0.0f, 1.0f);
 	FillUniformly(knots_i, numknots_i, 0.0f, 1.0f);
-		
+
 	VaryGrid(
 		FillGridUniformly(
 			cpoints_i,
@@ -75,10 +75,10 @@ static Surface MakeSurface (void) {
 	;
 	cpoints_i.at(3).at(3) = math::trig::vec4(maxx, maxy, maxz, 1.0f);
 	cpoints_i.at(3).at(3) *= 2.0f;
-	
+
 	cpoints_i.at(9).at(3).y = -maxy;
 	cpoints_i.at(9).at(3) *= 4.0f;
-	
+
 	cpoints_i.at(15).at(5).y = maxy;
 	cpoints_i.at(15).at(5) *= 0.5f;
 
@@ -127,7 +127,7 @@ int main5 (int argc, char** argv) {
 	// AO testing
 	{
 		Mesh m(elements, "", NULL, NULL, aocTrad, volume);
-		
+
 		MeshAABBTree aabb;
 		aabb(m);
 
@@ -139,7 +139,7 @@ int main5 (int argc, char** argv) {
 		m.SelectiveUpdate(false, false, true);
 	}
 
-	// Clean Up 
+	// Clean Up
 	{
 		ao::AmbientOcclusionCreatorFactory::Delete(aocTrad);
 		DDELETE(volume);

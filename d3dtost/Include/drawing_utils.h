@@ -30,7 +30,7 @@ template <typename T1, typename T2> static inline
 void ofequaltypes (T1&, T2& o2)
 	{ utypecheck<T1>(o2); }
 
-template <typename C, typename F> static 
+template <typename C, typename F> static
 void foreach (C const& c, F const& f)
 	{ std::for_each(c.begin(), c.end(), f); }
 
@@ -50,7 +50,7 @@ my::gl::shapes::Vertex makevertex (ankh::math::types::Vertex const& v)
 static inline
 my::gl::shapes::Line makenormallineformeshelementvertex (ankh::shapes::MeshElement const& v, size_t const i) {
 	using namespace ankh::math::trig;
-	
+
 	vec3 const line_begin(v.GetVertex(i));
 	vec3 n(v.GetNormal(i));
 	normalise(&n);

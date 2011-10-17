@@ -27,7 +27,7 @@ BufferManager::BufferManager (void):
 	srm	(Deleter(), Validator())
 	{}
 
-// Resource Manager 
+// Resource Manager
 void BufferManager::DeleteBuffer (T* const v)
 	{ v->~Buffer(); DDELETE(reinterpret_cast<BufferPlaceholder* const>(v)); }
 

@@ -291,7 +291,7 @@ ankh::nurbs::Surface const BobRoss (void) {
 
 	const bool		inverseX(false);
 	const bool		inverseZ(false);
-		
+
 	size_t const	order_j			(0x04u)
 				,	order_i			(0x05u)
 				,	numcpoints_j	(0x10u)
@@ -326,16 +326,16 @@ ankh::nurbs::Surface const BobRoss (void) {
 
 	FillUniformly(knots_j, numknots_j, 0.0f, 1.0f);
 	FillUniformly(knots_i, numknots_i, 0.0f, 1.0f);
-		
+
 	//for (size_t curve_i(0u); curve_i < numcurves; ++curve_i)
 	//	cpoints.clear(),
-	//	
+	//
 	//	cpoints_j.push_back(
 	//			ControlPoints_FillRandomly(
 	//				cpoints, numcpoints,
 	//				minx, maxx, miny, maxy, minz, maxz,
 	//				width_units, height_units, depth_units, seed + curve_i));
-		
+
 	VaryGrid(
 		FillGridUniformly(	cpoints_i,
 							numcpoints_i,
@@ -348,10 +348,10 @@ ankh::nurbs::Surface const BobRoss (void) {
 	;
 	cpoints_i.at(3).at(3) = trig::vec4(_::maxx, _::maxy, _::maxz, 1.0f);
 	cpoints_i.at(3).at(3) *= 2.0f;
-	
+
 	cpoints_i.at(9).at(3).y = -_::maxy;
 	cpoints_i.at(9).at(3) *= 4.0f;
-	
+
 	cpoints_i.at(15).at(5).y = _::maxy;
 		cpoints_i.at(15).at(5) *= 0.5f;
 
@@ -467,7 +467,7 @@ static inline void getpathformesh (std::string& into, char const* const id, char
 }
 
 void store (char const* const id) {
-	{	
+	{
 		std::string path;
 		getpathformesh(path, id, "msh");
 		timer t02("storing binary mesh", _::timesFillingCallback);
@@ -516,7 +516,7 @@ void LogInfo_MeshStats(void) {
 	_::MeshElements const& els(m.GetElements());
 
 	typedef _::MeshElements::const_iterator  ite_t;
-	
+
 	float minx(FLT_MAX), maxx(-FLT_MAX), miny(FLT_MAX), maxy(-FLT_MAX), minz(FLT_MAX), maxz(-FLT_MAX);
 
 	ite_t const els_end(els.end());
@@ -586,7 +586,7 @@ void addaoraysto (my::gl::shapes::ShapeComposition& f) {
 
 	ankh::shapes::MeshElement const& middle(*i);
 
-	
+
 }
 
 void addcontrolpointsto (ankh::nurbs::Surface const& surf, my::gl::shapes::ShapeCompositionFactory& f) {

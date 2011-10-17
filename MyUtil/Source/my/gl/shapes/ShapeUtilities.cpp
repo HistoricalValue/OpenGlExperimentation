@@ -56,7 +56,7 @@ void Initialise (void) {
 	PASSERT(_::left == 0)
 
 	_::head = reinterpret_cast<_::allocation*>(DNEW(util_ui8[_::CHUNKLEN]));
-	
+
 	P_STATIC_ASSERT(sizeof(*_::head) < _::CHUNKLEN * sizeof(util_ui8))
 #endif // WITH_LAME_THINGS
 
@@ -124,7 +124,7 @@ void DisposeClonedShape (Shape* const shape) {
 	// Memory validation
 	PASSERT(_::alValidate(shape))
 	PASSERT(_::alGet(shape)->allocated)
-	
+
 	shape->~Shape();
 	_::alGet(shape)->allocated = false;
 

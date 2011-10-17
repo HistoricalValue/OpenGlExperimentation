@@ -79,8 +79,8 @@ namespace my { namespace gl { namespace shapes {
 
 	TexturedVertexData::TexturedVertexData (TexturedVertexData const& d):
 		position			(d.position			),
-		textureCoordinate	(d.textureCoordinate),	
-		normal				(d.normal			),	
+		textureCoordinate	(d.textureCoordinate),
+		normal				(d.normal			),
 		ambientOcclusion	(d.ambientOcclusion	)
 		{}
 
@@ -111,7 +111,7 @@ namespace my { namespace gl { namespace shapes {
 	size_t TexturedVertexData::PositionOffset (void) {
 		return offsetof(TexturedVertexData, position);
 	}
-	
+
 	void* TexturedVertexData::AOOffsetPointer (void) {
 		return codeshare::utilities::pointer_utilities::offset(AOOffset());
 	}

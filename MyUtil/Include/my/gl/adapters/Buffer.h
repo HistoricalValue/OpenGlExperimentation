@@ -42,7 +42,7 @@ public:
 					{ return committed; }
 
 	void		Commit (void);
-	
+
 	bool		InvariantsHold (void) const
 					{ return (!IsCommitted() || entries.size() == 0); }
 
