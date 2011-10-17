@@ -18,16 +18,6 @@
 #	include <stdlib.h>
 #pragma warning( pop )
 
-// This class is exported from the MyUtil.dll
-class MYUTIL_API CMyUtil {
-public:
-	CMyUtil(void);
-	// TODO: add your methods here.
-};
-
-extern MYUTIL_API int nMyUtil;
-
-MYUTIL_API int fnMyUtil(void);
 
 /////////////////////////////
 
