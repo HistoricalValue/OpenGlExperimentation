@@ -1,6 +1,7 @@
 #include <stdafx.h>
 #include <my/gl/adapters/Buffer.h>
 #include <nmutil/OpenGlExtensionManager.h>
+#include <PSafeCast.h>
 
 using namespace ::gl::ext;
 
@@ -34,7 +35,7 @@ size_t Buffer::Add (Entry const& entry) {
 	size_t const offset(totalBytesize);
 	totalBytesize += entry.bytesize;
 
-	entries.push_back(entry.WithOffset(offset));
+	entries.push_back(entry.WithOffset(psafecast<ptrdiff_t>(offset)));
 
 	return offset;
 }
@@ -55,13 +56,13 @@ void Buffer::Commit (void) {
 
 	Bind();
 
-	glBufferData(GL_ARRAY_BUFFER, totalBytesize, NULL, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, psafecast<GLsizeiptr>(totalBytesize), NULL, GL_STATIC_DRAW);
 
 	Entries::const_iterator const entries_end(entries.end());
 	for (Entries::const_iterator i(entries.begin()); i != entries_end; ++i) {
 		PASSERT(i->offset + i->bytesize <= totalBytesize)
 
-		glBufferSubData(GL_ARRAY_BUFFER, i->offset, i->bytesize, i->data);
+		glBufferSubData(GL_ARRAY_BUFFER, i->offset, psafecast<GLsizeiptr>(i->bytesize), i->data);
 
 		(*i->deleter)(i->data);
 	}

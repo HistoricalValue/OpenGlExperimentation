@@ -29,6 +29,9 @@ namespace glt {
 		virtual bool CanHandleFormat (ankh::images::ImageFormatId const& fmt) const;
 		TGADecoder (void);
 		virtual ~TGADecoder (void);
+	private:
+		TGADecoder (TGADecoder const&);
+		void operator = (TGADecoder const&);
 	};
 
 }

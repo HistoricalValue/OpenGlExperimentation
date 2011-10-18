@@ -12,6 +12,7 @@ namespace my { namespace gl { namespace shapes {
 														VertexData (math::Vector4 const&, Colour const&, math::Vector4 const& = math::Vector4::New(), float AO = 1.0f);
 														VertexData (VertexData const&);
 														~VertexData (void);
+														UOVERLOADED_VOID_ASSIGN_VIA_COPY_CONSTRUCTOR(VertexData)
 
 		math::Vector4 const&							GetPosition (void) const;
 		Colour const&									GetColour (void) const;
@@ -51,7 +52,7 @@ namespace my { namespace gl { namespace shapes {
 														~TexturedVertexData (void);
 	private:
 														TexturedVertexData (TexturedVertexData const&);
-		void											operator () (TexturedVertexData const&);
+		void											operator = (TexturedVertexData const&);
 
 		math::Vector4 const								position;
 		math::Vector4 const								textureCoordinate;

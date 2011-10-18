@@ -66,9 +66,12 @@ namespace my { namespace gl { namespace math {
 		struct MYUTIL_API Setter {
 			Setter (float&, bool null = false);
 			float operator = (float) const;
+			Setter (Setter const&);
 		private:
 			float&	e;
 			bool	null;
+
+			void operator = (Setter const&);
 		};
 
 		Setter											x (void);

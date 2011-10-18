@@ -5,16 +5,9 @@
 namespace my { namespace gl { namespace shapes {
 
 	Transformable::Transformable (void) {
-		const size_t s(sizeof(Transformable));
-		P_STATIC_ASSERT(
-				sizeof(Transformable) == sizeof(void*) // vt
-			)
 	}
 
 	Transformable::Transformable (Transformable const&) {
-		P_STATIC_ASSERT(
-				sizeof(Transformable) == sizeof(void*) // vt
-			)
 	}
 
 	Transformable::~Transformable (void) {

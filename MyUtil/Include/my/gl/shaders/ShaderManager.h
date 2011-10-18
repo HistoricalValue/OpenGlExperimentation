@@ -31,6 +31,10 @@ namespace my { namespace gl { namespace shaders {
 #		pragma warning( pop )
 
 		void											ResetTexts (void);
+
+	private:
+		ShaderManager (ShaderManager const&);
+		void operator = (ShaderManager const&);
 	}; // class ShaderManager
 
 }}} // namespace my::gl::shaders

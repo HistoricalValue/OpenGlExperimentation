@@ -32,6 +32,7 @@ public:
 		Entry (void* const _data, size_t const _numberOfElements, size_t const _bytesize, Deleter* const _deleter, ptrdiff_t const _offset = -1):
 			data(_data), numberOfElements(_numberOfElements), bytesize(_bytesize), deleter(_deleter), offset(_offset) {}
 		Entry (Entry const& e): data(e.data), numberOfElements(e.numberOfElements), bytesize(e.bytesize), deleter(e.deleter), offset(e.offset) {}
+		UOVERLOADED_VOID_ASSIGN_VIA_COPY_CONSTRUCTOR(Entry)
 	};
 
 	size_t		Add (Entry const& entry);

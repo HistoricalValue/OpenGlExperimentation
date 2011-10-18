@@ -164,7 +164,7 @@ namespace my { namespace gl { namespace shaders {
 	}
 
 	GLuint ProgramBuilder::GetUniformLocation (char const* const name) const {
-		GLuint result(glGetUniformLocation(program, name));
+		GLint result(glGetUniformLocation(program, name));
 		__UNLESS_GL_ERROR {
 		}
 		else

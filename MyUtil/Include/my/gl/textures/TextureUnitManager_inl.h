@@ -83,7 +83,7 @@ namespace my { namespace gl { namespace textures {
 
 		TextureUnitEntryPlaceholder& entry_plc(entries[entryIndex]);
 		TextureUnitEntry& entry(*entry_plc.GetInternal());
-		PASSERT(entry.index == &entry_plc - &entries[0])
+		PASSERT(entry.index == psafecast<size_t>(&entry_plc - &entries[0]))
 
 		return entry;
 	}
@@ -130,7 +130,7 @@ namespace my { namespace gl { namespace textures {
 	TextureUnitManager::~TextureUnitManager (void) {
 		FOR_EACH_ENTRY
 			if (entry->initialised) {
-				PASSERT(entry->index == entry_plc - &entries[0])
+				PASSERT(entry->index == psafecast<size_t>(entry_plc - &entries[0]))
 				DestructEntry(entry->index);
 			}
 

@@ -13,6 +13,9 @@ protected:
 	virtual			~SpecificNumberOfShapesComposition (void);
 
 	Shape**			GetShapesArray (void) const;
+private:
+	SpecificNumberOfShapesComposition (SpecificNumberOfShapesComposition const&);
+	void operator = (SpecificNumberOfShapesComposition const&);
 }; // SpecificNumberOfShapesComposition
 
 }}} // namespace my::gl::shapes

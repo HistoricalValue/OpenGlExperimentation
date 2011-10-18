@@ -3,6 +3,7 @@
 #include <my/gl/shaders/ShaderCompiler.h>
 #include <MyOpenGLUtils.h>
 #include <nmutil/OpenGlExtensionManager.h>
+#include <PSafeCast.h>
 
 #define __UNLESS_GL_ERROR	\
 		if (_::GlErrorsHandled(&_::ErrorHandler)) {} else
@@ -16,16 +17,15 @@ namespace _ {
 	}
 
 	static GLenum TranslateShaderType (my::gl::shaders::ShaderCompiler::ShaderType const& type) {
-		GLenum result(-1);
+		GLenum result;
 		if (type == my::gl::shaders::ShaderCompiler::ShaderType_FragmentShader)
 			result = GL_FRAGMENT_SHADER;
 		else
 		if (type == type == my::gl::shaders::ShaderCompiler::ShaderType_VertexShader)
 			result = GL_VERTEX_SHADER;
 		else
-			{}
+			{ PASSERT(false) }
 
-		PASSERT(result != GLenum(-1))
 		return result;
 	}
 
@@ -48,7 +48,7 @@ namespace my { namespace gl { namespace shaders {
 		bool result (false);
 		shader = glCreateShader(_::TranslateShaderType(type));
 		__UNLESS_GL_ERROR {
-			GLint length = strlen(source);
+			GLint length = psafecast<GLint>(strlen(source));
 			glShaderSource(shader, 1, &source, &length);
 			__UNLESS_GL_ERROR {
 				glCompileShader(shader);
@@ -72,7 +72,7 @@ namespace my { namespace gl { namespace shaders {
 								GLsizei const infologLength(_infologLength);
 								PASSERT(infologLength > 0)
 								GLsizei actuallyWritten(0);
-								GLchar* const infolog = new GLchar[infologLength + 1];
+								GLchar* const infolog = new GLchar[psafecast<size_t>(infologLength + 1)];
 								glGetShaderInfoLog(shader, infologLength, &actuallyWritten, &infolog[0]);
 								__UNLESS_GL_ERROR {
 									errorMessage = std::string("Compilation failed. Reason: ")

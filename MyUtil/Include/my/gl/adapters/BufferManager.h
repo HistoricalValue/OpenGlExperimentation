@@ -35,6 +35,8 @@ public:
 
 	BufferManager (void);
 private:
+	BufferManager (BufferManager const&);
+	void operator = (BufferManager const&);
 
 	static Buffer*	NewBuffer (GLuint id);
 

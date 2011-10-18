@@ -46,6 +46,8 @@ namespace my { namespace gl { namespace shapes {
 
 		Line*											GetLines (void);
 		Line const*										GetConstLines (void) const;
+
+		void operator = (Cube const&);
 	};
 
 }}} // namespace my::gl::shapes

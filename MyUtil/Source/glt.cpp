@@ -1,5 +1,6 @@
 #include <stdafx.h>
 #include <glt.h>
+#include <PSafeCast.h>
 
 namespace glt {
 
@@ -94,7 +95,7 @@ ankh::images::Image* TGADecoder::Decode (
 		default:
 			DASSERT(!"Invalid program state");
 	}
-	DASSERT(ankh::images::Bytesize(pixelFormat) == depth);
+	DASSERT(ankh::images::Bytesize(pixelFormat) == psafecast<size_t>(depth));
 
 	using ankh::images::Image;
 	// Allocate an image
@@ -187,7 +188,7 @@ GLbyte *ReadTGABits(
 		return NULL;
 
 	// Calculate size of image buffer
-	lImageSize = tgaHeader.width * tgaHeader.height * sDepth;
+	lImageSize = psafecast<unsigned long>(tgaHeader.width * tgaHeader.height * sDepth);
 
 	// Allocate memory and check for success
 	if(opt_pData == NULL)
@@ -242,15 +243,15 @@ GLbyte *ReadTGABits(
 	fclose(pFile);
 
 	// Store information to outputs
-	*pWidth = iWidth;
-	*pHeight = iHeight;
+	psafecast(*pWidth, iWidth);
+	psafecast(*pHeight, iHeight);
 	*pFormat = eFormat;
 	if (opt_pDepth)
 		*opt_pDepth = sDepth;
 	if (opt_pImageSize)
 		*opt_pImageSize = lImageSize;
 	if (opt_pComponents)
-		*opt_pComponents = iComponents;
+		psafecast(*opt_pComponents, iComponents);
 
 	// Return pointer to image data
 	return pBits;

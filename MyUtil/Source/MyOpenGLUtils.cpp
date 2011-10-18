@@ -4,9 +4,7 @@
 #ifndef P_INLINING
 #	define __MY_OPEN_GL_UTILS__DEFINING_CONST_STRINGS
 #endif
-
 #include <MyOpenGLUtils_inl.h>
-#include <nmutil/OpenGlExtensionManager.h>
 
 namespace my { namespace openglutil {
 
@@ -117,8 +115,8 @@ namespace my { namespace openglutil {
 			GLsizei infoLogLength(0);
 			(*paramGetter)(object, infoLogLengthParameterName, &infoLogLength);
 			PASSERT(infoLogLength > 0)
-			GLchar* const infoLog(codeshare::utilities::GlobalSingleAllocationBuffer::Get().AsArrayOf<GLchar>(infoLogLength + 1));
-			lastInfoLogLength = infoLogLength;
+			GLchar* const infoLog(codeshare::utilities::GlobalSingleAllocationBuffer::Get().AsArrayOf<GLchar>(psafecast<size_t>(infoLogLength + 1)));
+			psafecast(lastInfoLogLength, infoLogLength);
 			GLsizei actuallyWritten(0);
 			(*infoLogGetter)(object, infoLogLength + 1, &actuallyWritten, &infoLog[0]);
 			return infoLog;

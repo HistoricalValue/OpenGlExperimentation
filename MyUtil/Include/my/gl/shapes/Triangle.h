@@ -12,6 +12,7 @@ namespace my { namespace gl { namespace shapes {
 		explicit										Triangle (Colour const& colour = Colour(math::Vector4::New(0.6f, 0.6f, 0.6f, 1.0f)));
 														Triangle (Triangle const&);
 		virtual											~Triangle (void);
+														UOVERLOADED_VOID_ASSIGN_VIA_COPY_CONSTRUCTOR(Triangle)
 
 		static size_t									GetTriangleNumberOfVertices (void);
 		static size_t									GetTriangleSizeOf (void)

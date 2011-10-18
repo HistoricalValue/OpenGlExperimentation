@@ -17,6 +17,9 @@ public:
 									NShapesComposition (void);
 	virtual							~NShapesComposition (void);
 
+private:
+	NShapesComposition (NShapesComposition<N> const&);
+	void operator = (NShapesComposition<N> const&);
 // TODO add in-object storage for Shape*[N]
 }; // class NShapesComposition
 

@@ -5,7 +5,7 @@
 #include <PConfigurations.h>
 #include <nmutil/OpenGlExtensions.h>
 #include <Ptchar.h>
-
+#include <PSafeCast.h>
 
 #if defined( P_INLINING )
 #	define __MY_OPEN_GL_UTILS__CONST_STRING_LINKING		P_INLINE
@@ -76,5 +76,10 @@ namespace my {
 
 	} // namespace openglutil
 } // namespace my
+
+namespace codeshare { namespace utilities {
+
+
+}} // codeshare::utilities
 
 #endif // __MY_UTIL__MY_OPEN_GL_UTIL__H__

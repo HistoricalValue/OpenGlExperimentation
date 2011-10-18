@@ -12,7 +12,7 @@ namespace my { namespace gl { namespace shapes {
 	public:
 										// memory should be at least as much as NumberOfVertices * sizeof(VertexData)
 		virtual VertexData*				GetVertexData (void* memory, size_t bytesize) const = 0;
-		virtual TexturedVertexData*		GetTexturedVertexData (void* memory, size_t bytesize) const { return NULL; }
+		virtual TexturedVertexData*		GetTexturedVertexData (void* memory, size_t bytesize) const;
 										// memory should be at least GetSizeOf() bytes
 		virtual Shape*					Clone (void* memory, size_t bytesize) const = 0;
 
@@ -33,6 +33,10 @@ namespace my { namespace gl { namespace shapes {
 	private:
 		void	operator = (Shape const&);
 	}; // class Shape
+
+
+	inline TexturedVertexData* Shape::GetTexturedVertexData (void* const, size_t const) const
+		{ return NULL; }
 
 }}} // namespace my::gl::shapes
 

@@ -57,6 +57,8 @@ namespace my {
 		private:
 			Element const*								i;
 			Element const* const						end;
+
+			void operator = (const_iterator const&);
 		};
 
 		const_iterator									begin (void) const { return const_iterator(&Elements()[1], &Elements()[i+1]); }
@@ -112,6 +114,8 @@ namespace my {
 		unsigned int									i;
 		Allocator										allocator;
 		Element const									(&valueview)[MY_LIST_CAPACITY + 2];
+
+		void operator = (ProtectiveList<T,Alloc> const&);
 	};
 
 #pragma warning( pop )

@@ -36,7 +36,7 @@ bool BufferManager::ValidateBuffer (K const k, T* const v)
 
 // BufferManager
 Buffer* BufferManager::Create (void) {
-	GLuint id(-1);
+	GLuint id(GLuint(-1));
 	::gl::ext::glGenBuffers(1, &id);
 	PASSERT(id != -1)
 
