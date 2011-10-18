@@ -12,7 +12,7 @@
 #include <drawing_nurbs.h>
 
 #include <SurfaceTesselation.h>
-#include <../_trash/AmbientOcclusion.h>
+#include <AmbientOcclusion.h>
 
 //////////////////////////////////////////////////////////////////////////////////////
 
