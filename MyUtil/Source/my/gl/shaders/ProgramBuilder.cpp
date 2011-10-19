@@ -163,13 +163,13 @@ namespace my { namespace gl { namespace shaders {
 		__UNLESS_GL_ERROR {}
 	}
 
-	GLuint ProgramBuilder::GetUniformLocation (char const* const name) const {
+	GLint ProgramBuilder::GetUniformLocation (char const* const name) const {
 		GLint result(glGetUniformLocation(program, name));
 		__UNLESS_GL_ERROR {
 		}
 		else
 			result = -1;
-		return psafecast<GLuint>(result);
+		return result;
 	}
 
 	char const* ProgramBuilder::GetInfoLog (void) const {

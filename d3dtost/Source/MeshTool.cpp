@@ -2,14 +2,16 @@
 
 #include "TheCursed.h"
 
-#include <Mesh.h>
-#include <MeshLoader.h>
+#pragma warning( push, 0 )
+#	include <Mesh.h>
+#	include <MeshLoader.h>
+#	include <BuiltinShapesBoundingVolume.h>
+#	include <ComputeMeshAmbientOcclusion.h>
+#	include <cstdio>
+#pragma warning( pop )
 #include <drawing_nurbs.h>
 #include <drawing_utils.h>
-#include <BuiltinShapesBoundingVolume.h>
-#include <ComputeMeshAmbientOcclusion.h>
 
-#include <cstdio>
 
 using namespace ankh;
 using namespace shapes;
@@ -105,6 +107,8 @@ static inline void WriteAllMeshesStats (MeshesStats const& allstats) {
 }
 
 static void Tesselate (std::list<std::string>& generatedIds, bool const doWork) {
+#if 0
+// TODO remake
 	Unit steps[] = { 2e-0f }; // { 2e0f, 1e0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f };
 	MeshesStats	allstats;
 	Surface bob(BobRoss());
@@ -121,7 +125,10 @@ static void Tesselate (std::list<std::string>& generatedIds, bool const doWork) 
 
 			SetTimesList(allstats.GetTimesList());
 
-			tesselate(bob, &TesselationParameters(*step, false, DefaultPrecision()));
+			{
+				TesselationParameters const tp(*step, false, DefaultPrecision());
+				tesselate(bob, &tp);
+			}
 			generateindexedbuffer();
 			computeboundinvolume();
 
@@ -131,7 +138,7 @@ static void Tesselate (std::list<std::string>& generatedIds, bool const doWork) 
 				fairprepareao();
 				updateaotraditional(intersectionData);
 			}
-			if (false) {
+			{
 				fairprepareao();
 				MeshAABBTree aabb;
 				generateaabb(aabb);
@@ -165,6 +172,7 @@ static void Tesselate (std::list<std::string>& generatedIds, bool const doWork) 
 		my::global::GetConsole() << "skipping work...\n";
 
 	CleanUp();
+#endif
 }
 
 namespace my {

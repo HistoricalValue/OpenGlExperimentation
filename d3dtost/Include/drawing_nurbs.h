@@ -4,7 +4,11 @@
 #include <my/gl/shapes/ShapeCompositionFactory.h>
 #include <SurfacesTools.h>
 #include <Surface.h>
-#include <ComputeMeshAmbientOcclusion.h>
+#include <AmbientOcclusion.h>
+
+#pragma warning( push, 0 )
+#	include <ComputeMeshAmbientOcclusion.h>
+#pragma warning( pop )
 
 namespace my { namespace drawing { namespace nurbs {
 

@@ -1,7 +1,9 @@
 #include "stdafx.h"
-#include <DDebug.h>
 #include <nmutil/OpenGlExtensionManager.h>
 #include <MyOpenGL.h>
+#pragma warning( push, 0 )
+#	include <DDebug.h>
+#pragma warning( pop )
 
 using namespace ::gl::ext;
 

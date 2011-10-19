@@ -34,26 +34,26 @@ namespace my {
 
 		void											SwapBuffers (void);
 
-		static struct _VAI_POSITION { operator GLuint (void) const; } const	VAI_POSITION;
-		static struct _VAI_COLOUR	{ operator GLuint (void) const; } const	VAI_COLOUR;
-		static struct _VAI_AXYC		{ operator GLuint (void) const; } const	VAI_AXYC;
-		static struct _VAI_TEXCOORD	{ operator GLuint (void) const; } const	VAI_TEXCOORD;
-		static struct _VAI_NORMAL	{ operator GLuint (void) const; } const	VAI_NORMAL;
-		static struct _VAI_AOFACTOR	{ operator GLuint (void) const; } const VAI_AOFACTOR;
+		static struct _VAI_POSITION { operator GLint (void) const; } const	VAI_POSITION;
+		static struct _VAI_COLOUR	{ operator GLint (void) const; } const	VAI_COLOUR;
+		static struct _VAI_AXYC		{ operator GLint (void) const; } const	VAI_AXYC;
+		static struct _VAI_TEXCOORD	{ operator GLint (void) const; } const	VAI_TEXCOORD;
+		static struct _VAI_NORMAL	{ operator GLint (void) const; } const	VAI_NORMAL;
+		static struct _VAI_AOFACTOR	{ operator GLint (void) const; } const VAI_AOFACTOR;
 
-		static struct _VUL_SAMPLER0	{ operator GLuint (void) const; } const VUL_SAMPLER0;
-		static struct _VUL_SAMPLER1	{ operator GLuint (void) const; } const VUL_SAMPLER1;
-		static struct _VUL_SAMPLER2	{ operator GLuint (void) const; } const VUL_SAMPLER2;
-		static struct _VUL_SAMPLER3	{ operator GLuint (void) const; } const VUL_SAMPLER3;
+		static struct _VUL_SAMPLER0	{ operator GLint (void) const; } const VUL_SAMPLER0;
+		static struct _VUL_SAMPLER1	{ operator GLint (void) const; } const VUL_SAMPLER1;
+		static struct _VUL_SAMPLER2	{ operator GLint (void) const; } const VUL_SAMPLER2;
+		static struct _VUL_SAMPLER3	{ operator GLint (void) const; } const VUL_SAMPLER3;
 
-		static struct _VUL_COLSELTR	{ operator GLuint (void) const; } const VUL_COLSELTR;
+		static struct _VUL_COLSELTR	{ operator GLint (void) const; } const VUL_COLSELTR;
 
-		static struct _VUL_TEXTUREZ { operator GLuint (void) const; } const VUL_TEXTUREZ;
+		static struct _VUL_TEXTUREZ { operator GLint (void) const; } const VUL_TEXTUREZ;
 
-		static struct _VUL_CAMERA		{ operator GLuint (void) const; } const	VUL_CAMERA;
-		static struct _VUL_PROJECTION	{ operator GLuint (void) const; } const	VUL_PROJECTION;
+		static struct _VUL_CAMERA		{ operator GLint (void) const; } const	VUL_CAMERA;
+		static struct _VUL_PROJECTION	{ operator GLint (void) const; } const	VUL_PROJECTION;
 
-		static struct _VUL_POOPLIGHT	{ operator GLuint (void) const; } const VUL_POOPLIGHT;
+		static struct _VUL_POOPLIGHT	{ operator GLint (void) const; } const VUL_POOPLIGHT;
 
 	private:
 		DeviceContextHandle								device;

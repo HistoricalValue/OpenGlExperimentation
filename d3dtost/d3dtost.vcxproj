@@ -80,7 +80,7 @@
       <PreprocessorDefinitions>WIN32;_WINDOWS;D3D_DEBUG_INFO;UTILITIES__IMPORTS;TEXTURE_MANAGER__IMPORTS;IMAGE_LOADER__IMPORTS;NURBS__IMPORTS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <ObjectFileName>$(IntDir)</ObjectFileName>
-      <DisableSpecificWarnings>4251</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4061;4251;4505;4514;4710;4820</DisableSpecificWarnings>
       <WarningLevel>EnableAllWarnings</WarningLevel>
     </ClCompile>
     <Link>
@@ -99,7 +99,7 @@
       <PreprocessorDefinitions>WIN32;_WINDOWS;D3D_DEBUG_INFO;UTILITIES__IMPORTS;TEXTURE_MANAGER__STATIC_LIB;IMAGE_LOADER__STATIC_LIB;NURBS__STATIC_LIB;MYUTIL_STATIC_LIB;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <ObjectFileName>$(IntDir)</ObjectFileName>
-      <DisableSpecificWarnings>4251</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4061;4251;4505;4514;4710;4820</DisableSpecificWarnings>
       <WarningLevel>EnableAllWarnings</WarningLevel>
     </ClCompile>
     <Link>
@@ -120,7 +120,7 @@
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <DisableSpecificWarnings>4251</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4061;4251;4505;4514;4710;4820</DisableSpecificWarnings>
       <WarningLevel>EnableAllWarnings</WarningLevel>
     </ClCompile>
     <Link>
@@ -150,13 +150,19 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="ShaderCompiler.cpp" />
-    <ClCompile Include="Source\drawing.cpp" />
+    <ClCompile Include="Source\drawing.cpp">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4127;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
     <ClCompile Include="Source\drawing_nurbs.cpp" />
     <ClCompile Include="Source\MeshTool.cpp" />
     <ClCompile Include="Source\MyConsole.cpp" />
     <ClCompile Include="Source\MyDirect3D9.cpp" />
     <ClCompile Include="Source\MyOpenGl.cpp" />
-    <ClCompile Include="Source\MyWindow.cpp" />
+    <ClCompile Include="Source\MyWindow.cpp">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">4706;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4706;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4706;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Options.cpp" />
     <ClCompile Include="Source\Setup.cpp" />

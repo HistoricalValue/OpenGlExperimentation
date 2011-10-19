@@ -1,10 +1,12 @@
 #include "stdafx.h"
 #include "TheCursed.h"
 //
-#include <Mesh.h>
-#include <MeshLoader.h>
-#include <ComputeMeshAmbientOcclusion.h>
-#include <BuiltinShapesBoundingVolume.h>
+#pragma warning( push, 0 )
+#	include <Mesh.h>
+#	include <MeshLoader.h>
+#	include <ComputeMeshAmbientOcclusion.h>
+#	include <BuiltinShapesBoundingVolume.h>
+#pragma warning( pop )
 //
 #include <my/algo/ShapeProducers.h>
 
@@ -75,7 +77,7 @@ namespace nurbs {
 namespace _ {
 //////////////////////////////////////////////////////////////////////////////////////
 
-static bool VerifyBaseFunctions (short const m, std::vector<ankh::nurbs::Unit> const& knots) {
+static bool VerifyBaseFunctions (size_t const m, std::vector<ankh::nurbs::Unit> const& knots) {
 	using ankh::math::trig::vec4;
 	using ankh::nurbs::Curve;
 	using ankh::nurbs::algo::simple::N;
@@ -285,9 +287,9 @@ ankh::nurbs::Surface const BobRoss (void) {
 
 	DASSERT((_::minx < 0 && _::miny < 0 && _::maxx > 0 && _::maxy > 0));
 
-	size_t const	width_units	(16);
-	size_t const	height_units(16);
-	size_t const	depth_units	(16);
+//	size_t const	width_units	(16);
+//	size_t const	height_units(16);
+//	size_t const	depth_units	(16);
 
 	const bool		inverseX(false);
 	const bool		inverseZ(false);
@@ -304,14 +306,14 @@ ankh::nurbs::Surface const BobRoss (void) {
 //	Unit const		variation	(0.0125f);
 //	Unit const		variation	(0.05f);
 
-	long seed;
+	unsigned seed;
 	{
 		std::ifstream fin("./seed.txt", std::ios::in);
 		DASSERT(!fin.bad());
 
 		std::string str;
 		std::getline(fin, str);
-		seed = atol(str.c_str());
+		psafecast(seed, atol(str.c_str()));
 	}
 
 	ControlPoints				cpoints;
@@ -417,8 +419,9 @@ void tesselate (ankh::nurbs::Surface const& surf, ankh::nurbs::TesselationParame
 	TesselationParameters const defaulttp(2e1f, false, ankh::nurbs::DefaultPrecision());
 	TesselationParameters const& tp(_tp == NULL? defaulttp : *_tp);
 
-	size_t const			meshElementsMinCapacity((surf.GetResolutionI(tp) - 1) * 2 + 1 + 1),	// +1 security
-							adjacenciesMinCapacity(meshElementsMinCapacity * 3);	// generally will by the number of mesh elements times 3
+//	size_t const			meshElementsMinCapacity((surf.GetResolutionI(tp) - 1) * 2 + 1 + 1)	// +1 security
+					//		,adjacenciesMinCapacity(meshElementsMinCapacity * 3) // generally will by the number of mesh elements times 3
+					;	
 
 	// if they were vectors...
 //	_::meshElements().reserve(meshElementsMinCapacity);
@@ -522,7 +525,7 @@ void LogInfo_MeshStats(void) {
 	ite_t const els_end(els.end());
 	for (ite_t el(els.begin()); el != els_end; ++el)
 		for (unsigned int i(0); i < 3; ++i) {
-			const Vertex& v(el->GetVertex(i));
+			const Vertex& v(el->GetVertex(psafecast<util_ui8>(i)));
 			if (v.x < minx)
 				minx = v.x;
 			if (v.x > maxx)
@@ -575,18 +578,6 @@ void addnormalsto (my::gl::shapes::ShapeCompositionFactory& f) {
 		f.Add(makenormallineformeshelementvertex(*i, 1));
 		f.Add(makenormallineformeshelementvertex(*i, 2));
 	}
-}
-
-void addaoraysto (my::gl::shapes::ShapeComposition& f) {
-	_::MeshElements const&			elements	(_::meshElements()				);
-	size_t const					middleIndex	(_::meshElements().size() / 2	);
-	_::MeshElements::const_iterator	i			(_::meshElements().begin()		);
-
-	std::advance(i, middleIndex);
-
-	ankh::shapes::MeshElement const& middle(*i);
-
-
 }
 
 void addcontrolpointsto (ankh::nurbs::Surface const& surf, my::gl::shapes::ShapeCompositionFactory& f) {

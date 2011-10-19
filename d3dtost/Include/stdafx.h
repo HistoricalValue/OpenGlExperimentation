@@ -6,34 +6,34 @@
 #include "ImageLoader.h"
 
 #pragma warning( push, 0)
-#include <usystem.h>
-#include <ubinaryio.h>
-#include <usystem.h>
-#include <uinit.h>
+#	include <usystem.h>
+#	include <ubinaryio.h>
+#	include <usystem.h>
+#	include <uinit.h>
+// C RunTime Header Files
+#	include <stdlib.h>
+#	include <malloc.h>
+#	include <memory.h>
+#	include <stdio.h>
+#	include <assert.h>
+#	include <string.h>
+#	include <stdint.h>
+#	include <string>
+#	include <list>
+#	include <vector>
+#	include <map>
+#	include <iostream>
+#	include <fstream>
+#	include <sstream>
+#	include <string>
+#	include <iterator>
+//
+#	include <Trig.h>
+#	include <MathTypes.h>
 #pragma warning( pop )
 
 
 
-// C RunTime Header Files
-#include <stdlib.h>
-#include <malloc.h>
-#include <memory.h>
-
-
-#include <stdio.h>
-#include <assert.h>
-#include <string.h>
-#include <stdint.h>
-
-#include <string>
-#include <list>
-#include <vector>
-#include <map>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <string>
-#include <iterator>
 
 #include "my/gl/shapes/Nothing_inl.h"
 #include "my/gl/textures/TextureUnitWrapper_inl.h"
@@ -53,6 +53,7 @@
 #include "MyList.h"
 #include "MyOpenGLUtils.h"
 #include "MyGlobalInstances.h"
+#include "MyAssert.h"
 
 #include "resource.h"
 
@@ -69,6 +70,3 @@
 #include "PSystem.h"
 #include "PGlobalSingleAllocationBuffer.h"
 #include "PPlaceholder_inl.h"
-
-#include <Trig.h>
-#include <MathTypes.h>

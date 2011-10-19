@@ -1,10 +1,12 @@
 #ifndef __MY__CONSOLE__H__
 #define __MY__CONSOLE__H__
 
-#include <tchar.h>
-#include <fstream>
 #include <PWindows.h>
-#include "utypes.h"
+#pragma warning( push, 0 )
+#	include "utypes.h"
+#	include <tchar.h>
+#	include <fstream>
+#pragma warning( pop )
 
 namespace my {
 
@@ -38,6 +40,9 @@ namespace my {
 		HANDLE										errProxy;
 		bool										consoleCreated;
 		std::ofstream								log;
+
+		Console (Console const&);
+		void operator = (Console const&);
 	}; // class Console
 
 	template <typename T> static inline
@@ -46,7 +51,7 @@ namespace my {
 
 	template <> static inline
 	Console& operator <<<TCHAR const*> (Console& c, TCHAR const* const& str)
-		{ PASSERT(false) return c; }
+		{ PASSERT(false) (void)str; return c; }
 
 	template <const size_t N> static inline
 	Console& operator << (Console& c, const TCHAR (& str)[N])

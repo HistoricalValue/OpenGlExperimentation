@@ -8,5 +8,5 @@ namespace d3dtost {
 
 	void MakeWindow (void);
 
-	LPWSTR ConvertErrorMessage (char const* const msg);
+	wchar_t* ConvertErrorMessage (char const* const msg);
 } // namespace d3dtost

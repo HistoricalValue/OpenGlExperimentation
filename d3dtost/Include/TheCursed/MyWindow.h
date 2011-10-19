@@ -38,6 +38,8 @@ namespace my {
 
 		friend class OpenGL;
 
+		Window (Window const&);
+		void operator = (Window const&);
 	}; // class Window
 
 } // namespace my

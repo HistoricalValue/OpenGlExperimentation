@@ -1,7 +1,9 @@
 #ifndef __MY__DIRECT_3D_9__H__
 #define __MY__DIRECT_3D_9__H__
 
-#include <d3d9.h>
+#pragma warning( push, 0 )
+#	include <d3d9.h>
+#pragma warning( pop )
 
 namespace my {
 

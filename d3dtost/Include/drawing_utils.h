@@ -1,14 +1,15 @@
 #ifndef DRAWING_UTILS_H
 #define DRAWING_UTILS_H
 
-#include <cstdio>
 #include <PAssert.h>
-
 #include <SurfacesTools.h>
 #include <my/gl/adapters/BufferManager.h>
-#include <ComputeMeshAmbientOcclusion.h>
-
-#include <functional>
+#include <MySafeCast.h>
+#pragma warning( push, 0 )
+#	include <cstdio>
+#	include <ComputeMeshAmbientOcclusion.h>
+#	include <functional>
+#pragma warning( pop )
 
 namespace {
 
@@ -51,8 +52,8 @@ static inline
 my::gl::shapes::Line makenormallineformeshelementvertex (ankh::shapes::MeshElement const& v, size_t const i) {
 	using namespace ankh::math::trig;
 
-	vec3 const line_begin(v.GetVertex(i));
-	vec3 n(v.GetNormal(i));
+	vec3 const line_begin(v.GetVertex(psafecast<util_ui8>(i)));
+	vec3 n(v.GetNormal(psafecast<util_ui8>(i)));
 	normalise(&n);
 	n *= 0.0025f;
 	vec3 const line_end(line_begin + n);
@@ -115,7 +116,7 @@ struct timer {
 	timer (char const* const _what, Callback const* const _callback = NULL):
 		what(_what),
 		start(ugettime()),
-		diff(-1),
+		diff(unsigned(-1)),
 		done(false),
 		callback(_callback) {}
 
@@ -133,11 +134,29 @@ struct timer {
 		if (callback)
 			(*callback)(*this);
 	}
+
+private:
+	void operator = (timer const&);
 };
 
 template <const bool inv, typename T> struct inverser;
-template <typename T> struct inverser<false, T>	{ T const& a, b; inverser (T const& _a, T const& _b): a(_a), b(_b) {} };
-template <typename T> struct inverser<true, T>	{ T const& a, b; inverser (T const& _a, T const& _b): a(_b), b(_a) {} };
+
+template <typename T> struct inverser<false, T>	{
+	T const& a, b;
+	inverser (T const& _a, T const& _b): a(_a), b(_b) {}
+	inverser (inverser<false, T> const& o): a(o.a), b(o.b) {}
+private:
+	void operator = (inverser<false, T> const&);
+};
+
+template <typename T> struct inverser<true, T>	{
+	T const& a, b;
+	inverser (T const& _a, T const& _b): a(_b), b(_a) {}
+	inverser (inverser<true, T> const& o): a(o.a), b(o.b) {}
+private:
+	void operator = (inverser<true, T> const&);
+};
+
 template <const bool inv, typename T> inverser<inv, T> const makeinverser (T const& a, T const& b) { return inverser<inv,T>(a, b); }
 
 template <typename T>

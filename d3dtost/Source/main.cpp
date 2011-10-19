@@ -23,6 +23,7 @@ namespace my {
 } // namespace my
 
 namespace _ {
+
 	struct DrawData {
 	public:
 		void*&		Get (void) { return drawData; }
@@ -60,7 +61,12 @@ namespace _ {
 		template <typename T> void operator << (T const&) { }
 	}	ConsoleBase;
 #endif
-	struct Console: public ConsoleBase {};
+	struct Console: public ConsoleBase {
+		Console (void): ConsoleBase() {}
+	private:
+		Console (Console const&);
+		void operator = (Console const&);
+	};
 
 	Console* info_console(NULL);
 
@@ -75,9 +81,12 @@ namespace _ {
 			if (!val) {
 				(*vvf)();
 
+				(void) expr;
 				int x = 6;
-				int y = 8;
-				assert(!"Ze FAILR");
+				int y = x;
+				(void) y;
+
+				_assert(!"Ze FAILR");
 			}
 		}
 	}
@@ -125,7 +134,7 @@ namespace my {
 
 	int APIENTRY WinMain (
 			HINSTANCE hInstance,
-			HINSTANCE hPrevInstance,
+			HINSTANCE P_UNUSED_PARAMETER(hPrevInstance),
 			TCHAR*    lpCmdLine,
 			int       nCmdShow) {
 
@@ -152,8 +161,7 @@ namespace my {
 			my::OpenGL		opengl(window);
 
 
-			if (true
-					&& window.IsValid()
+			if (	   window.IsValid()
 					&& direct3d.IsValid()
 					&& opengl.Initialise()
 					&& opengl.IsValid()

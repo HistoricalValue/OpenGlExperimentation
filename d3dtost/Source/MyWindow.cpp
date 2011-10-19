@@ -36,6 +36,7 @@ namespace {
 
 		if (IsUnknownMessageType(uMsg)) {
 			int nothing(0xbeac0ul);
+			(void) nothing;
 		}
 
 
@@ -201,7 +202,7 @@ namespace {
 				window_menu,
 				module_handle,
 				creation_parameters));
-		DWORD const window_creation_error(GetLastError());
+	//	DWORD const window_creation_error(GetLastError());
 		if (window_handle == NULL)
 			__LOG_WIN_ERROR("Could not create window. Windows' error: ")
 		PASSERT(window_handle);
@@ -277,7 +278,7 @@ namespace my {
 		main_loop_callback_data = data;
 	}
 
-	void Window::MainLoop (TCHAR* const command_line, int const show_command) {
+	void Window::MainLoop (TCHAR* const P_UNUSED_PARAMETER(command_line), int const show_command) {
 		MSG msg;
 		BOOL b;
 		bool done = false;

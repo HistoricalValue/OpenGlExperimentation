@@ -138,6 +138,7 @@
     <ClInclude Include="Include\glt.h" />
     <ClInclude Include="Include\gl\glext.h" />
     <ClInclude Include="Include\gl\wglext.h" />
+    <ClInclude Include="Include\MyAssert.h" />
     <ClInclude Include="Include\MyGlobalInstances.h" />
     <ClInclude Include="Include\MyList.h" />
     <ClInclude Include="Include\MyLogger.h" />

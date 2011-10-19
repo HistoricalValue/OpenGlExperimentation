@@ -16,9 +16,11 @@
 #ifndef __THE_CURSED__H__
 #define __THE_CURSED__H__
 
-// Pointless including of those two, just to signify
-// that they are not to be found elsewhere.
-#include <Windows.h>
+#pragma warning( push, 0 )
+	// Pointless including of those two, just to signify
+	// that they are not to be found elsewhere.
+#	include <Windows.h>
+#pragma warning( pop )
 
 #include "../Include/TheCursed/MyDirect3D9.h"
 #include "../Include/TheCursed/MyConsole.h"

@@ -73,16 +73,16 @@ namespace d3dtost {
 			if (requiredLength == 0) {
 				wmsg = _T("Failed in translating an error message from MB to Unicode");
 				TCHAR* const errorString(ErrorToString(GetLastError()));
-				assert(false);
+				_assert(false);
 				ReleaseErrorString(errorString);
 			}
 			else {
-				LPVOID const mem(HeapAlloc(GetProcessHeap(),HEAP_NO_SERIALIZE | HEAP_ZERO_MEMORY, requiredLength + 1));
+				LPVOID const mem(HeapAlloc(GetProcessHeap(),HEAP_NO_SERIALIZE | HEAP_ZERO_MEMORY, psafecast<SIZE_T>(requiredLength + 1)));
 
 				if (mem == NULL) {
 					wmsg = _T("Failed in allocating enough memory for error message conversion");
 					TCHAR* const errorString(ErrorToString(GetLastError()));
-					assert(false);
+					_assert(false);
 					ReleaseErrorString(errorString);
 				}
 				else {
@@ -100,11 +100,11 @@ namespace d3dtost {
 					if (writenChars == 0) {
 						wmsg = _T("Could not conver MB message to Unicode");
 						TCHAR* const errorString(ErrorToString(GetLastError()));
-						assert(false);
+						_assert(false);
 						ReleaseErrorString(errorString);
 					}
 					else {
-						assert(writenChars == requiredLength);
+						_assert(writenChars == requiredLength);
 					}
 				}
 			}
@@ -123,8 +123,8 @@ namespace d3dtost {
 			result = COULD_NOT_ALLOCATE_MEMORY_MESSAGE;
 		else
 			for (size_t i = 0; i < msg_length; ++i)
-				result[i] = msg[i];
-		assert(result == COULD_NOT_ALLOCATE_MEMORY_MESSAGE || result[msg_length - 1] == L'\0');
+				psafecast(result[i], msg[i]);
+		_assert(result == COULD_NOT_ALLOCATE_MEMORY_MESSAGE || result[msg_length - 1] == L'\0');
 
 		return result;
 	}

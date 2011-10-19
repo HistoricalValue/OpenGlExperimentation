@@ -28,7 +28,7 @@ namespace my { namespace gl { namespace shaders {
 
 		void											Use (void) const;
 
-		GLuint											GetUniformLocation (char const*) const;
+		GLint											GetUniformLocation (char const*) const;
 
 														ProgramBuilder (void);
 														~ProgramBuilder (void);

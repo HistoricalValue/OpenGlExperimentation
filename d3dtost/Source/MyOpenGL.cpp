@@ -29,15 +29,15 @@ namespace my {
 		namespace gl {
 			static bool CreateContext (my::OpenGL::DeviceContextHandle& device, my::OpenGL::ResourceContextHandle& context);
 		}
-		static GLuint sampler0location(-1);
-		static GLuint sampler1location(-1);
-		static GLuint sampler2location(-1);
-		static GLuint sampler3location(-1);
-		static GLuint colslctrLocation(-1);
-		static GLuint textureZLocation(-1);
-		static GLuint cameraLocation  (-1);
-		static GLuint projectionLocation(-1);
-		static GLuint poopLightLocation(-1);
+		static GLint sampler0location(-1);
+		static GLint sampler1location(-1);
+		static GLint sampler2location(-1);
+		static GLint sampler3location(-1);
+		static GLint colslctrLocation(-1);
+		static GLint textureZLocation(-1);
+		static GLint cameraLocation  (-1);
+		static GLint projectionLocation(-1);
+		static GLint poopLightLocation(-1);
 
 		static bool InstallShaders (
 				my::gl::shaders::ProgramBuilder&	programBuilder,
@@ -94,7 +94,7 @@ namespace my {
 				buf[(off += codeshare::utilities::csconcat(
 							&buf[off],
 							sizeof(buf)/sizeof(buf[0]) - off,
-							reinterpret_cast<char const* const>(glGetStringi(GL_EXTENSIONS, i))
+							reinterpret_cast<char const* const>(glGetStringi(GL_EXTENSIONS, psafecast<GLuint>(i)))
 						) + 1) - 1] = '\n';
 			PASSERT(off < sizeof(buf)/sizeof(buf[0]))
 			buf[off] = '\0';
@@ -244,84 +244,84 @@ namespace my {
 	OpenGL::_VAI_NORMAL const OpenGL::VAI_NORMAL;
 	OpenGL::_VAI_AOFACTOR const OpenGL::VAI_AOFACTOR;
 
-	OpenGL::_VAI_POSITION::operator GLuint (void) const {
+	OpenGL::_VAI_POSITION::operator GLint (void) const {
 		return 0u;
 	}
 
-	OpenGL::_VAI_COLOUR::operator GLuint (void) const {
+	OpenGL::_VAI_COLOUR::operator GLint (void) const {
 		return 1u;
 	}
 
-	OpenGL::_VAI_AXYC::operator GLuint (void) const {
+	OpenGL::_VAI_AXYC::operator GLint (void) const {
 		return 2u;
 	}
 
-	OpenGL::_VAI_TEXCOORD::operator GLuint (void) const {
+	OpenGL::_VAI_TEXCOORD::operator GLint (void) const {
 		return 3u;
 	}
 
-	OpenGL::_VAI_NORMAL::operator GLuint (void) const {
+	OpenGL::_VAI_NORMAL::operator GLint (void) const {
 		return 4u;
 	}
 
-	OpenGL::_VAI_AOFACTOR::operator GLuint (void) const {
+	OpenGL::_VAI_AOFACTOR::operator GLint (void) const {
 		return 5u;
 	}
 
 
 	OpenGL::_VUL_SAMPLER0 const OpenGL::VUL_SAMPLER0;
-	OpenGL::_VUL_SAMPLER0::operator GLuint (void) const {
+	OpenGL::_VUL_SAMPLER0::operator GLint (void) const {
 		PASSERT(_::sampler0location >= 0)
 		return _::sampler0location;
 	}
 
 
 	OpenGL::_VUL_SAMPLER1 const OpenGL::VUL_SAMPLER1;
-	OpenGL::_VUL_SAMPLER1::operator GLuint (void) const {
+	OpenGL::_VUL_SAMPLER1::operator GLint (void) const {
 		PASSERT(_::sampler1location >= 0)
 		return _::sampler1location;
 	}
 
 
 	OpenGL::_VUL_SAMPLER2 const OpenGL::VUL_SAMPLER2;
-	OpenGL::_VUL_SAMPLER2::operator GLuint (void) const {
+	OpenGL::_VUL_SAMPLER2::operator GLint (void) const {
 		PASSERT(_::sampler2location != -1)
 		return _::sampler2location;
 	}
 
 
 	OpenGL::_VUL_SAMPLER3 const OpenGL::VUL_SAMPLER3;
-	OpenGL::_VUL_SAMPLER3::operator GLuint (void) const {
+	OpenGL::_VUL_SAMPLER3::operator GLint (void) const {
 		PASSERT(_::sampler3location != -1)
 		return _::sampler3location;
 	}
 
 	OpenGL::_VUL_COLSELTR const OpenGL::VUL_COLSELTR;
-	OpenGL::_VUL_COLSELTR::operator GLuint (void) const {
+	OpenGL::_VUL_COLSELTR::operator GLint (void) const {
 		PASSERT(_::colslctrLocation != -1)
 		return _::colslctrLocation;
 	}
 
 	OpenGL::_VUL_TEXTUREZ const OpenGL::VUL_TEXTUREZ;
-	OpenGL::_VUL_TEXTUREZ::operator GLuint (void) const {
+	OpenGL::_VUL_TEXTUREZ::operator GLint (void) const {
 		PASSERT(_::textureZLocation != -1)
 		return _::textureZLocation;
 	}
 
 	OpenGL::_VUL_CAMERA const OpenGL::VUL_CAMERA;
-	OpenGL::_VUL_CAMERA::operator GLuint (void) const {
+	OpenGL::_VUL_CAMERA::operator GLint (void) const {
 		PASSERT(_::cameraLocation != -1)
 		return _::cameraLocation;
 	}
 
 	OpenGL::_VUL_PROJECTION const OpenGL::VUL_PROJECTION;
-	OpenGL::_VUL_PROJECTION::operator GLuint (void) const {
+	OpenGL::_VUL_PROJECTION::operator GLint (void) const {
 		PASSERT(_::projectionLocation != -1)
 		return _::projectionLocation;
 	}
 
 	OpenGL::_VUL_POOPLIGHT const OpenGL::VUL_POOPLIGHT;
-	OpenGL::_VUL_POOPLIGHT::operator GLuint (void) const {
+	OpenGL::_VUL_POOPLIGHT::operator GLint (void) const {
 		PASSERT(_::poopLightLocation != -1)
 		return _::poopLightLocation;
 	}
@@ -381,20 +381,20 @@ namespace my {
 					return false;
 
 				// Try to create a 4.1 context
-				typedef HGLRC (*wglCreateContextAttribsARB_func)(HDC hDC, HGLRC hShareContext, const int *attribLis);
-				wglCreateContextAttribsARB_func wglCreateContextAttribsARB(reinterpret_cast<wglCreateContextAttribsARB_func>(
-							wglGetProcAddress("wglCreateContextAttribsARB")));
-
-				context = wglCreateContext(device);
-				if (wglCreateContextAttribsARB) {
-					int attribs[] = {WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB, 0};
-					context = wglCreateContextAttribsARB(device, context, &attribs[0]);
-				}
-				{ TCHAR* msg = ErrorToString(GetLastError());
-					ReleaseErrorString(msg); }
-
-				if (!wglCreateContextAttribsARB && false)
-					return false;
+			//	typedef HGLRC (*wglCreateContextAttribsARB_func)(HDC hDC, HGLRC hShareContext, const int *attribLis);
+			//	wglCreateContextAttribsARB_func wglCreateContextAttribsARB(reinterpret_cast<wglCreateContextAttribsARB_func>(
+			//				wglGetProcAddress("wglCreateContextAttribsARB")));
+			//
+			//	context = wglCreateContext(device);
+			//	if (wglCreateContextAttribsARB) {
+			//		int attribs[] = {WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB, 0};
+			//		context = wglCreateContextAttribsARB(device, context, &attribs[0]);
+			//	}
+			//	{ TCHAR* msg = ErrorToString(GetLastError());
+			//		ReleaseErrorString(msg); }
+			//
+			//	if (!wglCreateContextAttribsARB && false)
+			//		return false;
 
 				bresult = wglMakeCurrent(device, context);
 				{ TCHAR* msg = ErrorToString(GetLastError());
@@ -619,6 +619,8 @@ namespace my {
 		}
 
 		DRAWER(space) {
+			(void) y;
+			(void) x;
 		}
 
 #define DRAWER_CASE(LIT, CHAR) \

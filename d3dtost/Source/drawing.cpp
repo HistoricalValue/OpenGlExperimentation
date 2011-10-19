@@ -7,8 +7,10 @@
 #include <Options.h>
 #include <my/gl/adapters/Buffer.h>
 #include <my/gl/adapters/BufferManager.h>
-#include <ufiles.h>
-#include <uderivablecheck.h>
+#pragma warning( push, 0 )
+#	include <ufiles.h>
+#	include <uderivablecheck.h>
+#pragma warning( pop )
 
 #define WITH_NORMALS	1-1+1
 #define	WITH_GRID		1-1+1
@@ -200,7 +202,7 @@ namespace _ {
 		typedef void*	voidp;
 		void* const		data		(textured? voidp(shape.GetTexturedVertexData(_data, bytesize)) : voidp(shape.GetVertexData(_data, bytesize)));
 		PASSERT(data != NULL)
-		size_t const	stride		(textured? TexturedVertexData::Stride() : VertexData::Stride());
+		GLsizei const	stride		(psafecast<GLsizei>(textured? TexturedVertexData::Stride() : VertexData::Stride()));
 		voidp const		attr1off	(textured? TexturedVertexData::PositionOffsetPointer() : VertexData::PositionOffsetPointer());
 		voidp const		attr2off	(textured? TexturedVertexData::TextureCoordinatesOffsetPointer() : VertexData::ColourOffsetPointer());
 		voidp const		attr3off	(textured? TexturedVertexData::NormalOffsetPointer() : VertexData::NormalOffsetPointer());
@@ -219,15 +221,15 @@ namespace _ {
 
 		_::DeallocateSingleAllocationBufferMemory(_data);
 
-		glVertexAttribPointer(OpenGL::VAI_POSITION,	4,	GL_FLOAT,	!normalised,	stride,	attr1off);
-		glVertexAttribPointer(attr2index,			4,	GL_FLOAT,	!normalised,	stride,	attr2off);
-		glVertexAttribPointer(OpenGL::VAI_NORMAL,	4,	GL_FLOAT,	!normalised,	stride,	attr3off);
-		glVertexAttribPointer(OpenGL::VAI_AOFACTOR,	1,	GL_FLOAT,	!normalised,	stride, attr4off);
+		glVertexAttribPointer(psafecast<GLuint>(OpenGL::VAI_POSITION.operator GLint()),	4,	GL_FLOAT,	psafecast<GLboolean>(!normalised),	stride,	attr1off);
+		glVertexAttribPointer(attr2index,												4,	GL_FLOAT,	psafecast<GLboolean>(!normalised),	stride,	attr2off);
+		glVertexAttribPointer(psafecast<GLuint>(OpenGL::VAI_NORMAL.operator GLint()),	4,	GL_FLOAT,	psafecast<GLboolean>(!normalised),	stride,	attr3off);
+		glVertexAttribPointer(psafecast<GLuint>(OpenGL::VAI_AOFACTOR.operator GLint()),	1,	GL_FLOAT,	psafecast<GLboolean>(!normalised),	stride, attr4off);
 
-		glEnableVertexAttribArray(OpenGL::VAI_POSITION	);
-		glEnableVertexAttribArray(attr2index			);
-		glEnableVertexAttribArray(OpenGL::VAI_NORMAL	);
-		glEnableVertexAttribArray(OpenGL::VAI_AOFACTOR	);
+		glEnableVertexAttribArray(psafecast<GLuint>(OpenGL::VAI_POSITION.operator GLint())		);
+		glEnableVertexAttribArray(attr2index													);
+		glEnableVertexAttribArray(psafecast<GLuint>(OpenGL::VAI_NORMAL.operator GLint())		);
+		glEnableVertexAttribArray(psafecast<GLuint>(OpenGL::VAI_AOFACTOR.operator GLint())		);
 
 		numberOfPoints = count;
 
@@ -247,7 +249,7 @@ namespace _ {
 	void SetupPointShapes (
 			GLuint const	vertexArrayId,
 			buffer_t const	buffer0,
-			buffer_t const	buffer1,
+			buffer_t const,
 			GLuint&			numberOfPointPoints)
 	{
 		// Save setup time
@@ -273,7 +275,7 @@ namespace _ {
 	void SetUpLineShapes (
 			GLuint const	vertexArrayId,
 			buffer_t const	buffer0,
-			buffer_t const	buffer1,
+			buffer_t const,
 			GLuint&			numberOfPoints)
 	{
 		// Save setup time
@@ -329,7 +331,7 @@ namespace _ {
 	void SetUpTriangleObjects (
 			GLuint const	vertexArrayId,
 			buffer_t const	buffer0,
-			buffer_t const	buffer1,
+			buffer_t const,
 			GLuint&			numberOfWorldCubeLineSegments)
 	{
 		// Save setup time
@@ -374,7 +376,7 @@ namespace _ {
 	void SetUpTexturedTriangleObjects (
 			GLuint const	vertexArrayId,
 			buffer_t const	buffer0,
-			buffer_t const	buffer1,
+			buffer_t const,
 			GLuint&			numberOfTexturedSegments)
 	{
 		// Save setup time
@@ -648,7 +650,7 @@ namespace my {
 				glUniform1ui(OpenGL::VUL_TEXTUREZ, texz);
 				dd.previousTextureIndex = texz;
 				TCHAR msg[] = _T("Current time ist: 0\n");
-				msg[sizeof(msg)/sizeof(msg[0]) - 3] = _T('0') + texz;
+				msg[sizeof(msg)/sizeof(msg[0]) - 3] = psafecast<TCHAR>(_T('0') + texz);
 				my::global::log::info(&msg[0]);
 			}
 
@@ -657,28 +659,28 @@ namespace my {
 
 			// Draw points
 			if (_::WITH_DRAW_POINTS) {
-				PASSERT(glIsVertexArray(dd.vertexArrayIds[0] == GL_TRUE))
+				PASSERT(glIsVertexArray(psafecast<GLboolean>(dd.vertexArrayIds[0] == GL_TRUE)))
 				glBindVertexArray(dd.vertexArrayIds[0]);
-				glVertexAttrib4f(OpenGL::VAI_AXYC,
+				glVertexAttrib4f(psafecast<GLuint>(OpenGL::VAI_AXYC.operator GLint()),
 						angle,
 						-0.0f,
 						0.0f,
 						cam);
 				glUniform1ui(OpenGL::VUL_COLSELTR, Options::PointShapeColouringMethod());
-				glDrawArrays(GL_POINTS, 0, dd.numberOfPointPoints);
+				glDrawArrays(GL_POINTS, 0, psafecast<GLsizei>(dd.numberOfPointPoints));
 			}
 
 			// Draw lines
 			if (_::WITH_DRAW_LINES) {
 				PASSERT(glIsVertexArray(dd.vertexArrayIds[1]) == GL_TRUE)
 				glBindVertexArray(dd.vertexArrayIds[1]);
-				glVertexAttrib4f(OpenGL::VAI_AXYC,
+				glVertexAttrib4f(psafecast<GLuint>(OpenGL::VAI_AXYC.operator GLint()),
 						angle,
 						-0.0f,
 						0.0f,
 						cam);
 				glUniform1ui(OpenGL::VUL_COLSELTR, Options::LineShapeColouringMethod());
-				glDrawArrays(GL_LINES, 0, dd.numberOfPoints);
+				glDrawArrays(GL_LINES, 0, psafecast<GLsizei>(dd.numberOfPoints));
 			}
 
 			// Draw Triangles
@@ -686,13 +688,13 @@ namespace my {
 			if (_::WITH_DRAW_TRIANGLES) {
 				PASSERT(glIsVertexArray(dd.vertexArrayIds[2]) == GL_TRUE)
 				glBindVertexArray(dd.vertexArrayIds[2]);
-				glVertexAttrib4f(OpenGL::VAI_AXYC,
+				glVertexAttrib4f(psafecast<GLuint>(OpenGL::VAI_AXYC.operator GLint()),
 						angle,
 						-0.0f,
 						0.0f,
 						cam);
 				glUniform1ui(OpenGL::VUL_COLSELTR, Options::TriangleShapeColouringMethod());
-				glDrawArrays(GL_TRIANGLES, 0, dd.numberOfWorldCubeLineSegments);
+				glDrawArrays(GL_TRIANGLES, 0, psafecast<GLsizei>(dd.numberOfWorldCubeLineSegments));
 				#if WITH_GRID == 1
 				glUniform1ui(OpenGL::VUL_COLSELTR, Options::TriangleShapeGridColouringMethod());
 				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	DASSERT(glGetError() == GL_NO_ERROR);
@@ -700,7 +702,7 @@ namespace my {
 				glEnable(GL_POLYGON_OFFSET_LINE);
 				glLineWidth(0.2f);
 				glPolygonOffset(-1, -1);
-				glDrawArrays(GL_TRIANGLES, 0, dd.numberOfWorldCubeLineSegments);	DASSERT(glGetError() == GL_NO_ERROR);
+				glDrawArrays(GL_TRIANGLES, 0, psafecast<GLsizei>(dd.numberOfWorldCubeLineSegments));	DASSERT(glGetError() == GL_NO_ERROR);
 				glDisable(GL_POLYGON_OFFSET_LINE);	DASSERT(glGetError() == GL_NO_ERROR);
 			//	glDisable(GL_LINE_SMOOTH);	DASSERT(glGetError() == GL_NO_ERROR);
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	DASSERT(glGetError() == GL_NO_ERROR);
@@ -711,14 +713,14 @@ namespace my {
 			if (_::WITH_DRAW_TEXTURED) {
 				PASSERT(glIsVertexArray(dd.vertexArrayIds[3]) == GL_TRUE)
 				glBindVertexArray(dd.vertexArrayIds[3]);
-				glVertexAttrib4f(OpenGL::VAI_AXYC,
+				glVertexAttrib4f(psafecast<GLuint>(OpenGL::VAI_AXYC.operator GLint()),
 						angle,
 						-0.0f,
 						0.0f,
 						cam);
 				glUniform1ui(OpenGL::VUL_COLSELTR, Options::TexturedTriangleShapeColouringMethod());
-				glUniform1i(OpenGL::VUL_SAMPLER0, _::GetTextureIndex(dt));
-				glDrawArrays(GL_TRIANGLES, 0, dd.numberOfTexturedSegments);
+				glUniform1i(OpenGL::VUL_SAMPLER0, psafecast<GLint>(_::GetTextureIndex(dt)));
+				glDrawArrays(GL_TRIANGLES, 0, psafecast<GLsizei>(dd.numberOfTexturedSegments));
 			}
 
 
@@ -789,7 +791,7 @@ namespace my {
 
 			_::InitialiseAnkh();
 
-			sampler_location = OpenGL::VUL_SAMPLER0;
+			psafecast(sampler_location, OpenGL::VUL_SAMPLER0.operator GLint());
 
 			_::PlayWithTextureUnitsForTesting();
 			_::LoadTehStonets(images);
