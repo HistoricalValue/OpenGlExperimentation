@@ -169,7 +169,7 @@ namespace my { namespace gl { namespace shaders {
 		}
 		else
 			result = -1;
-		return result;
+		return psafecast<GLuint>(result);
 	}
 
 	char const* ProgramBuilder::GetInfoLog (void) const {
@@ -226,6 +226,7 @@ namespace my { namespace gl { namespace shaders {
 
 		void DefaultGlErrorHandler (TCHAR const* const errorMessage) {
 			PASSERT(false)
+			(void)errorMessage;
 		}
 
 		bool CreateProgramAndLinkShaders (GLuint const program, GLuint const vertexShader, GLuint const fragmentShader, ErrorMessage errorMessage) {

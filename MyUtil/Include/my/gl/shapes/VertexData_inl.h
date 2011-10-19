@@ -4,6 +4,7 @@
 #include <my/gl/shapes/VertexData.h>
 #include <PConfigurations.h>
 #include <PPointerUtilities.h>
+#include <MySafeCast.h>
 
 #if defined(P_INLINING) || defined(__MY_UTIL__MY__GL__SHAPES__VERTEX_DATA__DEFINING)
 
@@ -46,22 +47,22 @@ namespace my { namespace gl { namespace shapes {
 
 	P_INLINE
 	void* VertexData::PositionOffsetPointer (void) {
-		return codeshare::utilities::pointer_utilities::offset(PositionOffset());
+		return codeshare::utilities::pointer_utilities::offset(psafecast<ptrdiff_t>(PositionOffset()));
 	}
 
 	P_INLINE
 	void* VertexData::ColourOffsetPointer (void) {
-		return codeshare::utilities::pointer_utilities::offset(ColourOffset());
+		return codeshare::utilities::pointer_utilities::offset(psafecast<ptrdiff_t>(ColourOffset()));
 	}
 
 	P_INLINE
 	void* VertexData::NormalOffsetPointer (void) {
-		return codeshare::utilities::pointer_utilities::offset(NormalOffset());
+		return codeshare::utilities::pointer_utilities::offset(psafecast<ptrdiff_t>(NormalOffset()));
 	}
 
 	P_INLINE
 	void* VertexData::AOOffsetPointer (void) {
-		return codeshare::utilities::pointer_utilities::offset(AOOffset());
+		return codeshare::utilities::pointer_utilities::offset(psafecast<ptrdiff_t>(AOOffset()));
 	}
 
 }}} // namespace my::gl::shapes

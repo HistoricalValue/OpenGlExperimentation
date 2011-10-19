@@ -82,7 +82,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_USRDLL;MYUTIL_EXPORTS;UTILITIES__IMPORTS;IMAGE_LOADER__IMPORTS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
@@ -97,7 +97,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_USRDLL;MYUTIL_STATIC_LIB;UTILITIES__IMPORTS;IMAGE_LOADER__STATIC_LIB;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
@@ -111,7 +111,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -143,6 +143,7 @@
     <ClInclude Include="Include\MyLogger.h" />
     <ClInclude Include="Include\MyOpenGLUtils.h" />
     <ClInclude Include="Include\MyOpenGLUtils_inl.h" />
+    <ClInclude Include="Include\MySafeCast.h" />
     <ClInclude Include="Include\MyString.h" />
     <ClInclude Include="Include\MyUtil.h" />
     <ClInclude Include="Include\my\algo\ShapeProducers.h" />

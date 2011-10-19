@@ -14,6 +14,7 @@ namespace _ {
 
 	static void ErrorHandler (TCHAR const* const error) {
 		PASSERT(false)
+		(void)error;
 	}
 
 	static GLenum TranslateShaderType (my::gl::shaders::ShaderCompiler::ShaderType const& type) {
@@ -24,7 +25,7 @@ namespace _ {
 		if (type == type == my::gl::shaders::ShaderCompiler::ShaderType_VertexShader)
 			result = GL_VERTEX_SHADER;
 		else
-			{ PASSERT(false) }
+			{ PASSERT(false) psafecast(result, -1); }
 
 		return result;
 	}

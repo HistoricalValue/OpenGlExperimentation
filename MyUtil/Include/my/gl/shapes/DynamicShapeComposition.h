@@ -10,6 +10,11 @@ namespace my { namespace gl { namespace shapes {
 
 //////////////////////////////////////////////////////////
 
+#pragma warning( push )
+#pragma warning( disable: 4263 4264 )	// apparently, Add(Shape const&) does not overload the Add() function
+										// (because it's virtual?) but instead (since it also does not override
+										// it), hides it.
+
 /// Dynamic Shape Composition keeps a Clone()ed value of each
 /// added shape.
 // concrete
@@ -30,6 +35,7 @@ private:
 										DynamicShapeComposition (DynamicShapeComposition const&);
 }; // class DynamicShapeComposition
 
+#pragma warning( pop )
 //////////////////////////////////////////////////////////
 
 }}} // namespace my::gl::shapes

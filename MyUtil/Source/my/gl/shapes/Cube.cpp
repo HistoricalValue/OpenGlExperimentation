@@ -81,6 +81,7 @@ namespace my { namespace gl { namespace shapes {
 
 	Line* Cube::GetLines (void) {
 		OFFSETS_STATIC_CHECKS
+		(void)maxOff;
 
 		Line* const result(reinterpret_cast<Line* const>(offset(this, minOff)));
 		PASSERT(result == &line00 || result == &line11)
@@ -89,6 +90,7 @@ namespace my { namespace gl { namespace shapes {
 
 	Line const* Cube::GetConstLines (void) const {
 		OFFSETS_STATIC_CHECKS
+		(void)maxOff;
 
 		Line const* const result(reinterpret_cast<Line const* const>(offset(this, minOff)));
 		PASSERT(result == &line00 || result == &line11)

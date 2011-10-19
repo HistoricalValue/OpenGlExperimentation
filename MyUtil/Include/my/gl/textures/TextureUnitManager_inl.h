@@ -122,7 +122,7 @@ namespace my { namespace gl { namespace textures {
 
 		FOR_EACH_ENTRY {
 			entry->initialised = false;
-			entry->index = entry_plc - &entries[0];
+			psafecast(entry->index, entry_plc - &entries[0]);
 		}
 	}
 

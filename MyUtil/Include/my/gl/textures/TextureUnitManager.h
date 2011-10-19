@@ -31,6 +31,10 @@ namespace my { namespace gl { namespace textures {
 			TextureUnit									unit;
 			bool										initialised;
 			size_t										index;
+		private:
+			TextureUnitEntry (void);	// what?
+			TextureUnitEntry (TextureUnitEntry const&);
+			void operator = (TextureUnitEntry const&);
 		};
 		typedef codeshare::utilities::Placeholder<TextureUnitEntry>
 														TextureUnitEntryPlaceholder;
@@ -47,6 +51,9 @@ namespace my { namespace gl { namespace textures {
 		P_INLINE void									DestructEntry (size_t);
 		P_INLINE TextureUnitEntry&						GetEntry (size_t);
 		P_INLINE bool									IsValidEntryIndex (size_t) const;
+
+		TextureUnitManager (TextureUnitManager const&);
+		void operator = (TextureUnitManager const&);
 	}; // class TextureUnitManager
 
 }}} // namespace my::gl::textures

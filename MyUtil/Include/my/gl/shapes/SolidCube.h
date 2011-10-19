@@ -52,6 +52,8 @@ namespace my { namespace gl { namespace shapes {
 
 		Triangle*										GetTriangles (void);
 		Triangle const*									GetConstTriangles (void) const;
+
+		void operator = (SolidCube const&);
 	}; // class SolidCube
 
 

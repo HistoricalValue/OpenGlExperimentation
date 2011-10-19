@@ -1,6 +1,7 @@
 #include <stdafx.h>
 
 #include <my/gl/shapes/ShapeComposition.h>
+#include <MySafeCast.h>
 
 #define FOR_EACH_SHAPE		for (Shape* const* shape = &shapes[0]; shape < &shapes[i]; ++shape)
 
@@ -107,14 +108,14 @@ VertexData* ShapeComposition::GetVertexData (void* const memory, size_t const by
 
 	if (bytesize >= requiredSize) {
 		reinterpret_assign(result, memory);
-		size_t write_offset(0u);
+		ptrdiff_t write_offset(0u);
 
 		FOR_EACH_SHAPE {
 			VertexData* const subresult((*shape)->GetVertexData(offset(result, write_offset), bytesize-write_offset));
 			PASSERT(subresult != NULL)
 			write_offset += (*shape)->GetNumberOfVertices() * sizeof(VertexData);
 		}
-		PASSERT(write_offset == requiredSize);
+		PASSERT(psafecast<size_t>(write_offset) == requiredSize);
 	}
 
 	return result;
@@ -132,14 +133,14 @@ TexturedVertexData* ShapeComposition::GetTexturedVertexData (void* const memory,
 
 	if (bytesize >= requiredSize) {
 		reinterpret_assign(result, memory);
-		size_t write_offset(0u);
+		ptrdiff_t write_offset(0u);
 
 		FOR_EACH_SHAPE {
 			TexturedVertexData* const subresult((*shape)->GetTexturedVertexData(offset(result, write_offset), bytesize-write_offset));
 			PASSERT(subresult != NULL)
 			write_offset += (*shape)->GetNumberOfVertices() * sizeof(TexturedVertexData);
 		}
-		PASSERT(write_offset == requiredSize);
+		PASSERT(psafecast<size_t>(write_offset) == requiredSize);
 	}
 
 	return result;

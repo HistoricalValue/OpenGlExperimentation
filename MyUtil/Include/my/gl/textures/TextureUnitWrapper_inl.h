@@ -51,9 +51,9 @@ namespace my { namespace gl { namespace textures {
 			::gl::ext::glGetIntegerv(GL_ACTIVE_TEXTURE, &activeTextureUnit);
 
 			PASSERT(activeTextureUnit != 0xffffffff);
-			PASSERT(IsValid(activeTextureUnit));
+			PASSERT(IsValid(psafecast<GLuint>(activeTextureUnit)));
 
-			return activeTextureUnit;
+			return psafecast<GLuint>(activeTextureUnit);
 		}
 
 		P_INLINE

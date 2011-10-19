@@ -27,12 +27,12 @@ namespace my { namespace gl { namespace shapes {
 	}
 
 	P_INLINE
-	VertexData* Nothing::GetVertexData (void* const memory, size_t const bytesize) const {
+	VertexData* Nothing::GetVertexData (void* const memory, size_t const) const {
 		return reinterpret_cast<VertexData* const>(memory);
 	}
 
 	P_INLINE
-	TexturedVertexData* Nothing::GetTexturedVertexData (void* const memory, size_t const bytesize) const {
+	TexturedVertexData* Nothing::GetTexturedVertexData (void* const memory, size_t const) const {
 		return reinterpret_cast<TexturedVertexData* const>(memory);
 	}
 

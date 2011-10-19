@@ -81,7 +81,7 @@
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -100,7 +100,7 @@
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -121,7 +121,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

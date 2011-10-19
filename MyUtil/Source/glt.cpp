@@ -1,6 +1,6 @@
 #include <stdafx.h>
 #include <glt.h>
-#include <PSafeCast.h>
+#include <MySafeCast.h>
 
 namespace glt {
 

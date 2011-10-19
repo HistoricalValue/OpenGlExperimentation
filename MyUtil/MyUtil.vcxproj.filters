@@ -267,6 +267,9 @@
     <ClInclude Include="Include\my\gl\adapters\BufferManager.h">
       <Filter>Header Files\my\gl\adapters</Filter>
     </ClInclude>
+    <ClInclude Include="Include\MySafeCast.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\MyLogger.cpp">

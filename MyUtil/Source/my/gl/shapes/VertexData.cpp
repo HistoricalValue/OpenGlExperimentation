@@ -85,7 +85,7 @@ namespace my { namespace gl { namespace shapes {
 		{}
 
 	void* TexturedVertexData::TextureCoordinatesOffsetPointer (void) {
-		return codeshare::utilities::pointer_utilities::offset(TextureCoordinatesOffset());
+		return codeshare::utilities::pointer_utilities::offset(psafecast<ptrdiff_t>(TextureCoordinatesOffset()));
 	}
 
 	size_t TexturedVertexData::TextureCoordinatesOffset (void) {
@@ -97,7 +97,7 @@ namespace my { namespace gl { namespace shapes {
 	}
 
 	void* TexturedVertexData::NormalOffsetPointer (void) {
-		return codeshare::utilities::pointer_utilities::offset(NormalOffset());
+		return codeshare::utilities::pointer_utilities::offset(psafecast<ptrdiff_t>(NormalOffset()));
 	}
 
 	size_t TexturedVertexData::Stride (void) {
@@ -105,7 +105,7 @@ namespace my { namespace gl { namespace shapes {
 	}
 
 	void* TexturedVertexData::PositionOffsetPointer (void) {
-		return codeshare::utilities::pointer_utilities::offset(PositionOffset());
+		return codeshare::utilities::pointer_utilities::offset(psafecast<ptrdiff_t>(PositionOffset()));
 	}
 
 	size_t TexturedVertexData::PositionOffset (void) {
@@ -113,7 +113,7 @@ namespace my { namespace gl { namespace shapes {
 	}
 
 	void* TexturedVertexData::AOOffsetPointer (void) {
-		return codeshare::utilities::pointer_utilities::offset(AOOffset());
+		return codeshare::utilities::pointer_utilities::offset(psafecast<ptrdiff_t>(AOOffset()));
 	}
 
 	size_t TexturedVertexData::AOOffset (void) {

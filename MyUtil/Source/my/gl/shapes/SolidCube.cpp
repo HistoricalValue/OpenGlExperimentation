@@ -6,6 +6,8 @@
 #include <my/gl/shapes/SolidCube.h>
 #include <my/gl/shapes/ColourFactory.h>
 
+#include <MySafeCast.h>
+
 #define OFFSETS_STATIC_CHECKS																					\
 		using codeshare::utilities::pointer_utilities::offset;													\
 		size_t const off00(offsetof(SolidCube, triangle00));													\
@@ -36,6 +38,7 @@ namespace my { namespace gl { namespace shapes {
 
 	Triangle* SolidCube::GetTriangles (void) {
 		OFFSETS_STATIC_CHECKS
+		(void)maxOff;
 
 		Triangle* const result(reinterpret_cast<Triangle* const>(offset(this, minOff)));
 		PASSERT(result == &triangle00 || result == &triangle11)
@@ -44,6 +47,7 @@ namespace my { namespace gl { namespace shapes {
 
 	Triangle const* SolidCube::GetConstTriangles (void) const {
 		OFFSETS_STATIC_CHECKS
+		(void)maxOff;
 
 		Triangle const* const result(reinterpret_cast<Triangle const* const>(offset(this, minOff)));
 		PASSERT(result == &triangle00 || result == &triangle11)
@@ -141,7 +145,7 @@ namespace my { namespace gl { namespace shapes {
 			Colour const	colour3(ColourFactory::Brighter(colour1));
 
 			for (size_t i(0u); i < _::numberOfTriangles; ++i) {
-				PASSERT(&result[3*i+2] < codeshare::utilities::pointer_utilities::offset(result, bytesize))
+				PASSERT(&result[3*i+2] < codeshare::utilities::pointer_utilities::offset(result, psafecast<ptrdiff_t>(bytesize)))
 
 				Triangle const&	triangle(triangles[i]);
 
@@ -178,7 +182,7 @@ namespace my { namespace gl { namespace shapes {
 			int triangleParity(0);
 
 			for (size_t i(0u); i < _::numberOfTriangles; ++i) {
-				PASSERT(&result[3*i+2] < codeshare::utilities::pointer_utilities::offset(result, bytesize))
+				PASSERT(&result[3*i+2] < codeshare::utilities::pointer_utilities::offset(result, psafecast<ptrdiff_t>(bytesize)))
 
 				Triangle const&	triangle(triangles[i]);
 
