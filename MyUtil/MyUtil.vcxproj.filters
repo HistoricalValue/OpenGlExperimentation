@@ -276,8 +276,8 @@
     <ClInclude Include="Include\MyAssert.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\MeshManager.h">
-      <Filter>Header Files\my\ankh</Filter>
+    <ClInclude Include="Include\MyUtils.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -38,7 +38,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(ProjectDir)Include;$(ProjectDir)..\..\ankh\Meshes\Include;$(ProjectDir)..\..\ankh\Math\Include;$(DELTA)DebugLib\Include;$(DELTA)UtilLib\Include;$(DELTA)FileReadersLib\Include;$(ProjectDir)..\..\ankh\BoundingVolumes\Include;$(ProjectDir)..\..\ankh\Properties\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)Include;$(ProjectDir)..\..\ankh\Meshes\Include;$(ProjectDir)..\..\ankh\Math\Include;$(DELTA)DebugLib\Include;$(DELTA)UtilLib\Include;$(DELTA)FileReadersLib\Include;$(ProjectDir)..\..\ankh\BoundingVolumes\Include;$(ProjectDir)..\..\ankh\Properties\Include;$(ProjectDir)..\MyUtil\Include;$(ProjectDir)..\Codeshare\isi_branch\Utilities\Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>$(ProjectDir)Include;$(ProjectDir)..\..\ankh\Meshes\Include;$(ProjectDir)..\..\ankh\Math\Include;$(DELTA)DebugLib\Include;$(DELTA)UtilLib\Include;$(DELTA)FileReadersLib\Include;$(ProjectDir)..\..\ankh\BoundingVolumes\Include;$(ProjectDir)..\..\ankh\Properties\Include;$(IncludePath)</IncludePath>
@@ -81,6 +81,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\AmbientOcclusion.cpp" />
+    <ClCompile Include="Src\MeshTools.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

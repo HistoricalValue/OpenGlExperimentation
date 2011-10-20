@@ -29,5 +29,8 @@
     <ClCompile Include="Src\AmbientOcclusion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Src\MeshTools.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

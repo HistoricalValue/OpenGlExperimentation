@@ -138,7 +138,6 @@
     <ClInclude Include="Include\glt.h" />
     <ClInclude Include="Include\gl\glext.h" />
     <ClInclude Include="Include\gl\wglext.h" />
-    <ClInclude Include="Include\MeshManager.h" />
     <ClInclude Include="Include\MyAssert.h" />
     <ClInclude Include="Include\MyGlobalInstances.h" />
     <ClInclude Include="Include\MyList.h" />
@@ -148,6 +147,7 @@
     <ClInclude Include="Include\MySafeCast.h" />
     <ClInclude Include="Include\MyString.h" />
     <ClInclude Include="Include\MyUtil.h" />
+    <ClInclude Include="Include\MyUtils.h" />
     <ClInclude Include="Include\my\algo\ShapeProducers.h" />
     <ClInclude Include="Include\my\gl\adapters\Buffer.h" />
     <ClInclude Include="Include\my\gl\adapters\BufferManager.h" />

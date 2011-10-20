@@ -7,6 +7,7 @@
 #include <my/gl/shapes/Line.h>
 #include <my/gl/shapes/Triangle.h>
 #include <MySafeCast.h>
+#include <MyUtils.h>
 #pragma warning( push, 0 )
 #	include <cstdio>
 #	include <ComputeMeshAmbientOcclusion.h>
@@ -18,25 +19,6 @@ namespace {
 
 template <typename SurfaceType> static inline std::vector<ankh::nurbs::Unit> const KnotsI (SurfaceType const& s)
 	{ return std::vector<ankh::nurbs::Unit>(s.GetKnotsIBegin(), s.GetKnotsIEnd()); }
-
-template <typename T>
-T const* castconst (T* ptr) { return static_cast<T const* const>(ptr); }
-
-template <typename t>
-struct TypeOf { typedef t T; };
-
-template <typename T, const size_t N>
-typename TypeOf<char (*)[N]>::T CountOfHelper ( UNALIGNED T (& arr)[N] );
-
-#define countof(ARR)	sizeof(*CountOfHelper(ARR))
-
-template <typename T1, typename T2> static inline
-void ofequaltypes (T1&, T2& o2)
-	{ utypecheck<T1>(o2); }
-
-template <typename C, typename F> static
-void foreach (C const& c, F const& f)
-	{ std::for_each(c.begin(), c.end(), f); }
 
 static inline
 my::gl::math::Vector4 makevector4 (ankh::math::trig::vec4 const& v)
@@ -92,22 +74,6 @@ struct elcollector {
 	std::list<T> els;
 	elcollector& operator , (T const& el) { els.push_back(el); return *this; }
 };
-
-template <typename CharType>
-static
-CharType const* format (CharType const* const fmt, ...) {
-	static CharType buf[1024];
-
-	va_list args;
-	va_start(args, fmt);
-
-	int const retval(_vsntprintf_s(&buf[0], countof(buf), countof(buf), fmt, args));
-	PASSERT(retval > 1);
-
-	va_end(args);
-
-	return &buf[0];
-}
 
 struct timer {
 	char const* const what;
@@ -193,9 +159,6 @@ struct IneffectiveBufferEntryDeleter: ::my::gl::adapters::Buffer::Deleter {
 };
 
 } //
-
-#define FOREACH(ARRT, ARR, VARNAME)	\
-	for (UPTR( ARRT ) VARNAME (( & ARR [0] )) ; VARNAME < & ARR [ countof( ARR ) ] ; ++ VARNAME )
 
 namespace {
 static inline void ExtractAmbientOcclusions (std::vector<float>& into, ankh::shapes::Mesh const& m) {
