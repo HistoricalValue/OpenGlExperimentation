@@ -1,17 +1,16 @@
-#include <stdafx.h>
-
+#include <MeshTools.h>
 #include "TheCursed.h"
-
+#include "NurbsFacade.h"
 #pragma warning( push, 0 )
 #	include <Mesh.h>
 #	include <MeshLoader.h>
 #	include <BuiltinShapesBoundingVolume.h>
 #	include <ComputeMeshAmbientOcclusion.h>
 #	include <cstdio>
+#	include "uinit.h"
 #pragma warning( pop )
 #include <drawing_nurbs.h>
 #include <drawing_utils.h>
-
 
 using namespace ankh;
 using namespace shapes;
@@ -22,166 +21,113 @@ using namespace nurbs;
 using namespace my::drawing::nurbs;
 using namespace volumes;
 
-static void Savidise (std::list<std::string> const& generatedIds) {
-	BoundingVolume::SingletonCreate();
-	MeshLoader::SingletonCreate();
+static my::Console&	out (void);
+static void			IdForStep (char (*buf)[1024], char const* base, float step);
+static void			PathForId (std::string& path, char const* id);
+static void			Savidise (Mesh*& savidised, Mesh const& m);
+static void			Tesselate (Mesh*& mesh, Surface const& surf, Unit const step);
+static void			Store (Mesh const& mesh);
 
-	for (std::list<std::string>::const_iterator meshname(generatedIds.begin()); meshname != generatedIds.end(); ++meshname) {
-		std::string const path		(std::string("../meshes/") + *meshname + ".msh");
-		std::string const outpath	(std::string("../meshes/") + "savidised_" + *meshname + ".msh");
-
-		my::global::GetConsole() << "Savidising " << meshname->c_str() << " . . . ";
-
-		my::global::GetConsole() << "loading . . . ";
-		Mesh m;
-		loadinto(meshname->c_str(), m);
-
-		my::global::GetConsole() << "savidising . . . ";
-		{
-			typedef Mesh::Elements::const_iterator ite_t;
-			Mesh::Elements inverted;
-
-			ite_t const end(m.GetElements().end());
-			for (ite_t el(m.GetElements().begin()); el != end; ++el) {
-				inverted.push_back(MeshElement(Triangle(el->a, el->c, el->b)));
-				if (el->HasAmbientOcclusion()) {
-					inverted.back().MakeAmbientOcclusion();
-					inverted.back().SetAmbientOcclusion(0, el->GetAmbientOcclusion(0));
-					inverted.back().SetAmbientOcclusion(1, el->GetAmbientOcclusion(1));
-					inverted.back().SetAmbientOcclusion(2, el->GetAmbientOcclusion(2));
-				}
-				if (el->HasNormals()) {
-					inverted.back().MakeNormals();
-					inverted.back().SetNormal(0, -el->GetNormal(0));
-					inverted.back().SetNormal(1, -el->GetNormal(1));
-					inverted.back().SetNormal(2, -el->GetNormal(2));
-				}
-			}
-
-			m.Update(inverted);
-		}
-
-		my::global::GetConsole() << "storing . . . ";
-		m.StoreBin(outpath);
-
-		my::global::GetConsole() << "done\n";
-	}
-
-	MeshLoader::SingletonDestroy();
-	BoundingVolume::SingletonDestroy();
-}
-
-static void IdForStep (char (*buf)[1024], char const* const base, float const step)
-	{ _snprintf_s(&(*buf)[0], countof(*buf), countof(*buf) - 1u, "%s_%3.1f", base, step); }
-
-struct MeshStats {
-	TimesList			times;
-	unsigned long int	numberOfMeshElements;
-};
-
-struct MeshesStats {
-	typedef std::pair<Unit, MeshStats>	MeshStatsPerStep;
-	std::list<MeshStatsPerStep>			stats;
-	typedef std::list<MeshStatsPerStep>::const_iterator	Iterator;
-
-	void		New (Unit const step) { stats.push_back(MeshStatsPerStep(step, MeshStats())); }
-	TimesList*	GetTimesList (void) { return &stats.back().second.times; }
-	void		SetNumEls (size_t const els) { stats.back().second.numberOfMeshElements = els; }
-};
-
-static inline void WriteAllMeshesStats (MeshesStats const& allstats) {
-	std::ofstream fout("../meshes/generation_stats.txt", std::ios::out | std::ios::trunc);
-	DASSERT(!fout.bad());
-
-	my::global::GetConsole() << "writing stats . . ." ;
-
-	for (MeshesStats::Iterator i(allstats.stats.begin()); i != allstats.stats.end(); ++i) {
-		fout << " === Tesselation with step " << i->first << " ===" << std::endl
-			<< i->second.numberOfMeshElements << " number of elements" << std::endl;
-		for (TimesList::const_iterator j(i->second.times.begin()); j != i->second.times.end(); ++j)
-			fout << "\t" << j->first << ": " << j->second << " miliseconds" << std::endl;
-		fout << std::endl;
-	}
-
-	my::global::GetConsole() << " done\n";
-}
-
-static void Tesselate (std::list<std::string>& generatedIds, bool const doWork) {
-#if 0
-// TODO remake
-	Unit steps[] = { 2e-0f }; // { 2e0f, 1e0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f };
-	MeshesStats	allstats;
-	Surface bob(BobRoss());
-
-	Initialise();
-
-	FOREACH(Unit, steps, step) {
-		{	char buf[1024];
-			IdForStep(&buf, "moon_valley", *step);
-			generatedIds.push_back(&buf[0]);
-		}
-		if (doWork) {
-			allstats.New(*step);
-
-			SetTimesList(allstats.GetTimesList());
-
-			{
-				TesselationParameters const tp(*step, false, DefaultPrecision());
-				tesselate(bob, &tp);
-			}
-			generateindexedbuffer();
-			computeboundinvolume();
-
-			ao::MeshIntersectionData intersectionData;
-
-			{
-				fairprepareao();
-				updateaotraditional(intersectionData);
-			}
-			{
-				fairprepareao();
-				MeshAABBTree aabb;
-				generateaabb(aabb);
-
-				struct { std::vector<float> trad, nu, alt; } aos;
-
-				// Do with alt
-				{	fairprepareao();
-					ComputeMeshAmbientOcclusionAlt aoc(&intersectionData, ComputeMeshAmbientOcclusion::Sampling9, &aabb);
-					updateao(aoc, "ALT");
-					ExtractAOInto(aos.alt);	}
-
-				// Do with nu
-				{	fairprepareao();
-					ComputeMeshAmbientOcclusion aoc(ComputeMeshAmbientOcclusion::Sampling9, &aabb);
-					updateao(aoc, "NU");
-					ExtractAOInto(aos.nu); }
-
-				DASSERT(std::equal(aos.alt.begin(), aos.alt.end(), aos.nu.begin()));
-			}
-
-			allstats.SetNumEls(GetNumberOfMeshElements());
-
-			store(generatedIds.back().c_str());
-		}
-	}
-
-	if (doWork)
-		WriteAllMeshesStats(allstats);
-	else
-		my::global::GetConsole() << "skipping work...\n";
-
-	CleanUp();
-#endif
-}
-
+static void			Initialise (void);
+static void			CleanUp (void);
 namespace my {
 
 void MeshProcess (void) {
-	std::list<std::string> generatedIds;
+	Initialise();
+	{
+		Unit steps[] = {2e-0f, 1e-0f};
+		Surface const bob(Surfaces::MoonValleyWithHorns());
 
-	Tesselate(generatedIds, true);
-	Savidise(generatedIds);
+		FOREACH(Unit, steps, step) {
+			out() << "1 ...";
+			Mesh* mesh(NULL);
+			Tesselate(mesh, bob, *step);
+			Store(*DPTR(mesh));
+
+			out() << "2 ...";
+			Mesh* savidised(NULL);
+			Savidise(savidised, *DPTR(mesh));
+			Store(*DPTR(savidised));
+
+			out() << "done ...";
+			udelete(savidised);
+			udelete(mesh);
+		}
+	}
+	CleanUp();
 }
 
 } // my
+
+void Tesselate (Mesh*& mesh, Surface const& surf, Unit const step) {
+	char id[1024];
+	IdForStep(&id, surf.GetName(), step);
+
+	Mesh::Elements elements;
+	GenerateSurfaceMesh(elements, surf, TesselationParameters(step));
+	x::ComputeBarycentricFactors(elements);
+	
+	{
+		BoundingVolume* const volume(BuiltinShapes::Triangles(elements));
+
+		MeshAABBTree aabb;
+		aabb(elements, volume);
+
+		ComputeMeshAmbientOcclussion aoc(ComputeMeshAmbientOcclussion::Samples9, aabb, FLT_MAX);
+
+		DASSERT(!mesh);
+		mesh = DNEWCLASS(Mesh, (elements, id, NULL, NULL, &aoc, volume));
+
+		DDELETE(volume);
+	}
+
+	DPTR(mesh)->GetIndexBuffer(); // generate
+
+	std::string path;
+	PathForId(path, id);
+	MeshLoader::GetSingleton().GivePath(DPTR(mesh), path);
+}
+
+void IdForStep (char (* const buf)[1024], char const* const base, float const step)
+	{ _snprintf_s(&(*buf)[0], countof(*buf), countof(*buf) - 1u, "%s_%3.1f", base, step); }
+
+void PathForId (std::string& path, char const* const id) {
+	path.reserve(11 + 4 + strlen(id) + 1);
+	path =("../meshes/");
+	path += id;
+	path += ".msh";
+}
+
+void Savidise (Mesh*& savidised, Mesh const& m) {
+	Mesh::Elements inversed;
+	std::string savidised_id(std::string("savidised_") + m.GetUniqueId());
+
+	DASSERT(!savidised);
+	savidised = DNEWCLASS(Mesh, (	x::InvertNormalsAndWinding(inversed, m.GetElements()),
+									savidised_id,
+									NULL,
+									NULL,
+									NULL,
+									DPTR(DNULLCHECK(m.GetBoundingVolume()))->Clone()));
+	DPTR(savidised)->GetIndexBuffer();	// generate
+
+	std::string path;
+	PathForId(path, ucstringarg(savidised_id));
+	MeshLoader::GetSingleton().GivePath(DPTR(savidised), path);
+}
+
+void Store (Mesh const& mesh) {
+	std::string const path(MeshLoader::GetSingleton().GetPath(&mesh));
+	mesh.StoreBin(path);
+}
+
+static inline void onerror (char const* const msg) { out() << msg; }
+void Initialise (void) {
+	BoundingVolume::SingletonCreate();
+	MeshLoader::SingletonCreate();
+}
+void CleanUp (void) {
+	MeshLoader::SingletonDestroy();
+	BoundingVolume::SingletonDestroy();
+}
+my::Console& out (void) { return my::global::GetConsole(); }

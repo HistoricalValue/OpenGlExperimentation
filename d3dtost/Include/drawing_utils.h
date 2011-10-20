@@ -4,11 +4,14 @@
 #include <PAssert.h>
 #include <SurfacesTools.h>
 #include <my/gl/adapters/BufferManager.h>
+#include <my/gl/shapes/Line.h>
+#include <my/gl/shapes/Triangle.h>
 #include <MySafeCast.h>
 #pragma warning( push, 0 )
 #	include <cstdio>
 #	include <ComputeMeshAmbientOcclusion.h>
 #	include <functional>
+#	include <usystem.h>
 #pragma warning( pop )
 
 namespace {

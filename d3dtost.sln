@@ -24,6 +24,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExtraLibs", "ExtraLibs", "{798A8E2D-6334-463B-939D-A667599D620E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ankh", "Ankh", "{2470354D-9F80-4733-A5B4-58D7A7E1AF39}"
+	ProjectSection(SolutionItems) = preProject
+		..\ankh\TODO.html = ..\ankh\TODO.html
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Util", "Util", "{5E0DB312-D4EB-4172-9E18-D41E955996B2}"
 EndProject

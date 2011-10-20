@@ -6,7 +6,10 @@
 #	include "utypes.h"
 #	include <tchar.h>
 #	include <fstream>
+#	include <ostream>
+#	include <sstream>
 #pragma warning( pop )
+#include <PAssert.h>
 
 namespace my {
 

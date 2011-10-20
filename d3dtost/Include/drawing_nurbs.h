@@ -12,8 +12,13 @@
 
 namespace my { namespace drawing { namespace nurbs {
 
+using namespace ankh;
+
 extern void Initialise (void);
 extern void CleanUp (void);
+
+// Real tools
+extern void store (shapes::Mesh const&, char const*);
 
 extern ankh::nurbs::Surface const	BobRoss (void);
 

@@ -61,6 +61,9 @@
     <Filter Include="Source Files\my\gl\adapters">
       <UniqueIdentifier>{db39c52d-1212-439c-b246-642ebcbca338}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\my\ankh">
+      <UniqueIdentifier>{3ade0291-115b-4d5d-89a8-4ea10e27ab05}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -272,6 +275,9 @@
     </ClInclude>
     <ClInclude Include="Include\MyAssert.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\MeshManager.h">
+      <Filter>Header Files\my\ankh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

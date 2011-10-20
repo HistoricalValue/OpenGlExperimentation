@@ -2,6 +2,7 @@
 #define __MY_OPEN_GL__H__
 
 #include <TheCursed.h>
+#include <nmutil/OpenGlExtensions.h>
 
 #define VAN_POSITION	"position"
 #define VAN_COLOUR		"colour"

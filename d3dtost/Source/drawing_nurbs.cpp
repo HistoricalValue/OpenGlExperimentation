@@ -421,7 +421,7 @@ void tesselate (ankh::nurbs::Surface const& surf, ankh::nurbs::TesselationParame
 
 //	size_t const			meshElementsMinCapacity((surf.GetResolutionI(tp) - 1) * 2 + 1 + 1)	// +1 security
 					//		,adjacenciesMinCapacity(meshElementsMinCapacity * 3) // generally will by the number of mesh elements times 3
-					;	
+					;
 
 	// if they were vectors...
 //	_::meshElements().reserve(meshElementsMinCapacity);
