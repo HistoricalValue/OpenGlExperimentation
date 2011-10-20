@@ -8,6 +8,7 @@
 #	include <ComputeMeshAmbientOcclusion.h>
 #	include <cstdio>
 #	include "uinit.h"
+#	include "ufiles.h"
 #pragma warning( pop )
 #include <drawing_nurbs.h>
 #include <drawing_utils.h>
@@ -36,44 +37,55 @@ static void			Store (Mesh const& mesh, MeshTimingStats&);
 static void			Initialise (void);
 static void			CleanUp (void);
 
+struct TimingNotifee: public MeshTimingStats::TimeUpdateNotifee {
+	virtual ~TimingNotifee (void);
+
+	virtual void	TimingStarted (char const* what) const;
+	virtual void	TimingEnded (char const* what, MeshTimingStats::timing_t howMuch) const;
+};
+
 namespace my {
 
 void MeshProcess (void) {
-	Initialise();
+	::Initialise();
 	{
 		std::list<std::string>	lines;
-		Unit const				steps[] = {2e-0f, 1e-0f};
+		Unit const				steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f, 1e-1f};
 		Surface const			bob(Surfaces::MoonValleyWithHorns());
 		MeshTimingStats			timing;
+		TimingNotifee			notifee;
+
+		timing.notifee = &notifee;
 
 		FOREACH(const Unit, steps, step) {
 			out() << "1 ...";
 			Mesh* mesh(NULL);
 			Tesselate(mesh, bob, *step, timing);
-			Store(*DPTR(mesh), timing);
+			Store(*DPTR(mesh), timing);		
 
-			out() << "2 ...";
+			out() << "\n2 ...";
 			Mesh* savidised(NULL);
 			Savidise(savidised, *DPTR(mesh), timing);
 			Store(*DPTR(savidised), timing);
 
 
-			out() << "done ...";
+			out() << "\ndone ...";
 			udelete(savidised);
 			udelete(mesh);
 
-			out() << "writing stats ...";
+			out() << "\nwriting stats ...";
 			lines.push_back(uconstructstr(" === Stats for tesselation with step %f === ", *step));
 			WriteText(lines, timing);
+			out() << "\n";
 		}
 
 		{
-			FILE* const fout(ubinaryfileopen("../meshes/generation_stats.txt"));
+			FILE* const fout(ubinaryfileopen("../meshes/generation_stats.txt", "w"));
 			FlushTo(fout, lines);
 			fclose(fout);
 		}
 	}
-	CleanUp();
+	::CleanUp();
 }
 
 } // my
@@ -96,14 +108,12 @@ void Tesselate (Mesh*& mesh, Surface const& surf, Unit const step, MeshTimingSta
 
 		DASSERT(!mesh);
 		MESH_TIME(mt, update, mesh = DNEWCLASS(Mesh, (elements, id, NULL, NULL, &aoc, volume)));
-
-		DDELETE(volume);
 	}
 
 	MESH_TIME(mt, indexBuffer, DPTR(mesh)->GetIndexBuffer()); // generate
 
 	std::string path;
-	BinPathForId(path, id);
+	BinPathForId(path, ucstringarg(DPTR(mesh)->GetUniqueId()));
 	MeshLoader::GetSingleton().GivePath(DPTR(mesh), path);
 }
 
@@ -151,7 +161,7 @@ void Savidise (Mesh*& savidised, Mesh const& m, MeshTimingStats& mt) {
 	mt.AddCustom("(savidised) indexBuffer", t_end-t_start);
 
 	std::string path;
-	BinPathForId(path, ucstringarg(savidised_id));
+	BinPathForId(path, ucstringarg(DPTR(savidised)->GetUniqueId()));
 	MeshLoader::GetSingleton().GivePath(DPTR(savidised), path);
 }
 
@@ -178,3 +188,7 @@ void CleanUp (void) {
 	BoundingVolume::SingletonDestroy();
 }
 my::Console& out (void) { return my::global::GetConsole(); }
+
+TimingNotifee::~TimingNotifee (void) {}
+void TimingNotifee::TimingStarted (char const* const what) const { out() << what << " ... "; }
+void TimingNotifee::TimingEnded (char const* const what, MeshTimingStats::timing_t const howMuch) const { out() << howMuch << "ms\n"; }

@@ -125,6 +125,7 @@ namespace my {
 	bool OpenGL::Initialise (void) {
 		PASSERT(!initialised)
 		initialised = device && _::gl::CreateContext(device, context) || true;
+		PASSERT(context)
 
 		if (initialised) {
 			PASSERT(!Images_gl_ext_IsInitialised())
@@ -385,7 +386,7 @@ namespace my {
 			//	wglCreateContextAttribsARB_func wglCreateContextAttribsARB(reinterpret_cast<wglCreateContextAttribsARB_func>(
 			//				wglGetProcAddress("wglCreateContextAttribsARB")));
 			//
-			//	context = wglCreateContext(device);
+				context = wglCreateContext(device);
 			//	if (wglCreateContextAttribsARB) {
 			//		int attribs[] = {WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB, 0};
 			//		context = wglCreateContextAttribsARB(device, context, &attribs[0]);

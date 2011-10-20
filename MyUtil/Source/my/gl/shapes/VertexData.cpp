@@ -1,5 +1,6 @@
 #include <stdafx.h>
 
+#include <MySafeCast.h>
 #include <PConfigurations.h>
 #include <PPointerUtilities_inl.h>
 #include <my/gl/Shapes/VertexData.h>

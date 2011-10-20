@@ -5,10 +5,11 @@
 #	include <assert.h>
 #pragma warning( pop )
 
-static void __assert (wchar_t const* const expr, wchar_t const* const file, long int line)
-	{ _wassert(expr, file, psafecast<unsigned int>(line)); }
+#ifndef NDEBUG
+	
+	static void __assert (wchar_t const* const expr, wchar_t const* const file, long int line)
+		{ _wassert(expr, file, psafecast<unsigned int>(line)); }
 
-#ifndef _NDEBUG
 #	define _assert(EXPR)	(!!(EXPR) || (__assert(_CRT_WIDE(#EXPR), _CRT_WIDE(__FILE__), __LINE__), 0))
 #else
 #	define _assert(EXPR)	(static_cast<void>(0x00))

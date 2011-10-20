@@ -56,9 +56,12 @@ public:
 		DASSERT(elem.HasNormals());
 
 		std::swap(elem.b, elem.c);
+		math::trig::vec3 nb(elem.GetNormal(1)), nc(elem.GetNormal(2));
+		std::swap(nb, nc);
 
-		for (util_ui8 i(0u); i < 3u; ++i)
-			elem.SetNormal(i, -elem.GetNormal(i));
+		elem.SetNormal(0, -elem.GetNormal(0));
+		elem.SetNormal(1, -nb);
+		elem.SetNormal(2, -nc);
 	}
 
 	virtual ~NormalAndWindingInverserMeshElementProcessor (void) {}
@@ -85,12 +88,16 @@ static inline Mesh::Elements& ComputeBarycentricFactors (Mesh::Elements& element
 
 ///////////////////////////////////////////////////////////
 
-#define MESH_TIMING_STAT(NAME)							\
-		timing_t	NAME;								\
-		void		Start##NAME (void)					\
-						{ NAME = ugettime(); }			\
-		void		End##NAME (void)					\
-						{ NAME = ugettime() - NAME; }	\
+#define MESH_TIMING_STAT(NAME)											\
+		timing_t	NAME;												\
+		void		Start##NAME (void) {								\
+						DNULLCHECK(notifee)->TimingStarted(#NAME);		\
+						NAME = ugettime();								\
+					}													\
+		void		End##NAME (void) {									\
+						NAME = ugettime() - NAME;						\
+						DNULLCHECK(notifee)->TimingEnded(#NAME, NAME);	\
+					}													\
 
 struct MeshTimingStats {
 	typedef unsigned long timing_t;
@@ -105,7 +112,7 @@ struct MeshTimingStats {
 		StoreText			= 7u
 	};
 	timing_t	GetTimingFor (Timing) const;
-	
+
 	MESH_TIMING_STAT(tesselation		)
 	MESH_TIMING_STAT(barycentricFactors	)
 	MESH_TIMING_STAT(boundingVolume		)
@@ -116,11 +123,21 @@ struct MeshTimingStats {
 	MESH_TIMING_STAT(storeText			)
 
 	typedef std::list<std::pair<std::string, timing_t> >	Custom;
-	
+
 	Custom	custom;
 	void	AddCustom (char const* const what, timing_t const t)
 				{ custom.push_back(std::make_pair(std::string(what), t)); }
+
+	struct TimeUpdateNotifee {
+		virtual ~TimeUpdateNotifee (void) {}
+		virtual void	TimingStarted (char const* what) const;
+		virtual void	TimingEnded (char const* what, timing_t howMuch) const;
+	};
+	TimeUpdateNotifee*	notifee;
 };
+
+inline void MeshTimingStats::TimeUpdateNotifee::TimingStarted	(char const* const) const {}
+inline void MeshTimingStats::TimeUpdateNotifee::TimingEnded		(char const* const, timing_t const) const {}
 
 #define MESH_TIME(OBJ,WHAT,COMMAND)						\
 		OBJ.Start##WHAT();								\

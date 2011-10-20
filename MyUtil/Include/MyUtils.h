@@ -26,32 +26,68 @@ template <typename C, typename F> static inline
 void foreach (C const& c, F const& f)
 	{ std::for_each(c.begin(), c.end(), f); }
 
+static inline int vsntprintf (char* const buffer, size_t const sizeOfBuffer, size_t const count, const char* const format, va_list const argptr)
+	{ return vsnprintf_s(buffer, sizeOfBuffer, count, format, argptr); }
+static inline int vsntprintf (wchar_t* const buffer, size_t const sizeOfBuffer, size_t const count, const wchar_t* const format, va_list const argptr)
+	{ return _vsnwprintf_s(buffer, sizeOfBuffer, count, format, argptr); }
+
 template <typename CharType>
-struct VsnPrintfer;
-template <>
-struct VsnPrintfer<char> {
-	static const int (*vsnprint) (char* buffer, size_t sizeOfBuffer, size_t count, const char* format, va_list argptr) = &vsnprintf_s;
-};
-template <typename wchar_t>
-struct VsnPrintfer {
-	static const int (*vsnprint) (wchar_t* buffer, size_t sizeOfBuffer, size_t count, const wchar_t	* format, va_list argptr) = &_vsnwprintf_s;
-};
+static
+CharType* vformat (CharType* const buf, size_t const bufLength, CharType const* const fmt, va_list const args) {
+	int const retval(vsntprintf(buf, bufLength, bufLength-1, fmt, args));
+	PASSERT(retval > 1);
+
+	buf[bufLength - 1] = '\0';
+
+	return buf;
+}
+
+template <typename CharType, const size_t N>
+static
+CharType* vformat (CharType (&buf)[N], CharType const* const fmt, va_list const args)
+	{ return vformat(&buf[0], N, fmt, args); }
+
+template <typename CharType>
+static
+CharType* format (CharType* const buf, size_t const bufLength, CharType const* const fmt, ...) {
+	va_list args;
+	va_start(args, fmt);
+
+	vformat(buf, bufLength, fmt, args);
+
+	va_end(args);
+
+	return buf;
+}
+
+template <typename CharType, const size_t N>
+static
+CharType* format (CharType (&buf)[N], CharType const* const fmt, ...) {
+	va_list args;
+	va_start(args, fmt);
+
+	vformat(buf, fmt, args);
+
+	va_end(args);
+
+	return buf;
+}
 
 template <typename CharType>
 static
 CharType const* format (CharType const* const fmt, ...) {
-	static CharType buf[1024];
+	static CharType buf[1 << 14]; // 16 KiB
 
 	va_list args;
 	va_start(args, fmt);
 
-	int const retval((*VsnPrintfer<CharType>::vsnprint)(&buf[0], countof(buf), countof(buf), fmt, args));
-	PASSERT(retval > 1);
+	vformat(buf, fmt, args);
 
 	va_end(args);
 
-	return &buf[0];
+	return buf;
 }
+
 
 #define FOREACH(ARRT, ARR, VARNAME)	\
 	for (UPTR( ARRT ) VARNAME (( & ARR [0] )) ; VARNAME < & ARR [ countof( ARR ) ] ; ++ VARNAME )
