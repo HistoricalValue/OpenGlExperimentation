@@ -30,7 +30,7 @@ struct hashmap_traits {
 	typedef value_type&				reference;
 	typedef const_value_type&		const_reference;
 
-	typedef Comparator				std::equal<T>;
+	typedef std::equal_to<T>		Comparator;
 };
 
 template <typename K, typename T, typename ComparatorType = typename hashmap_traits<T>::Comparator>
@@ -42,7 +42,7 @@ public:
 
 	T&	operator [] (K const& key);
 
-	
+	hashmap (Comparator const& cmp = Comparator());
 private:
 	struct node {
 		node*			prev, next;
@@ -56,7 +56,7 @@ private:
 		node (K const&, T*);
 	};
 
-	node* const		lists[997];
+	node*			lists[997];
 	// non-state
 	Comparator		cmp;
 };
@@ -76,7 +76,7 @@ void hashmap<K, T, C>::node::PrependTo (node* const other) {
 }
 
 template <typename K, typename T, typename C>
-hashmap<K, T, C>::node* hashmap<K, T, C>::node::Find (K const& key, Comparator const& cmp) {
+typename hashmap<K, T, C>::node* hashmap<K, T, C>::node::Find (K const& key, Comparator const& cmp) {
 	node* result;
 
 	if (cmp(node::key, key))
@@ -90,8 +90,8 @@ hashmap<K, T, C>::node* hashmap<K, T, C>::node::Find (K const& key, Comparator c
 	return result;
 }
 
-template <typename K, typename T, typename ComparatorType>
-T& hashmap::operator [] (K const& key) {
+template <typename K, typename T, typename C>
+T& hashmap<K, T, C>::operator [] (K const& key) {
 	size_t const	h(key_traits::hash(k)),
 					i(h % countof(lists));
 	node*			found(NULL);
@@ -112,6 +112,12 @@ T& hashmap::operator [] (K const& key) {
 
 	return *DPTR(found)->ptr.native();
 }
+
+template <typename K, typename T, typename C>
+hashmap<K, T, C>::hashmap (Comparator const& _cmp):
+//	lists	(),
+	cmp		(_cmp)
+	{}
 
 ///////////////////////////////////////////////////////////
 
