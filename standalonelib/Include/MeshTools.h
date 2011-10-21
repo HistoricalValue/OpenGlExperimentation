@@ -14,21 +14,13 @@
 #	include "utypes.h"
 #	include "usystem.h"
 #	include <list>
+#	include "DDebug.h"
+#	include "GenericReader.h"
+#	include "GenericWriter.h"
+#	include "ufiles.h"
+#	include <limits>
 #pragma warning( pop )
-
-#define UDECLARE_ABSTRACT_INPLACE_CLONE(CLASS)							\
-		virtual CLASS*	Clone (void* at, size_t bytesize) const = 0;	\
-		virtual CLASS*	Clone (void) const = 0;
-
-#define UDEFINE_INPLACE_CLONE_VIA_COPY_CONSTRUCTOR(CLASS)				\
-		virtual															\
-		CLASS*	Clone (void* at, size_t bytesize) const {				\
-					if (bytesize >= sizeof(CLASS))						\
-						return new(at) CLASS (*this);					\
-					return NULL;										\
-				}														\
-		CLASS*	Clone (void) const										\
-					{ return DNEWCLASS(CLASS, (*this)); }
+#include <MyUtils.h>
 
 ///////////////////////////////////////////////////////////
 
@@ -44,7 +36,7 @@ class MeshElementProcessor {
 public:
 	virtual void operator () (MeshElement& elem) const = 0;
 
-	UDECLARE_ABSTRACT_INPLACE_CLONE(MeshElementProcessor)
+	UDECLARE_ABSTRACT_CLONE(MeshElementProcessor)
 	virtual ~MeshElementProcessor (void) {}
 };
 
@@ -52,28 +44,10 @@ public:
 
 class NormalAndWindingInverserMeshElementProcessor: public MeshElementProcessor {
 public:
-	virtual void operator () (MeshElement& elem) const {
-		DASSERT(elem.HasNormals());
-
-		std::swap(elem.b, elem.c);
-		math::trig::vec3 nb(elem.GetNormal(1)), nc(elem.GetNormal(2));
-		std::swap(nb, nc);
-
-		elem.SetNormal(0, -elem.GetNormal(0));
-		elem.SetNormal(1, -nb);
-		elem.SetNormal(2, -nc);
-
-		if (elem.HasAmbientOcclusion()) {
-			float aob(elem.GetAmbientOcclusion(1)), aoc(elem.GetAmbientOcclusion(2));
-			std::swap(aob, aoc);
-
-			elem.SetAmbientOcclusion(1, aob);
-			elem.SetAmbientOcclusion(2, aoc);
-		}
-	}
+	virtual void operator () (MeshElement& elem) const;
 
 	virtual ~NormalAndWindingInverserMeshElementProcessor (void) {}
-	UDEFINE_INPLACE_CLONE_VIA_COPY_CONSTRUCTOR(NormalAndWindingInverserMeshElementProcessor)
+	UDEFINE_CLONE_VIA_COPY_CONSTRUCTOR(NormalAndWindingInverserMeshElementProcessor)
 };
 
 ///////////////////////////////////////////////////////////
@@ -96,74 +70,121 @@ static inline Mesh::Elements& ComputeBarycentricFactors (Mesh::Elements& element
 
 ///////////////////////////////////////////////////////////
 
-#define MESH_TIMING_STAT(NAME)											\
-		timing_t	NAME;												\
-		void		Start##NAME (void) {								\
-						DNULLCHECK(notifee)->TimingStarted(#NAME);		\
-						NAME = ugettime();								\
-					}													\
-		void		End##NAME (void) {									\
-						NAME = ugettime() - NAME;						\
-						DNULLCHECK(notifee)->TimingEnded(#NAME, NAME);	\
-					}													\
+#define MESH_TIMING_STAT(NAME)													\
+	private:																	\
+		timing_t	valueOf##NAME;												\
+		bool		timed##NAME;												\
+	public:																		\
+		void		Start##NAME (void) {										\
+						DASSERT(!timed##NAME);									\
+						DNULLCHECK(notifee)->TimingStarted(#NAME);				\
+						valueOf##NAME = ugettime();								\
+						timed##NAME = true;										\
+					}															\
+		void		End##NAME (void) {											\
+						valueOf##NAME = ugettime() - valueOf##NAME;				\
+						DNULLCHECK(notifee)->TimingEnded(#NAME, valueOf##NAME);	\
+					}															\
 
-struct MeshTimingStats {
-	typedef unsigned long timing_t;
-	enum Timing {
-		Tesselation			= 0u,
-		BarycentricFactors	= 1u,
-		BoundingVolume		= 2u,
-		Aabb				= 3u,
-		Update				= 4u,
-		IndexBuffer			= 5u,
-		StoreBin			= 6u,
-		StoreText			= 7u,
-		Savidise			= 8u
-	};
-	timing_t	GetTimingFor (Timing) const;
-
-	MESH_TIMING_STAT(tesselation		)
-	MESH_TIMING_STAT(barycentricFactors	)
-	MESH_TIMING_STAT(boundingVolume		)
-	MESH_TIMING_STAT(aabb				)
-	MESH_TIMING_STAT(update				)
-	MESH_TIMING_STAT(indexBuffer		)
-	MESH_TIMING_STAT(storeBin			)
-	MESH_TIMING_STAT(storeText			)
-	MESH_TIMING_STAT(savidise			)
-
+struct MeshStats {
+	typedef unsigned long									timing_t;
 	typedef std::list<std::pair<std::string, timing_t> >	Custom;
-
-	void	AddCustom (char const* const what, timing_t const t) {
-				custom.push_back(std::make_pair(std::string(what), t));
-				DNULLCHECK(notifee)->TimingStarted(what);
-				notifee->TimingEnded(what, t);
-			}
 
 	struct TimeUpdateNotifee {
 		virtual ~TimeUpdateNotifee (void) {}
 		virtual void	TimingStarted (char const* what) const;
 		virtual void	TimingEnded (char const* what, timing_t howMuch) const;
 	};
+	
+	enum Timing {
+		Tesselation			=  0u,
+		BarycentricFactors	=  1u,
+		BoundingVolume		=  2u,
+		Savidise			=  3u,
+		Aabb				=  4u,
+		Update1				=  5u,
+		Update2				=  6u,
+		IndexBuffer1		=  7u,
+		IndexBuffer2		=  8u,
+		StoreBin1			=  9u,
+		StoreText1			= 10u,
+		StoreBin2			= 11u,
+		StoreText2			= 12u
+	};
 
-	MeshTimingStats&	Reset (void)
-							{ custom.clear();tesselation = barycentricFactors = boundingVolume = aabb = update = indexBuffer = storeBin = storeText = 0ul; return *this; }
+	MESH_TIMING_STAT(Tesselation		)	//  0
+	MESH_TIMING_STAT(BarycentricFactors	)	//  1
+	MESH_TIMING_STAT(BoundingVolume		)	//  2
+	MESH_TIMING_STAT(Savidise			)	//  3
+	MESH_TIMING_STAT(Aabb				)	//  4
+	MESH_TIMING_STAT(Update1			)	//  5
+	MESH_TIMING_STAT(Update2			)	//  6
+	MESH_TIMING_STAT(IndexBuffer1		)	//  7
+	MESH_TIMING_STAT(IndexBuffer2		)	//  8
+	MESH_TIMING_STAT(StoreBin1			)	//  9
+	MESH_TIMING_STAT(StoreText1			)	// 10
+	MESH_TIMING_STAT(StoreBin2			)	// 11
+	MESH_TIMING_STAT(StoreText2			)	// 12
 
+	timing_t	operator [] (Timing) const;
+	MeshStats&	Reset (void) {
+					TimeUpdateNotifee* const notis(notifee);
+					this->~MeshStats();
+					new(this) MeshStats;
+					notifee = notis;
+					return *this;
+				}
+	void		operator >> (std::list<std::string>& into) const;
 
-	Custom				custom;
+	MeshStats (void);
+	// State
 	TimeUpdateNotifee*	notifee;
+	size_t				numberOfElements;
+	float				step;
 };
 
-inline void MeshTimingStats::TimeUpdateNotifee::TimingStarted	(char const* const) const {}
-inline void MeshTimingStats::TimeUpdateNotifee::TimingEnded		(char const* const, timing_t const) const {}
+inline void MeshStats::TimeUpdateNotifee::TimingStarted	(char const* const) const {}
+inline void MeshStats::TimeUpdateNotifee::TimingEnded	(char const* const, timing_t const) const {}
 
 #define MESH_TIME(OBJ,WHAT,COMMAND)						\
 		OBJ.Start##WHAT();								\
 		COMMAND;										\
 		OBJ.End##WHAT();								\
 
-extern void	WriteText (std::list<std::string>& at, const MeshTimingStats&);
 extern void FlushTo (FILE*, const std::list<std::string>& lines);
+
+///////////////////////////////////////////////////////////
+
+class MeshIndex {
+public:
+	USINGLETON_APISTYLE_DECLARE_PUBLICSTDMETHODS
+	USINGLETON_APISTYLE_DECLARE_GETTER(MeshIndex)
+
+	struct Entry {
+		std::string path;
+
+		void WriteTo (GenericWriter&) const;
+		void ReadFrom (GenericReader&);
+
+		Entry (void): path() {}
+		Entry (std::string const& _path): path(_path) {}
+		Entry (Entry const& o): path(o.path) {}
+		~Entry (void) {}
+		void operator = (Entry const& o) { this->~Entry(); new (this) Entry(o); }
+	};
+
+	void Load (void);
+	void Store (void) const;
+
+private:
+	std::map<std::string, Entry>	meshes;
+
+	MeshIndex (void): meshes() {}
+	MeshIndex (MeshIndex const& o): meshes(o.meshes) {}
+	~MeshIndex (void) {}
+	void operator = (MeshIndex const& o)
+		{ this->~MeshIndex(); new(this) MeshIndex(o); }
+};
 
 ///////////////////////////////////////////////////////////
 

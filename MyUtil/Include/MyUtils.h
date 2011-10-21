@@ -6,7 +6,23 @@
 #	include <stdio.h>
 #	include <stdarg.h>
 #	include "utypes.h"
+#	include "DDebug.h"
 #pragma warning( pop )
+
+
+#define UDECLARE_ABSTRACT_CLONE(CLASS)									\
+		virtual CLASS*	Clone (void* at, size_t bytesize) const = 0;	\
+		virtual CLASS*	Clone (void) const = 0;
+
+#define UDEFINE_CLONE_VIA_COPY_CONSTRUCTOR(CLASS)						\
+		virtual CLASS*	Clone (void* at, size_t bytesize) const {		\
+							if (bytesize >= sizeof(CLASS))				\
+								return new(at) CLASS (*this);			\
+							return NULL;								\
+						}												\
+		virtual CLASS*	Clone (void) const								\
+							{ return DNEWCLASS(CLASS, (*this)); }
+
 
 template <typename T> static inline
 T const* castconst (T* ptr) { return static_cast<T const* const>(ptr); }
@@ -146,6 +162,9 @@ struct dptr {
 	void	Delete (void)				{ (*Deleter)(ptr); nullify(); }
 	template <typename Deleter>
 	void	Delete (Deleter const& d)	{ d(ptr); nullify(); }
+
+	template <typename Operation>
+	void	UseUp (Operation const& op)	{ op(native()); nullify(); }
 
 	explicit dptr (T* const _ptr = NULL): ptr(_ptr) {}
 	dptr (dptr const& p): ptr(p.ptr) {}
