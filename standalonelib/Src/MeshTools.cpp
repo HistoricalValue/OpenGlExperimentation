@@ -23,7 +23,7 @@ namespace shapes	{
 //MeshTimingStats
 
 MeshTimingStats::timing_t MeshTimingStats::GetTimingFor (Timing const timing) const {
-	DASSERT(size_t(Tesselation) <= timing && timing <= size_t(StoreText));
+	DASSERT(size_t(Tesselation) <= timing && timing <= size_t(Savidise));
 	timing_t result;
 	switch (timing) {
 		case Tesselation:
@@ -50,6 +50,9 @@ MeshTimingStats::timing_t MeshTimingStats::GetTimingFor (Timing const timing) co
 		case StoreText:
 			result = storeText;
 			break;
+		case Savidise:
+			result = savidise;
+			break;
 		default:
 			result = std::numeric_limits<timing_t>::max();
 			DASSERT(false);
@@ -71,7 +74,8 @@ void WriteText (std::list<std::string>& at, const MeshTimingStats& mt) {
 		&LongestMessage[0],
 		"Computing index buffer",
 		"Storing binary mesh",
-		"Storing text mesh"
+		"Storing text mesh",
+		"Savidising (and recomputing ao)"
 	};
 	static const MeshTimingStats::Timing AllTimings[] = {
 		MeshTimingStats::Tesselation		,
@@ -82,6 +86,7 @@ void WriteText (std::list<std::string>& at, const MeshTimingStats& mt) {
 		MeshTimingStats::IndexBuffer		,
 		MeshTimingStats::StoreBin			,
 		MeshTimingStats::StoreText			,
+		MeshTimingStats::Savidise
 	};
 
 	size_t maxLength(_countof("Updating mesh with elements and computing AO"));

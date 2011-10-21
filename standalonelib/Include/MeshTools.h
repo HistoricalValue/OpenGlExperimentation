@@ -62,6 +62,14 @@ public:
 		elem.SetNormal(0, -elem.GetNormal(0));
 		elem.SetNormal(1, -nb);
 		elem.SetNormal(2, -nc);
+
+		if (elem.HasAmbientOcclusion()) {
+			float aob(elem.GetAmbientOcclusion(1)), aoc(elem.GetAmbientOcclusion(2));
+			std::swap(aob, aoc);
+
+			elem.SetAmbientOcclusion(1, aob);
+			elem.SetAmbientOcclusion(2, aoc);
+		}
 	}
 
 	virtual ~NormalAndWindingInverserMeshElementProcessor (void) {}
@@ -109,7 +117,8 @@ struct MeshTimingStats {
 		Update				= 4u,
 		IndexBuffer			= 5u,
 		StoreBin			= 6u,
-		StoreText			= 7u
+		StoreText			= 7u,
+		Savidise			= 8u
 	};
 	timing_t	GetTimingFor (Timing) const;
 
@@ -121,18 +130,27 @@ struct MeshTimingStats {
 	MESH_TIMING_STAT(indexBuffer		)
 	MESH_TIMING_STAT(storeBin			)
 	MESH_TIMING_STAT(storeText			)
+	MESH_TIMING_STAT(savidise			)
 
 	typedef std::list<std::pair<std::string, timing_t> >	Custom;
 
-	Custom	custom;
-	void	AddCustom (char const* const what, timing_t const t)
-				{ custom.push_back(std::make_pair(std::string(what), t)); }
+	void	AddCustom (char const* const what, timing_t const t) {
+				custom.push_back(std::make_pair(std::string(what), t));
+				DNULLCHECK(notifee)->TimingStarted(what);
+				notifee->TimingEnded(what, t);
+			}
 
 	struct TimeUpdateNotifee {
 		virtual ~TimeUpdateNotifee (void) {}
 		virtual void	TimingStarted (char const* what) const;
 		virtual void	TimingEnded (char const* what, timing_t howMuch) const;
 	};
+
+	MeshTimingStats&	Reset (void)
+							{ custom.clear();tesselation = barycentricFactors = boundingVolume = aabb = update = indexBuffer = storeBin = storeText = 0ul; return *this; }
+
+
+	Custom				custom;
 	TimeUpdateNotifee*	notifee;
 };
 

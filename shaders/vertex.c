@@ -1,4 +1,4 @@
-// mesh tool np
+// mesh tool no
 
 #version 330 core
 

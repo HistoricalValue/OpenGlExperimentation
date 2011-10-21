@@ -12,13 +12,12 @@
 #	include <uderivablecheck.h>
 #pragma warning( pop )
 
-#define WITH_NORMALS	0
-#define	WITH_GRID		0
+#define WITH_NORMALS	1
+#define	WITH_GRID		1
 
 //	#define NURBS_LOAD_FROM	"surface_bin"
-//	#define NURBS_LOAD_FROM	"$BOB ROSS - Moon Valley med Horns_1.0"
-//	#define NURBS_LOAD_FROM	"$savidised_$BOB ROSS - Moon Valley med Horns_1.0"
-	#define NURBS_LOAD_FROM "$savidised_$BOB ROSS - Moon Valley med Horns_0.1"
+	#define NURBS_LOAD_FROM	"$savidised_$BOB ROSS - Moon Valley med Horns_0.5"
+//	#define NURBS_LOAD_FROM "$BOB ROSS - Moon Valley med Horns_0.5"
 //	#define NURBS_LOAD_FROM	"../QuickTost/lala"
 
 #define DONT	if (false)
