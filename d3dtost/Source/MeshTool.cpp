@@ -69,7 +69,7 @@ void MeshProcess (void) {
 		#if 1
 			Mesh* mesh(NULL);
 			Tesselate(mesh, bob, *step, timing);
-			Store(*DPTR(mesh), timing);		
+			Store(*DPTR(mesh), timing);
 		#else
 			char idForStep[1024];
 			IdForStep(&idForStep, bob.GetName(), *step);

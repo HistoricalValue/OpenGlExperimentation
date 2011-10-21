@@ -13,6 +13,7 @@
 #ifndef ANKH_AMBIENT_OCCLUSION_H
 #define ANKH_AMBIENT_OCCLUSION_H
 
+#include <MyUtils.h>
 #pragma warning( push, 0 )
 #	include "Mesh.h"
 #	include "MathTypes.h"
@@ -20,63 +21,6 @@
 #	include <vector>
 #	include <map>
 #pragma warning( pop )
-
-///////////////////////////////////////////////////////////
-
-template <typename T, typename K>
-static inline
-T const& umapget (std::map<K, T> const& m, K const& k) {
-	typedef std::map<K, T> Map;
-
-	Map::const_iterator const result = m.find(k);
-	DASSERT(result != m.end());
-
-	return result->second;
-}
-
-template <typename T, typename K, typename Comparator, typename Allocator>
-static inline
-T& umapadd (std::map<K, T, Comparator, Allocator>& m, K const& k, T const& v = T()) {
-	typedef std::map<K, T, Comparator, Allocator>	Map;
-	typedef std::pair<Map::iterator, bool>			Insertion;
-	typedef Map::value_type							Pair;
-
-	Insertion const insertion(m.insert(Pair(k, v)));
-	DASSERT(insertion.second);	// fresh addition
-
-	return insertion.first->second;
-}
-
-template <typename T>
-static inline
-T const* ucastconst (T* const ptr) { return ptr; }
-
-template <typename T>
-struct dptr {
-	typedef dptr<T>	Self;
-
-	T* ptr;
-
-	T*		operator -> (void) const	{ return DPTR(DNULLCHECK(ptr)); }
-	T&		operator * (void) const		{ return *operator ->(); }
-
-	T*		native (void) const			{ return operator ->(); }
-	void	Delete (void)				{ udelete(ptr); }
-	void	nullify (void)				{ unullify(ptr); }
-	Self&	New (void)					{ unew(ptr); }
-
-	template <void (*Deleter)(T*)>
-	void	Delete (void)				{ (*Deleter)(ptr); nullify(); }
-	template <typename Deleter>
-	void	Delete (Deleter const& d)	{ d(ptr); nullify(); }
-
-	explicit dptr (T* const _ptr = NULL): ptr(_ptr) {}
-	dptr (dptr const& p): ptr(p.ptr) {}
-	~dptr (void) { DASSERT(ptr == NULL); }
-
-	void operator = (T* const _ptr) { DASSERT(!ptr); ptr = _ptr; }
-	UOVERLOADED_VOID_ASSIGN_VIA_COPY_CONSTRUCTOR(dptr)
-};
 
 ///////////////////////////////////////////////////////////
 

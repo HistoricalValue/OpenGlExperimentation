@@ -6,7 +6,7 @@
 #pragma warning( pop )
 
 #ifndef NDEBUG
-	
+
 	static void __assert (wchar_t const* const expr, wchar_t const* const file, long int line)
 		{ _wassert(expr, file, psafecast<unsigned int>(line)); }
 

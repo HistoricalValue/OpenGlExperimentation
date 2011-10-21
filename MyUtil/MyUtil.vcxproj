@@ -199,6 +199,7 @@
     <ClInclude Include="Include\my\gl\textures\TextureUnitWrapper_inl.h" />
     <ClInclude Include="Include\my\gl\textures\TextureUnit_fwd.h" />
     <ClInclude Include="Include\my\gl\textures\TextureUnit_inl.h" />
+    <ClInclude Include="Include\my\hashmap.h" />
     <ClInclude Include="Include\stdafx.h" />
     <ClInclude Include="Include\targetver.h" />
     <ClCompile Include="Source\my\gl\adapters\Buffer.cpp" />
