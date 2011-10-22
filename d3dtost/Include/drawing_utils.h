@@ -40,7 +40,7 @@ my::gl::shapes::Line makenormallineformeshelementvertex (ankh::shapes::MeshEleme
 	vec3 const line_begin(v.GetVertex(psafecast<util_ui8>(i)));
 	vec3 n(v.GetNormal(psafecast<util_ui8>(i)));
 	normalise(&n);
-	n *= 0.0025f;
+	n *= 0.07f;
 	vec3 const line_end(line_begin + n);
 
 	return my::gl::shapes::Line(makevertex(line_begin), makevertex(line_end),

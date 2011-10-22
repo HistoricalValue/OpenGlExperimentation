@@ -16,7 +16,8 @@
 #include <drawing_nurbs.h>
 #include <drawing_utils.h>
 
-#define FORCE_REAL_TESSELATION 1
+#define FORCE_REAL_TESSELATION	1
+#define FAST_TESSELATION		1
 
 #if (defined(FORCE_REAL_TESSELATION) && FORCE_REAL_TESSELATION == 1) || !defined(_DEBUG)
 #	define WITH_FAKE_TESSELTION 0
@@ -106,7 +107,7 @@ void ProduceMeshesInto (std::list<MeshWithInfo>& into, std::list<Unit> const& st
 	typedef dptr<Mesh>					MeshPtr;
 
 	char								charbuf[1024];
-	Surface const						bob(Surfaces::MoonValleyWithHorns());
+	Surface const						bob(Surfaces::MoonValleyWithHorns(0.8f));
 	Mesh::Elements						elements, elementsAntisavidised;
 	dptr<BoundingVolume>				volume;
 	MeshPtr								mesh, meshAntisavidised;
@@ -241,6 +242,8 @@ void IdForStep (char (* const buf)[1024], char const* const base, float const st
 // static
 std::list<Unit>& ProduceStepsInto (std::list<Unit>& into) {
 #if WITH_FAKE_TESSELTION == 0 && defined(_DEBUG)
+	Unit const	steps[] = {2e-0f};
+#elif FAST_TESSELATION == 1
 	Unit const	steps[] = {2e-0f};
 #else
 	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f};//, 1e-1f};

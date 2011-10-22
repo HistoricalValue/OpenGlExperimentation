@@ -12,8 +12,8 @@
 #	include <uderivablecheck.h>
 #pragma warning( pop )
 
-#define WITH_NORMALS	1
-#define	WITH_GRID		1
+#define WITH_NORMALS	0
+#define	WITH_GRID		0
 #define WITH_INVERSE_IT	1
 
 //	#define NURBS_LOAD_FROM	"surface_bin"
@@ -45,7 +45,7 @@ namespace _ {
 	static const bool	WITH_DRAW_TRIANGLES	(!TEST_TEXTURES);
 	static const bool	WITH_DRAW_TEXTURED	(TEST_TEXTURES);
 	//
-	static const bool	WITH_CAMERA			(false);
+	static const bool	WITH_CAMERA			(true);
 
 	static const float WW(2000.f);
 
@@ -55,7 +55,7 @@ namespace _ {
 	static const size_t TEXTURES_NUM(2);
 	static const size_t IMAGES_NUM(2);
 
-	static const float POOP_LIGHT[4] = { 3.0f, 1.0f, 0.0f, 1.0f };
+	static const float POOP_LIGHT[4] = { 6.0f, 2.0f, 0.0f, 1.0f };
 
 	static const GLuint TexturesUnits[TEXTURES_NUM] =
 		{ 12, 23 };
@@ -473,18 +473,15 @@ namespace _ {
 		using namespace my::gl::math;
 
 		mat4 m(1);
-	//	m *= Translate(0, 0, -0.85f);
-	//	m *= Translate(0, 0, 1);
-		m *= Translate(0, -0.025f, 1);
-	//	m *= Rotate(Axis_X(), M_PI_8);
-		m *= Rotate(Axis_X(), M_PI_4);
+		m *= Translate(0, 0, 2.0f);
+
+		if (_::WITH_CAMERA) {
+			m *= Rotate(Axis_X(), M_PI_4);
+		}
+
 	#if WITH_INVERSE_IT == 1
 		m *= Rotate(Axis_X(), M_PI);
 	#endif
-		if (_::WITH_CAMERA) {
-			m *= Rotate(Axis_Y(), M_PI_4 + M_PI_8);
-		//	m *= ScaleX(0.5f);
-		}
 
 		glUniformMatrix4fv(::my::OpenGL::VUL_CAMERA, 1, GL_TRUE, m.as_float_array_16());
 	}
@@ -804,7 +801,7 @@ namespace my {
 			_::CreateTextures(images, textures, drawData.previousTextureIndex);
 			_::ConfigureOpenGl();
 			_::SetupCamera();
-			_::SetupFrustrum(0.90f, 1.10f, -0.05f, 0.05f, -0.05f, 0.05f);
+			_::SetupFrustrum(1.00f, 5.00f, -1.00f, 1.00f, -1.00f, 1.00f);
 
 			return &drawData;
 		}
