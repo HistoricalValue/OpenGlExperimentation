@@ -11,6 +11,7 @@ static void ShaderReport (char const* const shaderType, char const* const source
 	int const snprintf_result(_snprintf_s(buf, _countof(buf), sizeof(buf)/sizeof(buf[0]),
 			"\n\n-------------- Report for %10s shader: --------------\n%15s: %s\n%15s: %s\n", shaderType, "Source", sourcePath, "Message", msg));
 	DASSERT(snprintf_result > 0);
+	(void) snprintf_result;
 
 	my::global::log::infoA(buf);
 }

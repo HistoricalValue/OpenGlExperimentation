@@ -19,6 +19,8 @@
 #	include "GenericWriter.h"
 #	include "ufiles.h"
 #	include <limits>
+#	include "MeshLoader.h"
+#	include "BoundingBox.h"
 #pragma warning( pop )
 #include <MyUtils.h>
 
@@ -36,7 +38,7 @@ class MeshElementProcessor {
 public:
 	virtual void operator () (MeshElement& elem) const = 0;
 
-	UDECLARE_ABSTRACT_CLONE(MeshElementProcessor)
+	NMUDECLARE_ABSTRACT_CLONE(MeshElementProcessor)
 	virtual ~MeshElementProcessor (void) {}
 };
 
@@ -47,7 +49,7 @@ public:
 	virtual void operator () (MeshElement& elem) const;
 
 	virtual ~NormalAndWindingInverserMeshElementProcessor (void) {}
-	UDEFINE_CLONE_VIA_COPY_CONSTRUCTOR(NormalAndWindingInverserMeshElementProcessor)
+	NMUDEFINE_CLONE_VIA_COPY_CONSTRUCTOR(NormalAndWindingInverserMeshElementProcessor)
 };
 
 ///////////////////////////////////////////////////////////
@@ -87,15 +89,14 @@ static inline Mesh::Elements& ComputeBarycentricFactors (Mesh::Elements& element
 					}															\
 
 struct MeshStats {
-	typedef unsigned long									timing_t;
-	typedef std::list<std::pair<std::string, timing_t> >	Custom;
+	typedef unsigned long	timing_t;
 
 	struct TimeUpdateNotifee {
 		virtual ~TimeUpdateNotifee (void) {}
 		virtual void	TimingStarted (char const* what) const;
 		virtual void	TimingEnded (char const* what, timing_t howMuch) const;
 	};
-	
+
 	enum Timing {
 		Tesselation			=  0u,
 		BarycentricFactors	=  1u,
@@ -111,6 +112,7 @@ struct MeshStats {
 		StoreBin2			= 11u,
 		StoreText2			= 12u
 	};
+	static const size_t NumberOfTimings = size_t(StoreText2) + 1;
 
 	MESH_TIMING_STAT(Tesselation		)	//  0
 	MESH_TIMING_STAT(BarycentricFactors	)	//  1
@@ -134,13 +136,11 @@ struct MeshStats {
 					notifee = notis;
 					return *this;
 				}
-	void		operator >> (std::list<std::string>& into) const;
+	NMUDECLARE_WRITE_LINES
 
 	MeshStats (void);
 	// State
 	TimeUpdateNotifee*	notifee;
-	size_t				numberOfElements;
-	float				step;
 };
 
 inline void MeshStats::TimeUpdateNotifee::TimingStarted	(char const* const) const {}
@@ -150,8 +150,6 @@ inline void MeshStats::TimeUpdateNotifee::TimingEnded	(char const* const, timing
 		OBJ.Start##WHAT();								\
 		COMMAND;										\
 		OBJ.End##WHAT();								\
-
-extern void FlushTo (FILE*, const std::list<std::string>& lines);
 
 ///////////////////////////////////////////////////////////
 
@@ -163,8 +161,11 @@ public:
 	struct Entry {
 		std::string path;
 
-		void WriteTo (GenericWriter&) const;
-		void ReadFrom (GenericReader&);
+		void	WriteTo (GenericWriter&) const;
+		void	ReadFrom (GenericReader&);
+
+		bool	operator == (Entry const& o) const
+					{ return path == o.path; }
 
 		Entry (void): path() {}
 		Entry (std::string const& _path): path(_path) {}
@@ -176,14 +177,53 @@ public:
 	void Load (void);
 	void Store (void) const;
 
+	void	ImportAllFromMeshLoader (void);
+	void	ExportAllToMeshLoader (void);
+
 private:
-	std::map<std::string, Entry>	meshes;
+	typedef std::map<std::string, Entry>	MeshesEntries;
+	
+	MeshesEntries meshes;
 
 	MeshIndex (void): meshes() {}
 	MeshIndex (MeshIndex const& o): meshes(o.meshes) {}
 	~MeshIndex (void) {}
 	void operator = (MeshIndex const& o)
 		{ this->~MeshIndex(); new(this) MeshIndex(o); }
+};
+
+///////////////////////////////////////////////////////////
+
+class MeshInfo {
+public:
+	NMUDECLARE_WRITE_LINES
+
+	MeshInfo (
+		Mesh const&			mesh,
+		float				step,
+		MeshStats const&	stats);
+	MeshInfo (MeshInfo const&);
+	~MeshInfo (void) {}
+	UOVERLOADED_VOID_ASSIGN_VIA_COPY_CONSTRUCTOR(MeshInfo);
+private:
+	std::string				meshId;
+	MeshStats const			stats;
+	math::trig::vec3 const	min, max;
+	size_t const			numberOfElements;
+	float const				step;
+};
+
+struct MeshWithInfo {
+	dptr<Mesh>			mesh;
+	MeshInfo const		info;
+
+	MeshWithInfo (dptr<Mesh> const& _mesh, float const step, MeshStats const& stats):
+		mesh(_mesh),
+		info(*_mesh, step, stats)
+		{}
+	MeshWithInfo (MeshWithInfo const& o): mesh(o.mesh), info(o.info) {}
+	~MeshWithInfo (void) {}
+	UOVERLOADED_VOID_ASSIGN_VIA_COPY_CONSTRUCTOR(MeshWithInfo);
 };
 
 ///////////////////////////////////////////////////////////

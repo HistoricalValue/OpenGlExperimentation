@@ -106,7 +106,7 @@ namespace my { namespace gl { namespace shaders {
 		hasBeenBuilt = true;
 
 		GLuint vertexShader;
-		GLuint fragmentShader;
+		GLuint fragmentShader(GLuint(-1));
 
 		// Compile vertex shader
 		{

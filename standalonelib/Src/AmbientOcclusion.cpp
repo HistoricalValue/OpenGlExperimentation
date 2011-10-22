@@ -356,12 +356,12 @@ float CalculateFactor (
 	size_t			hits(0u);
 	iter_t const	intersections_end(intersections.end());
 
-//	if (min_distance != FLT_MIN && max_distance != FLT_MAX)
-//		for (iter_t i(intersections.begin()); i != intersections_end; ++i)
-//			if (i->second.HasIntersected() && i->second.distance >= min_distance && i->second.distance <= max_distance)
-//				++hits;
-//			else {}
-//	else
+	if (min_distance != FLT_MIN && max_distance != FLT_MAX)
+		for (iter_t i(intersections.begin()); i != intersections_end; ++i)
+			if (i->second.HasIntersected() && i->second.distance >= min_distance && i->second.distance <= max_distance)
+				++hits;
+			else {}
+	else
 		for (iter_t i(intersections.begin()); i != intersections_end; ++i)
 			if (i->second.HasIntersected())
 				++hits;
@@ -425,7 +425,7 @@ void UpdateAmbientOcclusionFactors (shapes::Mesh::Elements& elements, MeshInters
 	VertexRays<samplingRate>::GenerateBaseSamplingRays(&baseSamplingRays);
 
 	for (; el != elements_end; ++el) {
-		MeshElementIntersectionData& intersectionData(	intersectionDataInto?	addnew(*intersectionDataInto, ucastconst(&*el)) :
+		MeshElementIntersectionData& intersectionData(	intersectionDataInto?	addnew(*intersectionDataInto, castconst(&*el)) :
 																				dummy.Reset(*el));
 
 		ComputeAndSetAmbientOcclusionFactors<samplingRate>(factors, *el, elements, &baseSamplingRays, intersectionData);

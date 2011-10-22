@@ -34,6 +34,8 @@ namespace my {
 		typedef LOGGER__MESSAGES						Messages;
 		Messages										messages;
 		bool											isFull;
+
+		void operator = (LoggerBase const&);
 	};
 
 	class MYUTIL_API SpecificLogger: public LoggerBase {
@@ -46,6 +48,8 @@ namespace my {
 		void											Info (String const&);
 	private:
 		String											loggerName;
+
+		void operator = (SpecificLogger const&);
 	};
 #pragma warning( pop )
 
@@ -53,6 +57,9 @@ namespace my {
 	public:
 														GenericLogger (void);
 														~GenericLogger (void);
+
+	private:
+		void operator = (GenericLogger const&);
 	};
 
 } // namespace my

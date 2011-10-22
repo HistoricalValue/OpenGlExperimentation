@@ -12,11 +12,13 @@
 #	include <uderivablecheck.h>
 #pragma warning( pop )
 
-#define WITH_NORMALS	0
-#define	WITH_GRID		0
+#define WITH_NORMALS	1
+#define	WITH_GRID		1
+#define WITH_INVERSE_IT	1
 
 //	#define NURBS_LOAD_FROM	"surface_bin"
-	#define NURBS_LOAD_FROM	"$savidised_$BOB ROSS - Moon Valley med Horns_0.5"
+//	#define NURBS_LOAD_FROM	"$BOB ROSS - Moon Valley med Horns_antisavidised_2.0"
+	#define NURBS_LOAD_FROM	"$BOB ROSS - Moon Valley med Horns_2.0"
 //	#define NURBS_LOAD_FROM "$BOB ROSS - Moon Valley med Horns_0.5"
 //	#define NURBS_LOAD_FROM	"../QuickTost/lala"
 
@@ -476,6 +478,9 @@ namespace _ {
 		m *= Translate(0, -0.025f, 1);
 	//	m *= Rotate(Axis_X(), M_PI_8);
 		m *= Rotate(Axis_X(), M_PI_4);
+	#if WITH_INVERSE_IT == 1
+		m *= Rotate(Axis_X(), M_PI);
+	#endif
 		if (_::WITH_CAMERA) {
 			m *= Rotate(Axis_Y(), M_PI_4 + M_PI_8);
 		//	m *= ScaleX(0.5f);
