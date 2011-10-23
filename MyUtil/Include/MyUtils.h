@@ -100,6 +100,18 @@ T const* castconst (T* const ptr)
 
 ///////////////////////////////////////////////////////////
 
+template <typename T>
+static inline
+void* nmuvoidcast (T* const ptr)
+	{ return ptr; }
+
+template <typename T>
+static inline
+void const* nmuvoidcast (T const* const ptr)
+	{ return ptr; }
+
+///////////////////////////////////////////////////////////
+
 template <typename t>
 struct TypeOf { typedef t T; };
 
@@ -120,6 +132,10 @@ void ofequaltypes (T1&, T2& o2)
 
 template <typename C, typename F> static inline
 void foreach (C const& c, F const& f)
+	{ std::for_each(c.begin(), c.end(), f); }
+
+template <typename C, typename F> static inline
+void foreach (C& c, F const& f)
 	{ std::for_each(c.begin(), c.end(), f); }
 
 ///////////////////////////////////////////////////////////
@@ -160,7 +176,7 @@ CharType* format (CharType* const buf, size_t const bufLength, CharType const* c
 
 template <typename CharType, const size_t N>
 static
-CharType* format (CharType (&buf)[N], CharType const* const fmt, ...) {
+CharType (&format (CharType (&buf)[N], CharType const* const fmt, ...))[N] {
 	va_list args;
 	va_start(args, fmt);
 
@@ -185,6 +201,104 @@ CharType const* format (CharType const* const fmt, ...) {
 
 	return buf;
 }
+
+///////////////////////////////////////////////////////////
+
+template <const size_t N>
+class cstring {
+	char	str[N];
+	size_t	i;
+public:
+// extensions:
+	operator	std::string (void) const
+					{ return operator const char*(); }
+
+	char*		c_str (void)
+					{ return operator char*(); }
+	char const*	c_str (void) const
+					{ return operator char*(); }
+
+	bool		fits (size_t const length) const
+					{ return length <= available(); }
+	bool		fits (char const* const _str) const
+					{ return fits(strlen(_str)); }
+
+	void		clear (void)
+					{ PASSERT(InvariantsHold()) reset(); }
+
+	template <typename StringType>
+	cstring&	operator += (StringType const& other)
+					{ return append(other); }
+
+	template <typename StringType>
+	void		operator = (StringType const& other) {
+					if (nmuvoidcast(this) != nmuvoidcast(&other)) {
+						ucalldestructor(this);
+						new(this) cstring(other);
+					}
+				}
+
+// core:
+	static const size_t		Length = N;
+
+	cstring&	format (char const* const fmt, ...) {
+					{
+						va_list args; va_start(args, fmt); {
+							vformat(str, fmt, args);
+						} va_end(args);
+					}
+
+					sync();
+					PASSERT(InvariantsHold())
+					return *this;
+				}
+
+	operator	char* (void)
+					{ PASSERT(InvariantsHold()) return &str[0]; }
+	operator	char const*	(void) const
+					{ PASSERT(InvariantsHold()) return &str[0]; }
+
+	size_t		available (void) const		// always 1 less than Length, to save a place for EOS
+					{ PASSERT(InvariantsHold()) return Length - i - 1; }
+
+	cstring&	reset (void)
+					{ ucalldestructor(this); return *new(this) cstring; }
+
+	bool		encloses (char const* const ptr) const
+					{ PASSERT(InvariantsHold()) return &str[0] <= ptr && ptr <= &str[Length - 1]; }
+
+	bool		InvariantsHold (void) const
+					{ return str[i] == '\0' && isinsync(); }
+
+	template <typename StringType>
+	cstring&	append (StringType const& other) {
+					char const* const	_str	(ucstringarg(other));
+					size_t const		_str_len(strlen(_str));
+					PASSERT(!encloses(_str) && !encloses(_str + _str_len - 1) && fits(_str_len))
+
+					strncpy_s(&str[i], available() + 1, _str, available() + 1);
+					i += _str_len;
+					str[i] = '\0';
+
+					PASSERT(InvariantsHold())
+					return *this;
+				}
+
+	template <typename StringType>
+	cstring (StringType const& _str): str(), i(0u) { append(ucstringarg(_str)); }
+	cstring (void): str(), i(0u) { PASSERT(InvariantsHold()) }
+	~cstring (void) { PASSERT(InvariantsHold()) }
+
+private:
+	// Used to restore object in correct state and to query about it.
+	// Cannot assert Invariants here because assertion would fail
+	// before object is restored to validity or there would be
+	// an infinite recursion while querying about object validity.
+	void		sync (void)
+					{ i = strlen(str); PASSERT(InvariantsHold()) }
+	bool		isinsync (void) const
+					{ return i == strlen(str); }
+};
 
 ///////////////////////////////////////////////////////////
 
@@ -261,7 +375,8 @@ struct tmpdptr: public dptr<T> {
 
 	explicit tmpdptr (void): Base() {}
 	explicit tmpdptr (T* const ptr): Base(ptr) {}
-	tmpdptr (uconstref_of<Self> o): Base(o) {}
+	tmpdptr (Self const& o): Base(o) {}
+	tmpdptr (Base const& o): Base(o) {}
 	~tmpdptr (void) { DASSERTPTR(DNULLCHECK(discard())); }
 };
 

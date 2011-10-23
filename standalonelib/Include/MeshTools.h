@@ -222,6 +222,9 @@ struct MeshWithInfo {
 	dptr<Mesh>			mesh;
 	MeshInfo const		info;
 
+	void	NullifyMeshPointer (void)
+				{ mesh.nullify(); }
+
 	MeshWithInfo (dptr<Mesh> const& _mesh, float const step, MeshStats const& stats):
 		mesh(_mesh),
 		info(*_mesh, step, stats)

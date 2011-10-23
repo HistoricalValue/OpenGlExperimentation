@@ -12,14 +12,16 @@
 #	include "ufiles.h"
 #	include "ustrings.h"
 #	include <fstream>
+#	include "MeshLoader.h"
 #pragma warning( pop )
 #include <drawing_nurbs.h>
 #include <drawing_utils.h>
 
-#define FORCE_REAL_TESSELATION	1
-#define FAST_TESSELATION		1
+#define FORCE_REAL_TESSELATION	0
+#define FAST_TESSELATION		0
+#define NO_AO					0	// TODO make NO_AO have a "no ao" effect...
 
-#if (defined(FORCE_REAL_TESSELATION) && FORCE_REAL_TESSELATION == 1) || !defined(_DEBUG)
+#if FORCE_REAL_TESSELATION == 1 || !defined(_DEBUG) || NO_AO == 1
 #	define WITH_FAKE_TESSELATION 0
 #else
 #	define WITH_FAKE_TESSELATION 1
@@ -44,12 +46,13 @@ static const char GenerationStatsPath[] = "../meshes/generation_stats.txt";
 
 static my::Console&	out (void);
 
-static void					IdForStep (char (*buf)[1024], char const* base, float step);
-static std::list<Unit>&		ProduceStepsInto (std::list<Unit>& steps);
+typedef cstring<1024>		Kilostring;
 
-static std::string&			BasePathForId (std::string& path, char const* id);
-static std::string&			BinPathForId (std::string& path, char const* id);
-static std::string&			TextPathForId (std::string& path, char const* id);
+static std::list<Unit>&		ProduceStepsInto (std::list<Unit>& steps);
+static Kilostring&			IdForStep (Kilostring&, char const* base, float step);
+static Kilostring&			BasePathForId (Kilostring& path, char const* id);
+static Kilostring&			BinPathForId (Kilostring& path, char const* id);
+static Kilostring&			TextPathForId (Kilostring& path, char const* id);
 
 static void					WriteAllMeshInfo (std::list<MeshWithInfo> const&);
 
@@ -69,15 +72,17 @@ namespace my {
 
 static void DebugAwareTesselation (Mesh::Elements&, Surface const&, TesselationParameters const&);
 
-static void ProduceMeshFromMeshProductionRequirementsInto (
+static void ProduceMeshFromMeshProductionRequirements (
 				std::list<MeshWithInfo>&	into,
 				MeshStats&					mt,
 				Mesh::Elements const&		elements,
 				dptr<BoundingVolume>		boundingVolume,
-				char const*					meshStemId,
+				char const*					meshId,
+				char const*					meshPath,
+				char const*					meshTextPath,
 				Unit						step,
 				bool						one);
-static void	ProduceMeshesInto (
+static void	ProduceOrLoadMeshes (
 				std::list<MeshWithInfo>&	into,
 				std::list<Unit> const&		steps,
 				MeshStats&					mt);
@@ -86,16 +91,16 @@ static void LoadMeshesInto (
 
 void MeshProcess (void) {
 	::Initialise();
-	{
-		MeshStats				timing;
-		TimingNotifee			notifee;
-		std::list<Unit>			steps;
-		std::list<MeshWithInfo>	meshes;
+	{	
+		std::list<MeshWithInfo>		into;
+		MeshStats					timing;
+		TimingNotifee				notifee;
+		std::list<Unit>				steps;
 
 		timing.SetNotifee(&notifee);
 
 		#if 1
-		ProduceMeshesInto(meshes, ProduceStepsInto(steps), timing);
+		ProduceOrLoadMeshes(into, ProduceStepsInto(steps), timing);
 		#else
 		LoadMeshesInto(meshes);
 		#endif
@@ -104,65 +109,108 @@ void MeshProcess (void) {
 		Index.ImportAllFromMeshLoader();
 		Index.Store();
 
-		IFOREACH(std::list<MeshWithInfo>::iterator, meshes, meshWithInfo)
-			meshWithInfo->mesh.Delete();
+		{
+			typedef std::map<std::string, Mesh*> Meshes;
+
+			Meshes const&					all(MeshLoader::GetSingleton().GetAll());
+			std::list<Mesh*>				toUnload, toDelete;
+			Meshes::const_iterator const	meshes_end(all.end());
+
+			for (Meshes::const_iterator meshIdWithMesh(all.begin()); meshIdWithMesh != meshes_end; ++meshIdWithMesh)
+				if (MeshLoader::GetSingleton().IsLoaded(meshIdWithMesh->second))
+					toUnload.push_back(meshIdWithMesh->second);
+				else
+					toDelete.push_back(meshIdWithMesh->second);
+
+			foreach(toUnload, ubind1st(umemberfunctionpointer(&MeshLoader::Unload), MeshLoader::GetSingletonPtr()));
+			foreach(toDelete, uptrdestructorfunctor<Mesh*>());
+		}
+
+		foreach(into, umemberfunctionpointer_ref(&MeshWithInfo::NullifyMeshPointer));
 	}
 	::CleanUp();
 }
 
+
 // static
-void ProduceMeshesInto (std::list<MeshWithInfo>& into, std::list<Unit> const& steps, MeshStats& mt) {
+void ProduceOrLoadMeshes (std::list<MeshWithInfo>& into, std::list<Unit> const& steps, MeshStats& mt) {
 	typedef dptr<Mesh>					MeshPtr;
 
+	// reusables
+	// mt
 	Surface const						bob(Surfaces::MoonValleyWithHorns(0.8f));
 	Mesh::Elements						elements, elementsAntisavidised;
 	dptr<BoundingVolume>				volume;
+	Kilostring							meshId, meshIdForStep, loadpath, textpath;
 
+	IFOREACH (std::list<Unit>::const_iterator, steps, step) {	
+		out() << "\n *** Meshes for step= " << *step << ": ";
 
-	IFOREACH (std::list<Unit>::const_iterator, steps, step) {
-		out() << "\n\n=== producing meshes for step = " << *step << " ===\n";
+		MeshAABBTree	aabb;
+		bool			prerequisitesMade(false), one(false);
+
+		for (size_t i(0u); i < 2u; ++i) {
+			one = !one;
+
+			BinPathForId(loadpath, IdForStep(meshIdForStep, meshId.format(one? "%s_aabbao" : "%s_aabbao_antisavidised", ucstringarg(bob.GetName())), *step));
+			TextPathForId(textpath, meshIdForStep);
+
+			out() << "\n       - " << meshId << ": " << loadpath << " ... ";
+
+			if (MeshLoader::GetSingleton().Load(loadpath))
+				out() << "loaded"; // ok
+			else {
+				out() << "producing ... ";
+
+				if (!prerequisitesMade) {
+					MESH_TIME(mt, Tesselation,			DebugAwareTesselation(elements, bob, TesselationParameters(*step))	);
+					MESH_TIME(mt, BarycentricFactors,	ComputeBarycentricFactors(elements)									);
+					MESH_TIME(mt, BoundingVolume,		volume = BuiltinShapes::Triangles(elements)							);
+					MESH_TIME(mt, Savidise,				InvertNormalsAndWinding(elementsAntisavidised, elements)			);
+					MESH_TIME(mt, Aabb,					aabb(elements, volume.native())										);
+
+					prerequisitesMade = true;
+				}
+
+				PASSERT(elements.size() == elementsAntisavidised.size())
+
+				ProduceMeshFromMeshProductionRequirements(
+					into,
+					mt,
+					one? elements : elementsAntisavidised,
+					one? tmpdptr<BoundingVolume>(volume->Clone()) : tmpdptr<BoundingVolume>(volume),
+					meshIdForStep,
+					loadpath,
+					textpath,
+					*step,
+					one);
+			}
+
+			// reusables reset
+			meshId.clear();
+			meshIdForStep.clear();
+			loadpath.clear();
+		}
+
+		// reusables reset
 		mt.Reset();
 		elements.clear();
 		elementsAntisavidised.clear();
-
-		MeshAABBTree aabb;
-
-		MESH_TIME(mt, Tesselation,			DebugAwareTesselation(elements, bob, TesselationParameters(*step))	);
-		MESH_TIME(mt, BarycentricFactors,	ComputeBarycentricFactors(elements)									);
-		MESH_TIME(mt, BoundingVolume,		volume = BuiltinShapes::Triangles(elements)							);
-		MESH_TIME(mt, Savidise,				InvertNormalsAndWinding(elementsAntisavidised, elements)			);
-		MESH_TIME(mt, Aabb,					aabb(elements, volume.native())										);
-
-		PASSERT(elements.size() == elementsAntisavidised.size())
-
-		ProduceMeshFromMeshProductionRequirementsInto(
-			into,
-			mt,
-			elements, 
-			tmpdptr<BoundingVolume>(volume->Clone()),
-			ucstringarg(std::string(format("%s_aabbao", ucstringarg(bob.GetName())))),
-			*step,
-			true); 
-		ProduceMeshFromMeshProductionRequirementsInto(
-			into,
-			mt,
-			elementsAntisavidised, 
-			volume,
-			ucstringarg(std::string(format("%s_aabbao_antisavidised", ucstringarg(bob.GetName())))),
-			*step,
-			false); 
-
 		volume.nullify();
 	}
+
+	out() << "\n";
 }
 
 // static
-void ProduceMeshFromMeshProductionRequirementsInto (
+void ProduceMeshFromMeshProductionRequirements (
 		std::list<MeshWithInfo>&	into,
 		MeshStats&					mt,
 		Mesh::Elements const&		elements,
 		dptr<BoundingVolume>		boundingVolume,
-		char const* const			meshStemId,
+		char const* const			meshId,
+		char const* const			meshPath,
+		char const* const			meshTextPath,
 		Unit const					step,
 		bool const					one) {
 	dptr<Mesh>				mesh;
@@ -171,35 +219,36 @@ void ProduceMeshFromMeshProductionRequirementsInto (
 							StoreBin	(one? MeshStats::StoreBin1		: MeshStats::StoreBin2		),
 							StoreText	(one? MeshStats::StoreText1		: MeshStats::StoreText2		);
 	{
-		char meshBaseId[1024];
-		IdForStep(&meshBaseId, ucstringarg(meshStemId), step);
-
 		ao::MeshIntersectionData intersectionData;
-		ao::AmbientOcclusionCreatorProxy aoc(ao::SamplingRate_9, &elements, &intersectionData);
 
-		MESH_TIME_VAR(mt, Update, mesh = DNEWCLASS(Mesh, (elements, meshBaseId, NULL, NULL, &aoc, boundingVolume.discard())));
+		MESH_TIME_VAR(
+			mt,
+			Update,
+			mesh = DNEWCLASS(
+				Mesh, (
+					elements,
+					meshId,
+					NULL,
+					NULL,
+					uaddress_of(ao::AmbientOcclusionCreatorProxy(ao::SamplingRate_9, &elements, &intersectionData)), 
+					boundingVolume.discard())));
 	}
 
 	MESH_TIME_VAR(mt, IndexBuffer, mesh->GetIndexBuffer());
 
-	{	
-		std::string storePath;
+	{
+		MESH_TIME_VAR(mt, StoreBin, mesh->StoreBin(meshPath));
+		MESH_TIME_VAR(mt, StoreText, mesh->StoreText(meshTextPath));
 
-		BinPathForId(storePath, ucstringarg(mesh->GetUniqueId()));
-		MESH_TIME_VAR(mt, StoreBin, mesh->StoreBin(storePath));
-		MeshLoader::GetSingleton().GivePath(mesh.native(), storePath);
-
-		TextPathForId(storePath, ucstringarg(mesh->GetUniqueId()));
-		MESH_TIME_VAR(mt, StoreText, mesh->StoreText(storePath));
+		MeshLoader::GetSingleton().GivePath(mesh.native(), meshPath);
 	}
-
 
 	{
 		MeshWithInfo info(mesh, step, mt);
 
 		into.push_back(info);
 
-		info.mesh.nullify();
+		info.NullifyMeshPointer();
 	}
 
 	mesh.nullify();
@@ -256,12 +305,12 @@ void DebugAwareTesselation (Mesh::Elements& elements, Surface const& bob, Tessel
 ///////////////////////////////////////////////////////////
 
 // static
-void IdForStep (char (* const buf)[1024], char const* const base, float const step)
-	{ format((*buf), "%s_%3.1f", base, step); }
+Kilostring& IdForStep (Kilostring& kilostring, char const* base, float step)
+	{ return kilostring.format("%s_%3.1f", base, step); }
 
 // static
 std::list<Unit>& ProduceStepsInto (std::list<Unit>& into) {
-#if WITH_FAKE_TESSELATION == 0 && (defined(_DEBUG) || FAST_TESSELATION == 1)
+#if WITH_FAKE_TESSELATION == 0 && (FAST_TESSELATION == 1 || (defined(_DEBUG) && NO_AO == 0))
 	Unit const	steps[] = {2e-0f};
 #else
 	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f};//, 1e-1f};
@@ -289,30 +338,22 @@ void WriteAllMeshInfo (std::list<MeshWithInfo> const& meshesWithInfos) {
 ///////////////////////////////////////////////////////////
 
 // static
-std::string& BasePathForId (std::string& path, char const* const id) {
-	path.reserve(11 + 4 + strlen(id) + 1);
-	path =("../meshes/");
-	path += id;
-	return path;
+Kilostring& BasePathForId (Kilostring& path, char const* const id) {
+	path = "../meshes/";
+	return path += id;
 }
 
 ///////////////////////////////////////////////////////////
 
 // static
-std::string& BinPathForId (std::string& path, char const* const id) {
-	BasePathForId(path, id);
-	path += ".msh";
-	return path;
-}
+Kilostring& BinPathForId (Kilostring& path, char const* id)
+	{ return BasePathForId(path, id) += ".msh"; }
 
 ///////////////////////////////////////////////////////////
 
 // static
-std::string& TextPathForId (std::string& path, char const* const id) {
-	BasePathForId(path, id);
-	path += ".txt";
-	return path;
-}
+Kilostring& TextPathForId (Kilostring& path, char const* const id)
+	{ return BasePathForId(path, id) += ".txt"; }
 
 ///////////////////////////////////////////////////////////
 
@@ -340,7 +381,7 @@ my::Console& out (void) { return my::global::GetConsole(); }
 ///////////////////////////////////////////////////////////
 
 TimingNotifee::~TimingNotifee (void) {}
-void TimingNotifee::TimingStarted (char const* const what) const { out() << what << " ... "; }
-void TimingNotifee::TimingEnded (char const* const, MeshStats::timing_t const howMuch) const { out() << howMuch << "ms\n"; }
+void TimingNotifee::TimingStarted (char const* const what) const { out() << "\n         - " << what << " ... "; }
+void TimingNotifee::TimingEnded (char const* const, MeshStats::timing_t const howMuch) const { out() << howMuch << "ms"; }
 
 ///////////////////////////////////////////////////////////
