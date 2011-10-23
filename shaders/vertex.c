@@ -1,4 +1,4 @@
-// mesh tool dfd
+// mesh tool
 
 #version 330 core
 

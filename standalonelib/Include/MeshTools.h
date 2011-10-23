@@ -72,21 +72,15 @@ static inline Mesh::Elements& ComputeBarycentricFactors (Mesh::Elements& element
 
 ///////////////////////////////////////////////////////////
 
-#define MESH_TIMING_STAT(NAME)													\
-	private:																	\
-		timing_t	valueOf##NAME;												\
-		bool		timed##NAME;												\
-	public:																		\
-		void		Start##NAME (void) {										\
-						DASSERT(!timed##NAME);									\
-						DNULLCHECK(notifee)->TimingStarted(#NAME);				\
-						valueOf##NAME = ugettime();								\
-						timed##NAME = true;										\
-					}															\
-		void		End##NAME (void) {											\
-						valueOf##NAME = ugettime() - valueOf##NAME;				\
-						DNULLCHECK(notifee)->TimingEnded(#NAME, valueOf##NAME);	\
-					}															\
+#define MESH_TIMING_STAT(NAME)				\
+	private:								\
+		timing_t	valueOf##NAME;			\
+		bool		timed##NAME;			\
+	public:									\
+		void		Start##NAME (void)		\
+						{ Start(NAME); }	\
+		void		End##NAME (void)		\
+						{ End(NAME); }		\
 
 struct MeshStats {
 	typedef unsigned long	timing_t;
@@ -114,6 +108,23 @@ struct MeshStats {
 	};
 	static const size_t NumberOfTimings = size_t(StoreText2) + 1;
 
+	static bool		IsValidTiming (size_t);
+
+	bool			IsTimed (Timing) const;
+	void			Start (Timing);
+	void			End (Timing);
+
+	timing_t		operator [] (Timing) const;
+	MeshStats&		Reset (void);
+	
+	void			SetNotifee (TimeUpdateNotifee* const _notifee)
+						{ notifee = _notifee; }
+
+	NMUDECLARE_WRITE_LINES
+	MeshStats (void);
+private:
+	// State
+	TimeUpdateNotifee*	notifee;
 	MESH_TIMING_STAT(Tesselation		)	//  0
 	MESH_TIMING_STAT(BarycentricFactors	)	//  1
 	MESH_TIMING_STAT(BoundingVolume		)	//  2
@@ -128,28 +139,22 @@ struct MeshStats {
 	MESH_TIMING_STAT(StoreBin2			)	// 11
 	MESH_TIMING_STAT(StoreText2			)	// 12
 
-	timing_t	operator [] (Timing) const;
-	MeshStats&	Reset (void) {
-					TimeUpdateNotifee* const notis(notifee);
-					this->~MeshStats();
-					new(this) MeshStats;
-					notifee = notis;
-					return *this;
-				}
-	NMUDECLARE_WRITE_LINES
-
-	MeshStats (void);
-	// State
-	TimeUpdateNotifee*	notifee;
+private:
+	friend class MeshStatsHelper;
 };
 
 inline void MeshStats::TimeUpdateNotifee::TimingStarted	(char const* const) const {}
 inline void MeshStats::TimeUpdateNotifee::TimingEnded	(char const* const, timing_t const) const {}
 
-#define MESH_TIME(OBJ,WHAT,COMMAND)						\
-		OBJ.Start##WHAT();								\
-		COMMAND;										\
-		OBJ.End##WHAT();								\
+#define MESH_TIME(OBJ,WHAT,COMMAND)		\
+		OBJ.Start##WHAT();				\
+		COMMAND;						\
+		OBJ.End##WHAT();				\
+
+#define MESH_TIME_VAR(OBJ,WHAT,COMMAND)	\
+		OBJ.Start(WHAT);				\
+		COMMAND;						\
+		OBJ.End(WHAT);					\
 
 ///////////////////////////////////////////////////////////
 
@@ -174,15 +179,15 @@ public:
 		void operator = (Entry const& o) { this->~Entry(); new (this) Entry(o); }
 	};
 
-	void Load (void);
-	void Store (void) const;
+	void	Load (void);
+	void	Store (void) const;
 
 	void	ImportAllFromMeshLoader (void);
 	void	ExportAllToMeshLoader (void);
 
 private:
 	typedef std::map<std::string, Entry>	MeshesEntries;
-	
+
 	MeshesEntries meshes;
 
 	MeshIndex (void): meshes() {}

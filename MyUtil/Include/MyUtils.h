@@ -8,34 +8,71 @@
 #	include "utypes.h"
 #	include "DDebug.h"
 #	include "ufunctors.h"
+#	include "utypes.h"
 #	include <fstream>
 #pragma warning( pop )
 
 ///////////////////////////////////////////////////////////
 
-#define NMUDECLARE_ABSTRACT_CLONE(CLASS)										\
-		virtual CLASS*	Clone (void* at, size_t bytesize) const = 0;			\
+#define NMUDECLARE_ABSTRACT_CLONE(CLASS)								\
+		virtual CLASS*	Clone (void* at, size_t bytesize) const = 0;	\
 		virtual CLASS*	Clone (void) const = 0;
 
-#define NMUDEFINE_CLONE_VIA_COPY_CONSTRUCTOR(CLASS)								\
-		virtual CLASS*	Clone (void* at, size_t bytesize) const {				\
-							if (bytesize >= sizeof(*this))						\
-								return nmucallconstructor(at, *this);			\
-							return NULL;										\
-						}														\
-		virtual CLASS*	Clone (void) const										\
-							{ return DNEWCLASS(CLASS, (*this)); }
+#define NMUDEFINE_CLONE_VIA_COPY_CONSTRUCTOR(CLASS)						\
+		CLASS*	Clone (void* at, size_t bytesize) const {				\
+					if (bytesize >= sizeof(*this))						\
+						return nmucallconstructor(at, *this);			\
+					return NULL;										\
+				}														\
+		CLASS*	Clone (void) const										\
+					{ return DNEWCLASS(CLASS, (*this)); }
 
-#define NMUDEFINE_RESET_VIA_DEFAULT_CONSTRUCTOR									\
-		void			Reset (void) {											\
-							ucalldestructor(this);								\
-							nmucallconstructor(this);							\
+#define NMUDEFINE_RESET_VIA_DEFAULT_CONSTRUCTOR							\
+		void			Reset (void) {									\
+							ucalldestructor(this);						\
+							nmucallconstructor(this);					\
 						}
 
 #define NMUDECLARE_WRITE_LINES													\
 	std::list<std::string>&	WriteLinesTo (std::list<std::string>& into) const;	\
 	void					operator >> (std::list<std::string>& into) const	\
 								{ WriteLinesTo(into); }
+
+template <typename Type>	struct nmuconst_of				{ typedef Type const						T; };
+template <typename Type>	struct nmuconst_of<Type const>	{ typedef typename nmuconst_of<Type>::T		T; };
+template <typename Type>	struct nmuconst_of<Type&>		{ typedef typename nmuconst_of<Type>::T&	T; };
+
+template <typename Type1, typename Type2, typename Type3>
+struct nmutripletypes {
+	typedef Type1 T1; 
+	typedef Type2 T2;
+	typedef Type3 T3;
+};
+template <typename TripleTypes>
+struct nmuconsttripletypes {
+	typedef typename nmuconst_of<typename TripleTypes::T1>::T	T1;
+	typedef typename nmuconst_of<typename TripleTypes::T2>::T	T2;
+	typedef typename nmuconst_of<typename TripleTypes::T3>::T	T3;
+};
+
+#define NMUTRIPLE(CLASS, TYPES, N1, N2, N3)							\
+	struct CLASS {													\
+		TYPES::T1 N1; TYPES::T2 N2; TYPES::T3 N3;					\
+		CLASS (														\
+				urefto< TYPES::T1 >::t _##N1,						\
+				urefto< TYPES::T2 >::t _##N2,						\
+				urefto< TYPES::T3 >::t _##N3):						\
+			N1 ( _##N1 ), N2 ( _##N2 ), N3 ( _##N3 ) {}				\
+		CLASS ( uconstref_of< CLASS >::t other ):					\
+			N1 (other. N1 ), N2 (other. N2 ), N3 (other. N3 ) {}	\
+		~CLASS (void) {}											\
+		UOVERLOADED_VOID_ASSIGN_VIA_COPY_CONSTRUCTOR( CLASS )		\
+		NMUDEFINE_CLONE_VIA_COPY_CONSTRUCTOR( CLASS )				\
+	};																\
+
+#define NMUTRIPLES(CLASS, TYPES, N1, N2, N3)								\
+		NMUTRIPLE(CLASS, TYPES, N1, N2, N3)									\
+		NMUTRIPLE(Const##CLASS, nmuconsttripletypes< TYPES >, N1, N2, N3)	\
 
 ///////////////////////////////////////////////////////////
 
@@ -201,12 +238,12 @@ struct dptr {
 	T*		discard (void)				{ T* const result(ptr); nullify(); return result; }
 
 	template <void (*Deleter)(T*)>
-	void	Delete (void)				{ (*Deleter)(ptr); nullify(); }
+	void	Delete (void)				{ (*Deleter)(discard()); }
 	template <typename Deleter>
-	void	Delete (Deleter const& d)	{ d(ptr); nullify(); }
+	void	Delete (Deleter const& d)	{ d(discard()); }
 
 	template <typename Operation>
-	void	UseUp (Operation const& op)	{ op(native()); nullify(); }
+	void	UseUp (Operation const& op)	{ op(discard()); }
 
 	explicit dptr (void): ptr(NULL) {}
 	explicit dptr (T* const _ptr): ptr(NULL) { operator =(_ptr); }
@@ -215,6 +252,17 @@ struct dptr {
 
 	void operator = (T* const _ptr) { DASSERT(ptr == NULL); ptr = DPTR(DNULLCHECK(_ptr)); }
 	UOVERLOADED_VOID_ASSIGN_VIA_COPY_CONSTRUCTOR(dptr)
+};
+
+template <typename T>
+struct tmpdptr: public dptr<T> {
+	typedef dptr<T>		Base;
+	typedef tmpdptr<T>	Self;
+
+	explicit tmpdptr (void): Base() {}
+	explicit tmpdptr (T* const ptr): Base(ptr) {}
+	tmpdptr (uconstref_of<Self> o): Base(o) {}
+	~tmpdptr (void) { DASSERTPTR(DNULLCHECK(discard())); }
 };
 
 ///////////////////////////////////////////////////////////

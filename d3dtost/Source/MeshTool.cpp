@@ -20,9 +20,9 @@
 #define FAST_TESSELATION		1
 
 #if (defined(FORCE_REAL_TESSELATION) && FORCE_REAL_TESSELATION == 1) || !defined(_DEBUG)
-#	define WITH_FAKE_TESSELTION 0
+#	define WITH_FAKE_TESSELATION 0
 #else
-#	define WITH_FAKE_TESSELTION 1
+#	define WITH_FAKE_TESSELATION 1
 #endif
 
 using namespace ankh;
@@ -69,6 +69,14 @@ namespace my {
 
 static void DebugAwareTesselation (Mesh::Elements&, Surface const&, TesselationParameters const&);
 
+static void ProduceMeshFromMeshProductionRequirementsInto (
+				std::list<MeshWithInfo>&	into,
+				MeshStats&					mt,
+				Mesh::Elements const&		elements,
+				dptr<BoundingVolume>		boundingVolume,
+				char const*					meshStemId,
+				Unit						step,
+				bool						one);
 static void	ProduceMeshesInto (
 				std::list<MeshWithInfo>&	into,
 				std::list<Unit> const&		steps,
@@ -84,7 +92,7 @@ void MeshProcess (void) {
 		std::list<Unit>			steps;
 		std::list<MeshWithInfo>	meshes;
 
-		timing.notifee = &notifee;
+		timing.SetNotifee(&notifee);
 
 		#if 1
 		ProduceMeshesInto(meshes, ProduceStepsInto(steps), timing);
@@ -106,24 +114,16 @@ void MeshProcess (void) {
 void ProduceMeshesInto (std::list<MeshWithInfo>& into, std::list<Unit> const& steps, MeshStats& mt) {
 	typedef dptr<Mesh>					MeshPtr;
 
-	char								charbuf[1024];
 	Surface const						bob(Surfaces::MoonValleyWithHorns(0.8f));
 	Mesh::Elements						elements, elementsAntisavidised;
 	dptr<BoundingVolume>				volume;
-	MeshPtr								mesh, meshAntisavidised;
-	std::string							stepBaseId, stepBaseIdAntisavidised, storePath;
-	ao::MeshIntersectionData			intersectionData;
 
 
 	IFOREACH (std::list<Unit>::const_iterator, steps, step) {
 		out() << "\n\n=== producing meshes for step = " << *step << " ===\n";
 		mt.Reset();
 		elements.clear();
-
-		IdForStep(&charbuf, ucstringarg(bob.GetName()), *step);
-		stepBaseId = &charbuf[0];
-		IdForStep(&charbuf, format("%s_antisavidised", ucstringarg(bob.GetName())), *step);
-		stepBaseIdAntisavidised = charbuf;
+		elementsAntisavidised.clear();
 
 		MeshAABBTree aabb;
 
@@ -135,56 +135,76 @@ void ProduceMeshesInto (std::list<MeshWithInfo>& into, std::list<Unit> const& st
 
 		PASSERT(elements.size() == elementsAntisavidised.size())
 
-		{
-			intersectionData.clear();
-			ao::AmbientOcclusionCreatorProxy aoc(ao::SamplingRate_9, &elements, &intersectionData);
-			MESH_TIME(mt, Update1,
-					mesh = DNEWCLASS(Mesh, (elements, stepBaseId, NULL, NULL, &aoc, volume->Clone())));
-		}
-		{
-			intersectionData.clear();
-			ao::AmbientOcclusionCreatorProxy aoc(ao::SamplingRate_9, &elementsAntisavidised, &intersectionData);
-			MESH_TIME(mt, Update2,
-					meshAntisavidised = DNEWCLASS(Mesh, (elementsAntisavidised, stepBaseIdAntisavidised, NULL, NULL, &aoc, volume.native())));
-			volume.nullify();
-		}
+		ProduceMeshFromMeshProductionRequirementsInto(
+			into,
+			mt,
+			elements, 
+			tmpdptr<BoundingVolume>(volume->Clone()),
+			ucstringarg(std::string(format("%s_aabbao", ucstringarg(bob.GetName())))),
+			*step,
+			true); 
+		ProduceMeshFromMeshProductionRequirementsInto(
+			into,
+			mt,
+			elementsAntisavidised, 
+			volume,
+			ucstringarg(std::string(format("%s_aabbao_antisavidised", ucstringarg(bob.GetName())))),
+			*step,
+			false); 
 
-		MESH_TIME(mt, IndexBuffer1,	mesh->GetIndexBuffer()				);
-		MESH_TIME(mt, IndexBuffer2, meshAntisavidised->GetIndexBuffer()	);
-
-		{
-			BinPathForId(storePath, ucstringarg(mesh->GetUniqueId()));
-			MESH_TIME(mt, StoreBin1, mesh->StoreBin(storePath));
-			MeshLoader::GetSingleton().GivePath(mesh.native(), storePath);
-
-			TextPathForId(storePath, ucstringarg(mesh->GetUniqueId()));
-			MESH_TIME(mt, StoreText1, mesh->StoreText(storePath));
-		}
-
-		{
-			BinPathForId(storePath, ucstringarg(meshAntisavidised->GetUniqueId()));
-			MESH_TIME(mt, StoreBin2, meshAntisavidised->StoreBin(storePath));
-			MeshLoader::GetSingleton().GivePath(meshAntisavidised.native(), storePath);
-
-			TextPathForId(storePath, ucstringarg(meshAntisavidised->GetUniqueId()));
-			MESH_TIME(mt, StoreText2, meshAntisavidised->StoreText(storePath));
-		}
-
-		{
-			MeshWithInfo info1(mesh, *step, mt), info2(meshAntisavidised, *step, mt);
-
-			into.push_back(info1);
-			into.push_back(info2);
-
-			info1.mesh.nullify();
-			info2.mesh.nullify();
-		}
-
-		mesh.nullify();
-		meshAntisavidised.nullify();
-
-		WriteAllMeshInfo(into);
+		volume.nullify();
 	}
+}
+
+// static
+void ProduceMeshFromMeshProductionRequirementsInto (
+		std::list<MeshWithInfo>&	into,
+		MeshStats&					mt,
+		Mesh::Elements const&		elements,
+		dptr<BoundingVolume>		boundingVolume,
+		char const* const			meshStemId,
+		Unit const					step,
+		bool const					one) {
+	dptr<Mesh>				mesh;
+	MeshStats::Timing const	Update		(one? MeshStats::Update1		: MeshStats::Update2		),
+							IndexBuffer	(one? MeshStats::IndexBuffer1	: MeshStats::IndexBuffer2	),
+							StoreBin	(one? MeshStats::StoreBin1		: MeshStats::StoreBin2		),
+							StoreText	(one? MeshStats::StoreText1		: MeshStats::StoreText2		);
+	{
+		char meshBaseId[1024];
+		IdForStep(&meshBaseId, ucstringarg(meshStemId), step);
+
+		ao::MeshIntersectionData intersectionData;
+		ao::AmbientOcclusionCreatorProxy aoc(ao::SamplingRate_9, &elements, &intersectionData);
+
+		MESH_TIME_VAR(mt, Update, mesh = DNEWCLASS(Mesh, (elements, meshBaseId, NULL, NULL, &aoc, boundingVolume.discard())));
+	}
+
+	MESH_TIME_VAR(mt, IndexBuffer, mesh->GetIndexBuffer());
+
+	{	
+		std::string storePath;
+
+		BinPathForId(storePath, ucstringarg(mesh->GetUniqueId()));
+		MESH_TIME_VAR(mt, StoreBin, mesh->StoreBin(storePath));
+		MeshLoader::GetSingleton().GivePath(mesh.native(), storePath);
+
+		TextPathForId(storePath, ucstringarg(mesh->GetUniqueId()));
+		MESH_TIME_VAR(mt, StoreText, mesh->StoreText(storePath));
+	}
+
+
+	{
+		MeshWithInfo info(mesh, step, mt);
+
+		into.push_back(info);
+
+		info.mesh.nullify();
+	}
+
+	mesh.nullify();
+
+	WriteAllMeshInfo(into);
 }
 
 // static
@@ -200,7 +220,7 @@ void LoadMeshesInto (std::list<MeshWithInfo >& into) {
 	IFOREACH(MeshLoader::Meshes::const_iterator, Loader.GetAll(), meshPair) {
 		dptr<Mesh> mesh(meshPair->second);
 		PASSERT(meshPair->first == mesh->GetUniqueId());
-		
+
 		out() << "\n - Loaded " << mesh->GetUniqueId() << " from " << Loader.GetPath(mesh.native());
 
 		{
@@ -208,7 +228,7 @@ void LoadMeshesInto (std::list<MeshWithInfo >& into) {
 			into.push_back(info);
 			info.mesh.nullify();
 		}
-		
+
 		mesh.nullify();
 	}
 
@@ -217,7 +237,7 @@ void LoadMeshesInto (std::list<MeshWithInfo >& into) {
 
 // static
 void DebugAwareTesselation (Mesh::Elements& elements, Surface const& bob, TesselationParameters const& tp) {
-#if WITH_FAKE_TESSELTION == 1
+#if WITH_FAKE_TESSELATION == 1
 	(void) bob;
 	(void) tp;
 
@@ -241,9 +261,7 @@ void IdForStep (char (* const buf)[1024], char const* const base, float const st
 
 // static
 std::list<Unit>& ProduceStepsInto (std::list<Unit>& into) {
-#if WITH_FAKE_TESSELTION == 0 && defined(_DEBUG)
-	Unit const	steps[] = {2e-0f};
-#elif FAST_TESSELATION == 1
+#if WITH_FAKE_TESSELATION == 0 && (defined(_DEBUG) || FAST_TESSELATION == 1)
 	Unit const	steps[] = {2e-0f};
 #else
 	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f};//, 1e-1f};

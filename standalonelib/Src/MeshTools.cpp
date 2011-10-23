@@ -30,34 +30,82 @@ void NormalAndWindingInverserMeshElementProcessor::operator () (MeshElement& ele
 }
 
 ///////////////////////////////////////////////////////////
-
 //MeshTimingStats
 
-MeshStats::timing_t MeshStats::operator [] (Timing const timing) const {
-	DASSERT(0u <= timing && timing <= NumberOfTimings);
+class MeshStatsHelper {
+public:
+	typedef nmutripletypes<MeshStats::timing_t&, bool&, char const* const> TTs;
+	NMUTRIPLES(TimingEntry, TTs, value, timed, name)
 
-	timing_t result;
+	template <typename EntryType, typename MeshStatsType>
+	static
+	EntryType GetTimingEntry (MeshStatsType& mt, MeshStats::Timing const timing);
+
+	static
+	TimingEntry			Get (MeshStats& mt, MeshStats::Timing const timing)
+							{ return GetTimingEntry<TimingEntry>(mt, timing); }
+	static
+	ConstTimingEntry	Get (MeshStats const& mt, MeshStats::Timing const timing)
+							{ return GetTimingEntry<ConstTimingEntry>(mt, timing); }
+};
+
+template <typename EntryType, typename MeshStatsType>
+static inline
+EntryType MeshStatsHelper::GetTimingEntry (MeshStatsType& mt, MeshStats::Timing const timing) {
+	DASSERT(MeshStats::IsValidTiming(size_t(timing)));
 
 	switch (timing) {
-		case Tesselation		: result = valueOfTesselation			; break;
-		case BarycentricFactors	: result = valueOfBarycentricFactors	; break;
-		case BoundingVolume		: result = valueOfBoundingVolume		; break;
-		case Savidise			: result = valueOfSavidise				; break;
-		case Aabb				: result = valueOfAabb					; break;
-		case Update1			: result = valueOfUpdate1				; break;
-		case Update2			: result = valueOfUpdate2				; break;
-		case IndexBuffer1		: result = valueOfIndexBuffer1			; break;
-		case IndexBuffer2		: result = valueOfIndexBuffer2			; break;
-		case StoreBin1			: result = valueOfStoreBin1				; break;
-		case StoreText1			: result = valueOfStoreText1			; break;
-		case StoreBin2			: result = valueOfStoreBin2				; break;
-		case StoreText2			: result = valueOfStoreText2			; break;
+		case MeshStats::Tesselation			: return EntryType(mt.valueOfTesselation		, mt.timedTesselation			, "Tesselation"			); break;
+		case MeshStats::BarycentricFactors	: return EntryType(mt.valueOfBarycentricFactors	, mt.timedBarycentricFactors	, "BarycentricFactors"	); break;
+		case MeshStats::BoundingVolume		: return EntryType(mt.valueOfBoundingVolume		, mt.timedBoundingVolume		, "BoundingVolume"		); break;
+		case MeshStats::Savidise			: return EntryType(mt.valueOfSavidise			, mt.timedSavidise				, "Savidise"			); break;
+		case MeshStats::Aabb				: return EntryType(mt.valueOfAabb				, mt.timedAabb					, "Aabb"				); break;
+		case MeshStats::Update1				: return EntryType(mt.valueOfUpdate1			, mt.timedUpdate1				, "Update1"				); break;
+		case MeshStats::Update2				: return EntryType(mt.valueOfUpdate2			, mt.timedUpdate2				, "Update2"				); break;
+		case MeshStats::IndexBuffer1		: return EntryType(mt.valueOfIndexBuffer1		, mt.timedIndexBuffer1			, "IndexBuffer1"		); break;
+		case MeshStats::IndexBuffer2		: return EntryType(mt.valueOfIndexBuffer2		, mt.timedIndexBuffer2			, "IndexBuffer2"		); break;
+		case MeshStats::StoreBin1			: return EntryType(mt.valueOfStoreBin1			, mt.timedStoreBin1				, "StoreBin1"			); break;
+		case MeshStats::StoreText1			: return EntryType(mt.valueOfStoreText1			, mt.timedStoreText1			, "StoreText1"			); break;
+		case MeshStats::StoreBin2			: return EntryType(mt.valueOfStoreBin2			, mt.timedStoreBin2				, "StoreBin2"			); break;
+		case MeshStats::StoreText2			: return EntryType(mt.valueOfStoreText2			, mt.timedStoreText2			, "StoreText2"			); break;
 		default:
-			result = std::numeric_limits<timing_t>::max();
 			DASSERT(false);
+			return EntryType(mt.valueOfTesselation, mt.timedTesselation, "FAULTY TOWERS");
 	};
+}
 
-	return result;
+// static
+bool MeshStats::IsValidTiming (size_t const timing)
+	{ return timing <= NumberOfTimings; }
+
+MeshStats::timing_t MeshStats::operator [] (Timing const timing) const
+	{ return MeshStatsHelper::Get(*this, timing).value; }
+
+MeshStats& MeshStats::Reset (void) {
+	TimeUpdateNotifee* const notis(notifee);
+	nmureset(this);
+	notifee = notis;
+	return *this;
+}
+
+bool MeshStats::IsTimed (Timing const timing) const
+	{ return MeshStatsHelper::Get(*this, timing).timed; }
+
+void MeshStats::Start (Timing const timing) {
+	DASSERT(!IsTimed(timing));
+	
+	MeshStatsHelper::TimingEntry entry(MeshStatsHelper::Get(*this, timing));
+						
+	DNULLCHECK(notifee)->TimingStarted(entry.name);	
+	entry.value = ugettime();					
+	entry.timed = true;						
+}
+
+void MeshStats::End (Timing const timing) {
+	MeshStatsHelper::TimingEntry entry(MeshStatsHelper::Get(*this, timing));
+
+	entry.value = ugettime() - entry.value;
+	DNULLCHECK(notifee)->TimingEnded(entry.name, entry.value);
 }
 
 std::list<std::string>& MeshStats::WriteLinesTo (std::list<std::string>& at) const {
@@ -107,32 +155,32 @@ std::list<std::string>& MeshStats::WriteLinesTo (std::list<std::string>& at) con
 }
 
 MeshStats::MeshStats (void):
-	valueOfTesselation				(ULONG_MAX),
-	valueOfBarycentricFactors		(ULONG_MAX),
-	valueOfBoundingVolume			(ULONG_MAX),
-	valueOfSavidise					(ULONG_MAX),
-	valueOfAabb						(ULONG_MAX),
-	valueOfUpdate1					(ULONG_MAX),
-	valueOfUpdate2					(ULONG_MAX),
-	valueOfIndexBuffer1				(ULONG_MAX),
-	valueOfIndexBuffer2				(ULONG_MAX),
-	valueOfStoreBin1				(ULONG_MAX),
-	valueOfStoreText1				(ULONG_MAX),
-	valueOfStoreBin2				(ULONG_MAX),
-	valueOfStoreText2				(ULONG_MAX),
-	timedTesselation				(false),
-	timedBarycentricFactors			(false),
-	timedBoundingVolume				(false),
-	timedSavidise					(false),
-	timedAabb						(false),
-	timedUpdate1					(false),
-	timedUpdate2					(false),
-	timedIndexBuffer1				(false),
-	timedIndexBuffer2				(false),
-	timedStoreBin1					(false),
-	timedStoreText1					(false),
-	timedStoreBin2					(false),
-	timedStoreText2					(false),
+	valueOfTesselation				(ULONG_MAX),	//  0u
+	valueOfBarycentricFactors		(ULONG_MAX),	//  1u
+	valueOfBoundingVolume			(ULONG_MAX),	//  2u
+	valueOfSavidise					(ULONG_MAX),	//  3u
+	valueOfAabb						(ULONG_MAX),	//  4u
+	valueOfUpdate1					(ULONG_MAX),	//  5u
+	valueOfUpdate2					(ULONG_MAX),	//  6u
+	valueOfIndexBuffer1				(ULONG_MAX),	//  7u
+	valueOfIndexBuffer2				(ULONG_MAX),	//  8u
+	valueOfStoreBin1				(ULONG_MAX),	//  9u
+	valueOfStoreText1				(ULONG_MAX),	// 10
+	valueOfStoreBin2				(ULONG_MAX),	// 11u
+	valueOfStoreText2				(ULONG_MAX),	// 12u	
+	timedTesselation				(false),		//  0u
+	timedBarycentricFactors			(false),		//  1u
+	timedBoundingVolume				(false),		//  2u
+	timedSavidise					(false),		//  3u
+	timedAabb						(false),		//  4u
+	timedUpdate1					(false),		//  5u
+	timedUpdate2					(false),		//  6u
+	timedIndexBuffer1				(false),		//  7u
+	timedIndexBuffer2				(false),		//  8u
+	timedStoreBin1					(false),		//  9u
+	timedStoreText1					(false),		// 10
+	timedStoreBin2					(false),		// 11u
+	timedStoreText2					(false),		// 12u
 	notifee							(NULL)
 	{}
 
@@ -291,9 +339,9 @@ MeshInfo::MeshInfo (Mesh const& mesh, float const _step, MeshStats const& _stats
 
 MeshInfo::MeshInfo (MeshInfo const& o):
 	meshId				(o.meshId			),
-	stats				(o.stats			),	
-	min					(o.min				),	
-	max					(o.max				),	
+	stats				(o.stats			),
+	min					(o.min				),
+	max					(o.max				),
 	numberOfElements	(o.numberOfElements	),
 	step				(o.step				)
 	{}
