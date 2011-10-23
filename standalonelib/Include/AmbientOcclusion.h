@@ -120,6 +120,15 @@ extern
 void UpdateAmbientOcclusionFactors (shapes::Mesh::Elements& elements, const SamplingRate samplingRate, MeshIntersectionData* = NULL);
 
 ///////////////////////////////////////////////////////////
+
+class IneffectiveAmbientOcclusionCreator: public shapes::Mesh::AmbientOcclusionCreator {
+public:
+	virtual void								operator () (shapes::MeshElement const&, float (*&)[3]) const
+													{}
+	NMUSTANDARD_STATELESS_OBJECT_METHODS(IneffectiveAmbientOcclusionCreator)
+};
+
+///////////////////////////////////////////////////////////
 // AmbientOcclusionCreator related
 
 class AmbientOcclusionCreatorFactory {
@@ -143,7 +152,7 @@ private:
 	dptr<Gateway> gateway;
 
 public:
-	void									operator () (shapes::MeshElement const& elem, float (*&ambientOcclusion)[3]) const
+	virtual void							operator () (shapes::MeshElement const& elem, float (*&ambientOcclusion)[3]) const
 												{ gateway->operator ()(elem, ambientOcclusion); }
 
 	shapes::Mesh::AmbientOcclusionCreator*	Clone (void) const
@@ -153,12 +162,37 @@ public:
 		Base	(),
 		gateway	(AmbientOcclusionCreatorFactory::New(sr, els, mid))
 		{}
-	~AmbientOcclusionCreatorProxy (void)
+	virtual ~AmbientOcclusionCreatorProxy (void)
 		{ AmbientOcclusionCreatorFactory::Delete(gateway.native()); gateway.nullify(); }
 
 private:
 	AmbientOcclusionCreatorProxy (AmbientOcclusionCreatorProxy const&);
 	void operator = (AmbientOcclusionCreatorProxy const&);
+};
+
+class AnyAmbientOcclusionCreatorProxy: public shapes::Mesh::AmbientOcclusionCreator {
+public:
+	typedef shapes::Mesh::AmbientOcclusionCreator	Gateway;
+	typedef	shapes::Mesh::AmbientOcclusionCreator	Base;
+
+	virtual void	operator () (shapes::MeshElement const& elem, float (*&ambientOcclusion)[3]) const
+						{ gateway->operator ()(elem, ambientOcclusion); }
+	
+	UCLONE_VIA_COPY_CONSTRUCTOR(AnyAmbientOcclusionCreatorProxy, Clone)
+	UOVERLOADED_VOID_ASSIGN_VIA_COPY_CONSTRUCTOR(AnyAmbientOcclusionCreatorProxy)
+	AnyAmbientOcclusionCreatorProxy (Gateway* const _gateway):
+		Base	(),
+		gateway	(_gateway)
+		{}
+	AnyAmbientOcclusionCreatorProxy (AnyAmbientOcclusionCreatorProxy const& other):
+		Base	(other),
+		gateway	(other.gateway->Clone())
+		{}
+	virtual ~AnyAmbientOcclusionCreatorProxy (void)
+		{ gateway.Delete(); }
+
+private:
+	dptr<Gateway>	gateway;
 };
 
 ///////////////////////////////////////////////////////////

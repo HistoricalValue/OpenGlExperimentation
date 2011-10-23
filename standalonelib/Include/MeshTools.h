@@ -49,7 +49,7 @@ public:
 	virtual void operator () (MeshElement& elem) const;
 
 	virtual ~NormalAndWindingInverserMeshElementProcessor (void) {}
-	NMUDEFINE_CLONE_VIA_COPY_CONSTRUCTOR(NormalAndWindingInverserMeshElementProcessor)
+	NMUINLINE_DEFINE_CLONE_VIA_COPY_CONSTRUCTOR(NormalAndWindingInverserMeshElementProcessor)
 };
 
 ///////////////////////////////////////////////////////////

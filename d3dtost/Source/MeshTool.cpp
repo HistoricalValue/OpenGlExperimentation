@@ -19,7 +19,7 @@
 
 #define FORCE_REAL_TESSELATION	0
 #define FAST_TESSELATION		0
-#define NO_AO					0	// TODO make NO_AO have a "no ao" effect...
+#define NO_AO					1
 
 #if FORCE_REAL_TESSELATION == 1 || !defined(_DEBUG) || NO_AO == 1
 #	define WITH_FAKE_TESSELATION 0
@@ -66,9 +66,11 @@ struct TimingNotifee: public MeshStats::TimeUpdateNotifee {
 	virtual void	TimingEnded (char const* what, MeshStats::timing_t howMuch) const;
 };
 
-///////////////////////////////////////////////////////////
-
-namespace my {
+static ao::AnyAmbientOcclusionCreatorProxy
+			MakeAmbientOcclusionCreator(
+				ao::SamplingRate			samplingRate,
+				Mesh::Elements const*		elements,
+				ao::MeshIntersectionData*	intersectionData);
 
 static void DebugAwareTesselation (Mesh::Elements&, Surface const&, TesselationParameters const&);
 
@@ -88,6 +90,12 @@ static void	ProduceOrLoadMeshes (
 				MeshStats&					mt);
 static void LoadMeshesInto (
 				std::list<MeshWithInfo>&	into);
+
+///////////////////////////////////////////////////////////
+
+namespace my {
+
+///////////////////////////////////////////////////////////
 
 void MeshProcess (void) {
 	::Initialise();
@@ -131,6 +139,11 @@ void MeshProcess (void) {
 	::CleanUp();
 }
 
+///////////////////////////////////////////////////////////
+
+} // namespace my
+
+///////////////////////////////////////////////////////////
 
 // static
 void ProduceOrLoadMeshes (std::list<MeshWithInfo>& into, std::list<Unit> const& steps, MeshStats& mt) {
@@ -230,7 +243,7 @@ void ProduceMeshFromMeshProductionRequirements (
 					meshId,
 					NULL,
 					NULL,
-					uaddress_of(ao::AmbientOcclusionCreatorProxy(ao::SamplingRate_9, &elements, &intersectionData)), 
+					uaddress_of(MakeAmbientOcclusionCreator(ao::SamplingRate_9, &elements, &intersectionData)), 
 					boundingVolume.discard())));
 	}
 
@@ -300,7 +313,18 @@ void DebugAwareTesselation (Mesh::Elements& elements, Surface const& bob, Tessel
 #endif
 }
 
-} // my
+// static
+ao::AnyAmbientOcclusionCreatorProxy MakeAmbientOcclusionCreator(
+		ao::SamplingRate const			samplingRate,
+		Mesh::Elements const* const		elements,
+		ao::MeshIntersectionData* const	intersectionData) {
+#if NO_AO == 1
+	USE(samplingRate), USE(elements), USE(intersectionData);
+	return DNEW(ao::IneffectiveAmbientOcclusionCreator);
+#else
+	return DNEWCLASS(ao::AmbientOcclusionCreatorProxy, (samplingRate, elements, intersectionData));
+#endif
+}
 
 ///////////////////////////////////////////////////////////
 
@@ -313,7 +337,7 @@ std::list<Unit>& ProduceStepsInto (std::list<Unit>& into) {
 #if WITH_FAKE_TESSELATION == 0 && (FAST_TESSELATION == 1 || (defined(_DEBUG) && NO_AO == 0))
 	Unit const	steps[] = {2e-0f};
 #else
-	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f};//, 1e-1f};
+	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f, 1e-1f};
 #endif
 
 	into.clear();

@@ -13,35 +13,69 @@
 #pragma warning( pop )
 
 ///////////////////////////////////////////////////////////
+typedef unsigned char		uchar;
+typedef unsigned short int	ushort;
+typedef unsigned int		uint;
+typedef unsigned long int	ulong;
 
+typedef uchar const			cuchar;
+typedef ushort const		cushort;
+typedef uint const			cuint;
+typedef ulong const			culong;
+
+typedef char const			cchar;
+typedef short const			cshort;
+typedef int const			cint;
+typedef long const			clong;
+
+typedef float const			cfloat;
+typedef double const		cdouble;
+
+typedef size_t const		csize_t;
+
+typedef void*				voidp;
+typedef voidp const			voidcp;
+
+///////////////////////////////////////////////////////////
 #define NMUDECLARE_ABSTRACT_CLONE(CLASS)								\
-		virtual CLASS*	Clone (void* at, size_t bytesize) const = 0;	\
-		virtual CLASS*	Clone (void) const = 0;
+		virtual CLASS *	Clone (void* at, size_t bytesize) const = 0;	\
+		virtual CLASS * Clone (void) const = 0;
 
-#define NMUDEFINE_CLONE_VIA_COPY_CONSTRUCTOR(CLASS)						\
-		CLASS*	Clone (void* at, size_t bytesize) const {				\
-					if (bytesize >= sizeof(*this))						\
-						return nmucallconstructor(at, *this);			\
-					return NULL;										\
-				}														\
-		CLASS*	Clone (void) const										\
+#define NMUINLINE_DEFINE_CLONE_VIA_COPY_CONSTRUCTOR(CLASS)										\
+		CLASS *	Clone (void* at, size_t bytesize) const											\
+					{ return bytesize >= sizeof(*this)? callconstructor(at, *this) : NULL; }	\
+		CLASS *	Clone (void) const																\
 					{ return DNEWCLASS(CLASS, (*this)); }
 
-#define NMUDEFINE_RESET_VIA_DEFAULT_CONSTRUCTOR							\
-		void			Reset (void) {									\
-							ucalldestructor(this);						\
-							nmucallconstructor(this);					\
-						}
+///////////////////////////////////////////////////////////
+#define NMUINLINE_DEFINE_VOID_RESET_VIA_DEFAULT_CONSTRUCTOR		\
+		void	Reset (void) { reset(this); }
 
-#define NMUDECLARE_WRITE_LINES													\
-	std::list<std::string>&	WriteLinesTo (std::list<std::string>& into) const;	\
-	void					operator >> (std::list<std::string>& into) const	\
-								{ WriteLinesTo(into); }
+#define NMUINLINE_DEFINE_RESET_VIA_DEFAULT_CONSTRUCTOR(CLASS)	\
+		CLASS &	Reset (void) { return *reset(this); }
 
+///////////////////////////////////////////////////////////
+#define NMUDECLARE_WRITE_LINES														\
+		std::list<std::string>&	WriteLinesTo (std::list<std::string>& into) const;	\
+		void					operator >> (std::list<std::string>& into) const	\
+									{ WriteLinesTo(into); }
+
+///////////////////////////////////////////////////////////
+#define NMUSTANDARD_STATELESS_OBJECT_METHODS(CLASS)							\
+		CLASS (void) {}														\
+		CLASS ( CLASS const& ) {}											\
+		~CLASS (void) {}													\
+		CLASS & operator = ( CLASS const&) { return *this; }				\
+		CLASS * Clone (voidcp at, csize_t bs) const							\
+					{ return bs >= sizeof(*this)? new(at) CLASS : NULL; }	\
+		CLASS *	Clone (void) const { return DNEW( CLASS ); }
+		
+///////////////////////////////////////////////////////////
 template <typename Type>	struct nmuconst_of				{ typedef Type const						T; };
 template <typename Type>	struct nmuconst_of<Type const>	{ typedef typename nmuconst_of<Type>::T		T; };
 template <typename Type>	struct nmuconst_of<Type&>		{ typedef typename nmuconst_of<Type>::T&	T; };
 
+///////////////////////////////////////////////////////////
 template <typename Type1, typename Type2, typename Type3>
 struct nmutripletypes {
 	typedef Type1 T1; 
@@ -55,20 +89,19 @@ struct nmuconsttripletypes {
 	typedef typename nmuconst_of<typename TripleTypes::T3>::T	T3;
 };
 
-#define NMUTRIPLE(CLASS, TYPES, N1, N2, N3)							\
-	struct CLASS {													\
-		TYPES::T1 N1; TYPES::T2 N2; TYPES::T3 N3;					\
-		CLASS (														\
-				urefto< TYPES::T1 >::t _##N1,						\
-				urefto< TYPES::T2 >::t _##N2,						\
-				urefto< TYPES::T3 >::t _##N3):						\
-			N1 ( _##N1 ), N2 ( _##N2 ), N3 ( _##N3 ) {}				\
-		CLASS ( uconstref_of< CLASS >::t other ):					\
-			N1 (other. N1 ), N2 (other. N2 ), N3 (other. N3 ) {}	\
-		~CLASS (void) {}											\
-		UOVERLOADED_VOID_ASSIGN_VIA_COPY_CONSTRUCTOR( CLASS )		\
-		NMUDEFINE_CLONE_VIA_COPY_CONSTRUCTOR( CLASS )				\
-	};																\
+#define NMUTRIPLE(CLASS, TYPES, N1, N2, N3)								\
+		struct CLASS {													\
+			TYPES::T1 N1; TYPES::T2 N2; TYPES::T3 N3;					\
+			CLASS (														\
+					urefto< TYPES::T1 >::t _##N1,						\
+					urefto< TYPES::T2 >::t _##N2,						\
+					urefto< TYPES::T3 >::t _##N3):						\
+				N1 ( _##N1 ), N2 ( _##N2 ), N3 ( _##N3 ) {}				\
+			CLASS ( uconstref_of< CLASS >::t other ):					\
+				N1 (other. N1 ), N2 (other. N2 ), N3 (other. N3 ) {}	\
+			~CLASS (void) {}											\
+			UOVERLOADED_VOID_ASSIGN_VIA_COPY_CONSTRUCTOR( CLASS )		\
+		};																\
 
 #define NMUTRIPLES(CLASS, TYPES, N1, N2, N3)								\
 		NMUTRIPLE(CLASS, TYPES, N1, N2, N3)									\
@@ -76,20 +109,24 @@ struct nmuconsttripletypes {
 
 ///////////////////////////////////////////////////////////
 
+#define USE(VAL)	static_cast<void>(VAL)
+
+///////////////////////////////////////////////////////////
+
 template <typename T>
 static inline
-T* nmucallconstructor (T* const ptr)
+T* callconstructor (T* const ptr)
 	{ return new(ptr) T; }
 
 template <typename T>
 static inline
-T* nmucallconstructor (void* const ptr, T const& arg)
+T* callconstructor (void* const ptr, T const& arg)
 	{ return new(ptr) T(arg); }
 
 template <typename T>
 static inline
-T* nmureset (T* const ptr)
-	{ ucalldestructor(ptr); return nmucallconstructor(ptr); }
+T* reset (T* const ptr)
+	{ ucalldestructor(ptr); return callconstructor(ptr); }
 
 ///////////////////////////////////////////////////////////
 
@@ -102,12 +139,12 @@ T const* castconst (T* const ptr)
 
 template <typename T>
 static inline
-void* nmuvoidcast (T* const ptr)
+void* voidcast (T* const ptr)
 	{ return ptr; }
 
 template <typename T>
 static inline
-void const* nmuvoidcast (T const* const ptr)
+void const* voidcast (T const* const ptr)
 	{ return ptr; }
 
 ///////////////////////////////////////////////////////////
@@ -120,7 +157,7 @@ struct TypeOf { typedef t T; };
 template <typename T, const size_t N> static
 typename TypeOf<char (*)[N]>::T CountOfHelper ( UNALIGNED T (& arr)[N] );
 
-#define countof(ARR)	sizeof(*CountOfHelper(ARR))
+#define countof(ARR)	( sizeof(*CountOfHelper(ARR)) )
 
 ///////////////////////////////////////////////////////////
 
@@ -232,7 +269,7 @@ public:
 
 	template <typename StringType>
 	void		operator = (StringType const& other) {
-					if (nmuvoidcast(this) != nmuvoidcast(&other)) {
+					if (voidcast(this) != voidcast(&other)) {
 						ucalldestructor(this);
 						new(this) cstring(other);
 					}

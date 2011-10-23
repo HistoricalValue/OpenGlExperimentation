@@ -83,7 +83,7 @@ MeshStats::timing_t MeshStats::operator [] (Timing const timing) const
 
 MeshStats& MeshStats::Reset (void) {
 	TimeUpdateNotifee* const notis(notifee);
-	nmureset(this);
+	reset(this);
 	notifee = notis;
 	return *this;
 }
