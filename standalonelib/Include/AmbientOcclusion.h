@@ -123,8 +123,8 @@ void UpdateAmbientOcclusionFactors (shapes::Mesh::Elements& elements, const Samp
 
 class IneffectiveAmbientOcclusionCreator: public shapes::Mesh::AmbientOcclusionCreator {
 public:
-	virtual void								operator () (shapes::MeshElement const&, float (*&)[3]) const
-													{}
+	virtual void								operator () (shapes::MeshElement const& elem, float (*&aos)[3]) const
+													{ elem.MakeAmbientOcclusion(aos); DASSERT(elem.GetAmbientOcclusionArray() == aos); }
 	NMUSTANDARD_STATELESS_OBJECT_METHODS(IneffectiveAmbientOcclusionCreator)
 };
 

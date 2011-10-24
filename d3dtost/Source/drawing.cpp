@@ -17,9 +17,7 @@
 #define WITH_INVERSE_IT	1
 
 //	#define NURBS_LOAD_FROM	"surface_bin"
-//	#define NURBS_LOAD_FROM	"$BOB ROSS - Moon Valley med Horns_antisavidised_2.0"
-	#define NURBS_LOAD_FROM	"$BOB ROSS - Moon Valley med Horns_0.2"
-//	#define NURBS_LOAD_FROM "$BOB ROSS - Moon Valley med Horns_0.5"
+	#define NURBS_LOAD_FROM	"BOB ROSS - Moon Valley med Horns_aabbao_0.030"
 //	#define NURBS_LOAD_FROM	"../QuickTost/lala"
 
 #define DONT	if (false)

@@ -383,7 +383,7 @@ struct dptr {
 
 	T*		native (void) const			{ return operator ->(); }
 	void	Delete (void)				{ udelete(ptr); }
-	void	nullify (void)				{ unullify(ptr); }
+	void	nullify (void)				{ DASSERTPTR(DNULLCHECK(ptr)); unullify(ptr); }
 	Self&	New (void)					{ unew(ptr); }
 	bool	isnull (void) const			{ return ptr == NULL; }
 	T*		discard (void)				{ T* const result(ptr); nullify(); return result; }

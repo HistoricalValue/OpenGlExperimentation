@@ -72,15 +72,19 @@ static inline Mesh::Elements& ComputeBarycentricFactors (Mesh::Elements& element
 
 ///////////////////////////////////////////////////////////
 
-#define MESH_TIMING_STAT(NAME)				\
-	private:								\
-		timing_t	valueOf##NAME;			\
-		bool		timed##NAME;			\
-	public:									\
-		void		Start##NAME (void)		\
-						{ Start(NAME); }	\
-		void		End##NAME (void)		\
-						{ End(NAME); }		\
+#define MESH_TIMING_STAT(NAME)						\
+	private:										\
+		timing_t	valueOf##NAME;					\
+		bool		timed##NAME;					\
+	public:											\
+		void		Start##NAME (void)				\
+						{ Start(NAME); }			\
+		void		End##NAME (void)				\
+						{ End(NAME); }				\
+		bool		IsTimed##NAME (void) const		\
+						{ return IsTimed(NAME); }	\
+		void		Reset##NAME (void)				\
+						{ return Reset(NAME); }		\
 
 struct MeshStats {
 	typedef unsigned long	timing_t;
@@ -89,6 +93,7 @@ struct MeshStats {
 		virtual ~TimeUpdateNotifee (void) {}
 		virtual void	TimingStarted (char const* what) const;
 		virtual void	TimingEnded (char const* what, timing_t howMuch) const;
+		virtual void	TimingRestarted (char const* what) const;
 	};
 
 	enum Timing {
@@ -97,22 +102,22 @@ struct MeshStats {
 		BoundingVolume		=  2u,
 		Savidise			=  3u,
 		Aabb				=  4u,
-		Update1				=  5u,
-		Update2				=  6u,
-		IndexBuffer1		=  7u,
-		IndexBuffer2		=  8u,
-		StoreBin1			=  9u,
-		StoreText1			= 10u,
-		StoreBin2			= 11u,
-		StoreText2			= 12u
+		Update				=  5u,
+		IndexBuffer			=  6u,
+		StoreBin			=  7u,
+		StoreText			=  8u
 	};
-	static const size_t NumberOfTimings = size_t(StoreText2) + 1;
+	static const size_t NumberOfTimings = size_t(StoreText) + 1;
 
 	static bool		IsValidTiming (size_t);
+
+	bool			AreAllTimed (void) const;
+	bool			IsNoneTimed (void) const;
 
 	bool			IsTimed (Timing) const;
 	void			Start (Timing);
 	void			End (Timing);
+	void			Reset (Timing);
 
 	timing_t		operator [] (Timing) const;
 	MeshStats&		Reset (void);
@@ -122,29 +127,29 @@ struct MeshStats {
 
 	NMUDECLARE_WRITE_LINES
 	MeshStats (void);
+	MeshStats (MeshStats const&);
+	~MeshStats (void);
+
 private:
 	// State
 	TimeUpdateNotifee*	notifee;
-	MESH_TIMING_STAT(Tesselation		)	//  0
-	MESH_TIMING_STAT(BarycentricFactors	)	//  1
-	MESH_TIMING_STAT(BoundingVolume		)	//  2
-	MESH_TIMING_STAT(Savidise			)	//  3
-	MESH_TIMING_STAT(Aabb				)	//  4
-	MESH_TIMING_STAT(Update1			)	//  5
-	MESH_TIMING_STAT(Update2			)	//  6
-	MESH_TIMING_STAT(IndexBuffer1		)	//  7
-	MESH_TIMING_STAT(IndexBuffer2		)	//  8
-	MESH_TIMING_STAT(StoreBin1			)	//  9
-	MESH_TIMING_STAT(StoreText1			)	// 10
-	MESH_TIMING_STAT(StoreBin2			)	// 11
-	MESH_TIMING_STAT(StoreText2			)	// 12
+	MESH_TIMING_STAT(Tesselation		)	//  0u
+	MESH_TIMING_STAT(BarycentricFactors	)	//  1u
+	MESH_TIMING_STAT(BoundingVolume		)	//  2u
+	MESH_TIMING_STAT(Savidise			)	//  3u
+	MESH_TIMING_STAT(Aabb				)	//  4u
+	MESH_TIMING_STAT(Update				)	//  5u
+	MESH_TIMING_STAT(IndexBuffer		)	//  6u
+	MESH_TIMING_STAT(StoreBin			)	//  7u
+	MESH_TIMING_STAT(StoreText			)	//  8u
 
 private:
 	friend class MeshStatsHelper;
 };
 
-inline void MeshStats::TimeUpdateNotifee::TimingStarted	(char const* const) const {}
-inline void MeshStats::TimeUpdateNotifee::TimingEnded	(char const* const, timing_t const) const {}
+inline void MeshStats::TimeUpdateNotifee::TimingStarted		(char const* const) const {}
+inline void MeshStats::TimeUpdateNotifee::TimingEnded		(char const* const, timing_t const) const {}
+inline void MeshStats::TimeUpdateNotifee::TimingRestarted	(char const* const) const {}
 
 #define MESH_TIME(OBJ,WHAT,COMMAND)		\
 		OBJ.Start##WHAT();				\

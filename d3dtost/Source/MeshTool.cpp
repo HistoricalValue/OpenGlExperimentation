@@ -54,7 +54,7 @@ static Kilostring&			BasePathForId (Kilostring& path, char const* id);
 static Kilostring&			BinPathForId (Kilostring& path, char const* id);
 static Kilostring&			TextPathForId (Kilostring& path, char const* id);
 
-static void					WriteAllMeshInfo (std::list<MeshWithInfo> const&);
+static void					WriteAllMeshInfo (std::list<MeshInfo> const&);
 
 static void					Initialise (void);
 static void					CleanUp (void);
@@ -64,6 +64,7 @@ struct TimingNotifee: public MeshStats::TimeUpdateNotifee {
 
 	virtual void	TimingStarted (char const* what) const;
 	virtual void	TimingEnded (char const* what, MeshStats::timing_t howMuch) const;
+	virtual void	TimingRestarted (char const* what) const;
 };
 
 static ao::AnyAmbientOcclusionCreatorProxy
@@ -75,17 +76,16 @@ static ao::AnyAmbientOcclusionCreatorProxy
 static void DebugAwareTesselation (Mesh::Elements&, Surface const&, TesselationParameters const&);
 
 static void ProduceMeshFromMeshProductionRequirements (
-				std::list<MeshWithInfo>&	into,
+				std::list<MeshInfo>&		into,
 				MeshStats&					mt,
 				Mesh::Elements const&		elements,
-				dptr<BoundingVolume>		boundingVolume,
+				BoundingVolume*				boundingVolume,
 				char const*					meshId,
 				char const*					meshPath,
 				char const*					meshTextPath,
-				Unit						step,
-				bool						one);
+				Unit						step);
 static void	ProduceOrLoadMeshes (
-				std::list<MeshWithInfo>&	into,
+				std::list<MeshInfo>&		into,
 				std::list<Unit> const&		steps,
 				MeshStats&					mt);
 static void LoadMeshesInto (
@@ -100,7 +100,7 @@ namespace my {
 void MeshProcess (void) {
 	::Initialise();
 	{	
-		std::list<MeshWithInfo>		into;
+		std::list<MeshInfo>			into;
 		MeshStats					timing;
 		TimingNotifee				notifee;
 		std::list<Unit>				steps;
@@ -112,29 +112,6 @@ void MeshProcess (void) {
 		#else
 		LoadMeshesInto(meshes);
 		#endif
-
-		MeshIndex& Index(MeshIndex::GetSingleton());
-		Index.ImportAllFromMeshLoader();
-		Index.Store();
-
-		{
-			typedef std::map<std::string, Mesh*> Meshes;
-
-			Meshes const&					all(MeshLoader::GetSingleton().GetAll());
-			std::list<Mesh*>				toUnload, toDelete;
-			Meshes::const_iterator const	meshes_end(all.end());
-
-			for (Meshes::const_iterator meshIdWithMesh(all.begin()); meshIdWithMesh != meshes_end; ++meshIdWithMesh)
-				if (MeshLoader::GetSingleton().IsLoaded(meshIdWithMesh->second))
-					toUnload.push_back(meshIdWithMesh->second);
-				else
-					toDelete.push_back(meshIdWithMesh->second);
-
-			foreach(toUnload, ubind1st(umemberfunctionpointer(&MeshLoader::Unload), MeshLoader::GetSingletonPtr()));
-			foreach(toDelete, uptrdestructorfunctor<Mesh*>());
-		}
-
-		foreach(into, umemberfunctionpointer_ref(&MeshWithInfo::NullifyMeshPointer));
 	}
 	::CleanUp();
 }
@@ -146,7 +123,10 @@ void MeshProcess (void) {
 ///////////////////////////////////////////////////////////
 
 // static
-void ProduceOrLoadMeshes (std::list<MeshWithInfo>& into, std::list<Unit> const& steps, MeshStats& mt) {
+void ProduceOrLoadMeshes (
+		std::list<MeshInfo>&	into,
+		std::list<Unit> const&	steps,
+		MeshStats&				mt) {
 	typedef dptr<Mesh>					MeshPtr;
 
 	// reusables
@@ -160,18 +140,49 @@ void ProduceOrLoadMeshes (std::list<MeshWithInfo>& into, std::list<Unit> const& 
 		out() << "\n *** Meshes for step= " << *step << ": ";
 
 		MeshAABBTree	aabb;
-		bool			prerequisitesMade(false), one(false);
+		bool			prerequisitesMade(false), one(false), oneLoaded(false);
 
-		for (size_t i(0u); i < 2u; ++i) {
+		for (size_t i(1u); i <= 2u; ++i) {
 			one = !one;
+			PASSERT( (!(i == 1) || one == true) && (!(i == 2) || one == false))
 
 			BinPathForId(loadpath, IdForStep(meshIdForStep, meshId.format(one? "%s_aabbao" : "%s_aabbao_antisavidised", ucstringarg(bob.GetName())), *step));
 			TextPathForId(textpath, meshIdForStep);
 
 			out() << "\n       - " << meshId << ": " << loadpath << " ... ";
 
-			if (MeshLoader::GetSingleton().Load(loadpath))
+			if (!one && !oneLoaded) {
+				mt.ResetUpdate();
+				mt.ResetIndexBuffer();
+				mt.ResetStoreBin();
+				mt.ResetStoreText();
+				out() << "\n           ... ";
+			}
+
+			if (MeshLoader::GetSingleton().Load(loadpath)) {
 				out() << "loaded"; // ok
+				
+				MeshIndex& Index(MeshIndex::GetSingleton());
+				Index.ImportAllFromMeshLoader();
+				Index.Store();
+
+				MeshLoader::GetSingleton().Unload(MeshLoader::GetSingleton().GetFromPath(loadpath));
+
+				if (one)
+					oneLoaded = true;
+
+				if (!oneLoaded) {
+					PASSERT(!one)
+
+					mt.ResetTesselation();
+					mt.ResetBarycentricFactors();
+					mt.ResetBoundingVolume();
+					mt.ResetSavidise();
+					mt.ResetAabb();
+
+					volume.Delete();
+				}
+			}
 			else {
 				out() << "producing ... ";
 
@@ -191,12 +202,11 @@ void ProduceOrLoadMeshes (std::list<MeshWithInfo>& into, std::list<Unit> const& 
 					into,
 					mt,
 					one? elements : elementsAntisavidised,
-					one? tmpdptr<BoundingVolume>(volume->Clone()) : tmpdptr<BoundingVolume>(volume),
+					one? volume->Clone() : volume.discard(),
 					meshIdForStep,
 					loadpath,
 					textpath,
-					*step,
-					one);
+					*step);
 			}
 
 			// reusables reset
@@ -205,11 +215,12 @@ void ProduceOrLoadMeshes (std::list<MeshWithInfo>& into, std::list<Unit> const& 
 			loadpath.clear();
 		}
 
+		WriteAllMeshInfo(into);
+
 		// reusables reset
 		mt.Reset();
 		elements.clear();
 		elementsAntisavidised.clear();
-		volume.nullify();
 	}
 
 	out() << "\n";
@@ -217,24 +228,20 @@ void ProduceOrLoadMeshes (std::list<MeshWithInfo>& into, std::list<Unit> const& 
 
 // static
 void ProduceMeshFromMeshProductionRequirements (
-		std::list<MeshWithInfo>&	into,
+		std::list<MeshInfo>&		into,
 		MeshStats&					mt,
 		Mesh::Elements const&		elements,
-		dptr<BoundingVolume>		boundingVolume,
+		BoundingVolume* const		_boundingVolume,
 		char const* const			meshId,
 		char const* const			meshPath,
 		char const* const			meshTextPath,
-		Unit const					step,
-		bool const					one) {
+		Unit const					step) {
+	dptr<BoundingVolume>	boundingVolume(_boundingVolume);
 	dptr<Mesh>				mesh;
-	MeshStats::Timing const	Update		(one? MeshStats::Update1		: MeshStats::Update2		),
-							IndexBuffer	(one? MeshStats::IndexBuffer1	: MeshStats::IndexBuffer2	),
-							StoreBin	(one? MeshStats::StoreBin1		: MeshStats::StoreBin2		),
-							StoreText	(one? MeshStats::StoreText1		: MeshStats::StoreText2		);
 	{
 		ao::MeshIntersectionData intersectionData;
 
-		MESH_TIME_VAR(
+		MESH_TIME(
 			mt,
 			Update,
 			mesh = DNEWCLASS(
@@ -247,26 +254,21 @@ void ProduceMeshFromMeshProductionRequirements (
 					boundingVolume.discard())));
 	}
 
-	MESH_TIME_VAR(mt, IndexBuffer, mesh->GetIndexBuffer());
+	MESH_TIME(mt, IndexBuffer, mesh->GetIndexBuffer());
 
 	{
-		MESH_TIME_VAR(mt, StoreBin, mesh->StoreBin(meshPath));
-		MESH_TIME_VAR(mt, StoreText, mesh->StoreText(meshTextPath));
+		MESH_TIME(mt, StoreBin, mesh->StoreBin(meshPath));
+		MESH_TIME(mt, StoreText, mesh->StoreText(meshTextPath));
 
 		MeshLoader::GetSingleton().GivePath(mesh.native(), meshPath);
+		into.push_back(MeshInfo(*mesh, step, mt));
+
+		MeshIndex& Index(MeshIndex::GetSingleton());
+		Index.ImportAllFromMeshLoader();
+		Index.Store();
 	}
 
-	{
-		MeshWithInfo info(mesh, step, mt);
-
-		into.push_back(info);
-
-		info.NullifyMeshPointer();
-	}
-
-	mesh.nullify();
-
-	WriteAllMeshInfo(into);
+	mesh.Delete();
 }
 
 // static
@@ -330,12 +332,16 @@ ao::AnyAmbientOcclusionCreatorProxy MakeAmbientOcclusionCreator(
 
 // static
 Kilostring& IdForStep (Kilostring& kilostring, char const* base, float step)
-	{ return kilostring.format("%s_%3.1f", base, step); }
+	{ return kilostring.format("%s_%5.3f", base, step); }
 
 // static
 std::list<Unit>& ProduceStepsInto (std::list<Unit>& into) {
 #if WITH_FAKE_TESSELATION == 0 && (FAST_TESSELATION == 1 || (defined(_DEBUG) && NO_AO == 0))
 	Unit const	steps[] = {2e-0f};
+#elif !defined(_DEBUG) && NO_AO == 1
+	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f, 1e-1f, 9e-2f, 8e-2f, 7e-2f, 6e-2f, 5e-2f, 4e-2f, 3e-2f, 2e-2f, 1e-2f};
+#elif defined(_DEBUG)
+	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f};
 #else
 	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f, 1e-1f};
 #endif
@@ -351,12 +357,11 @@ std::list<Unit>& ProduceStepsInto (std::list<Unit>& into) {
 ///////////////////////////////////////////////////////////
 
 // static
-void WriteAllMeshInfo (std::list<MeshWithInfo> const& meshesWithInfos) {
+void WriteAllMeshInfo (std::list<MeshInfo> const& meshesInfos) {
 	std::ofstream fout("../meshes/generation_stats.txt", std::ios::out | std::ios::trunc | std::ios::binary);
 	PASSERT(fout.good())
 
-	IFOREACH(std::list<MeshWithInfo>::const_iterator, meshesWithInfos, meshWithInfo)
-		WriteToStream(fout, meshWithInfo->info);
+	foreach(meshesInfos, ubind1st(uptr_fun(&WriteToStream<MeshInfo>), fout));
 }
 
 ///////////////////////////////////////////////////////////
@@ -407,5 +412,6 @@ my::Console& out (void) { return my::global::GetConsole(); }
 TimingNotifee::~TimingNotifee (void) {}
 void TimingNotifee::TimingStarted (char const* const what) const { out() << "\n         - " << what << " ... "; }
 void TimingNotifee::TimingEnded (char const* const, MeshStats::timing_t const howMuch) const { out() << howMuch << "ms"; }
+void TimingNotifee::TimingRestarted (char const* const what) const { out() << "\n         \\ restarting " << what; }
 
 ///////////////////////////////////////////////////////////
