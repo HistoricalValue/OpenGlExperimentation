@@ -17,7 +17,7 @@
 #include <drawing_nurbs.h>
 #include <drawing_utils.h>
 
-#define FORCE_REAL_TESSELATION	0
+#define FORCE_REAL_TESSELATION	1
 #define FAST_TESSELATION		0
 #define NO_AO					0
 
@@ -352,7 +352,7 @@ Kilostring& IdForStep (Kilostring& kilostring, char const* base, float step)
 std::list<Unit>& ProduceStepsInto (std::list<Unit>& into) {
 #if WITH_FAKE_TESSELATION == 0 && (FAST_TESSELATION == 1 || (defined(_DEBUG) && NO_AO == 0))
 	Unit const	steps[] = {2e-0f};
-#elif !defined(_DEBUG) && NO_AO == 1
+#elif !defined(_DEBUG) && NO_AO == 1 || WITH_FAKE_TESSELATION == 1
 	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f, 1e-1f, 9e-2f, 8e-2f, 7e-2f, 6e-2f, 5e-2f, 4e-2f, 3e-2f, 2e-2f, 1e-2f};
 #elif defined(_DEBUG)
 	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f};
