@@ -177,7 +177,7 @@ public:
 
 	virtual void	operator () (shapes::MeshElement const& elem, float (*&ambientOcclusion)[3]) const
 						{ gateway->operator ()(elem, ambientOcclusion); }
-	
+
 	UCLONE_VIA_COPY_CONSTRUCTOR(AnyAmbientOcclusionCreatorProxy, Clone)
 	UOVERLOADED_VOID_ASSIGN_VIA_COPY_CONSTRUCTOR(AnyAmbientOcclusionCreatorProxy)
 	AnyAmbientOcclusionCreatorProxy (Gateway* const _gateway):

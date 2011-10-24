@@ -69,7 +69,7 @@ typedef voidp const			voidcp;
 		CLASS * Clone (voidcp at, csize_t bs) const							\
 					{ return bs >= sizeof(*this)? new(at) CLASS : NULL; }	\
 		CLASS *	Clone (void) const { return DNEW( CLASS ); }
-		
+
 ///////////////////////////////////////////////////////////
 template <typename Type>	struct nmuconst_of				{ typedef Type const						T; };
 template <typename Type>	struct nmuconst_of<Type const>	{ typedef typename nmuconst_of<Type>::T		T; };
@@ -78,7 +78,7 @@ template <typename Type>	struct nmuconst_of<Type&>		{ typedef typename nmuconst_
 ///////////////////////////////////////////////////////////
 template <typename Type1, typename Type2, typename Type3>
 struct nmutripletypes {
-	typedef Type1 T1; 
+	typedef Type1 T1;
 	typedef Type2 T2;
 	typedef Type3 T3;
 };

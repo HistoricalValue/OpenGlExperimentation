@@ -19,7 +19,7 @@
 
 #define FORCE_REAL_TESSELATION	0
 #define FAST_TESSELATION		0
-#define NO_AO					1
+#define NO_AO					0
 
 #if FORCE_REAL_TESSELATION == 1 || !defined(_DEBUG) || NO_AO == 1
 #	define WITH_FAKE_TESSELATION 0
@@ -69,9 +69,13 @@ struct TimingNotifee: public MeshStats::TimeUpdateNotifee {
 
 static ao::AnyAmbientOcclusionCreatorProxy
 			MakeAmbientOcclusionCreator(
-				ao::SamplingRate			samplingRate,
-				Mesh::Elements const*		elements,
-				ao::MeshIntersectionData*	intersectionData);
+				ao::SamplingRate								samplingRate,
+				Mesh::Elements const*							elements,
+				ao::MeshIntersectionData*						intersectionData,
+				//
+				ComputeMeshAmbientOcclusion::SamplingRate const	samplingRate2,
+				MeshAABBTree const&								aabb,
+				float const										maxDistance);
 
 static void DebugAwareTesselation (Mesh::Elements&, Surface const&, TesselationParameters const&);
 
@@ -80,6 +84,7 @@ static void ProduceMeshFromMeshProductionRequirements (
 				MeshStats&					mt,
 				Mesh::Elements const&		elements,
 				BoundingVolume*				boundingVolume,
+				MeshAABBTree const&			aabb,
 				char const*					meshId,
 				char const*					meshPath,
 				char const*					meshTextPath,
@@ -99,7 +104,7 @@ namespace my {
 
 void MeshProcess (void) {
 	::Initialise();
-	{	
+	{
 		std::list<MeshInfo>			into;
 		MeshStats					timing;
 		TimingNotifee				notifee;
@@ -136,7 +141,7 @@ void ProduceOrLoadMeshes (
 	dptr<BoundingVolume>				volume;
 	Kilostring							meshId, meshIdForStep, loadpath, textpath;
 
-	IFOREACH (std::list<Unit>::const_iterator, steps, step) {	
+	IFOREACH (std::list<Unit>::const_iterator, steps, step) {
 		out() << "\n *** Meshes for step= " << *step << ": ";
 
 		MeshAABBTree	aabb;
@@ -161,7 +166,7 @@ void ProduceOrLoadMeshes (
 
 			if (MeshLoader::GetSingleton().Load(loadpath)) {
 				out() << "loaded"; // ok
-				
+
 				MeshIndex& Index(MeshIndex::GetSingleton());
 				Index.ImportAllFromMeshLoader();
 				Index.Store();
@@ -203,6 +208,7 @@ void ProduceOrLoadMeshes (
 					mt,
 					one? elements : elementsAntisavidised,
 					one? volume->Clone() : volume.discard(),
+					aabb,
 					meshIdForStep,
 					loadpath,
 					textpath,
@@ -232,6 +238,7 @@ void ProduceMeshFromMeshProductionRequirements (
 		MeshStats&					mt,
 		Mesh::Elements const&		elements,
 		BoundingVolume* const		_boundingVolume,
+		MeshAABBTree const&			aabb,
 		char const* const			meshId,
 		char const* const			meshPath,
 		char const* const			meshTextPath,
@@ -250,7 +257,9 @@ void ProduceMeshFromMeshProductionRequirements (
 					meshId,
 					NULL,
 					NULL,
-					uaddress_of(MakeAmbientOcclusionCreator(ao::SamplingRate_9, &elements, &intersectionData)), 
+					uaddress_of(MakeAmbientOcclusionCreator(
+						ao::SamplingRate_9, &elements, &intersectionData,
+						ComputeMeshAmbientOcclusion::Samples9, aabb, 4.0f)),
 					boundingVolume.discard())));
 	}
 
@@ -317,14 +326,19 @@ void DebugAwareTesselation (Mesh::Elements& elements, Surface const& bob, Tessel
 
 // static
 ao::AnyAmbientOcclusionCreatorProxy MakeAmbientOcclusionCreator(
-		ao::SamplingRate const			samplingRate,
-		Mesh::Elements const* const		elements,
-		ao::MeshIntersectionData* const	intersectionData) {
+		ao::SamplingRate const							samplingRate,
+		Mesh::Elements const* const						elements,
+		ao::MeshIntersectionData* const					intersectionData,
+		//
+		ComputeMeshAmbientOcclusion::SamplingRate const	samplingRate2,
+		MeshAABBTree const&								aabb,
+		float const										maxDistance) {
 #if NO_AO == 1
-	USE(samplingRate), USE(elements), USE(intersectionData);
+	USE(samplingRate), USE(elements), USE(intersectionData), USE(samplingRate2), USE(aabb), USE(maxDistance);
 	return DNEW(ao::IneffectiveAmbientOcclusionCreator);
 #else
-	return DNEWCLASS(ao::AmbientOcclusionCreatorProxy, (samplingRate, elements, intersectionData));
+//	return DNEWCLASS(ao::AmbientOcclusionCreatorProxy, (samplingRate, elements, intersectionData));
+	return DNEWCLASS(ComputeMeshAmbientOcclusion, (samplingRate2, aabb, maxDistance));
 #endif
 }
 
@@ -343,7 +357,7 @@ std::list<Unit>& ProduceStepsInto (std::list<Unit>& into) {
 #elif defined(_DEBUG)
 	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f};
 #else
-	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f, 1e-1f};
+	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f};//, 1e-1f};
 #endif
 
 	into.clear();

@@ -95,7 +95,7 @@ MeshStats& MeshStats::Reset (void) {
 	TimeUpdateNotifee* const notis(notifee);
 	reset(this);
 	notifee = notis;
-	
+
 	return *this;
 }
 
@@ -118,12 +118,12 @@ bool MeshStats::IsTimed (Timing const timing) const
 
 void MeshStats::Start (Timing const timing) {
 	DASSERT(!IsTimed(timing));
-	
+
 	MeshStatsHelper::TimingEntry entry(MeshStatsHelper::Get(*this, timing));
-						
-	DNULLCHECK(notifee)->TimingStarted(entry.name);	
-	entry.value = ugettime();					
-	entry.timed = true;						
+
+	DNULLCHECK(notifee)->TimingStarted(entry.name);
+	entry.value = ugettime();
+	entry.timed = true;
 }
 
 void MeshStats::End (Timing const timing) {

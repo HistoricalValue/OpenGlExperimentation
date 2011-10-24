@@ -121,7 +121,7 @@ struct MeshStats {
 
 	timing_t		operator [] (Timing) const;
 	MeshStats&		Reset (void);
-	
+
 	void			SetNotifee (TimeUpdateNotifee* const _notifee)
 						{ notifee = _notifee; }
 
