@@ -19,8 +19,8 @@ size_t	Options::LineShapeColouringMethod (void)					{ return COLOUR_WITH_COLOUR	
 size_t	Options::TriangleShapeColouringMethod (void)				{ return
 																			//	COLOUR_WITH_COLOUR
 																			//	COLOUR_WITH_LIGHTING_AND_COLOUR
-																				COLOUR_WITH_AMBIENT_OCCLUSION
-																			//	COLOUR_WITH_COLOUR_AND_AMBIENT_OCCLUSION
+																			//	COLOUR_WITH_AMBIENT_OCCLUSION
+																				COLOUR_WITH_COLOUR_AND_AMBIENT_OCCLUSION
 																			//	COLOUR_WITH_LIGHTING_AND_AO_AND_COLOUR
 																			; }
 size_t	Options::TriangleShapeGridColouringMethod (void)			{ return COLOUR_WITH_NEON		; }
