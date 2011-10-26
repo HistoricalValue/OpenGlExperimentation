@@ -17,7 +17,8 @@
 #define WITH_INVERSE_IT	1
 
 //	#define NURBS_LOAD_FROM	"surface_bin"
-	#define NURBS_LOAD_FROM	"BOB ROSS - Moon Valley med Horns_aabbao_0.030"
+//	#define NURBS_LOAD_FROM	"BOB ROSS - Moon Valley med Horns_aabbao_antisavidised_0.100"
+	#define NURBS_LOAD_FROM	"BOB ROSS - Moon Valley med Horns_aabbao_0.300"
 //	#define NURBS_LOAD_FROM	"../QuickTost/lala"
 
 #define DONT	if (false)
@@ -153,7 +154,7 @@ namespace _ {
 		P_DEBUG_STMT(__last_static_buffer_allocation = result;)
 		P_DEBUG_STMT(__last_static_buffer_allocation_size = size;)
 
-		return result;
+		return DNULLCHECK(result);
 	}
 
 	P_INLINE

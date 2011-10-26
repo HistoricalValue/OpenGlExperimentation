@@ -19,7 +19,7 @@
 
 #define FORCE_REAL_TESSELATION	1
 #define FAST_TESSELATION		0
-#define NO_AO					0
+#define NO_AO					1
 
 #if FORCE_REAL_TESSELATION == 1 || !defined(_DEBUG) || NO_AO == 1
 #	define WITH_FAKE_TESSELATION 0

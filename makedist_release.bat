@@ -5,7 +5,7 @@ copy Release\MyUtil.dll dist\bin &
 copy Release\nmDevIL.dll dist\bin &
 copy Release\NURBS.dll dist\bin &
 copy Release\TextureManager.dll dist\bin &
-copy Release\UtilAndDefensiveHeapD.dll dist\bin &
+copy Release\UtilAndDefensiveHeap.dll dist\bin &
 copy Release\d3dtost.exe dist\bin &
 
 copy meshes\moon_valley_bumps_12610_with_ao9_aotime345431ms.msh dist\meshes &
