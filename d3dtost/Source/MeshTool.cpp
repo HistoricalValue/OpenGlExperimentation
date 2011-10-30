@@ -19,7 +19,7 @@
 
 #define FORCE_REAL_TESSELATION	1
 #define FAST_TESSELATION		0
-#define NO_AO					1
+#define NO_AO					0
 
 #if FORCE_REAL_TESSELATION == 1 || !defined(_DEBUG) || NO_AO == 1
 #	define WITH_FAKE_TESSELATION 0
@@ -68,7 +68,9 @@ struct TimingNotifee: public MeshStats::TimeUpdateNotifee {
 };
 
 static ao::AnyAmbientOcclusionCreatorProxy
-			MakeAmbientOcclusionCreator(
+			MakeAmbientOcclusionCreator (
+				float											step,
+				//
 				ao::SamplingRate								samplingRate,
 				Mesh::Elements const*							elements,
 				ao::MeshIntersectionData*						intersectionData,
@@ -137,7 +139,7 @@ void ProduceOrLoadMeshes (
 	// reusables
 	// mt
 	Surface const						bob(Surfaces::MoonValleyWithHorns(0.8f));
-	Mesh::Elements						elements, elementsAntisavidised;
+	Mesh::Elements						elements;
 	dptr<BoundingVolume>				volume;
 	Kilostring							meshId, meshIdForStep, loadpath, textpath;
 
@@ -195,18 +197,17 @@ void ProduceOrLoadMeshes (
 					MESH_TIME(mt, Tesselation,			DebugAwareTesselation(elements, bob, TesselationParameters(*step))	);
 					MESH_TIME(mt, BarycentricFactors,	ComputeBarycentricFactors(elements)									);
 					MESH_TIME(mt, BoundingVolume,		volume = BuiltinShapes::Triangles(elements)							);
-					MESH_TIME(mt, Savidise,				InvertNormalsAndWinding(elementsAntisavidised, elements)			);
 					MESH_TIME(mt, Aabb,					aabb(elements, volume.native())										);
 
 					prerequisitesMade = true;
 				}
-
-				PASSERT(elements.size() == elementsAntisavidised.size())
+				if (!one)
+					InvertNormalsAndWinding(elements);
 
 				ProduceMeshFromMeshProductionRequirements(
 					into,
 					mt,
-					one? elements : elementsAntisavidised,
+					elements,
 					one? volume->Clone() : volume.discard(),
 					aabb,
 					meshIdForStep,
@@ -226,7 +227,6 @@ void ProduceOrLoadMeshes (
 		// reusables reset
 		mt.Reset();
 		elements.clear();
-		elementsAntisavidised.clear();
 	}
 
 	out() << "\n";
@@ -258,6 +258,7 @@ void ProduceMeshFromMeshProductionRequirements (
 					NULL,
 					NULL,
 					uaddress_of(MakeAmbientOcclusionCreator(
+						step,
 						ao::SamplingRate_9, &elements, &intersectionData,
 						ComputeMeshAmbientOcclusion::Samples9, aabb, 4.0f)),
 					boundingVolume.discard())));
@@ -325,7 +326,9 @@ void DebugAwareTesselation (Mesh::Elements& elements, Surface const& bob, Tessel
 }
 
 // static
-ao::AnyAmbientOcclusionCreatorProxy MakeAmbientOcclusionCreator(
+ao::AnyAmbientOcclusionCreatorProxy MakeAmbientOcclusionCreator (
+		Unit const										step,
+		//
 		ao::SamplingRate const							samplingRate,
 		Mesh::Elements const* const						elements,
 		ao::MeshIntersectionData* const					intersectionData,
@@ -337,8 +340,11 @@ ao::AnyAmbientOcclusionCreatorProxy MakeAmbientOcclusionCreator(
 	USE(samplingRate), USE(elements), USE(intersectionData), USE(samplingRate2), USE(aabb), USE(maxDistance);
 	return DNEW(ao::IneffectiveAmbientOcclusionCreator);
 #else
+	USE(samplingRate), USE(elements), USE(intersectionData);
 //	return DNEWCLASS(ao::AmbientOcclusionCreatorProxy, (samplingRate, elements, intersectionData));
-	return DNEWCLASS(ComputeMeshAmbientOcclusion, (samplingRate2, aabb, maxDistance));
+	return	step > 1e-1?
+				static_cast<Mesh::AmbientOcclusionCreator* const>(DNEWCLASS(ComputeMeshAmbientOcclusion, (samplingRate2, aabb, maxDistance))):
+				static_cast<Mesh::AmbientOcclusionCreator* const>(DNEW(ao::IneffectiveAmbientOcclusionCreator));
 #endif
 }
 
@@ -350,14 +356,12 @@ Kilostring& IdForStep (Kilostring& kilostring, char const* base, float step)
 
 // static
 std::list<Unit>& ProduceStepsInto (std::list<Unit>& into) {
-#if WITH_FAKE_TESSELATION == 0 && (FAST_TESSELATION == 1 || (defined(_DEBUG) && NO_AO == 0))
-	Unit const	steps[] = {2e-0f};
-#elif !defined(_DEBUG) && NO_AO == 1 || WITH_FAKE_TESSELATION == 1
+#if !defined(_DEBUG) && NO_AO == 1 || WITH_FAKE_TESSELATION == 1
 	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f, 1e-1f, 9e-2f, 8e-2f, 7e-2f, 6e-2f, 5e-2f, 4e-2f, 3e-2f, 2e-2f, 1e-2f};
 #elif defined(_DEBUG)
 	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f};
 #else
-	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f};//, 1e-1f};
+	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f, 1e-1f, 9e-2f, 8e-2f, 7e-2f, 6e-2f, 5e-2f, 4e-2f, 3e-2f, 2e-2f, 1e-2f};
 #endif
 
 	into.clear();

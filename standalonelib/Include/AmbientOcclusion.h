@@ -120,15 +120,6 @@ extern
 void UpdateAmbientOcclusionFactors (shapes::Mesh::Elements& elements, const SamplingRate samplingRate, MeshIntersectionData* = NULL);
 
 ///////////////////////////////////////////////////////////
-
-class IneffectiveAmbientOcclusionCreator: public shapes::Mesh::AmbientOcclusionCreator {
-public:
-	virtual void								operator () (shapes::MeshElement const& elem, float (*&aos)[3]) const
-													{ elem.MakeAmbientOcclusion(aos); DASSERT(elem.GetAmbientOcclusionArray() == aos); }
-	NMUSTANDARD_STATELESS_OBJECT_METHODS(IneffectiveAmbientOcclusionCreator)
-};
-
-///////////////////////////////////////////////////////////
 // AmbientOcclusionCreator related
 
 class AmbientOcclusionCreatorFactory {
@@ -142,6 +133,8 @@ public:
 	static AOC*		New (SamplingRate, const shapes::Mesh::Elements*, MeshIntersectionData*);
 	static void		Delete (AOC*);
 };
+
+///////////////////////////////////////////////////////////
 
 class AmbientOcclusionCreatorProxy: public shapes::Mesh::AmbientOcclusionCreator {
 public:
@@ -170,6 +163,8 @@ private:
 	void operator = (AmbientOcclusionCreatorProxy const&);
 };
 
+///////////////////////////////////////////////////////////
+
 class AnyAmbientOcclusionCreatorProxy: public shapes::Mesh::AmbientOcclusionCreator {
 public:
 	typedef shapes::Mesh::AmbientOcclusionCreator	Gateway;
@@ -193,6 +188,14 @@ public:
 
 private:
 	dptr<Gateway>	gateway;
+};
+
+///////////////////////////////////////////////////////////
+
+class IneffectiveAmbientOcclusionCreator: public shapes::Mesh::AmbientOcclusionCreator {
+public:
+	virtual void	operator () (shapes::MeshElement const&, float (*&)[3]) const {}
+	NMUSTANDARD_STATELESS_OBJECT_METHODS(IneffectiveAmbientOcclusionCreator)
 };
 
 ///////////////////////////////////////////////////////////

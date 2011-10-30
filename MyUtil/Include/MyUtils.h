@@ -109,6 +109,28 @@ struct nmuconsttripletypes {
 
 ///////////////////////////////////////////////////////////
 
+template <typename Type1, typename Type2>
+struct nmutuple2types: public nmutripletypes<Type1, Type2, int> {};
+
+#define NMUTUPLE2(CLASS, TYPES, N1, N2)								\
+		struct CLASS {												\
+			TYPES::T1 N1; TYPES::T2 N2;								\
+			CLASS (													\
+					urefto< TYPES::T1 >::t _##N1,					\
+					urefto< TYPES::T2 >::t _##N2):					\
+				N1 ( _##N1 ), N2 ( _##N2 ) {}						\
+			CLASS ( uconstref_of< CLASS >::t other):				\
+				N1 (other. N1 ), N2 (other. N2 ) {}					\
+			~CLASS (void) {}										\
+			UOVERLOADED_VOID_ASSIGN_VIA_COPY_CONSTRUCTOR( CLASS )	\
+		};
+
+#define NMUTUPLE2S(CLASS, TYPES, N1, N2)								\
+		NMUTUPLE2(CLASS, TYPES, N1, N2)									\
+		NMUTUPLE2(Const##CLASS, nmuconsttripletypes< TYPES >, N1, N2)	\
+
+///////////////////////////////////////////////////////////
+
 #define USE(VAL)	static_cast<void>(VAL)
 
 ///////////////////////////////////////////////////////////

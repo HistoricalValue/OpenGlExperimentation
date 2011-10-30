@@ -1,4 +1,4 @@
-// mesh tool jkio
+// mesh tool
 
 #version 330 core
 

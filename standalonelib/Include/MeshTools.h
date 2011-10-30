@@ -55,12 +55,12 @@ public:
 ///////////////////////////////////////////////////////////
 
 template <typename Processor>
-static inline Mesh::Elements& Process (Mesh::Elements& transformed, const Mesh::Elements& elements, const Processor& proc)
-	{ transformed = elements; std::for_each(transformed.begin(), transformed.end(), proc); return transformed; }
-
-template <typename Processor>
 static inline Mesh::Elements& Process (Mesh::Elements& elements, const Processor& proc)
 	{ std::for_each(elements.begin(), elements.end(), proc); return elements; }
+
+template <typename Processor>
+static inline Mesh::Elements& Process (Mesh::Elements& transformed, const Mesh::Elements& elements, const Processor& proc)
+	{ transformed = elements; return Process(transformed, proc); }
 
 static inline Mesh::Elements& InvertNormalsAndWinding (Mesh::Elements& transformed, const Mesh::Elements& elements)
 	{ return Process(transformed, elements, NormalAndWindingInverserMeshElementProcessor()); }
@@ -124,6 +124,9 @@ struct MeshStats {
 
 	void			SetNotifee (TimeUpdateNotifee* const _notifee)
 						{ notifee = _notifee; }
+	
+	typedef nmutuple2types<std::string, ulong> CustomTuple2Types;
+	NMUTYPLE2(Custom, CustomTuple2Types, what, time)
 
 	NMUDECLARE_WRITE_LINES
 	MeshStats (void);
@@ -133,6 +136,7 @@ struct MeshStats {
 private:
 	// State
 	TimeUpdateNotifee*	notifee;
+	std::list<Custom>	custom;
 	MESH_TIMING_STAT(Tesselation		)	//  0u
 	MESH_TIMING_STAT(BarycentricFactors	)	//  1u
 	MESH_TIMING_STAT(BoundingVolume		)	//  2u
@@ -143,7 +147,6 @@ private:
 	MESH_TIMING_STAT(StoreBin			)	//  7u
 	MESH_TIMING_STAT(StoreText			)	//  8u
 
-private:
 	friend class MeshStatsHelper;
 };
 
@@ -155,11 +158,6 @@ inline void MeshStats::TimeUpdateNotifee::TimingRestarted	(char const* const) co
 		OBJ.Start##WHAT();				\
 		COMMAND;						\
 		OBJ.End##WHAT();				\
-
-#define MESH_TIME_VAR(OBJ,WHAT,COMMAND)	\
-		OBJ.Start(WHAT);				\
-		COMMAND;						\
-		OBJ.End(WHAT);					\
 
 ///////////////////////////////////////////////////////////
 
