@@ -184,7 +184,6 @@ void ProduceOrLoadMeshes (
 					mt.ResetTesselation();
 					mt.ResetBarycentricFactors();
 					mt.ResetBoundingVolume();
-					mt.ResetSavidise();
 					mt.ResetAabb();
 
 					volume.Delete();
@@ -202,7 +201,7 @@ void ProduceOrLoadMeshes (
 					prerequisitesMade = true;
 				}
 				if (!one)
-					InvertNormalsAndWinding(elements);
+					{ MESH_TIME_CUSTOM_COMMAND(mt, InvertNormalsAndWinding(elements)); }
 
 				ProduceMeshFromMeshProductionRequirements(
 					into,
@@ -359,7 +358,7 @@ std::list<Unit>& ProduceStepsInto (std::list<Unit>& into) {
 #if !defined(_DEBUG) && NO_AO == 1 || WITH_FAKE_TESSELATION == 1
 	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f, 1e-1f, 9e-2f, 8e-2f, 7e-2f, 6e-2f, 5e-2f, 4e-2f, 3e-2f, 2e-2f, 1e-2f};
 #elif defined(_DEBUG)
-	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f};
+	Unit const	steps[] = {2e-0f, 1e-0f};
 #else
 	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f, 1e-1f, 9e-2f, 8e-2f, 7e-2f, 6e-2f, 5e-2f, 4e-2f, 3e-2f, 2e-2f, 1e-2f};
 #endif

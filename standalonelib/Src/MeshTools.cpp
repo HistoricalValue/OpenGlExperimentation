@@ -36,12 +36,11 @@ static const MeshStats::Timing AllTimings[MeshStats::NumberOfTimings] = {
 	MeshStats::Tesselation			,	//  0u
 	MeshStats::BarycentricFactors	,	//  1u
 	MeshStats::BoundingVolume		,	//  2u
-	MeshStats::Savidise				,	//  3u
-	MeshStats::Aabb					,	//  4u
-	MeshStats::Update				,	//  5u
-	MeshStats::IndexBuffer			,	//  6u
-	MeshStats::StoreBin				,	//  7u
-	MeshStats::StoreText			,	//  8u
+	MeshStats::Aabb					,	//  3u
+	MeshStats::Update				,	//  4u
+	MeshStats::IndexBuffer			,	//  5u
+	MeshStats::StoreBin				,	//  6u
+	MeshStats::StoreText			,	//  7u
 };
 
 class MeshStatsHelper {
@@ -70,7 +69,6 @@ EntryType MeshStatsHelper::GetTimingEntry (MeshStatsType& mt, MeshStats::Timing 
 		case MeshStats::Tesselation			: return EntryType(mt.valueOfTesselation		, mt.timedTesselation			, "Tesselation"			); break;
 		case MeshStats::BarycentricFactors	: return EntryType(mt.valueOfBarycentricFactors	, mt.timedBarycentricFactors	, "BarycentricFactors"	); break;
 		case MeshStats::BoundingVolume		: return EntryType(mt.valueOfBoundingVolume		, mt.timedBoundingVolume		, "BoundingVolume"		); break;
-		case MeshStats::Savidise			: return EntryType(mt.valueOfSavidise			, mt.timedSavidise				, "Savidise"			); break;
 		case MeshStats::Aabb				: return EntryType(mt.valueOfAabb				, mt.timedAabb					, "Aabb"				); break;
 		case MeshStats::Update				: return EntryType(mt.valueOfUpdate				, mt.timedUpdate				, "Update"				); break;
 		case MeshStats::IndexBuffer			: return EntryType(mt.valueOfIndexBuffer		, mt.timedIndexBuffer			, "IndexBuffer"			); break;
@@ -110,7 +108,7 @@ bool MeshStats::IsNoneTimed (void) const {
 	FOREACH(const MeshStats::Timing, AllTimings, timing)
 		if (IsTimed(*timing))
 			return false;
-	return true;
+	return custom.empty();
 }
 
 bool MeshStats::IsTimed (Timing const timing) const
@@ -142,13 +140,15 @@ void MeshStats::Reset (Timing const timing) {
 	DNULLCHECK(notifee)->TimingRestarted(entry.name);
 }
 
+void MeshStats::AddCustomTiming (ConstCustom::T1ref what, ConstCustom::T2ref timing)
+	{ custom.push_back(ConstCustom(what, timing)); }
+
 std::list<std::string>& MeshStats::WriteLinesTo (std::list<std::string>& at) const {
 	static const char			LongestMessage[] = "Update mesh with elements (and compute AO)";
 	static const char* const	Descriptions[NumberOfTimings] = {
 		"Mesh tesselation",
 		"Compute barycentric factors",
 		"Compute bounding volume",
-		"Savidise Mesh Elements",
 		"Compute AABB Mesh Tree",
 		&LongestMessage[0],
 		"Compute index buffer",
@@ -157,11 +157,16 @@ std::list<std::string>& MeshStats::WriteLinesTo (std::list<std::string>& at) con
 	};
 
 	size_t maxLength(countof(LongestMessage));
+	IFOREACH(std::list<ConstCustom>::const_iterator, custom, cust)
+		maxLength = std::max(maxLength, cust->what.length());
 
 	PASSERT(maxLength < 500 && AreAllTimed())
 
 	FOREACH(MeshStats::Timing const, AllTimings, timing)
 		at.push_back(format("%*s : %ld", maxLength, Descriptions[size_t(*timing)], (*this)[*timing]));
+
+	IFOREACH(std::list<ConstCustom>::const_iterator, custom, cust)
+		at.push_back(format("%*s : %ld", maxLength, ucstringarg(cust->what), cust->time));
 
 	// and a blank
 	at.push_back(std::string());
@@ -173,44 +178,42 @@ MeshStats::MeshStats (void):
 	valueOfTesselation				(ULONG_MAX	),	//  0u
 	valueOfBarycentricFactors		(ULONG_MAX	),	//  1u
 	valueOfBoundingVolume			(ULONG_MAX	),	//  2u
-	valueOfSavidise					(ULONG_MAX	),	//  3u
-	valueOfAabb						(ULONG_MAX	),	//  4u
-	valueOfUpdate					(ULONG_MAX	),	//  5u
-	valueOfIndexBuffer				(ULONG_MAX	),	//  6u
-	valueOfStoreBin					(ULONG_MAX	),	//  7u
-	valueOfStoreText				(ULONG_MAX	),	//  8u
+	valueOfAabb						(ULONG_MAX	),	//  3u
+	valueOfUpdate					(ULONG_MAX	),	//  4u
+	valueOfIndexBuffer				(ULONG_MAX	),	//  5u
+	valueOfStoreBin					(ULONG_MAX	),	//  6u
+	valueOfStoreText				(ULONG_MAX	),	//  7u
 	timedTesselation				(false		),	//  0u
 	timedBarycentricFactors			(false		),	//  1u
 	timedBoundingVolume				(false		),	//  2u
-	timedSavidise					(false		),	//  3u
-	timedAabb						(false		),	//  4u
-	timedUpdate						(false		),	//  5u
-	timedIndexBuffer				(false		),	//  6u
-	timedStoreBin					(false		),	//  7u
-	timedStoreText					(false		),	//  8u
-	notifee							(NULL		)
+	timedAabb						(false		),	//  3u
+	timedUpdate						(false		),	//  4u
+	timedIndexBuffer				(false		),	//  5u
+	timedStoreBin					(false		),	//  6u
+	timedStoreText					(false		),	//  7u
+	notifee							(NULL		),
+	custom							(			)
 	{}
 
 MeshStats::MeshStats (MeshStats const& other):
 	valueOfTesselation				(other.valueOfTesselation			),	//  0u
 	valueOfBarycentricFactors		(other.valueOfBarycentricFactors	),	//  1u
 	valueOfBoundingVolume			(other.valueOfBoundingVolume		),	//  2u
-	valueOfSavidise					(other.valueOfSavidise				),	//  3u
-	valueOfAabb						(other.valueOfAabb					),	//  4u
-	valueOfUpdate					(other.valueOfUpdate				),	//  5u
-	valueOfIndexBuffer				(other.valueOfIndexBuffer			),	//  6u
-	valueOfStoreBin					(other.valueOfStoreBin				),	//  7u
-	valueOfStoreText				(other.valueOfStoreText				),	//  8u
+	valueOfAabb						(other.valueOfAabb					),	//  3u
+	valueOfUpdate					(other.valueOfUpdate				),	//  4u
+	valueOfIndexBuffer				(other.valueOfIndexBuffer			),	//  5u
+	valueOfStoreBin					(other.valueOfStoreBin				),	//  6u
+	valueOfStoreText				(other.valueOfStoreText				),	//  7u
 	timedTesselation				(other.timedTesselation				),	//  0u
 	timedBarycentricFactors			(other.timedBarycentricFactors		),	//  1u
 	timedBoundingVolume				(other.timedBoundingVolume			),	//  2u
-	timedSavidise					(other.timedSavidise				),	//  3u
-	timedAabb						(other.timedAabb					),	//  4u
-	timedUpdate						(other.timedUpdate					),	//  5u
-	timedIndexBuffer				(other.timedIndexBuffer				),	//  6u
-	timedStoreBin					(other.timedStoreBin				),	//  7u
-	timedStoreText					(other.timedStoreText				),	//  8u
-	notifee							(other.notifee						)
+	timedAabb						(other.timedAabb					),	//  3u
+	timedUpdate						(other.timedUpdate					),	//  4u
+	timedIndexBuffer				(other.timedIndexBuffer				),	//  5u
+	timedStoreBin					(other.timedStoreBin				),	//  6u
+	timedStoreText					(other.timedStoreText				),	//  7u
+	notifee							(other.notifee						),
+	custom							(other.custom						)
 	{ PASSERT(AreAllTimed() || IsNoneTimed()) }
 
 MeshStats::~MeshStats (void)

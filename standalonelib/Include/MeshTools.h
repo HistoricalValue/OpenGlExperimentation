@@ -100,12 +100,11 @@ struct MeshStats {
 		Tesselation			=  0u,
 		BarycentricFactors	=  1u,
 		BoundingVolume		=  2u,
-		Savidise			=  3u,
-		Aabb				=  4u,
-		Update				=  5u,
-		IndexBuffer			=  6u,
-		StoreBin			=  7u,
-		StoreText			=  8u
+		Aabb				=  3u,
+		Update				=  4u,
+		IndexBuffer			=  5u,
+		StoreBin			=  6u,
+		StoreText			=  7u
 	};
 	static const size_t NumberOfTimings = size_t(StoreText) + 1;
 
@@ -124,9 +123,11 @@ struct MeshStats {
 
 	void			SetNotifee (TimeUpdateNotifee* const _notifee)
 						{ notifee = _notifee; }
-	
+
 	typedef nmutuple2types<std::string, ulong> CustomTuple2Types;
-	NMUTYPLE2(Custom, CustomTuple2Types, what, time)
+	NMUTUPLE2S(Custom, CustomTuple2Types, what, time)
+
+	void			AddCustomTiming (ConstCustom::T1ref what, ConstCustom::T2ref timing);
 
 	NMUDECLARE_WRITE_LINES
 	MeshStats (void);
@@ -135,17 +136,16 @@ struct MeshStats {
 
 private:
 	// State
-	TimeUpdateNotifee*	notifee;
-	std::list<Custom>	custom;
+	TimeUpdateNotifee*		notifee;
+	std::list<ConstCustom>	custom;
 	MESH_TIMING_STAT(Tesselation		)	//  0u
 	MESH_TIMING_STAT(BarycentricFactors	)	//  1u
 	MESH_TIMING_STAT(BoundingVolume		)	//  2u
-	MESH_TIMING_STAT(Savidise			)	//  3u
-	MESH_TIMING_STAT(Aabb				)	//  4u
-	MESH_TIMING_STAT(Update				)	//  5u
-	MESH_TIMING_STAT(IndexBuffer		)	//  6u
-	MESH_TIMING_STAT(StoreBin			)	//  7u
-	MESH_TIMING_STAT(StoreText			)	//  8u
+	MESH_TIMING_STAT(Aabb				)	//  3u
+	MESH_TIMING_STAT(Update				)	//  4u
+	MESH_TIMING_STAT(IndexBuffer		)	//  5u
+	MESH_TIMING_STAT(StoreBin			)	//  6u
+	MESH_TIMING_STAT(StoreText			)	//  7u
 
 	friend class MeshStatsHelper;
 };
@@ -154,10 +154,20 @@ inline void MeshStats::TimeUpdateNotifee::TimingStarted		(char const* const) con
 inline void MeshStats::TimeUpdateNotifee::TimingEnded		(char const* const, timing_t const) const {}
 inline void MeshStats::TimeUpdateNotifee::TimingRestarted	(char const* const) const {}
 
-#define MESH_TIME(OBJ,WHAT,COMMAND)		\
+#define MESH_TIME(OBJ, WHAT, COMMAND)	\
 		OBJ.Start##WHAT();				\
 		COMMAND;						\
 		OBJ.End##WHAT();				\
+
+#define MESH_TIME_CUSTOM(OBJ, WHAT, COMMAND)	{	\
+		MeshStats::timing_t timing = ugettime();	\
+		COMMAND;									\
+		timing = ugettime() - timing;				\
+		OBJ.AddCustomTiming(WHAT, timing);			\
+	}												\
+
+#define MESH_TIME_CUSTOM_COMMAND(OBJ, COMMAND)		\
+		MESH_TIME_CUSTOM(OBJ, #COMMAND, COMMAND)
 
 ///////////////////////////////////////////////////////////
 

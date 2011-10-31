@@ -91,11 +91,17 @@ struct nmuconsttripletypes {
 
 #define NMUTRIPLE(CLASS, TYPES, N1, N2, N3)								\
 		struct CLASS {													\
-			TYPES::T1 N1; TYPES::T2 N2; TYPES::T3 N3;					\
+			typedef TYPES ::T1		T1;									\
+			typedef TYPES ::T2		T2;									\
+			typedef TYPES ::T3		T3;									\
+			typedef urefto<T1>::t	T1ref;								\
+			typedef urefto<T2>::t	T2ref;								\
+			typedef urefto<T3>::t	T3ref;								\
+			T1 N1; T2 N2; T3 N3;										\
 			CLASS (														\
-					urefto< TYPES::T1 >::t _##N1,						\
-					urefto< TYPES::T2 >::t _##N2,						\
-					urefto< TYPES::T3 >::t _##N3):						\
+					T1ref _##N1,										\
+					T2ref _##N2,										\
+					T3ref _##N3):										\
 				N1 ( _##N1 ), N2 ( _##N2 ), N3 ( _##N3 ) {}				\
 			CLASS ( uconstref_of< CLASS >::t other ):					\
 				N1 (other. N1 ), N2 (other. N2 ), N3 (other. N3 ) {}	\
@@ -114,10 +120,14 @@ struct nmutuple2types: public nmutripletypes<Type1, Type2, int> {};
 
 #define NMUTUPLE2(CLASS, TYPES, N1, N2)								\
 		struct CLASS {												\
-			TYPES::T1 N1; TYPES::T2 N2;								\
+			typedef TYPES ::T1		T1;								\
+			typedef TYPES ::T2		T2;								\
+			typedef urefto<T1>::t	T1ref;							\
+			typedef urefto<T2>::t	T2ref;							\
+			T1 N1; T2 N2;											\
 			CLASS (													\
-					urefto< TYPES::T1 >::t _##N1,					\
-					urefto< TYPES::T2 >::t _##N2):					\
+					T1ref _##N1,									\
+					T2ref _##N2):									\
 				N1 ( _##N1 ), N2 ( _##N2 ) {}						\
 			CLASS ( uconstref_of< CLASS >::t other):				\
 				N1 (other. N1 ), N2 (other. N2 ) {}					\

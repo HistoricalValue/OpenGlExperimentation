@@ -264,9 +264,6 @@
     <ClInclude Include="Include\my\gl\adapters\Buffer.h">
       <Filter>Header Files\my\gl\adapters</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\..\Program Files\Microsoft SDKs\Windows\v7.0A\Include\gl\GL.h">
-      <Filter>Header Files\gl</Filter>
-    </ClInclude>
     <ClInclude Include="Include\my\gl\adapters\BufferManager.h">
       <Filter>Header Files\my\gl\adapters</Filter>
     </ClInclude>

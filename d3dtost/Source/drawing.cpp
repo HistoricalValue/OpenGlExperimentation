@@ -18,7 +18,7 @@
 
 //	#define NURBS_LOAD_FROM	"surface_bin"
 //	#define NURBS_LOAD_FROM	"BOB ROSS - Moon Valley med Horns_aabbao_antisavidised_0.100"
-	#define NURBS_LOAD_FROM	"BOB ROSS - Moon Valley med Horns_aabbao_0.300"
+	#define NURBS_LOAD_FROM	"BOB ROSS - Moon Valley med Horns_aabbao_0.100"
 //	#define NURBS_LOAD_FROM	"../QuickTost/lala"
 
 #define DONT	if (false)

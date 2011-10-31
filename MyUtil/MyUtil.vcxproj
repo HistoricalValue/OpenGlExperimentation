@@ -132,7 +132,6 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\..\..\Program Files\Microsoft SDKs\Windows\v7.0A\Include\gl\GL.h" />
     <ClInclude Include="Include\Codeutils.h" />
     <ClInclude Include="Include\dmalloc.h" />
     <ClInclude Include="Include\glt.h" />
