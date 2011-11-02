@@ -608,23 +608,26 @@ void addknotpointsto (ankh::nurbs::Surface const& surf, my::gl::shapes::ShapeCom
 }
 
 void addbasecurvesto (ankh::nurbs::Surface const& surf, my::gl::shapes::ShapeCompositionFactory& f) {
-	using namespace						ankh::nurbs;
-	using namespace						my::gl::shapes;
-	using ankh::math::trig::			vec4;
-	using my::gl::math::				Vector4;
-	using tesselation::deboor::			ProduceAll;
-	using my::algo::					map_vec4_to_linestrip;
-	using ankh::nurbs::tesselation::	IneffectiveNormalCalculator;
-	using ankh::nurbs::				VertexWithNormal;
-	using ankh::nurbs::				TesselationParameters;
-	using ankh::nurbs::tesselation::	Resolution;
-	using ankh::nurbs::algo::optimised:: p;
+	using namespace							ankh::nurbs;
+	using namespace							my::gl::shapes;
+	using ankh::math::trig::				vec4;
+	using my::gl::math::					Vector4;
+	using tesselation::deboor::				ProduceAll;
+	using my::algo::						map_vec4_to_linestrip;
+	using ankh::nurbs::tesselation::		IneffectiveNormalCalculator;
+	using ankh::nurbs::						VertexWithNormal;
+	using ankh::nurbs::						TesselationParameters;
+	using ankh::nurbs::tesselation::		Resolution;
+	using ankh::nurbs::algo::optimised::	p;
+	using ankh::nurbs::tesselation::		VertexWithNormalAppenderTesselationCallback;
+	using ankh::nurbs::tesselation::		Points;
 
-	std::vector<VertexWithNormal>		points;
-	std::list<Line>						lines;
-	Colour const						colour(Vector4::New(0.4f, 0.2f, 0.8f));
-	IneffectiveNormalCalculator const	inc;
-	TesselationParameters const			tp(1e-1f);
+	Points												points;
+	std::list<Line>										lines;
+	Colour const										colour(Vector4::New(0.4f, 0.2f, 0.8f));
+	IneffectiveNormalCalculator const					inc;
+	TesselationParameters const							tp(1e-1f);
+	VertexWithNormalAppenderTesselationCallback<Points>	tesselationCallback(&points);
 
 	for (size_t i(0); i < surf.GetControlPointsWidth(); ++i) {
 		Curve const&	base		(surf.GetAlongBase(i));
@@ -635,7 +638,9 @@ void addbasecurvesto (ankh::nurbs::Surface const& surf, my::gl::shapes::ShapeCom
 
 		lines.clear();
 
-		f.AddAll(map_vec4_to_linestrip(ProduceAll<&p>(base, tp, inc, points), lines, colour, &makevector4fromvertexwithnormal));
+		ProduceAll<&p>(base, tp, inc, tesselationCallback);
+
+		f.AddAll(map_vec4_to_linestrip(points, lines, colour, &makevector4fromvertexwithnormal));
 	}
 }
 
