@@ -14,11 +14,11 @@
 
 #define WITH_NORMALS	0
 #define	WITH_GRID		0
-#define WITH_INVERSE_IT	1
+#define WITH_INVERSE_IT	0
 
 //	#define NURBS_LOAD_FROM	"surface_bin"
-//	#define NURBS_LOAD_FROM	"BOB ROSS - Moon Valley med Horns_aabbao_antisavidised_0.100"
-	#define NURBS_LOAD_FROM	"BOB ROSS - Moon Valley med Horns_aabbao_0.100"
+	#define NURBS_LOAD_FROM	"$BOB ROSS - Moon Valley med Horns_antisavidised_0.2"
+//	#define NURBS_LOAD_FROM	"BOB ROSS - Moon Valley med Horns_aabbao_antisavidised_0.200"
 //	#define NURBS_LOAD_FROM	"../QuickTost/lala"
 
 #define DONT	if (false)
