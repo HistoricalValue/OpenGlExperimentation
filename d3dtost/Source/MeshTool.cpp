@@ -196,7 +196,10 @@ void ProduceOrLoadMeshes (
 					MESH_TIME(mt, Tesselation,			DebugAwareTesselation(elements, bob, TesselationParameters(*step))	);
 					MESH_TIME(mt, BarycentricFactors,	ComputeBarycentricFactors(elements)									);
 					MESH_TIME(mt, BoundingVolume,		volume = BuiltinShapes::Triangles(elements)							);
-					MESH_TIME(mt, Aabb,					aabb(elements, volume.native())										);
+					if (*step > 1e-1f)
+						{ MESH_TIME(mt, Aabb,				aabb(elements, volume.native())									); }
+					else
+						{ MESH_TIME(mt, Aabb,				(void)0															); }
 
 					prerequisitesMade = true;
 				}
@@ -341,7 +344,7 @@ ao::AnyAmbientOcclusionCreatorProxy MakeAmbientOcclusionCreator (
 #else
 	USE(samplingRate), USE(elements), USE(intersectionData);
 //	return DNEWCLASS(ao::AmbientOcclusionCreatorProxy, (samplingRate, elements, intersectionData));
-	return	step > 1e-1?
+	return	step > 1e-1f?
 				static_cast<Mesh::AmbientOcclusionCreator* const>(DNEWCLASS(ComputeMeshAmbientOcclusion, (samplingRate2, aabb, maxDistance))):
 				static_cast<Mesh::AmbientOcclusionCreator* const>(DNEW(ao::IneffectiveAmbientOcclusionCreator));
 #endif
