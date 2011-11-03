@@ -376,6 +376,7 @@ void tesselate (ankh::nurbs::Surface const& surf, ankh::nurbs::TesselationParame
 	using my::gl::shapes::			Vertex;
 	using ankh::shapes::			Mesh;
 	using ankh::nurbs::				TesselationParameters;
+	using ankh::nurbs::tesselation::MakeMeshElementsAppender;
 
 	TesselationParameters const defaulttp(2e1f, false, ankh::nurbs::DefaultPrecision());
 	TesselationParameters const& tp(_tp == NULL? defaulttp : *_tp);
@@ -396,7 +397,7 @@ void tesselate (ankh::nurbs::Surface const& surf, ankh::nurbs::TesselationParame
 		{	timer t03("surface tesselation", _::timesFillingCallback);
 		//	ProduceAllFromAlongSections
 			ProduceAllFromAcrossSections
-			<&p>(surf, tp, elements);
+			<&p>(surf, tp, MakeMeshElementsAppender(&elements));
 		}
 
 		{
