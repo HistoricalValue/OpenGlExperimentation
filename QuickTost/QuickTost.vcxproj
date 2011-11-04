@@ -126,6 +126,7 @@
     <ClCompile Include="main3.cpp" />
     <ClCompile Include="main4.cpp" />
     <ClCompile Include="main5.cpp" />
+    <ClCompile Include="main6.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\ankh\BoundingVolumes\Project\BoundingVolumes.vcxproj">
@@ -142,9 +143,6 @@
     </ProjectReference>
     <ProjectReference Include="..\..\ankh\Math\Project\Math.vcxproj">
       <Project>{6e4f6764-bb80-4fa7-bdeb-296dfb306160}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ankh\Meshes\Project\Meshes.vcxproj">
-      <Project>{8346784f-011e-422a-b0cc-f383a21c4b69}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\ankh\Properties\Project\Properties.vcxproj">
       <Project>{4f23ca23-4f87-47db-9af2-70c328513d9a}</Project>
