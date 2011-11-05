@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <list>
-#include "uthreadlib.h"
 #include "ufunctors.h"
 #include "DDebug.h"
 #include "Parallelisation.h"
@@ -52,7 +51,7 @@ int main6 (int argc, char** argv) {
 			ParallelisationManager m;
 
 			puts("modifying...");
-			parallel_foreach(m, vs, 4, &modvec);
+			parallel_foreach(vs, 4, uptr_fun(&modvec));
 		}
 
 		puts("don");
