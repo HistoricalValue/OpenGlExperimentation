@@ -11,14 +11,15 @@
 #	include <ufiles.h>
 #	include <uderivablecheck.h>
 #pragma warning( pop )
+#include <NurbsFacade.h>
 
-#define WITH_NORMALS	0
-#define	WITH_GRID		0
+#define WITH_NORMALS	1
+#define	WITH_GRID		1
 #define WITH_INVERSE_IT	0
 
 //	#define NURBS_LOAD_FROM	"surface_bin"
-	#define NURBS_LOAD_FROM	"$BOB ROSS - Moon Valley med Horns_antisavidised_0.2"
-//	#define NURBS_LOAD_FROM	"BOB ROSS - Moon Valley med Horns_aabbao_antisavidised_0.200"
+//	#define NURBS_LOAD_FROM	"$BOB ROSS - Moon Valley med Horns_antisavidised_0.2"
+	#define NURBS_LOAD_FROM	"BOB ROSS - Moon Valley med Horns_aabbao_antisavidised_1.000"
 //	#define NURBS_LOAD_FROM	"../QuickTost/lala"
 
 #define DONT	if (false)
@@ -37,12 +38,13 @@ using my::gl::adapters::BufferManager;
 
 
 namespace _ {
-	static const bool	TEST_TEXTURES		(false);
+	static const bool	TEST_ALL			(!true);
+	static const bool	TEST_TEXTURES		(true);
 
-	static const bool	WITH_DRAW_POINTS	(!TEST_TEXTURES);
-	static const bool	WITH_DRAW_LINES		(!TEST_TEXTURES);
-	static const bool	WITH_DRAW_TRIANGLES	(!TEST_TEXTURES);
-	static const bool	WITH_DRAW_TEXTURED	(TEST_TEXTURES);
+	static const bool	WITH_DRAW_POINTS	(!TEST_TEXTURES || TEST_ALL);
+	static const bool	WITH_DRAW_LINES		(!TEST_TEXTURES || TEST_ALL);
+	static const bool	WITH_DRAW_TRIANGLES	(!TEST_TEXTURES || TEST_ALL);
+	static const bool	WITH_DRAW_TEXTURED	(TEST_TEXTURES  || TEST_ALL);
 	//
 	static const bool	WITH_CAMERA			(true);
 
@@ -62,7 +64,7 @@ namespace _ {
 	typedef ankh::images::Image*		ImagesArray[IMAGES_NUM];
 	typedef ankh::textures::Texture*	TexturesArray[TEXTURES_NUM];
 
-	#ifdef PREVIOUS_BUFFERS
+	#ifdef PREVIOUS_BUFFERS // TODO remove "previous buffers"
 		typedef GLuint buffer_t;
 		#define INVALID_BUFFER	(_::buffer_t(-1))
 	#else
@@ -89,6 +91,33 @@ namespace _ {
 	using namespace my::drawing;
 
 	///////////////////////////////////////////////////////
+
+	struct GlobalState {
+		ankh::shapes::Mesh*	mesh;
+
+	}* globalState(NULL);
+
+	static inline GlobalState* unew_globalState (void) {
+		unew(globalState);
+		globalState->mesh = NULL;
+		return globalState;
+	}
+
+	static inline void udelete_globalState (void)
+		{ udelete(globalState); }
+
+	static inline GlobalState& getglobalstate (void)
+		{ return *maketmpdptr(globalState); }
+
+	static inline void setmesh (ankh::shapes::Mesh* const mesh)
+		{ assign(getglobalstate().mesh, maketmpdptr(mesh).native()); }
+	static inline ankh::shapes::Mesh& getmesh (void)
+		{ return *maketmpdptr(getglobalstate().mesh); }
+
+	static inline ankh::shapes::Mesh::Elements const& getmeshelements (void)
+		{ return getmesh().GetElements(); }
+
+	///////////////////////////////////////////////////////
 	// Buffer double play
 	#ifdef PREVIOUS_BUFFERS
 		template <const size_t N>
@@ -107,7 +136,6 @@ namespace _ {
 		void DeleteBuffers (Buffer* (&buffers)[N])
 			{ BufferManager::GetSingleton().Release(buffers); }
 	#endif
-
 
 	///////////////////////////////////////////////////////
 
@@ -297,7 +325,7 @@ namespace _ {
 				//	nurbs::addbasecurvesto(f);
 				//	nurbs::addaslinesto(f);
 #if WITH_NORMALS == 1
-					nurbs::addnormalsto(f);
+					nurbs::addnormalsto(_::getmeshelements(), f);
 #endif
 
 					DynamicShapeComposition* dcomp(NULL);
@@ -345,7 +373,7 @@ namespace _ {
 			ShapeCompositionFactory	f;
 			{
 				timer t03("adding surface triangles to factory");
-				nurbs::addastrianglesto(f);
+				nurbs::addastrianglesto(_::getmeshelements(), f);
 			}
 
 			DynamicShapeComposition* dcomp(NULL);
@@ -385,6 +413,14 @@ namespace _ {
 		if (_::WITH_DRAW_TEXTURED) {
 			using namespace my::gl::shapes;
 			using namespace my::gl::math;
+
+			/////////////
+
+			ShapeCompositionFactory f;
+			nurbs::addastrianglesto(_::getmeshelements(), f);
+			DynamicShapeComposition* const dcomp(f.Generate());
+
+			/////////////
 
 			PASSERT(SolidCube::GetSolidCubeNumberOfVertices() == 36u)
 
@@ -427,20 +463,24 @@ namespace _ {
 			compos.Scale(0.250f);
 		/////////////
 
-			NShapesComposition<2> scenery;
+			NShapesComposition<3> scenery;
 			scenery.Add(&companions);
 			scenery.Add(&plane);
+			scenery.Add(dcomp);
 
 			Nothing nothing;
 			// Upload shape as textured, buffer 2
 			{
 				Shape& shape(
-					scenery
+				//	scenery
 				//	compos
 				//	nothing
+					*dcomp
 					);
 				_::SetAttribute(vertexArrayId, buffer0, shape, POINTS_NORMALISED, true, numberOfTexturedSegments);
 			}
+
+			f.Dispose(dcomp);
 		}
 	}
 
@@ -577,7 +617,7 @@ namespace _ {
 	}
 
 	static
-	void LoadTehStonets(ImagesArray& images)
+	void LoadTehStonets (ImagesArray& images)
 	{
 		// Save LOTS of setup time
 		if (_::WITH_DRAW_TEXTURED) {
@@ -595,7 +635,7 @@ namespace _ {
 	}
 
 	static
-	void CreateTextures(
+	void CreateTextures (
 			ImagesArray const&	images,
 			TexturesArray&		textures,
 			size_t&				previousTextureIndex)
@@ -731,14 +771,15 @@ namespace my {
 
 		// ----------------------------
 		void* setup (void) {
-			using				_::VAOs;
-			using				_::VBOs;
-			using				_::VTOs;
-			using				_::TEXTURES_NUM;
-			using				_::IMAGES_NUM;
+			using	_::VAOs;
+			using	_::VBOs;
+			using	_::VTOs;
+			using	_::TEXTURES_NUM;
+			using	_::IMAGES_NUM;
 
-			_::DrawData* const	dd								(DNEW(_::DrawData));
-			_::DrawData&		drawData						(*dd);
+			_::unew_globalState();
+
+			_::DrawData&		drawData						(*DNEW(_::DrawData));
 			GLuint				(&vertexArrayIds)[VAOs]			(drawData.vertexArrayIds);
 			_::buffer_t			(&buffers)[VBOs]				(drawData.buffers);
 			GLuint&				numberOfPoints					(drawData.numberOfPoints);
@@ -763,14 +804,9 @@ namespace my {
 			P_STATIC_ASSERT(sizeof(buffers)/sizeof(buffers[0]) == 6)
 			_::GenBuffers(buffers);
 
-			if (_::WITH_DRAW_TRIANGLES) {
+			if (_::WITH_DRAW_TRIANGLES || _::WITH_DRAW_TEXTURED) {
 				nurbs::Initialise();
-				#ifdef NURBS_LOAD_FROM
-					nurbs::load(NURBS_LOAD_FROM);
-				#else
-					nurbs::tesselate(nurbs::BobRoss());
-					{ ankh::ao::MeshIntersectionData into; nurbs::updateaotraditional(into); }
-				#endif
+				_::setmesh(nurbs::load(NURBS_LOAD_FROM));
 			}
 
 			///////////////////////////
@@ -831,8 +867,12 @@ namespace my {
 			ankh::textures::CleanUp();
 			ankh::images::CleanUp();
 
-			if (_::WITH_DRAW_TRIANGLES)
+			if (_::WITH_DRAW_TRIANGLES || _::WITH_DRAW_TEXTURED) {
+				nurbs::unload(&_::getmesh());
 				nurbs::CleanUp();
+			}
+
+			_::udelete_globalState();
 		}
 
 	} // namespace drawing

@@ -23,7 +23,8 @@ namespace my { namespace gl { namespace shapes {
 		col_a(colour),
 		col_b(colour),
 		col_c(colour),
-		ao()
+		ao(),
+		texcoords()
 		{ P_STATIC_ASSERT(sizeof(Triangle) == 0
 				+ sizeof(Shape)
 				+ sizeof(a)
@@ -36,8 +37,10 @@ namespace my { namespace gl { namespace shapes {
 				+ sizeof(col_b)
 				+ sizeof(col_c)
 				+ sizeof(ao)
+				+ sizeof(texcoords)
 				)
 			ao[0] = ao[1] = ao[2] = 1.0f;
+			memset(&texcoords[0], 0x00, sizeof(texcoords));
 		}
 
 	Triangle::Triangle (Triangle const& other):
@@ -51,7 +54,8 @@ namespace my { namespace gl { namespace shapes {
 		col_a(other.col_a),
 		col_b(other.col_b),
 		col_c(other.col_c),
-		ao()
+		ao(),
+		texcoords()
 		{ P_STATIC_ASSERT(sizeof(Triangle) == 0
 				+ sizeof(Shape)
 				+ sizeof(a)
@@ -64,10 +68,12 @@ namespace my { namespace gl { namespace shapes {
 				+ sizeof(col_b)
 				+ sizeof(col_c)
 				+ sizeof(ao)
+				+ sizeof(texcoords)
 				)
 			ao[0] = other.ao[0];
 			ao[1] = other.ao[1];
 			ao[2] = other.ao[2];
+			memcpy(&texcoords[0], &other.texcoords[0], sizeof(texcoords));
 		}
 
 	Triangle::~Triangle (void) {
@@ -89,6 +95,21 @@ namespace my { namespace gl { namespace shapes {
 			new(&result[0]) VertexData(a.xyzw(), col_a, na, ao[0]);
 			new(&result[1]) VertexData(b.xyzw(), col_b, nb, ao[1]);
 			new(&result[2]) VertexData(c.xyzw(), col_c, nc, ao[2]);
+		}
+
+		return result;
+	}
+
+	TexturedVertexData* Triangle::GetTexturedVertexData (void* const memory, size_t const bytesize) const {
+		TexturedVertexData* result(NULL);
+		size_t const requiredBytesize(GetTriangleNumberOfVertices() * sizeof(TexturedVertexData));
+
+		if (bytesize >= requiredBytesize) {
+			ucastassign(result, memory);
+
+			new(&result[0]) TexturedVertexData(a.xyzw(), math::Vector4::New(texcoords[0][0], texcoords[0][1]), na, ao[0]);
+			new(&result[1]) TexturedVertexData(b.xyzw(), math::Vector4::New(texcoords[1][0], texcoords[1][1]), nb, ao[1]);
+			new(&result[2]) TexturedVertexData(c.xyzw(), math::Vector4::New(texcoords[2][0], texcoords[2][1]), nc, ao[2]);
 		}
 
 		return result;

@@ -26,7 +26,7 @@ my::gl::math::Vector4 makevector4 (ankh::math::trig::vec4 const& v)
 
 static inline
 my::gl::math::Vector4 makevector4fromvertexwithnormal (ankh::nurbs::VertexWithNormal const& vwn)
-	{ return my::gl::math::Vector4::New(vwn.v.x, vwn.v.y, vwn.v.z, 1.0f); }
+	{ return my::gl::math::Vector4::New(vwn.xyz.x, vwn.xyz.y, vwn.xyz.z, 1.0f); }
 
 
 static inline
@@ -65,6 +65,9 @@ my::gl::shapes::Triangle maketriangle (ankh::shapes::MeshElement const& e, my::g
 										.SetAO(0, e.HasAmbientOcclusion()? e.GetAmbientOcclusion(0) : 1.0f)
 										.SetAO(1, e.HasAmbientOcclusion()? e.GetAmbientOcclusion(1) : 1.0f)
 										.SetAO(2, e.HasAmbientOcclusion()? e.GetAmbientOcclusion(2) : 1.0f)
+										.SetTextCoord(0, e.HasTextureCoords()? e.GetTextureCoords(0).x : 0.0f, e.HasTextureCoords()? e.GetTextureCoords(0).y : 0.0f)
+										.SetTextCoord(1, e.HasTextureCoords()? e.GetTextureCoords(1).x : 1.0f, e.HasTextureCoords()? e.GetTextureCoords(1).y : 0.0f)
+										.SetTextCoord(2, e.HasTextureCoords()? e.GetTextureCoords(2).x : 0.0f, e.HasTextureCoords()? e.GetTextureCoords(2).y : 1.0f)
 										;
 }
 
@@ -106,52 +109,6 @@ struct timer {
 private:
 	void operator = (timer const&);
 };
-
-template <const bool inv, typename T> struct inverser;
-
-template <typename T> struct inverser<false, T>	{
-	T const& a, b;
-	inverser (T const& _a, T const& _b): a(_a), b(_b) {}
-	inverser (inverser<false, T> const& o): a(o.a), b(o.b) {}
-private:
-	void operator = (inverser<false, T> const&);
-};
-
-template <typename T> struct inverser<true, T>	{
-	T const& a, b;
-	inverser (T const& _a, T const& _b): a(_b), b(_a) {}
-	inverser (inverser<true, T> const& o): a(o.a), b(o.b) {}
-private:
-	void operator = (inverser<true, T> const&);
-};
-
-template <const bool inv, typename T> inverser<inv, T> const makeinverser (T const& a, T const& b) { return inverser<inv,T>(a, b); }
-
-template <typename T>
-class Range {
-public:
-						Range (void) {}
-						Range (Range const&) {}
-	virtual				~Range (void) {}
-
-	virtual	bool		lt (T const& a, T const& b) const	{ return a < b; }
-	virtual bool		eq (T const& a, T const& b) const	{ return a == b; }
-			bool		le (T const& a, T const& b) const	{ return lt(a, b) || eq(a, b); }
-			bool		gt (T const& a, T const& b) const	{ return !le(a, b); }
-			bool		ge (T const& a, T const& b) const	{ return gt(a, b) || eq(a, b); }
-};
-
-template <typename T>
-class InverseRange: public Range<T> {
-public:
-	typedef	Range<T>	Base;
-						InverseRange (void): Base() {}
-						InverseRange (InverseRange const& o): Base(o) {}
-	virtual				~InverseRange (void) {}
-
-	virtual	bool		lt (T const& a, T const& b) const	{ return Base::lt(b, a); }
-};
-
 
 struct IneffectiveBufferEntryDeleter: ::my::gl::adapters::Buffer::Deleter {
 	void operator () (GLvoid*) {}

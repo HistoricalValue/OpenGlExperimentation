@@ -145,6 +145,13 @@ struct nmutuple2types: public nmutripletypes<Type1, Type2, int> {};
 
 ///////////////////////////////////////////////////////////
 
+template <typename T, typename Y>
+static inline
+T* assign (T*& dest, Y* const src)
+	{ PASSERT(dest == NULL) return dest = src; }
+
+///////////////////////////////////////////////////////////
+
 template <typename T>
 static inline
 T* callconstructor (T* const ptr)
@@ -448,6 +455,9 @@ struct tmpdptr: public dptr<T> {
 	tmpdptr (Base const& o): Base(o) {}
 	~tmpdptr (void) { DASSERTPTR(DNULLCHECK(discard())); }
 };
+
+template <typename T>
+tmpdptr<T> maketmpdptr (T* const ptr) { return tmpdptr<T>(ptr); }
 
 ///////////////////////////////////////////////////////////
 

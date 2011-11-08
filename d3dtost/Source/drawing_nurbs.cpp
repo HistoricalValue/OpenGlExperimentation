@@ -4,8 +4,6 @@
 #pragma warning( push, 0 )
 #	include <Mesh.h>
 #	include <MeshLoader.h>
-#	include <ComputeMeshAmbientOcclusion.h>
-#	include <BuiltinShapesBoundingVolume.h>
 #pragma warning( pop )
 //
 #include <my/algo/ShapeProducers.h>
@@ -13,8 +11,11 @@
 #include <drawing_utils.h>
 #include <drawing_nurbs.h>
 
-#include <SurfaceTesselation.h>
-#include <AmbientOcclusion.h>
+#include <Curve.h>
+#include <CurveAlgorithms.h>
+#include <Knots.h>
+#include <SurfaceAlgorithms.h>
+#include <NurbsFacade.h>
 
 //////////////////////////////////////////////////////////////////////////////////////
 
@@ -145,189 +146,8 @@ static bool VerifyMultiplicityChecker (void) {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
-
-typedef ankh::shapes::Mesh::Elements			MeshElements;
-
-static ankh::shapes::Mesh*		_mesh(NULL);
-
-static inline void unew_mesh (void)
-	{ unew(_mesh); }
-static inline void udelete_mesh (void)
-	{ udelete(_mesh); }
-static inline ankh::shapes::Mesh& getmesh (void)
-	{ return *DPTR(DNULLCHECK(_mesh)); }
-static inline MeshElements const& meshElements (void)
-	{ return _::getmesh().GetElements(); }
-
-static float	minx(-0.025f);
-static float	maxx( 0.025f);
-static float	miny(-0.025f);
-static float	maxy( 0.025f);
-static float	minz(-0.025f);
-static float	maxz( 0.025f);
-
-//////////////////////////////////////////////////////////////////////////////////////
-
-static struct TimesFillingCallback: public timer::Callback {
-	TimesList&	times;
-
-	virtual void operator () (timer const& t) const
-		{ PASSERT(t.done) times.push_back(std::make_pair(std::string(t.what), t.diff)); }
-
-	UOVERLOADED_VOID_ASSIGN_VIA_COPY_CONSTRUCTOR(TimesFillingCallback)
-	TimesFillingCallback (TimesList& _times): times(_times) {}
-	TimesFillingCallback (TimesFillingCallback const& c): times(c.times) {}
-	virtual ~TimesFillingCallback (void) {}
-}* timesFillingCallback(NULL);
-
-static inline void SetTimes (TimesList* const _times) {
-	if (timesFillingCallback)
-		*DPTR(timesFillingCallback) = TimesFillingCallback(*DNULLCHECK(_times));
-	else
-		timesFillingCallback = DNEWCLASS(TimesFillingCallback, (*DNULLCHECK(_times)));
-}
-
-static inline void ResetTimes (void)
-	{ udelete(timesFillingCallback); }
-
-//////////////////////////////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////////////////////////////
 } // _
 //////////////////////////////////////////////////////////////////////////////////////
-
-void SetTimesList (TimesList* const tl)
-	{ _::SetTimes(DNULLCHECK(tl)); }
-
-unsigned long int GetNumberOfMeshElements (void)
-	{ return _::getmesh().GetElements().size(); }
-
-void generateindexedbuffer (void)
-	{ timer t00("generating indexed buffer", _::timesFillingCallback); _::getmesh().GetIndexBuffer(); }
-
-void computeboundinvolume (void) {
-	timer t00("computing bounding volume", _::timesFillingCallback);
-	ankh::shapes::volumes::BoundingVolume* const volume(ankh::shapes::volumes::BuiltinShapes::Triangles(_::getmesh().GetElements()));
-	_::getmesh().SetBoundingVolume(*DPTR(DNULLCHECK(castconst(volume))));
-	DDELETE(volume);
-}
-
-void generateaabb (ankh::shapes::MeshAABBTree& aabb) {
-	DASSERT(_::getmesh().GetBoundingVolume());
-	timer t00("generate aabb", _::timesFillingCallback);
-	aabb(_::getmesh());
-}
-
-void fairprepareao (void) {
-	_::getmesh().ResetCreators();
-	_::getmesh().SelectiveUpdate(false, false, true);
-}
-
-void updateao (ankh::shapes::Mesh::AmbientOcclusionCreator const& aoc, char const* const method) {
-	_::getmesh().SetAmbientOcclusionCreator(&aoc);
-	{	std::string msg(std::string("updating ambient occlusion") + (method? std::string(" (") + method + ")" : std::string("")));
-		timer t00(msg.c_str(), _::timesFillingCallback);
-		_::getmesh().SelectiveUpdate(false, false, true);
-	}
-}
-
-void updateaotraditional (ankh::ao::MeshIntersectionData& into) {
-	ankh::shapes::Mesh::AmbientOcclusionCreator* const aoc(ankh::ao::AmbientOcclusionCreatorFactory::New(ankh::ao::SamplingRate_9, &_::getmesh().GetElements(), &into));
-	_::getmesh().SetAmbientOcclusionCreator(aoc);
-	ankh::ao::AmbientOcclusionCreatorFactory::Delete(aoc);
-
-	{	timer t00("updating ambient occlusion (traditional)", _::timesFillingCallback);
-		_::getmesh().SelectiveUpdate(false, false, true);
-	}
-
-	DASSERT(into.size() == _::getmesh().GetElements().size());
-}
-
-//////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////
-
-ankh::nurbs::Surface const BobRoss (void) {
-	using namespace my::gl::math;
-	using namespace ankh::math;
-	using namespace trig;
-	using namespace types;
-	using namespace ankh::nurbs;
-
-	DASSERT((_::minx < 0 && _::miny < 0 && _::maxx > 0 && _::maxy > 0));
-
-//	size_t const	width_units	(16);
-//	size_t const	height_units(16);
-//	size_t const	depth_units	(16);
-
-	const bool		inverseX(false);
-	const bool		inverseZ(false);
-
-	size_t const	order_j			(0x04u)
-				,	order_i			(0x05u)
-				,	numcpoints_j	(0x10u)
-				,	numcpoints_i	(0x15u)
-				,	numknots_j		(Curve::NumberOfKnotsFor(order_j, numcpoints_j))
-				,	numknots_i		(Curve::NumberOfKnotsFor(order_i, numcpoints_i))
-				;
-//	Unit const		variation	(0.0f);
-	Unit const		variation	(0.00625f);
-//	Unit const		variation	(0.0125f);
-//	Unit const		variation	(0.05f);
-
-	unsigned seed;
-	{
-		std::ifstream fin("./seed.txt", std::ios::in);
-		DASSERT(!fin.bad());
-
-		std::string str;
-		std::getline(fin, str);
-		psafecast(seed, atol(str.c_str()));
-	}
-
-	ControlPoints				cpoints;
-	Knots						knots_j, knots_i;
-	ControlPointsGrid			cpoints_i;
-
-	cpoints_i.reserve(numcpoints_i);
-	cpoints.reserve(numcpoints_j);
-	knots_j.reserve(numknots_j);
-
-	knots_i.reserve(numknots_i);
-
-	FillUniformly(knots_j, numknots_j, 0.0f, 1.0f);
-	FillUniformly(knots_i, numknots_i, 0.0f, 1.0f);
-
-	//for (size_t curve_i(0u); curve_i < numcurves; ++curve_i)
-	//	cpoints.clear(),
-	//
-	//	cpoints_j.push_back(
-	//			ControlPoints_FillRandomly(
-	//				cpoints, numcpoints,
-	//				minx, maxx, miny, maxy, minz, maxz,
-	//				width_units, height_units, depth_units, seed + curve_i));
-
-	VaryGrid(
-		FillGridUniformly(	cpoints_i,
-							numcpoints_i,
-							numcpoints_j,
-							makeinverser<inverseX>(_::minx, _::maxx).a, makeinverser<inverseX>(_::minx, _::maxx).b,
-							makeinverser<inverseZ>(_::minz, _::maxz).a, makeinverser<inverseZ>(_::minz, _::maxz).b,
-							(_::miny + _::maxy)/2.0f,
-							ankh::nurbs::Precision(5e-9f))
-		,variation, variation, variation, 1.5f, false, seed)
-	;
-	cpoints_i.at(3).at(3) = trig::vec4(_::maxx, _::maxy, _::maxz, 1.0f);
-	cpoints_i.at(3).at(3) *= 2.0f;
-
-	cpoints_i.at(9).at(3).y = -_::maxy;
-	cpoints_i.at(9).at(3) *= 4.0f;
-
-	cpoints_i.at(15).at(5).y = _::maxy;
-		cpoints_i.at(15).at(5) *= 0.5f;
-
-	return Surface(knots_j.begin(), knots_j.end(), knots_i.begin(), knots_i.end(), cpoints_i.begin(), cpoints_i.end(), "BOB ROSS");
-}
 
 void Initialise (void) {
 	using namespace ankh::nurbs;
@@ -335,207 +155,63 @@ void Initialise (void) {
 
 	ankh::shapes::volumes::BoundingVolume::SingletonCreate();
 	ankh::shapes::MeshLoader::SingletonCreate();
-	ankh::ao::AmbientOcclusionCreatorFactory::Initialise();
-	_::unew_mesh();
 
 	DASSERT(_::VerifyBaseFunctions(
-			FirstCrossSection(BobRoss()).m(),
-			KnotsI(BobRoss())));
+			FirstCrossSection(Surfaces::MoonValleyWithHorns()).m(),
+			KnotsI(Surfaces::MoonValleyWithHorns())));
 
 	DASSERT(_::VerifyMultiplicityChecker());
 }
 
 void CleanUp (void) {
-	_::udelete_mesh();
-	ankh::ao::AmbientOcclusionCreatorFactory::CleanUp();
 	ankh::shapes::MeshLoader::SingletonDestroy();
 	ankh::shapes::volumes::BoundingVolume::SingletonDestroy();
-	udeleteunlessnull(_::timesFillingCallback);
-}
-
-//////////////////////////////////////////////////////////////////////////////////////
-
-void tesselate (ankh::nurbs::Surface const& surf, ankh::nurbs::TesselationParameters const* const _tp) {
-#if 0
-	using ankh::nurbs::tesselation::blending::	ProduceAllFromAcrossSections;
-	using ankh::nurbs::tesselation::blending::	ProduceAllFromAlongSections;
-	typedef SimpleBlendingTraits							t;
-#else
-	using ankh::nurbs::tesselation::deboor::	ProduceAllFromAcrossSections;
-	using ankh::nurbs::tesselation::deboor::	ProduceAllFromAlongSections;
-	using ankh::nurbs::algo::optimised::p;
-#endif
-	using ankh::math::types::		Triangle;
-	typedef std::vector<Triangle>	Triangles;
-	using ankh::shapes::			MeshElement;
-	using ankh::shapes::			MeshAdjacencyElement;
-	using ankh::nurbs::				Surface;
-	using my::gl::shapes::			Colour;
-	using my::gl::math::			Vector4;
-	using my::gl::shapes::			Line;
-	using my::gl::shapes::			Vertex;
-	using ankh::shapes::			Mesh;
-	using ankh::nurbs::				TesselationParameters;
-	using ankh::nurbs::tesselation::MakeMeshElementsAppender;
-
-	TesselationParameters const defaulttp(2e1f, false, ankh::nurbs::DefaultPrecision());
-	TesselationParameters const& tp(_tp == NULL? defaulttp : *_tp);
-
-//	size_t const			meshElementsMinCapacity((surf.GetResolutionI(tp) - 1) * 2 + 1 + 1)	// +1 security
-					//		,adjacenciesMinCapacity(meshElementsMinCapacity * 3) // generally will by the number of mesh elements times 3
-					;
-
-	// if they were vectors...
-//	_::meshElements().reserve(meshElementsMinCapacity);
-//	_::adjacencies().reserve(adjacenciesMinCapacity);
-
-	_::getmesh().ResetCreators();
-
-	{
-		_::MeshElements elements;
-
-		{	timer t03("surface tesselation", _::timesFillingCallback);
-		//	ProduceAllFromAlongSections
-			ProduceAllFromAcrossSections
-			<&p>(surf, tp, MakeMeshElementsAppender(&elements));
-		}
-
-		{
-			std::string msg(std::string("updating mesh with produced mesh elements"));
-			timer t03(msg.c_str(), _::timesFillingCallback);
-			_::getmesh().Update(elements);
-		}
-	}
-
-	LogInfo_MeshStats();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
 
 static inline void getpathformesh (std::string& into, char const* const id, char const* const ext) {
-	static const char	mesh_bin_id[] = "surface_bin",
-						meshes_folder_path[] = "../meshes/";
-	static const size_t	mesh_bin_id_length = countof(mesh_bin_id),
-						meshes_folder_path_length = countof(meshes_folder_path);
+	static const char	meshes_folder_path[] = "../meshes/";
+	static const size_t	meshes_folder_path_length = countof(meshes_folder_path);
 
 	const size_t totalLength = meshes_folder_path_length + strlen(id) + strlen(ext) + 2;
 	into.reserve(totalLength);
 
-	if (strncmp(id, mesh_bin_id, mesh_bin_id_length) == 0)
-		into.clear();
-	else
-		into = meshes_folder_path;
-
+	into = meshes_folder_path;
 	into += id;
 	into += ".";
 	into += ext;
 }
 
-void store (char const* const id) {
-	{
-		std::string path;
-		getpathformesh(path, id, "msh");
-		timer t02("storing binary mesh", _::timesFillingCallback);
-		_::getmesh().StoreBin(path);
-	}
-
-	{
-		std::string path;
-		getpathformesh(path, id, "txt");
-		timer t02("storing text mesh", _::timesFillingCallback);
-		_::getmesh().StoreText(path);
-	}
-}
-
-void loadinto (char const* const id, ankh::shapes::Mesh& into) {
-	using namespace ankh::shapes;
-
+ankh::shapes::Mesh* load (char const* const id) {
 	std::string loadpath;
 	getpathformesh(loadpath, id, "msh");
 
-	Mesh* m(MeshLoader::GetSingleton().Load(loadpath));
-
-	DASSERT(m);
-	into =(*DPTR(m));
-
-	MeshLoader::GetSingleton().Unload(m);
+	return DNULLCHECK(ankh::shapes::MeshLoader::GetSingleton().Load(loadpath));
 }
 
-void load (char const* const id) {
-	loadinto(id, _::getmesh());
-	LogInfo_MeshStats();
-}
-
-//////////////////////////////////////////////////////////////////////////////////////
-
-
-
-//////////////////////////////////////////////////////////////////////////////////////
-
-void LogInfo_MeshStats(void) {
-	// TODO do with bounding volumes
-	using ankh::shapes::Mesh;
-	using ankh::math::types::Vertex;
-
-	Mesh& m(_::getmesh());
-	_::MeshElements const& els(m.GetElements());
-
-	typedef _::MeshElements::const_iterator  ite_t;
-
-	float minx(FLT_MAX), maxx(-FLT_MAX), miny(FLT_MAX), maxy(-FLT_MAX), minz(FLT_MAX), maxz(-FLT_MAX);
-
-	ite_t const els_end(els.end());
-	for (ite_t el(els.begin()); el != els_end; ++el)
-		for (unsigned int i(0); i < 3; ++i) {
-			const Vertex& v(el->GetVertex(psafecast<util_ui8>(i)));
-			if (v.x < minx)
-				minx = v.x;
-			if (v.x > maxx)
-				maxx = v.x;
-			if (v.y < miny)
-				miny = v.y;
-			if (v.y > maxy)
-				maxy = v.y;
-			if (v.z < minz)
-				minz = v.z;
-			if (v.z > maxz)
-				maxz = v.z;
-		}
-
-	{
-		TCHAR buf[1024];
-		_sntprintf_s(&buf[0], _countof(buf), _countof(buf)-1, _T("%ld triangles, max<%f %f %f>    min<%f %f %f>\n"),
-				els.size(), maxx, maxy, maxz, minx, miny, minz);
-		my::global::log::info(&buf[0]);
-	}
-}
-
-//////////////////////////////////////////////////////////////////////////////////////
-
-void ExtractAOInto (std::vector<float>& into) {
-	ExtractAmbientOcclusions(into, _::getmesh());
-}
+void unload (ankh::shapes::Mesh* const mesh)
+	{ ankh::shapes::MeshLoader::GetSingleton().Unload(mesh); }
 
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
 
 
-void addastrianglesto (my::gl::shapes::ShapeCompositionFactory&	f)
-{
+void addastrianglesto (ankh::shapes::Mesh::Elements const& elements, my::gl::shapes::ShapeCompositionFactory& f) {
 	using my::gl::shapes::Colour;
 	using my::gl::math::Vector4;
 
-	Colour const			colour	(Vector4::New(0.8f, 0.4f, 0.8f));
+	Colour const colour	(Vector4::New(0.8f, 0.4f, 0.8f));
 	timer t02("transfoming as triagnles to my::gl::shapes triangles (and adding to factory)");
-	_::MeshElements::const_iterator const end(_::meshElements().end());
-	for (_::MeshElements::const_iterator i(_::meshElements().begin()); i != end; ++i)
+	ankh::shapes::Mesh::Elements::const_iterator const end(elements.end());
+	for (ankh::shapes::Mesh::Elements::const_iterator i(elements.begin()); i != end; ++i)
 		f.Add(maketriangle(*i, colour));
 }
 
-void addnormalsto (my::gl::shapes::ShapeCompositionFactory& f) {
-	_::MeshElements::const_iterator const end(_::meshElements().end());
-	for (_::MeshElements::const_iterator i(_::meshElements().begin()); i != end; ++i) {
+void addnormalsto (ankh::shapes::Mesh::Elements const& elements, my::gl::shapes::ShapeCompositionFactory& f) {
+	ankh::shapes::Mesh::Elements::const_iterator const end(elements.end());
+	for (ankh::shapes::Mesh::Elements::const_iterator i(elements.begin()); i != end; ++i) {
 		f.Add(makenormallineformeshelementvertex(*i, 0));
 		f.Add(makenormallineformeshelementvertex(*i, 1));
 		f.Add(makenormallineformeshelementvertex(*i, 2));

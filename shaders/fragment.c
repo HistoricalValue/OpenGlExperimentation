@@ -24,36 +24,48 @@ vec4	ColourFromRgb (uint r, uint g, uint b)
 void main (void) {
 	vec3 texcoord = textureCoordinate.stp;
 
-	if (colouringSelector == 0u)
+	if (colouringSelector == 0u)	// Light + Colour
 		fragColor =		interpolatedColour
 						* 2.0f
 						* dot(normalize(vec4(pooplight.xyz * 1000.0f, 1.0f)), normalize(interpolatedNormal))
 						;
 	else
-	if (colouringSelector == 1u)
-		fragColor = texture(textureUnit0, texcoord);
-	else
-	if (colouringSelector == 2u)
+	if (colouringSelector == 2u)	// Colour
 		fragColor = interpolatedColour;
 	else
-	if (colouringSelector == 3u)
+	if (colouringSelector == 3u)	// Colour + AO
 		fragColor = interpolatedColour * interpolatedAmbientOcclusionFactor;
 	else
-	if (colouringSelector == 4u)
+	if (colouringSelector == 4u)	// AO
 		fragColor = vec4(1, 1, 1, 1) * interpolatedAmbientOcclusionFactor;
 	else
-	if (colouringSelector == 5u)
+	if (colouringSelector == 5u)	// Light + Colour + AO
 		fragColor =		interpolatedColour
 						* 2.0f
 						* dot(normalize(vec4(pooplight.xyz * 1000.0f, 1.0f)), normalize(interpolatedNormal))
 						* interpolatedAmbientOcclusionFactor
 						;
 	else
-	if (colouringSelector == 6u)
+	if (colouringSelector == 6u)	// Black
 		fragColor = vec4(0, 0, 0, 1);
 	else
-	if (colouringSelector == 7u)
+	if (colouringSelector == 7u)	// Neon
 		fragColor = ColourFromRgb(0x4fu, 0x4fu, 0xffu);
+
+	// Texture colouring
+	else
+	if (colouringSelector == 8u)	// Texture + AO
+		fragColor = texture(textureUnit0, texcoord) * interpolatedAmbientOcclusionFactor;
+	else
+	if (colouringSelector == 1u)	// Texture
+		fragColor = texture(textureUnit0, texcoord);
+	else
+	if (colouringSelector == 9u)	// Light + Texture + AO
+		fragColor =		texture(textureUnit0, texcoord)
+						* 2.0f
+						* dot(normalize(vec4(pooplight.xyz * 1000.0f, 1.0f)), normalize(interpolatedNormal))
+						* interpolatedAmbientOcclusionFactor
+						;
 	else
 		fragColor = vec4(0.0f, 1.0f, 1.0f, 1.0f);
 }

@@ -20,6 +20,8 @@ namespace my { namespace gl { namespace shapes {
 
 		// Shape
 		VertexData*										GetVertexData (void* memory, size_t bytesize) const;
+		TexturedVertexData*								GetTexturedVertexData (void* memory, size_t bytesize) const;
+
 		Triangle*										Clone (void* memory, size_t bytesize) const;
 		size_t											GetNumberOfVertices (void) const
 															{ return GetTriangleNumberOfVertices(); }
@@ -51,6 +53,13 @@ namespace my { namespace gl { namespace shapes {
 		Triangle&										SetAO (size_t const i, float const _ao)
 															{ PASSERT(i < 3) ao[i] = _ao; return *this; }
 
+		Triangle&										SetTextCoord (size_t const i, float const s, float const t) {
+															PASSERT(i < 3 && 0.0f <= s && s <= 1.0f && 0.0f <= t && t <= 1.0f)
+															texcoords[i][0] = s;
+															texcoords[i][1] = t;
+															return *this;
+														}
+
 		// Transformable
 		void											Apply (math::Matrix4x4 const&);
 		void											Adjust (math::Vector4 const&);
@@ -62,6 +71,7 @@ namespace my { namespace gl { namespace shapes {
 		math::Vector4									na, nb, nc;				// normals
 		Colour											col_a, col_b, col_c;	// colour per vertex
 		float											ao[3];
+		float											texcoords[3][2];
 	}; // class Triangle
 
 }}} // namespace my::gl::shapes
