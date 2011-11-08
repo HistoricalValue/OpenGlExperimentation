@@ -19,7 +19,7 @@
 
 //	#define NURBS_LOAD_FROM	"surface_bin"
 //	#define NURBS_LOAD_FROM	"$BOB ROSS - Moon Valley med Horns_antisavidised_0.2"
-	#define NURBS_LOAD_FROM	"BOB ROSS - Moon Valley med Horns_aabbao_antisavidised_1.000"
+	#define NURBS_LOAD_FROM	"BOB ROSS - Moon Valley med Horns_aabbao_antisavidised_0.200"
 //	#define NURBS_LOAD_FROM	"../QuickTost/lala"
 
 #define DONT	if (false)
@@ -762,6 +762,7 @@ namespace my {
 						cam);
 				glUniform1ui(OpenGL::VUL_COLSELTR, Options::TexturedTriangleShapeColouringMethod());
 				glUniform1i(OpenGL::VUL_SAMPLER0, psafecast<GLint>(_::GetTextureIndex(dt)));
+
 				glDrawArrays(GL_TRIANGLES, 0, psafecast<GLsizei>(dd.numberOfTexturedSegments));
 			}
 
@@ -834,9 +835,9 @@ namespace my {
 			_::PlayWithTextureUnitsForTesting();
 			_::LoadTehStonets(images);
 			_::CreateTextures(images, textures, drawData.previousTextureIndex);
-			_::ConfigureOpenGl();
 			_::SetupCamera();
 			_::SetupFrustrum(1.00f, 5.00f, -1.00f, 1.00f, -1.00f, 1.00f);
+			_::ConfigureOpenGl();
 
 			return &drawData;
 		}

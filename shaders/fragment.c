@@ -67,6 +67,12 @@ void main (void) {
 						* interpolatedAmbientOcclusionFactor
 						;
 	else
+	if (colouringSelector == 10u)	// Light + Texture
+		fragColor =		texture(textureUnit0, texcoord)
+						* 2.0f
+						* dot(normalize(vec4(pooplight.xyz * 1000.0f, 1.0f)), normalize(interpolatedNormal))
+						;
+	else
 		fragColor = vec4(0.0f, 1.0f, 1.0f, 1.0f);
 }
 

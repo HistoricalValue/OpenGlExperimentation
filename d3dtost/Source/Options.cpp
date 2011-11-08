@@ -16,6 +16,7 @@ static const GLuint COLOUR_WITH_NEON							(7u);
 static const GLuint COLOUR_WITH_TEXTURE							(1u);
 static const GLuint COLOUR_WITH_TEXTURE_AND_AO					(8u);
 static const GLuint COLOUR_WITH_TEXTURE_LIGHT_AND_AO			(9u);
+static const GLuint COLOUR_WITH_TEXTURE_AND_LIGHT				(10u);
 
 size_t	Options::PointShapeColouringMethod (void)					{ return COLOUR_WITH_COLOUR					; }
 size_t	Options::LineShapeColouringMethod (void)					{ return COLOUR_WITH_COLOUR					; }
