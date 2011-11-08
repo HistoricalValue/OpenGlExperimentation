@@ -148,6 +148,7 @@
     <ClInclude Include="Include\MyUtil.h" />
     <ClInclude Include="Include\MyUtils.h" />
     <ClInclude Include="Include\my\algo\ShapeProducers.h" />
+    <ClInclude Include="Include\my\gl\adapters\AttributePointerConfiguration.h" />
     <ClInclude Include="Include\my\gl\adapters\Buffer.h" />
     <ClInclude Include="Include\my\gl\adapters\BufferManager.h" />
     <ClInclude Include="Include\my\gl\math\Matrix4x4.h" />

@@ -19,7 +19,7 @@
 
 //	#define NURBS_LOAD_FROM	"surface_bin"
 //	#define NURBS_LOAD_FROM	"$BOB ROSS - Moon Valley med Horns_antisavidised_0.2"
-	#define NURBS_LOAD_FROM	"BOB ROSS - Moon Valley med Horns_aabbao_antisavidised_0.200"
+	#define NURBS_LOAD_FROM	"BOB ROSS - Moon Valley med Horns_aabbao_antisavidised_2.000"
 //	#define NURBS_LOAD_FROM	"../QuickTost/lala"
 
 #define DONT	if (false)
@@ -28,8 +28,6 @@
 #define TEXTURE_TYPE_2D		0x00
 #define TEXTURE_TYPE_3D		0x01
 #define TEXTURE_TYPE		TEXTURE_TYPE_3D
-
-//	#define PREVIOUS_BUFFERS
 
 using namespace ::gl::ext;
 using my::gl::adapters::Buffer;
@@ -64,17 +62,9 @@ namespace _ {
 	typedef ankh::images::Image*		ImagesArray[IMAGES_NUM];
 	typedef ankh::textures::Texture*	TexturesArray[TEXTURES_NUM];
 
-	#ifdef PREVIOUS_BUFFERS // TODO remove "previous buffers"
-		typedef GLuint buffer_t;
-		#define INVALID_BUFFER	(_::buffer_t(-1))
-	#else
-		typedef Buffer* buffer_t;
-		#define INVALID_BUFFER	(_::buffer_t(0))
-	#endif
-
 	struct DrawData {
 		GLuint				vertexArrayIds[VAOs];
-		buffer_t			buffers[VBOs];
+		Buffer*				buffers[VBOs];
 		GLuint				texturesIds[TEXTURES_NUM];
 		GLuint				numberOfPoints;
 		GLuint				numberOfWorldCubeLineSegments;
@@ -119,23 +109,13 @@ namespace _ {
 
 	///////////////////////////////////////////////////////
 	// Buffer double play
-	#ifdef PREVIOUS_BUFFERS
-		template <const size_t N>
-		void GenBuffers (GLuint (&buffers)[N])
-			{ glGenBuffers(_countof(buffers), &buffers[0]); }
+	template <const size_t N>
+	void GenBuffers (Buffer* (&buffers)[N])
+		{ BufferManager::GetSingleton().Create(buffers); }
 
-		template <const size_t N>
-		void DeleteBuffers (GLuint (&buffers)[N])
-			{ glDeleteBuffers(_countof(buffers), &buffers[0]); }
-	#else
-		template <const size_t N>
-		void GenBuffers (Buffer* (&buffers)[N])
-			{ BufferManager::GetSingleton().Create(buffers); }
-
-		template <const size_t N>
-		void DeleteBuffers (Buffer* (&buffers)[N])
-			{ BufferManager::GetSingleton().Release(buffers); }
-	#endif
+	template <const size_t N>
+	void DeleteBuffers (Buffer* (&buffers)[N])
+		{ BufferManager::GetSingleton().Release(buffers); }
 
 	///////////////////////////////////////////////////////
 
@@ -204,7 +184,7 @@ namespace _ {
 
 	static void SetAttribute (
 		GLuint const					vao,
-		buffer_t const					vbo,
+		Buffer* const					vbo,
 		my::gl::shapes::Shape const&	shape,
 		GLboolean const					normalised,
 		bool const						textured,
@@ -216,11 +196,6 @@ namespace _ {
 
 		glBindVertexArray(vao);
 		PASSERT(glIsVertexArray(vao) == GL_TRUE)
-
-#ifdef PREVIOUS_BUFFERS
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		PASSERT(glIsBuffer(vbo) == GL_TRUE)
-#endif
 
 		size_t const	count		(shape.GetNumberOfVertices());
 		size_t const	bytesize	(std::max(	textured?
@@ -239,15 +214,13 @@ namespace _ {
 		voidp const		attr4off	(textured? TexturedVertexData::AOOffsetPointer() : VertexData::AOOffsetPointer());
 		GLuint const	attr2index	(textured? GLuint(OpenGL::VAI_TEXCOORD) : GLuint(OpenGL::VAI_COLOUR));
 
-#ifdef PREVIOUS_BUFFERS
-		glBufferData(GL_ARRAY_BUFFER, bytesize, data, GL_STATIC_DRAW);
-#else
-		IneffectiveBufferEntryDeleter deleter;
-		size_t const bufferEntryOffset = vbo->Add(data, 1, bytesize, &deleter);
-		PASSERT(bufferEntryOffset == 0)
-		vbo->Commit();
-		vbo->Bind();
-#endif
+		{
+			IneffectiveBufferEntryDeleter deleter;
+			size_t const bufferEntryOffset = vbo->Add(data, 1, bytesize, &deleter);
+			PASSERT(bufferEntryOffset == 0)
+			vbo->Commit();
+			vbo->Bind();
+		}
 
 		_::DeallocateSingleAllocationBufferMemory(_data);
 
@@ -263,10 +236,7 @@ namespace _ {
 
 		numberOfPoints = count;
 
-#ifdef PREVIOUS_BUFFERS
-#else
 		vbo->Unbind();
-#endif
 	}
 
 
@@ -278,8 +248,8 @@ namespace _ {
 	static
 	void SetupPointShapes (
 			GLuint const	vertexArrayId,
-			buffer_t const	buffer0,
-			buffer_t const,
+			Buffer* const	buffer0,
+			Buffer* const,
 			GLuint&			numberOfPointPoints)
 	{
 		// Save setup time
@@ -304,8 +274,8 @@ namespace _ {
 	static
 	void SetUpLineShapes (
 			GLuint const	vertexArrayId,
-			buffer_t const	buffer0,
-			buffer_t const,
+			Buffer* const	buffer0,
+			Buffer* const,
 			GLuint&			numberOfPoints)
 	{
 		// Save setup time
@@ -360,8 +330,8 @@ namespace _ {
 	static
 	void SetUpTriangleObjects (
 			GLuint const	vertexArrayId,
-			buffer_t const	buffer0,
-			buffer_t const,
+			Buffer* const	buffer0,
+			Buffer* const,
 			GLuint&			numberOfWorldCubeLineSegments)
 	{
 		// Save setup time
@@ -405,8 +375,8 @@ namespace _ {
 	static
 	void SetUpTexturedTriangleObjects (
 			GLuint const	vertexArrayId,
-			buffer_t const	buffer0,
-			buffer_t const,
+			Buffer* const	buffer0,
+			Buffer* const,
 			GLuint&			numberOfTexturedSegments)
 	{
 		// Save setup time
@@ -487,18 +457,18 @@ namespace _ {
 	static inline
 	void SetUpShapes (
 			GLuint const	line_vertexArrayId,
-			buffer_t const	line_buffer0,
-			buffer_t const	line_buffer1,
+			Buffer* const	line_buffer0,
+			Buffer* const	line_buffer1,
 			GLuint&			numberOfPoints,
 			//
 			GLuint const	tria_vertexArrayId,
-			buffer_t const	tria_buffer0,
-			buffer_t const	tria_buffer1,
+			Buffer* const	tria_buffer0,
+			Buffer* const	tria_buffer1,
 			GLuint&			numberOfWorldCubeLineSegments,
 			//
 			GLuint const	text_vertexArrayId,
-			buffer_t const	text_buffer0,
-			buffer_t const	text_buffer1,
+			Buffer* const	text_buffer0,
+			Buffer* const	text_buffer1,
 			GLuint&			numberOfTexturedSegment)
 	{
 		SetUpLineShapes(line_vertexArrayId, line_buffer0, line_buffer1, numberOfPoints);
@@ -782,7 +752,7 @@ namespace my {
 
 			_::DrawData&		drawData						(*DNEW(_::DrawData));
 			GLuint				(&vertexArrayIds)[VAOs]			(drawData.vertexArrayIds);
-			_::buffer_t			(&buffers)[VBOs]				(drawData.buffers);
+			Buffer*				(&buffers)[VBOs]				(drawData.buffers);
 			GLuint&				numberOfPoints					(drawData.numberOfPoints);
 			GLuint&				numberOfPointPoints				(drawData.numberOfPointPoints);
 			GLuint&				numberOfWorldCubeLineSegments	(drawData.numberOfWorldCubeLineSegments);
@@ -813,7 +783,7 @@ namespace my {
 			///////////////////////////
 			// VAO#0: Points
 			// (buffers #1)
-			_::SetupPointShapes(vertexArrayIds[0], buffers[1], INVALID_BUFFER, numberOfPointPoints);
+			_::SetupPointShapes(vertexArrayIds[0], buffers[1], NULL, numberOfPointPoints);
 			///////////////////////////
 			// VAO#1: Line objects
 			// (buffers #3 #4)
@@ -821,11 +791,11 @@ namespace my {
 			///////////////////////////
 			// VAO#2: Triangle objects
 			// (buffer #5)
-			_::SetUpTriangleObjects(vertexArrayIds[2], buffers[5], INVALID_BUFFER, numberOfWorldCubeLineSegments);
+			_::SetUpTriangleObjects(vertexArrayIds[2], buffers[5], NULL, numberOfWorldCubeLineSegments);
 			///////////////////////////
 			// VAO#3: Textured triangle objects
 			// (buffer #2 )
-			_::SetUpTexturedTriangleObjects(vertexArrayIds[3], buffers[2], INVALID_BUFFER, numberOfTexturedSegments);
+			_::SetUpTexturedTriangleObjects(vertexArrayIds[3], buffers[2], NULL, numberOfTexturedSegments);
 
 
 			_::InitialiseAnkh();
@@ -846,7 +816,7 @@ namespace my {
 			{
 				_::DrawData&	drawData					(*static_cast<_::DrawData*>(_drawData));
 				GLuint			(&vertexArrayIds)[_::VAOs]	(drawData.vertexArrayIds);
-				_::buffer_t		(&buffers)[_::VBOs]			(drawData.buffers);
+				Buffer*			(&buffers)[_::VBOs]			(drawData.buffers);
 
 				P_STATIC_ASSERT(sizeof(vertexArrayIds)/sizeof(vertexArrayIds[0]) == 4)
 				P_STATIC_ASSERT(sizeof(buffers)/sizeof(buffers[0]) == 6)

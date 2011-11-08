@@ -69,15 +69,13 @@ private:
 	typedef std::list<Entry>	Entries;
 
 	GLuint const			id;
-	#pragma warning( push )
-	#pragma warning( disable: 4251 )
 	Entries					entries;
-	#pragma warning( pop )
 	bool					committed;
 	size_t					totalBytesize;
 
 	~Buffer (void) {
 		PASSERT(InvariantsHold())
+		PASSERT(!IsBound())
 
 		if (!IsCommitted())
 			Clear();
