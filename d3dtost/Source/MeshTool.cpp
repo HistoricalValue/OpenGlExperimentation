@@ -197,7 +197,7 @@ void ProduceOrLoadMeshes (
 					MESH_TIME(mt, BarycentricFactors,	ComputeBarycentricFactors(elements)									);
 					MESH_TIME(mt, BoundingVolume,		volume = BuiltinShapes::Triangles(elements)							);
 					if (*step > 1e-1f)
-						{ MESH_TIME(mt, Aabb,				aabb(elements, volume.native())									); }
+						{ MESH_TIME(mt, Aabb,				aabb(elements, *volume)											); }
 					else
 						{ MESH_TIME(mt, Aabb,				(void)0															); }
 
