@@ -215,9 +215,11 @@ int APIENTRY _tWinMain(
 	return
 		my::WinMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow) == 0	&&
 		!(_::BE_A_MESH_TOOL.yes = false)								&&
+		(_::BE_A_MESH_TOOL ||
 #if WITH_TRIPLE_CLEANUP
 		my::WinMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow) == 0	&&
 		my::WinMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow) == 0	&&
 #endif
-		my::WinMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
+		my::WinMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow)
+		);
 }

@@ -21,6 +21,7 @@
 #define FORCE_REAL_TESSELATION	1
 #define FAST_TESSELATION		0
 #define NO_AO					1
+#define NO_STORAGE				1
 
 #if FORCE_REAL_TESSELATION == 1 || !defined(_DEBUG) || NO_AO == 1
 #	define WITH_FAKE_TESSELATION 0
@@ -307,13 +308,18 @@ void ProduceMeshFromMeshProductionRequirements (
 	{
 		ParallelisationManager m;
 
-		MESH_TIME(mt, IndexBuffer, mesh->GetIndexBuffer());
+	//	MESH_TIME(mt, IndexBuffer, mesh->GetIndexBuffer());
+		MESH_TIME(mt, IndexBuffer, static_cast<void>(0));
 
+	#if NO_STORAGE == 0
 		m.StartJob(MakeJobOnMesh(mt, MeshStats::StoreBin, mesh, ubind2nd(umemberfunctionpointer(&Mesh::StoreBin), meshPath)));
 		m.StartJob(MakeJobOnMesh(mt, MeshStats::StoreText, mesh, ubind2nd(umemberfunctionpointer(&Mesh::StoreText), meshTextPath)));
-
+	#else
 	//	MESH_TIME(mt, StoreBin, mesh->StoreBin(meshPath));
 	//	MESH_TIME(mt, StoreText, mesh->StoreText(meshTextPath));
+		MESH_TIME(mt, StoreBin, static_cast<void>(0));
+		MESH_TIME(mt, StoreText, static_cast<void>(0));
+	#endif
 	}
 
 	MeshLoader::GetSingleton().GivePath(mesh.native(), meshPath);
@@ -403,8 +409,10 @@ Kilostring& IdForStep (Kilostring& kilostring, char const* base, float step)
 std::list<Unit>& ProduceStepsInto (std::list<Unit>& into) {
 #if !defined(_DEBUG) && NO_AO == 1 || WITH_FAKE_TESSELATION == 1
 	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f, 1e-1f, 9e-2f, 8e-2f, 7e-2f, 6e-2f, 5e-2f, 4e-2f, 3e-2f, 2e-2f};
+#elif defined(_DEBUG) && NO_AO == 1
+	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f, 1e-1f, 9e-2f};
 #elif defined(_DEBUG)
-	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f};
+	Unit const	steps[] = {2e-1f, 1e-1f};
 #else
 	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f, 1e-1f, 9e-2f, 8e-2f, 7e-2f, 6e-2f, 5e-2f, 4e-2f, 3e-2f, 2e-2f};
 #endif
