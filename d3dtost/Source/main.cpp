@@ -100,13 +100,19 @@ namespace _ {
 		}
 	} BE_A_SHADER_COMPILER;
 
-	struct {
+	struct _BE_A_MESH_TOOL {
 		operator bool (void) const {
+			if (yes)
+				return true;
+
 			std::ifstream ifs("../shaders/vertex.c");
 			std::string line0;
 			getline(ifs, line0);
 			return line0 == std::string("// mesh tool");
 		}
+		bool yes;
+
+		_BE_A_MESH_TOOL (void): yes(false) {}
 	} BE_A_MESH_TOOL;
 }
 
@@ -191,7 +197,6 @@ namespace my {
 		d3dtost::CleanUp();
 		UtilPackage::CleanUp();
 		dclose();
-		system("pause");
 		_::info_console = NULL;
 
 		return 0;
@@ -205,11 +210,14 @@ int APIENTRY _tWinMain(
 		HINSTANCE hPrevInstance,
 		TCHAR*    lpCmdLine,
 		int       nCmdShow) {
+	_::BE_A_MESH_TOOL.yes = true;
 	// run main twice, so as to ensure clean-up works correctly
 	return
+		my::WinMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow) == 0	&&
+		!(_::BE_A_MESH_TOOL.yes = false)								&&
 #if WITH_TRIPLE_CLEANUP
-		my::WinMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow) == 0 &&
-		my::WinMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow) == 0 &&
+		my::WinMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow) == 0	&&
+		my::WinMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow) == 0	&&
 #endif
 		my::WinMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
 }

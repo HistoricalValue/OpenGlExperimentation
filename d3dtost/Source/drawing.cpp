@@ -17,11 +17,6 @@
 #define	WITH_GRID		1
 #define WITH_INVERSE_IT	0
 
-//	#define NURBS_LOAD_FROM	"surface_bin"
-//	#define NURBS_LOAD_FROM	"$BOB ROSS - Moon Valley med Horns_antisavidised_0.2"
-	#define NURBS_LOAD_FROM	"BOB ROSS - Moon Valley med Horns_aabbao_antisavidised_2.000"
-//	#define NURBS_LOAD_FROM	"../QuickTost/lala"
-
 #define DONT	if (false)
 #define DO		if (true)
 
@@ -33,6 +28,17 @@ using namespace ::gl::ext;
 using my::gl::adapters::Buffer;
 using my::gl::adapters::BufferManager;
 
+namespace {
+	struct {
+		operator std::string const (void) const {
+			std::ifstream ifs("../shaders/vertex.c");
+			std::string line1;
+			getline(ifs, line1);
+			getline(ifs, line1);
+			return line1.substr(3);
+		}
+	} NURBS_LOAD_FROM;
+}
 
 
 namespace _ {
@@ -40,7 +46,7 @@ namespace _ {
 	static const bool	TEST_TEXTURES		(true);
 
 	static const bool	WITH_DRAW_POINTS	(!TEST_TEXTURES || TEST_ALL);
-	static const bool	WITH_DRAW_LINES		(!TEST_TEXTURES || TEST_ALL);
+	static const bool	WITH_DRAW_LINES		(true || !TEST_TEXTURES || TEST_ALL);
 	static const bool	WITH_DRAW_TRIANGLES	(!TEST_TEXTURES || TEST_ALL);
 	static const bool	WITH_DRAW_TEXTURED	(TEST_TEXTURES  || TEST_ALL);
 	//
@@ -777,7 +783,7 @@ namespace my {
 
 			if (_::WITH_DRAW_TRIANGLES || _::WITH_DRAW_TEXTURED) {
 				nurbs::Initialise();
-				_::setmesh(nurbs::load(NURBS_LOAD_FROM));
+				_::setmesh(nurbs::load(ucstringarg(NURBS_LOAD_FROM)));
 			}
 
 			///////////////////////////

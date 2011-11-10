@@ -16,10 +16,11 @@
 #pragma warning( pop )
 #include <drawing_nurbs.h>
 #include <drawing_utils.h>
+#include <Parallelisation.h>
 
 #define FORCE_REAL_TESSELATION	1
 #define FAST_TESSELATION		0
-#define NO_AO					0
+#define NO_AO					1
 
 #if FORCE_REAL_TESSELATION == 1 || !defined(_DEBUG) || NO_AO == 1
 #	define WITH_FAKE_TESSELATION 0
@@ -234,6 +235,43 @@ void ProduceOrLoadMeshes (
 	out() << "\n";
 }
 
+template <typename OpOnMesh>
+struct JobOnMesh: public ParallelisationManager::Job {
+	typedef JobOnMesh<OpOnMesh>	Self;
+
+	virtual void	operator () (void) const
+						{ mt.Start(timing); op(mesh.native()); mt.End(timing); }
+	virtual Self*	Clone (void) const
+						{ return uclone(this); }
+	virtual void	Delete (void)
+						{ DDELETE(this); }
+	virtual			~JobOnMesh (void) {}
+
+	JobOnMesh (MeshStats& _mt, MeshStats::Timing const _timing, dptr<Mesh>& _mesh, OpOnMesh const& _op):
+		mt		(_mt		),
+		timing	(_timing	),
+		mesh	(_mesh		),
+		op		(_op		)
+		{}
+	JobOnMesh (Self const& o):
+		mt		(o.mt		),
+		timing	(o.timing	),
+		mesh	(o.mesh		),
+		op		(o.op		)
+		{}
+
+	MeshStats&			mt;
+	MeshStats::Timing	timing;
+	dptr<Mesh>&			mesh;
+	OpOnMesh			op;
+
+private:
+	void operator = (Self const&);
+};
+template <typename OpOnMesh> static inline
+JobOnMesh<OpOnMesh> const MakeJobOnMesh (MeshStats& mt, MeshStats::Timing const timing, dptr<Mesh>& mesh, OpOnMesh const& op)
+	{ return JobOnMesh<OpOnMesh>(mt, timing, mesh, op); }
+
 // static
 void ProduceMeshFromMeshProductionRequirements (
 		std::list<MeshInfo>&		into,
@@ -266,19 +304,24 @@ void ProduceMeshFromMeshProductionRequirements (
 					boundingVolume.discard())));
 	}
 
-	MESH_TIME(mt, IndexBuffer, mesh->GetIndexBuffer());
-
 	{
-		MESH_TIME(mt, StoreBin, mesh->StoreBin(meshPath));
-		MESH_TIME(mt, StoreText, mesh->StoreText(meshTextPath));
+		ParallelisationManager m;
 
-		MeshLoader::GetSingleton().GivePath(mesh.native(), meshPath);
-		into.push_back(MeshInfo(*mesh, step, mt));
+		MESH_TIME(mt, IndexBuffer, mesh->GetIndexBuffer());
 
-		MeshIndex& Index(MeshIndex::GetSingleton());
-		Index.ImportAllFromMeshLoader();
-		Index.Store();
+		m.StartJob(MakeJobOnMesh(mt, MeshStats::StoreBin, mesh, ubind2nd(umemberfunctionpointer(&Mesh::StoreBin), meshPath)));
+		m.StartJob(MakeJobOnMesh(mt, MeshStats::StoreText, mesh, ubind2nd(umemberfunctionpointer(&Mesh::StoreText), meshTextPath)));
+
+	//	MESH_TIME(mt, StoreBin, mesh->StoreBin(meshPath));
+	//	MESH_TIME(mt, StoreText, mesh->StoreText(meshTextPath));
 	}
+
+	MeshLoader::GetSingleton().GivePath(mesh.native(), meshPath);
+	into.push_back(MeshInfo(*mesh, step, mt));
+
+	MeshIndex& Index(MeshIndex::GetSingleton());
+	Index.ImportAllFromMeshLoader();
+	Index.Store();
 
 	mesh.Delete();
 }
@@ -339,7 +382,7 @@ ao::AnyAmbientOcclusionCreatorProxy MakeAmbientOcclusionCreator (
 		MeshAABBTree const&								aabb,
 		float const										maxDistance) {
 #if NO_AO == 1
-	USE(samplingRate), USE(elements), USE(intersectionData), USE(samplingRate2), USE(aabb), USE(maxDistance);
+	USE(step), USE(samplingRate), USE(elements), USE(intersectionData), USE(samplingRate2), USE(aabb), USE(maxDistance);
 	return DNEW(ao::IneffectiveAmbientOcclusionCreator);
 #else
 	USE(samplingRate), USE(elements), USE(intersectionData);
@@ -359,11 +402,11 @@ Kilostring& IdForStep (Kilostring& kilostring, char const* base, float step)
 // static
 std::list<Unit>& ProduceStepsInto (std::list<Unit>& into) {
 #if !defined(_DEBUG) && NO_AO == 1 || WITH_FAKE_TESSELATION == 1
-	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f, 1e-1f, 9e-2f, 8e-2f, 7e-2f, 6e-2f, 5e-2f, 4e-2f, 3e-2f, 2e-2f, 1e-2f};
+	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f, 1e-1f, 9e-2f, 8e-2f, 7e-2f, 6e-2f, 5e-2f, 4e-2f, 3e-2f, 2e-2f};
 #elif defined(_DEBUG)
-	Unit const	steps[] = {2e-0f, 1e-0f};
+	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f};
 #else
-	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f, 1e-1f, 9e-2f, 8e-2f, 7e-2f, 6e-2f, 5e-2f, 4e-2f, 3e-2f, 2e-2f, 1e-2f};
+	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f, 1e-1f, 9e-2f, 8e-2f, 7e-2f, 6e-2f, 5e-2f, 4e-2f, 3e-2f, 2e-2f};
 #endif
 
 	into.clear();
