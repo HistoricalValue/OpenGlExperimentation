@@ -52,8 +52,8 @@ namespace my { namespace gl { namespace math {
 	}
 
 	float Matrix4x4::minor (size_t const i, size_t const j) const {
-		PASSERT(i < 4)
-		PASSERT(j < 4)
+		PASSERT(i < 3)	// treating as a 3x3 matrix
+		PASSERT(j < 3)
 
 		size_t row0(0), row1(1), col0(0), col1(1);
 		switch (i) {
