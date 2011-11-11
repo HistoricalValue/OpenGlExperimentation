@@ -46,7 +46,7 @@ namespace _ {
 	static const bool	TEST_TEXTURES		(true);
 
 	static const bool	WITH_DRAW_POINTS	(!TEST_TEXTURES || TEST_ALL);
-	static const bool	WITH_DRAW_LINES		(true || !TEST_TEXTURES || TEST_ALL);
+	static const bool	WITH_DRAW_LINES		(false || !TEST_TEXTURES);
 	static const bool	WITH_DRAW_TRIANGLES	(!TEST_TEXTURES || TEST_ALL);
 	static const bool	WITH_DRAW_TEXTURED	(TEST_TEXTURES  || TEST_ALL);
 	//

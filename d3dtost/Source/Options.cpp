@@ -28,4 +28,4 @@ size_t	Options::TriangleShapeColouringMethod (void)				{ return
 																			//	COLOUR_WITH_LIGHTING_AND_AO_AND_COLOUR
 																			; }
 size_t	Options::TriangleShapeGridColouringMethod (void)			{ return COLOUR_WITH_NEON					; }
-size_t	Options::TexturedTriangleShapeColouringMethod (void)		{ return COLOUR_WITH_TEXTURE_LIGHT_AND_AO	; }
+size_t	Options::TexturedTriangleShapeColouringMethod (void)		{ return COLOUR_WITH_TEXTURE_AND_AO	; }
