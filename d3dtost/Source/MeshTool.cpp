@@ -22,6 +22,7 @@
 #define FAST_TESSELATION		0
 #define NO_AO					1
 #define NO_STORAGE				0
+#define	SPEED_TEST				0
 
 #if FORCE_REAL_TESSELATION == 1 || !defined(_DEBUG) || NO_AO == 1
 #	define WITH_FAKE_TESSELATION 0
@@ -407,10 +408,12 @@ Kilostring& IdForStep (Kilostring& kilostring, char const* base, float step)
 
 // static
 std::list<Unit>& ProduceStepsInto (std::list<Unit>& into) {
-#if !defined(_DEBUG) && NO_AO == 1 || WITH_FAKE_TESSELATION == 1
+#if SPEED_TEST == 1
+	Unit const	steps[] = {5e-2f};
+#elif !defined(_DEBUG) && NO_AO == 1 || WITH_FAKE_TESSELATION == 1
 	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f, 1e-1f, 9e-2, 8e-2, 7e-2, 6e-2, 5e-2, 4e-2, 3e-2, 2e-2};
 #elif defined(_DEBUG) && NO_AO == 1
-	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f, 1e-1f, 9e-2f};
+	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f};
 #elif defined(_DEBUG)
 	Unit const	steps[] = {2e-0f, 1e-0f};
 #else
