@@ -292,19 +292,20 @@ void addbasecurvesto (ankh::nurbs::Surface const& surf, my::gl::shapes::ShapeCom
 	using tesselation::deboor::				ProduceAll;
 	using my::algo::						map_vec4_to_linestrip;
 	using ankh::nurbs::tesselation::		IneffectiveNormalCalculator;
-	using ankh::nurbs::						PointData;
+	using ankh::nurbs::						Point;
 	using ankh::nurbs::						TesselationParameters;
 	using ankh::nurbs::tesselation::		Resolution;
 	using ankh::nurbs::algo::optimised::	p;
-	using ankh::nurbs::tesselation::		PointDataAppenderTesselationCallback;
-	using ankh::nurbs::tesselation::		Points;
+	using ankh::nurbs::						Points;
+	using ankh::nurbs::tesselation::		PointWithDistanceAppenderTesselationCallback;
 
-	Points												points;
-	std::list<Line>										lines;
-	Colour const										colour(Vector4::New(0.4f, 0.2f, 0.8f));
-	IneffectiveNormalCalculator const					inc;
-	TesselationParameters const							tp(1e-1f);
-	PointDataAppenderTesselationCallback<Points>		tesselationCallback(&points);
+	Points								points;
+	std::list<Line>						lines;
+	Colour const						colour(Vector4::New(0.4f, 0.2f, 0.8f));
+	IneffectiveNormalCalculator const	inc;
+	TesselationParameters const			tp(1e-1f);
+	PointWithDistanceAppenderTesselationCallback<&Point::SetUDistanceFrom, Points>
+										tesselationCallback(&points);
 
 	for (size_t i(0); i < surf.GetControlPointsWidth(); ++i) {
 		Curve const&	base		(surf.GetAlongBase(i));

@@ -25,7 +25,7 @@ my::gl::math::Vector4 makevector4 (ankh::math::trig::vec4 const& v)
 	{ return my::gl::math::Vector4::New(v.x, v.y, v.z, v.w); }
 
 static inline
-my::gl::math::Vector4 makevector4fromvertexwithnormal (ankh::nurbs::PointData const& pd)
+my::gl::math::Vector4 makevector4fromvertexwithnormal (ankh::nurbs::Point const& pd)
 	{ return my::gl::math::Vector4::New(pd.xyz.x, pd.xyz.y, pd.xyz.z, 1.0f); }
 
 

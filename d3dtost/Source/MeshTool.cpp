@@ -20,7 +20,7 @@
 
 #define FORCE_REAL_TESSELATION	1
 #define FAST_TESSELATION		0
-#define NO_AO					0
+#define NO_AO					1
 #define NO_STORAGE				0
 
 #if FORCE_REAL_TESSELATION == 1 || !defined(_DEBUG) || NO_AO == 1
@@ -168,14 +168,16 @@ void ProduceOrLoadMeshes (
 				out() << "\n           ... ";
 			}
 
-			if (MeshLoader::GetSingleton().Load(loadpath)) {
-				out() << "loaded"; // ok
+			if (ufileexists(loadpath)) {
+				out() << "exists"; // ok
 
-				MeshIndex& Index(MeshIndex::GetSingleton());
-				Index.ImportAllFromMeshLoader();
-				Index.Store();
-
-				MeshLoader::GetSingleton().Unload(MeshLoader::GetSingleton().GetFromPath(loadpath));
+			//	MeshLoader::GetSingleton().Load(loadpath)
+			//
+			//	MeshIndex& Index(MeshIndex::GetSingleton());
+			//	Index.ImportAllFromMeshLoader();
+			//	Index.Store();
+			//
+			//	MeshLoader::GetSingleton().Unload(MeshLoader::GetSingleton().GetFromPath(loadpath));
 
 				if (one)
 					oneLoaded = true;
@@ -198,9 +200,11 @@ void ProduceOrLoadMeshes (
 					MESH_TIME(mt, Tesselation,			DebugAwareTesselation(elements, bob, TesselationParameters(*step))	);
 					MESH_TIME(mt, BarycentricFactors,	ComputeBarycentricFactors(elements)									);
 					MESH_TIME(mt, BoundingVolume,		volume = BuiltinShapes::Triangles(elements)							);
+				#if NO_AO == 0
 					if (*step > 1e-1f)
 						{ MESH_TIME(mt, Aabb,				aabb(elements, *volume)											); }
 					else
+				#endif
 						{ MESH_TIME(mt, Aabb,				(void)0															); }
 
 					prerequisitesMade = true;
@@ -403,12 +407,14 @@ Kilostring& IdForStep (Kilostring& kilostring, char const* base, float step)
 
 // static
 std::list<Unit>& ProduceStepsInto (std::list<Unit>& into) {
-#if !defined(_DEBUG) || NO_AO == 1 || WITH_FAKE_TESSELATION == 1
-	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f, 1e-1f};
+#if !defined(_DEBUG) && NO_AO == 1 || WITH_FAKE_TESSELATION == 1
+	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f, 1e-1f, 9e-2, 8e-2, 7e-2, 6e-2, 5e-2, 4e-2, 3e-2, 2e-2};
 #elif defined(_DEBUG) && NO_AO == 1
-	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f};
+	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f, 1e-1f, 9e-2f};
 #elif defined(_DEBUG)
-	Unit const	steps[] = {2e-1f, 1e-1f};
+	Unit const	steps[] = {2e-0f, 1e-0f};
+#else
+	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f};
 #endif
 
 	into.clear();
