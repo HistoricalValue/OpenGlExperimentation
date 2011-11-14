@@ -10,6 +10,7 @@
 #pragma warning( push, 0 )
 #	include <ufiles.h>
 #	include <uderivablecheck.h>
+#	include <fstream>
 #pragma warning( pop )
 #include <NurbsFacade.h>
 
@@ -88,19 +89,50 @@ namespace _ {
 
 	///////////////////////////////////////////////////////
 
+	struct Config {
+		std::string const& operator [] (std::string const& k) const
+			{ return configmap.at(k); }
+
+		Config (void): configmap() { load(configmap); }
+	private:
+		typedef std::map<std::string, std::string>		Configmap;
+		Configmap	configmap;
+
+		static Configmap& load (Configmap& m) {
+			std::ifstream	fin("../d3dtost.config");
+			std::string		line;
+
+			while (!fin.eof()) {
+				PASSERT(fin.good())
+				line.clear();
+				getline(fin, line);
+				PASSERT(fin.good() || fin.eof())
+				size_t const middle(line.find(':'));
+				PASSERT(middle != std::string::npos && middle > 0);
+				umapadd(m, line.substr(0, middle), line.substr(middle + 1));
+			}
+			return m;
+		}
+	};
+
+	///////////////////////////////////////////////////////
+
 	struct GlobalState {
+		Config				config;
 		ankh::shapes::Mesh*	mesh;
 
+		GlobalState (void):
+			config	(		),
+			mesh	(NULL	)
+			{}
 	}* globalState(NULL);
 
-	static inline GlobalState* unew_globalState (void) {
-		unew(globalState);
-		globalState->mesh = NULL;
-		return globalState;
-	}
-
+	static inline GlobalState* unew_globalState (void)
+		{ return unew(globalState); }
 	static inline void udelete_globalState (void)
 		{ udelete(globalState); }
+
+	///////////////////////////////////////////////////////
 
 	static inline GlobalState& getglobalstate (void)
 		{ return *maketmpdptr(globalState); }
@@ -112,6 +144,9 @@ namespace _ {
 
 	static inline ankh::shapes::Mesh::Elements const& getmeshelements (void)
 		{ return getmesh().GetElements(); }
+
+	static inline Config&	getconfig (void)
+		{ return getglobalstate().config; }
 
 	///////////////////////////////////////////////////////
 	// Buffer double play
@@ -604,8 +639,10 @@ namespace _ {
 			images[0] = il.LoadFromPaths("../textures/digitframes", 11, "png");	// gets loaded with Devil
 
 			size_t bufbytesize;
-			void* const buf(uloadbinaryfile("../textures/paccy.png", &bufbytesize));
-			images[1] = il.Load3DFromData(32, "pacco", "png", buf, bufbytesize);
+		//	void* const buf(uloadbinaryfile("../textures/paccy.png", &bufbytesize));
+		//	images[1] = il.Load3DFromData(32, "pacco", "png", buf, bufbytesize);
+			void* const buf(uloadbinaryfile("../textures/1508-stark-winter-is-coming-wallpaper-wallchan-1920x1200.jpg", &bufbytesize));
+			images[1] = il.LoadFromData("pacco", "jpg", buf, bufbytesize);
 			delete[] buf;
 		}
 	}
