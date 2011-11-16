@@ -203,7 +203,7 @@ void ProduceOrLoadMeshes (
 					MESH_TIME(mt, BoundingVolume,		volume = BuiltinShapes::Triangles(elements)							);
 				#if NO_AO == 0
 					if (*step > 1e-1f)
-						{ MESH_TIME(mt, Aabb,				aabb(elements, *volume)											); }
+						{ MESH_TIME(mt, Aabb,				aabb(elements, volume.native())									); }
 					else
 				#endif
 						{ MESH_TIME(mt, Aabb,				(void)0															); }
@@ -394,7 +394,7 @@ ao::AnyAmbientOcclusionCreatorProxy MakeAmbientOcclusionCreator (
 #else
 	USE(samplingRate), USE(elements), USE(intersectionData);
 //	return DNEWCLASS(ao::AmbientOcclusionCreatorProxy, (samplingRate, elements, intersectionData));
-	return	step > 4e-1f?
+	return	step > 1e-1f?
 				static_cast<Mesh::AmbientOcclusionCreator* const>(DNEWCLASS(ComputeMeshAmbientOcclusion, (samplingRate2, aabb, maxDistance))):
 				static_cast<Mesh::AmbientOcclusionCreator* const>(DNEW(ao::IneffectiveAmbientOcclusionCreator));
 #endif
@@ -411,13 +411,13 @@ std::list<Unit>& ProduceStepsInto (std::list<Unit>& into) {
 #if SPEED_TEST == 1
 	Unit const	steps[] = {5e-2f};
 #elif !defined(_DEBUG) && NO_AO == 1 || WITH_FAKE_TESSELATION == 1
-	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f, 1e-1f, 9e-2, 8e-2, 7e-2, 6e-2, 5e-2, 4e-2, 3e-2, 2e-2};
+	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f, 1e-1f, 9e-2f, 8e-2f, 7e-2f, 6e-2f, 5e-2f, 4e-2f, 3e-2f, 2e-2f};
 #elif defined(_DEBUG) && NO_AO == 1
 	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f};
 #elif defined(_DEBUG)
 	Unit const	steps[] = {2e-0f};
 #else
-	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f};
+	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f};
 #endif
 
 	into.clear();

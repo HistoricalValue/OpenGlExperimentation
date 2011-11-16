@@ -16,7 +16,7 @@
 
 #define WITH_NORMALS	1
 #define	WITH_GRID		1
-#define WITH_INVERSE_IT	0
+#define WITH_INVERSE_IT	1
 
 #define DONT	if (false)
 #define DO		if (true)
@@ -639,10 +639,13 @@ namespace _ {
 			images[0] = il.LoadFromPaths("../textures/digitframes", 11, "png");	// gets loaded with Devil
 
 			size_t bufbytesize;
-		//	void* const buf(uloadbinaryfile("../textures/paccy.png", &bufbytesize));
-		//	images[1] = il.Load3DFromData(32, "pacco", "png", buf, bufbytesize);
+		#if 1
+			void* const buf(uloadbinaryfile("../textures/paccy.png", &bufbytesize));
+			images[1] = il.Load3DFromData(32, "pacco", "png", buf, bufbytesize);
+		#else
 			void* const buf(uloadbinaryfile("../textures/1508-stark-winter-is-coming-wallpaper-wallchan-1920x1200.jpg", &bufbytesize));
 			images[1] = il.LoadFromData("pacco", "jpg", buf, bufbytesize);
+		#endif
 			delete[] buf;
 		}
 	}
