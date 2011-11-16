@@ -20,7 +20,7 @@
 
 #define FORCE_REAL_TESSELATION	1
 #define FAST_TESSELATION		0
-#define NO_AO					1
+#define NO_AO					0
 #define NO_STORAGE				0
 #define	SPEED_TEST				0
 
@@ -308,7 +308,7 @@ void ProduceMeshFromMeshProductionRequirements (
 
 //	MESH_TIME(mt, IndexBuffer, mesh->GetIndexBuffer());
 	MESH_TIME(mt, IndexBuffer, static_cast<void>(0));
-	
+
 	{
 		ParallelisationManager m;
 
@@ -415,7 +415,7 @@ std::list<Unit>& ProduceStepsInto (std::list<Unit>& into) {
 #elif defined(_DEBUG) && NO_AO == 1
 	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f};
 #elif defined(_DEBUG)
-	Unit const	steps[] = {2e-0f, 1e-0f};
+	Unit const	steps[] = {2e-0f};
 #else
 	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f};
 #endif
