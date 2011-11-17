@@ -17,10 +17,13 @@ namespace shapes	{
 
 // NormalAndWindingInverserMeshElementProcessor
 
-void NormalAndWindingInverserMeshElementProcessor::operator () (MeshElement& elem) const {
+void WindingInverserMeshElementProcessor::operator () (MeshElement& elem) const {
 	DASSERT(elem.HasNormals());
+	DASSERT(elem.HasTextureCoords());
 
 	std::swap(elem.b, elem.c);
+	std::swap(elem.GetTextureCoords(1), elem.GetTextureCoords(2));
+
 	math::trig::vec3 nb(elem.GetNormal(1)), nc(elem.GetNormal(2));
 	std::swap(nb, nc);
 

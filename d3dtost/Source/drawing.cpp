@@ -178,7 +178,7 @@ namespace _ {
 #if TEXTURE_TYPE == TEXTURE_TYPE_3D
 		// return (dt_milli / 125) % 16;		// 16 changes over 8 seconds
 		// return (dt_milli / 500) % 3;			// 3 changes over 1.5 seconds
-		return (dt_milli / 250) % 11;			// 10 changes over 2.5 seconds
+		return 4u;// (dt_milli / 250) % 11;			// 10 changes over 2.5 seconds
 #elif TEXTURE_TYPE == TEXTURE_TYPE_2D
 		return 0;
 #else
@@ -190,7 +190,7 @@ namespace _ {
 	static size_t GetTextureIndex (unsigned long int const dt_milli) {
 		// there are TEXTURES_NUM textures and we want to keep each one for 3 seconds
 		UCOMPILECHECK(_::TEXTURES_NUM == sizeof(_::TexturesUnits)/sizeof(_::TexturesUnits[0]))
-		return _::TexturesUnits[(dt_milli / ((3 * 1000) / _::TEXTURES_NUM )) % _::TEXTURES_NUM];
+		return _::TexturesUnits[0u]; // (dt_milli / ((3 * 1000) / _::TEXTURES_NUM )) % _::TEXTURES_NUM];
 	}
 
 	static void* __last_static_buffer_allocation(NULL);

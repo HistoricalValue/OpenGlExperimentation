@@ -20,7 +20,7 @@
 
 #define FORCE_REAL_TESSELATION	1
 #define FAST_TESSELATION		0
-#define NO_AO					0
+#define NO_AO					1
 #define NO_STORAGE				0
 #define	SPEED_TEST				0
 
@@ -203,7 +203,7 @@ void ProduceOrLoadMeshes (
 					MESH_TIME(mt, BoundingVolume,		volume = BuiltinShapes::Triangles(elements)							);
 				#if NO_AO == 0
 					if (*step > 1e-1f)
-						{ MESH_TIME(mt, Aabb,				aabb(elements, volume.native())									); }
+						{ MESH_TIME(mt, Aabb,				aabb(elements, *volume)											); }
 					else
 				#endif
 						{ MESH_TIME(mt, Aabb,				(void)0															); }
@@ -211,7 +211,7 @@ void ProduceOrLoadMeshes (
 					prerequisitesMade = true;
 				}
 				if (!one)
-					{ MESH_TIME_CUSTOM_COMMAND(mt, InvertNormalsAndWinding(elements)); }
+					{ MESH_TIME_CUSTOM_COMMAND(mt, InvertWinding(elements)); }
 
 				ProduceMeshFromMeshProductionRequirements(
 					into,
@@ -413,7 +413,7 @@ std::list<Unit>& ProduceStepsInto (std::list<Unit>& into) {
 #elif !defined(_DEBUG) && NO_AO == 1 || WITH_FAKE_TESSELATION == 1
 	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f, 2e-1f, 1e-1f, 9e-2f, 8e-2f, 7e-2f, 6e-2f, 5e-2f, 4e-2f, 3e-2f, 2e-2f};
 #elif defined(_DEBUG) && NO_AO == 1
-	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f, 4e-1f, 3e-1f};
+	Unit const	steps[] = {2e-0f, 1e-0f, 5e-1f};
 #elif defined(_DEBUG)
 	Unit const	steps[] = {2e-0f};
 #else

@@ -44,12 +44,12 @@ public:
 
 ///////////////////////////////////////////////////////////
 
-class NormalAndWindingInverserMeshElementProcessor: public MeshElementProcessor {
+class WindingInverserMeshElementProcessor: public MeshElementProcessor {
 public:
 	virtual void operator () (MeshElement& elem) const;
 
-	virtual ~NormalAndWindingInverserMeshElementProcessor (void) {}
-	NMUINLINE_DEFINE_CLONE_VIA_COPY_CONSTRUCTOR(NormalAndWindingInverserMeshElementProcessor)
+	virtual ~WindingInverserMeshElementProcessor (void) {}
+	NMUINLINE_DEFINE_CLONE_VIA_COPY_CONSTRUCTOR(WindingInverserMeshElementProcessor)
 };
 
 ///////////////////////////////////////////////////////////
@@ -62,10 +62,10 @@ template <typename Processor>
 static inline Mesh::Elements& Process (Mesh::Elements& transformed, const Mesh::Elements& elements, const Processor& proc)
 	{ transformed = elements; return Process(transformed, proc); }
 
-static inline Mesh::Elements& InvertNormalsAndWinding (Mesh::Elements& transformed, const Mesh::Elements& elements)
-	{ return Process(transformed, elements, NormalAndWindingInverserMeshElementProcessor()); }
-static inline Mesh::Elements& InvertNormalsAndWinding (Mesh::Elements& elements)
-	{ return Process(elements, NormalAndWindingInverserMeshElementProcessor()); }
+static inline Mesh::Elements& InvertWinding (Mesh::Elements& transformed, const Mesh::Elements& elements)
+	{ return Process(transformed, elements, WindingInverserMeshElementProcessor()); }
+static inline Mesh::Elements& InvertWinding (Mesh::Elements& elements)
+	{ return Process(elements, WindingInverserMeshElementProcessor()); }
 
 static inline Mesh::Elements& ComputeBarycentricFactors (Mesh::Elements& elements)
 	{ std::for_each(elements.begin(), elements.end(), std::mem_fun_ref(&math::types::Triangle::ComputeBarycentricFactors)); return elements; }
