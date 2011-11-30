@@ -16,7 +16,7 @@
 
 #define WITH_NORMALS	1
 #define	WITH_GRID		1
-#define WITH_INVERSE_IT	1
+#define WITH_INVERSE_IT	0
 
 #define DONT	if (false)
 #define DO		if (true)
@@ -47,7 +47,7 @@ namespace _ {
 	static const bool	TEST_TEXTURES		(true);
 
 	static const bool	WITH_DRAW_POINTS	(!TEST_TEXTURES || TEST_ALL);
-	static const bool	WITH_DRAW_LINES		(false || !TEST_TEXTURES);
+	static const bool	WITH_DRAW_LINES		(true || !TEST_TEXTURES);
 	static const bool	WITH_DRAW_TRIANGLES	(!TEST_TEXTURES || TEST_ALL);
 	static const bool	WITH_DRAW_TEXTURED	(TEST_TEXTURES  || TEST_ALL);
 	//
@@ -166,7 +166,7 @@ namespace _ {
 		// ----
 		// we want one round per second => w = rad/sec = 2pi/sec => ang = w*sec = 2pi*sec = 360*sec (%360)
 		// 360 * dt * 1e-3  = 0.360 * dt
-		float const result(.045f * dt_milli);
+		float const result(.010f * dt_milli);
 		return result - floorf(result/360.f)*360.f;
 	}
 
@@ -178,7 +178,7 @@ namespace _ {
 #if TEXTURE_TYPE == TEXTURE_TYPE_3D
 		// return (dt_milli / 125) % 16;		// 16 changes over 8 seconds
 		// return (dt_milli / 500) % 3;			// 3 changes over 1.5 seconds
-		return 4u;// (dt_milli / 250) % 11;			// 10 changes over 2.5 seconds
+		return 0u;// (dt_milli / 250) % 11;			// 10 changes over 2.5 seconds
 #elif TEXTURE_TYPE == TEXTURE_TYPE_2D
 		return 0;
 #else
@@ -190,7 +190,7 @@ namespace _ {
 	static size_t GetTextureIndex (unsigned long int const dt_milli) {
 		// there are TEXTURES_NUM textures and we want to keep each one for 3 seconds
 		UCOMPILECHECK(_::TEXTURES_NUM == sizeof(_::TexturesUnits)/sizeof(_::TexturesUnits[0]))
-		return _::TexturesUnits[0u]; // (dt_milli / ((3 * 1000) / _::TEXTURES_NUM )) % _::TEXTURES_NUM];
+		return _::TexturesUnits[1u]; // (dt_milli / ((3 * 1000) / _::TEXTURES_NUM )) % _::TEXTURES_NUM];
 	}
 
 	static void* __last_static_buffer_allocation(NULL);
@@ -526,7 +526,7 @@ namespace _ {
 		m *= Translate(0, 0, 2.0f);
 
 		if (_::WITH_CAMERA) {
-			m *= Rotate(Axis_X(), M_PI_4);
+			m *= Rotate(Axis_X(), M_PI_4 + M_PI_8);
 		}
 
 	#if WITH_INVERSE_IT == 1
@@ -639,7 +639,7 @@ namespace _ {
 			images[0] = il.LoadFromPaths("../textures/digitframes", 11, "png");	// gets loaded with Devil
 
 			size_t bufbytesize;
-		#if 1
+		#if 0
 			void* const buf(uloadbinaryfile("../textures/paccy.png", &bufbytesize));
 			images[1] = il.Load3DFromData(32, "pacco", "png", buf, bufbytesize);
 		#else
@@ -669,6 +669,8 @@ namespace _ {
 			textures[0]->BindTo(tum.Get(_::TexturesUnits[0]));
 			textures[1]->BindTo(tum.Get(_::TexturesUnits[1]));
 
+			textures[1]->SetMinFilter(GL_NEAREST);
+
 			previousTextureIndex = 0;
 		}
 	}
@@ -681,6 +683,22 @@ namespace _ {
 
 		glDisable(GL_PROGRAM_POINT_SIZE); DASSERT(glGetError() == GL_NO_ERROR);
 		glPointSize(5.f);
+	}
+
+	template <typename SizeType> static
+	void DrawGrid (SizeType const& numberOfLineSegments) {
+		PASSERT(WITH_GRID == 1)
+
+		glUniform1ui(my::OpenGL::VUL_COLSELTR, Options::TriangleShapeGridColouringMethod());
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//	glEnable(GL_LINE_SMOOTH);
+		glEnable(GL_POLYGON_OFFSET_LINE);
+		glLineWidth(0.2f);
+		glPolygonOffset(-1, -1);
+		glDrawArrays(GL_TRIANGLES, 0, psafecast<GLsizei>(numberOfLineSegments));
+		glDisable(GL_POLYGON_OFFSET_LINE);
+	//	glDisable(GL_LINE_SMOOTH);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 }
 
@@ -754,16 +772,7 @@ namespace my {
 				glUniform1ui(OpenGL::VUL_COLSELTR, Options::TriangleShapeColouringMethod());
 				glDrawArrays(GL_TRIANGLES, 0, psafecast<GLsizei>(dd.numberOfWorldCubeLineSegments));
 				#if WITH_GRID == 1
-				glUniform1ui(OpenGL::VUL_COLSELTR, Options::TriangleShapeGridColouringMethod());
-				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	DASSERT(glGetError() == GL_NO_ERROR);
-			//	glEnable(GL_LINE_SMOOTH);	DASSERT(glGetError() == GL_NO_ERROR);
-				glEnable(GL_POLYGON_OFFSET_LINE);
-				glLineWidth(0.2f);
-				glPolygonOffset(-1, -1);
-				glDrawArrays(GL_TRIANGLES, 0, psafecast<GLsizei>(dd.numberOfWorldCubeLineSegments));	DASSERT(glGetError() == GL_NO_ERROR);
-				glDisable(GL_POLYGON_OFFSET_LINE);	DASSERT(glGetError() == GL_NO_ERROR);
-			//	glDisable(GL_LINE_SMOOTH);	DASSERT(glGetError() == GL_NO_ERROR);
-				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	DASSERT(glGetError() == GL_NO_ERROR);
+				_::DrawGrid(dd.numberOfWorldCubeLineSegments);
 				#endif
 			}
 
@@ -780,6 +789,9 @@ namespace my {
 				glUniform1i(OpenGL::VUL_SAMPLER0, psafecast<GLint>(_::GetTextureIndex(dt)));
 
 				glDrawArrays(GL_TRIANGLES, 0, psafecast<GLsizei>(dd.numberOfTexturedSegments));
+				#if WITH_GRID == 1
+				_::DrawGrid(dd.numberOfTexturedSegments);
+				#endif
 			}
 
 
@@ -852,7 +864,10 @@ namespace my {
 			_::LoadTehStonets(images);
 			_::CreateTextures(images, textures, drawData.previousTextureIndex);
 			_::SetupCamera();
-			_::SetupFrustrum(1.00f, 5.00f, -1.00f, 1.00f, -1.00f, 1.00f);
+			{
+				float const wh = 0.80f;
+				_::SetupFrustrum(1.00f, 5.00f, -wh, wh, -wh, wh);
+			}
 			_::ConfigureOpenGl();
 
 			return &drawData;
