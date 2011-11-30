@@ -1,0 +1,1 @@
+ruby glext_generator.rb ..\ankh\Images\Include\nmutil\OpenGlExtensions.txt ..\ankh\Images\Include\nmutil\OpenGlExtensions.h
