@@ -16,7 +16,7 @@ in		vec4			textureCoordinate;
 in		float			interpolatedAmbientOcclusionFactor;
 
 // ouputs
-out		vec4[]			fragData;
+out		vec4			fragData[gl_MaxDrawBuffers];
 
 vec4	ColourFromRgb (uint r, uint g, uint b)
 			{ return vec4(float(r)/255.0f, float(g)/255.0f, float(b)/255.0f, 1.0f); }

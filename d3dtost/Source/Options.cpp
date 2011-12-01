@@ -1,5 +1,6 @@
 #include <stdafx.h>
 #include <Options.h>
+#include <MyUtils.h>
 
 static bool* initialised = NULL;
 static inline bool Option_ValidateInvariants (void) { DASSERT(*DPTR(DNULLCHECK(initialised))); return true; }
@@ -28,4 +29,22 @@ size_t	Options::TriangleShapeColouringMethod (void)				{ return
 																			//	COLOUR_WITH_LIGHTING_AND_AO_AND_COLOUR
 																			; }
 size_t	Options::TriangleShapeGridColouringMethod (void)			{ return COLOUR_WITH_NEON					; }
-size_t	Options::TexturedTriangleShapeColouringMethod (void)		{ return COLOUR_WITH_TEXTURE_AND_AO	; }
+size_t	Options::TexturedTriangleShapeColouringMethod (void)		{ return COLOUR_WITH_TEXTURE	; }
+
+///////////////////////////////////////////////////////////
+
+_::Config::Configmap& _::Config::load (Configmap& m) {
+	std::ifstream	fin("../d3dtost.config");
+	std::string		line;
+
+	while (!fin.eof()) {
+		PASSERT(fin.good())
+		line.clear();
+		getline(fin, line);
+		PASSERT(fin.good() || fin.eof())
+		size_t const middle(line.find(':'));
+		PASSERT(middle != std::string::npos && middle > 0);
+		umapadd(m, line.substr(0, middle), line.substr(middle + 1));
+	}
+	return m;
+}

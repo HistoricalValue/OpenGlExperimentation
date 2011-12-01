@@ -13,66 +13,40 @@
 #	include <fstream>
 #pragma warning( pop )
 #include <NurbsFacade.h>
+#include <FrameBufferObject.h>
+#include <MyUtils.h>
 
 #define WITH_NORMALS	1
 #define	WITH_GRID		1
 #define WITH_INVERSE_IT	0
 
-#define DONT	if (false)
-#define DO		if (true)
-
-#define TEXTURE_TYPE_2D		0x00
-#define TEXTURE_TYPE_3D		0x01
-#define TEXTURE_TYPE		TEXTURE_TYPE_3D
-
-using namespace ::gl::ext;
+using namespace gl::ext;
+namespace prim = gl::prim;
 using my::gl::adapters::Buffer;
 using my::gl::adapters::BufferManager;
 
-namespace {
-	struct {
-		operator std::string const (void) const {
-			std::ifstream ifs("../shaders/vertex.c");
-			std::string line1;
-			getline(ifs, line1);
-			getline(ifs, line1);
-			return line1.substr(3);
-		}
-	} NURBS_LOAD_FROM;
-}
-
-
 namespace _ {
-	static const bool	TEST_ALL			(!true);
-	static const bool	TEST_TEXTURES		(true);
-
-	static const bool	WITH_DRAW_POINTS	(!TEST_TEXTURES || TEST_ALL);
-	static const bool	WITH_DRAW_LINES		(true || !TEST_TEXTURES);
-	static const bool	WITH_DRAW_TRIANGLES	(!TEST_TEXTURES || TEST_ALL);
-	static const bool	WITH_DRAW_TEXTURED	(TEST_TEXTURES  || TEST_ALL);
-	//
-	static const bool	WITH_CAMERA			(true);
-
-	static const float WW(2000.f);
-
-	static const size_t VAOs(4);
-	static const size_t VBOs(6);
-	static const size_t VTOs(1);
-	static const size_t TEXTURES_NUM(2);
-	static const size_t IMAGES_NUM(2);
 
 	static const float POOP_LIGHT[4] = { 6.0f, 2.0f, 0.0f, 1.0f };
 
-	static const GLuint TexturesUnits[TEXTURES_NUM] =
+	static const GLuint TexturesUnits[NUMBER_OF_TEXTURES] =
 		{ 12, 23 };
 
-	typedef ankh::images::Image*		ImagesArray[IMAGES_NUM];
-	typedef ankh::textures::Texture*	TexturesArray[TEXTURES_NUM];
+	typedef ankh::images::Image*		ImagesArray[NUMBER_OF_IMAGES];
+	typedef ankh::textures::Texture*	TexturesArray[NUMBER_OF_TEXTURES];
+
+	///////////////////////////////////////////////////////
+
+	struct GlobalState {
+		ankh::shapes::Mesh*	mesh;
+	};
+
+	///////////////////////////////////////////////////////
 
 	struct DrawData {
-		GLuint				vertexArrayIds[VAOs];
-		Buffer*				buffers[VBOs];
-		GLuint				texturesIds[TEXTURES_NUM];
+		GLuint				vertexArrayIds[NUMBER_OF_VAOs];
+		Buffer*				buffers[NUMBER_OF_VBOs];
+		GLuint				texturesIds[NUMBER_OF_TEXTURES];
 		GLuint				numberOfPoints;
 		GLuint				numberOfWorldCubeLineSegments;
 		GLuint				numberOfPointPoints;
@@ -83,73 +57,28 @@ namespace _ {
 		ImagesArray			images;
 		GLuint				numberOfTexturedSegments;
 		size_t				previousTextureIndex;
+		prim::Id			framebuffer;
+		GlobalState			gstate;
 	};
 
 	using namespace my::drawing;
 
 	///////////////////////////////////////////////////////
 
-	struct Config {
-		std::string const& operator [] (std::string const& k) const
-			{ return configmap.at(k); }
+	static inline GlobalState& getglobalstate (DrawData& dd)
+		{ return dd.gstate; }
 
-		Config (void): configmap() { load(configmap); }
-	private:
-		typedef std::map<std::string, std::string>		Configmap;
-		Configmap	configmap;
+	static inline void setmesh (DrawData& dd, ankh::shapes::Mesh* const mesh)
+		{ assign(getglobalstate(dd).mesh, maketmpdptr(mesh).native()); }
 
-		static Configmap& load (Configmap& m) {
-			std::ifstream	fin("../d3dtost.config");
-			std::string		line;
+	static inline ankh::shapes::Mesh& getmesh (DrawData& dd)
+		{ return *maketmpdptr(getglobalstate(dd).mesh); }
 
-			while (!fin.eof()) {
-				PASSERT(fin.good())
-				line.clear();
-				getline(fin, line);
-				PASSERT(fin.good() || fin.eof())
-				size_t const middle(line.find(':'));
-				PASSERT(middle != std::string::npos && middle > 0);
-				umapadd(m, line.substr(0, middle), line.substr(middle + 1));
-			}
-			return m;
-		}
-	};
+	static inline ankh::shapes::Mesh::Elements const& getmeshelements (DrawData& dd)
+		{ return getmesh(dd).GetElements(); }
 
 	///////////////////////////////////////////////////////
-
-	struct GlobalState {
-		Config				config;
-		ankh::shapes::Mesh*	mesh;
-
-		GlobalState (void):
-			config	(		),
-			mesh	(NULL	)
-			{}
-	}* globalState(NULL);
-
-	static inline GlobalState* unew_globalState (void)
-		{ return unew(globalState); }
-	static inline void udelete_globalState (void)
-		{ udelete(globalState); }
-
-	///////////////////////////////////////////////////////
-
-	static inline GlobalState& getglobalstate (void)
-		{ return *maketmpdptr(globalState); }
-
-	static inline void setmesh (ankh::shapes::Mesh* const mesh)
-		{ assign(getglobalstate().mesh, maketmpdptr(mesh).native()); }
-	static inline ankh::shapes::Mesh& getmesh (void)
-		{ return *maketmpdptr(getglobalstate().mesh); }
-
-	static inline ankh::shapes::Mesh::Elements const& getmeshelements (void)
-		{ return getmesh().GetElements(); }
-
-	static inline Config&	getconfig (void)
-		{ return getglobalstate().config; }
-
-	///////////////////////////////////////////////////////
-	// Buffer double play
+	// Buffers
 	template <const size_t N>
 	void GenBuffers (Buffer* (&buffers)[N])
 		{ BufferManager::GetSingleton().Create(buffers); }
@@ -174,22 +103,15 @@ namespace _ {
 	static GLuint GetTextureZ (unsigned long int const dt_milli) {
 		// we want a change every second/8, total changes = 32
 		// 0~1, 1~2, 2~3, ...
-
-#if TEXTURE_TYPE == TEXTURE_TYPE_3D
 		// return (dt_milli / 125) % 16;		// 16 changes over 8 seconds
 		// return (dt_milli / 500) % 3;			// 3 changes over 1.5 seconds
 		return 0u;// (dt_milli / 250) % 11;			// 10 changes over 2.5 seconds
-#elif TEXTURE_TYPE == TEXTURE_TYPE_2D
-		return 0;
-#else
-#	error ""
-#endif
 	}
 
 	P_INLINE
 	static size_t GetTextureIndex (unsigned long int const dt_milli) {
 		// there are TEXTURES_NUM textures and we want to keep each one for 3 seconds
-		UCOMPILECHECK(_::TEXTURES_NUM == sizeof(_::TexturesUnits)/sizeof(_::TexturesUnits[0]))
+		UCOMPILECHECK(_::NUMBER_OF_TEXTURES == sizeof(_::TexturesUnits)/sizeof(_::TexturesUnits[0]))
 		return _::TexturesUnits[1u]; // (dt_milli / ((3 * 1000) / _::TEXTURES_NUM )) % _::TEXTURES_NUM];
 	}
 
@@ -223,37 +145,95 @@ namespace _ {
 		codeshare::utilities::GlobalSingleAllocationBuffer::Get().ReleaseArrayOf<char>(__last_static_buffer_allocation_size);
 	}
 
+	///////////////////////////////////////////////////////
+
+	template <
+			typename VertexDataType,
+			VertexDataType*	(my::gl::shapes::Shape::* const GetVertexDataMemfunc) (void* memory, size_t bytesize) const,
+			size_t (* const StrideFunc) (void),
+			void* (* const PositionOffsetPointerFunc) (void),
+			void* (* const ColouringDataOffsetFunc) (void),
+			void* (* const NormalOffsetPointerFunc) (void),
+			void* (* const AOOffsetPointerFunc) (void),
+			typename ColouringDataIndexProviderType>
+	struct SetAttributeSettings {
+		typedef VertexDataType		VertexData;
+
+		static voidp	GetVertexData (my::gl::shapes::Shape const& shape, void* const memory, size_t const bytesize)
+							{ return DNULLCHECK((shape.*GetVertexDataMemfunc)(memory, bytesize)); }
+		
+		static size_t	Stride (void)
+							{ return (*StrideFunc)(); }
+	
+		static voidp	PositionOffset (void)
+							{ return (*PositionOffsetPointerFunc)(); }
+
+		static voidp	ColouringDataOffset (void)
+							{ return (*ColouringDataOffsetFunc)(); }
+
+		static voidp	NormalsOffset (void)
+							{ return (*NormalOffsetPointerFunc)(); }
+
+		static voidp	AOOffset (void)
+							{ return (*AOOffsetPointerFunc)(); }
+
+		static GLuint	ColouringDataIndex (void)
+							{ return GLuint(ColouringDataIndexProviderType()); }
+	};
+
+	template <const bool textured> struct SetAttributeSettingsCreator;
+	template <> struct SetAttributeSettingsCreator<false> {
+		typedef	SetAttributeSettings<
+						my::gl::shapes::VertexData,
+						&my::gl::shapes::Shape::GetVertexData,
+						&my::gl::shapes::VertexData::Stride,
+						&my::gl::shapes::VertexData::PositionOffsetPointer,
+						&my::gl::shapes::VertexData::ColourOffsetPointer,
+						&my::gl::shapes::VertexData::NormalOffsetPointer,
+						&my::gl::shapes::VertexData::AOOffsetPointer,
+						my::OpenGL::_VAI_COLOUR
+					> Settings;
+	};
+	template <> struct SetAttributeSettingsCreator<true> {
+		typedef	SetAttributeSettings<
+						my::gl::shapes::TexturedVertexData,
+						&my::gl::shapes::Shape::GetTexturedVertexData,
+						&my::gl::shapes::TexturedVertexData::Stride,
+						&my::gl::shapes::TexturedVertexData::PositionOffsetPointer,
+						&my::gl::shapes::TexturedVertexData::TextureCoordinatesOffsetPointer,
+						&my::gl::shapes::TexturedVertexData::NormalOffsetPointer,
+						&my::gl::shapes::TexturedVertexData::AOOffsetPointer,
+						my::OpenGL::_VAI_TEXCOORD
+					> Settings;
+	};
+
+	template <const bool textured>
 	static void SetAttribute (
 		GLuint const					vao,
 		Buffer* const					vbo,
 		my::gl::shapes::Shape const&	shape,
 		GLboolean const					normalised,
-		bool const						textured,
 		GLuint&							numberOfPoints)
 	{
 		using namespace	my::gl::shapes;
 		using namespace	my::gl::math;
 		using			my::OpenGL;
 
-		glBindVertexArray(vao);
-		PASSERT(glIsVertexArray(vao) == GL_TRUE)
+		typedef typename SetAttributeSettingsCreator<textured>::Settings	Settings;
+
+		prim::VertexArray::Bind(vao);
+		PASSERT(prim::VertexArray::Is(vao))
 
 		size_t const	count		(shape.GetNumberOfVertices());
-		size_t const	bytesize	(std::max(	textured?
-													count * sizeof(TexturedVertexData) :
-													count * sizeof(VertexData),
-												1u));
+		size_t const	bytesize	(std::max(count * sizeof(typename Settings::VertexData), 1u));
 		void* const		_data		(_::AllocateSingleAllocationBufferMemory(bytesize));
-
-		typedef void*	voidp;
-		void* const		data		(textured? voidp(shape.GetTexturedVertexData(_data, bytesize)) : voidp(shape.GetVertexData(_data, bytesize)));
-		PASSERT(data != NULL)
-		GLsizei const	stride		(psafecast<GLsizei>(textured? TexturedVertexData::Stride() : VertexData::Stride()));
-		voidp const		attr1off	(textured? TexturedVertexData::PositionOffsetPointer() : VertexData::PositionOffsetPointer());
-		voidp const		attr2off	(textured? TexturedVertexData::TextureCoordinatesOffsetPointer() : VertexData::ColourOffsetPointer());
-		voidp const		attr3off	(textured? TexturedVertexData::NormalOffsetPointer() : VertexData::NormalOffsetPointer());
-		voidp const		attr4off	(textured? TexturedVertexData::AOOffsetPointer() : VertexData::AOOffsetPointer());
-		GLuint const	attr2index	(textured? GLuint(OpenGL::VAI_TEXCOORD) : GLuint(OpenGL::VAI_COLOUR));
+		void* const		data		(Settings::GetVertexData(shape, _data, bytesize));
+		GLsizei const	stride		(psafecast<GLsizei>(Settings::Stride()));
+		voidp const		attr1off	(Settings::PositionOffset());
+		voidp const		attr2off	(Settings::ColouringDataOffset());
+		voidp const		attr3off	(Settings::NormalsOffset());
+		voidp const		attr4off	(Settings::AOOffset());
+		GLuint const	attr2index	(Settings::ColouringDataIndex());
 
 		{
 			IneffectiveBufferEntryDeleter deleter;
@@ -288,6 +268,7 @@ namespace _ {
 	///////////////////////////////////////////////////////
 	static
 	void SetupPointShapes (
+			DrawData&		,
 			GLuint const	vertexArrayId,
 			Buffer* const	buffer0,
 			Buffer* const,
@@ -298,15 +279,11 @@ namespace _ {
 			using namespace my::gl::shapes;
 			ShapeCompositionFactory f;
 
-		//	nurbs::addcontrolpointsto(f);
-		//	nurbs::addaspointsto(f);
-		//	nurbs::addknotpointsto(f);
-
 			f.Add(Point(Vertex(my::gl::math::Vector4::New(_::POOP_LIGHT)), ColourFactory::White()));
 
 			DynamicShapeComposition* const dcomp(f.Generate());
 
-			SetAttribute(vertexArrayId, buffer0, *dcomp, POINTS_NORMALISED, false, numberOfPointPoints);
+			SetAttribute<false>(vertexArrayId, buffer0, *dcomp, POINTS_NORMALISED, numberOfPointPoints);
 
 			f.Dispose(dcomp);
 		}
@@ -314,6 +291,7 @@ namespace _ {
 
 	static
 	void SetUpLineShapes (
+			DrawData&		dd,
 			GLuint const	vertexArrayId,
 			Buffer* const	buffer0,
 			Buffer* const,
@@ -333,10 +311,8 @@ namespace _ {
 					ShapeCompositionFactory f;
 
 					f.Add(axs);
-				//	nurbs::addbasecurvesto(f);
-				//	nurbs::addaslinesto(f);
 #if WITH_NORMALS == 1
-					nurbs::addnormalsto(_::getmeshelements(), f);
+					nurbs::addnormalsto(_::getmeshelements(dd), f);
 #endif
 
 					DynamicShapeComposition* dcomp(NULL);
@@ -352,7 +328,7 @@ namespace _ {
 								*dcomp
 							);
 
-						SetAttribute(vertexArrayId, buffer0, shape, POINTS_NORMALISED, false, numberOfPoints);
+						SetAttribute<false>(vertexArrayId, buffer0, shape, POINTS_NORMALISED, numberOfPoints);
 					}
 
 					{
@@ -370,6 +346,7 @@ namespace _ {
 
 	static
 	void SetUpTriangleObjects (
+			DrawData&		dd,
 			GLuint const	vertexArrayId,
 			Buffer* const	buffer0,
 			Buffer* const,
@@ -384,7 +361,7 @@ namespace _ {
 			ShapeCompositionFactory	f;
 			{
 				timer t03("adding surface triangles to factory");
-				nurbs::addastrianglesto(_::getmeshelements(), f);
+				nurbs::addastrianglesto(_::getmeshelements(dd), f);
 			}
 
 			DynamicShapeComposition* dcomp(NULL);
@@ -401,7 +378,7 @@ namespace _ {
 					*dcomp
 					);
 
-				_::SetAttribute(vertexArrayId, buffer0, shape, POINTS_NORMALISED, false, numberOfWorldCubeLineSegments);
+				SetAttribute<false>(vertexArrayId, buffer0, shape, POINTS_NORMALISED, numberOfWorldCubeLineSegments);
 			}
 
 			{
@@ -415,6 +392,7 @@ namespace _ {
 
 	static
 	void SetUpTexturedTriangleObjects (
+			DrawData&		dd,
 			GLuint const	vertexArrayId,
 			Buffer* const	buffer0,
 			Buffer* const,
@@ -428,7 +406,7 @@ namespace _ {
 			/////////////
 
 			ShapeCompositionFactory f;
-			nurbs::addastrianglesto(_::getmeshelements(), f);
+			nurbs::addastrianglesto(_::getmeshelements(dd), f);
 			DynamicShapeComposition* const dcomp(f.Generate());
 
 			/////////////
@@ -465,10 +443,6 @@ namespace _ {
 		/////////////
 
 			Plane plane(ColourFactory::LightYellow());
-		//	plane.RotateX((3.f * M_PI) / 2.f);
-		//	plane.TranslateY(50.0f);
-			plane.Scale(0.250f);
-
 
 			SolidCube compos;
 			compos.Scale(0.250f);
@@ -483,12 +457,12 @@ namespace _ {
 			// Upload shape as textured, buffer 2
 			{
 				Shape& shape(
-				//	scenery
+					scenery
 				//	compos
 				//	nothing
-					*dcomp
+				//	*dcomp
 					);
-				_::SetAttribute(vertexArrayId, buffer0, shape, POINTS_NORMALISED, true, numberOfTexturedSegments);
+				SetAttribute<true>(vertexArrayId, buffer0, shape, POINTS_NORMALISED, numberOfTexturedSegments);
 			}
 
 			f.Dispose(dcomp);
@@ -497,6 +471,8 @@ namespace _ {
 
 	static inline
 	void SetUpShapes (
+			DrawData&		dd,
+			//
 			GLuint const	line_vertexArrayId,
 			Buffer* const	line_buffer0,
 			Buffer* const	line_buffer1,
@@ -512,9 +488,9 @@ namespace _ {
 			Buffer* const	text_buffer1,
 			GLuint&			numberOfTexturedSegment)
 	{
-		SetUpLineShapes(line_vertexArrayId, line_buffer0, line_buffer1, numberOfPoints);
-		SetUpTriangleObjects(tria_vertexArrayId, tria_buffer0, tria_buffer1, numberOfWorldCubeLineSegments);
-		SetUpTexturedTriangleObjects(text_vertexArrayId, text_buffer0, text_buffer1, numberOfTexturedSegment);
+		SetUpLineShapes(dd, line_vertexArrayId, line_buffer0, line_buffer1, numberOfPoints);
+		SetUpTriangleObjects(dd, tria_vertexArrayId, tria_buffer0, tria_buffer1, numberOfWorldCubeLineSegments);
+		SetUpTexturedTriangleObjects(dd, text_vertexArrayId, text_buffer0, text_buffer1, numberOfTexturedSegment);
 	}
 
 	static inline
@@ -564,6 +540,8 @@ namespace _ {
 		glUniformMatrix4fv(::my::OpenGL::VUL_PROJECTION, 1, GL_TRUE, m.as_float_array_16());
 	}
 
+	///////////////////////////////////////////////////////
+
 	static
 	void InitialiseAnkh (void) {
 	// initialise Images and Textures lib
@@ -574,6 +552,14 @@ namespace _ {
 
 		ankh::images::InstallDefaultImageDecoders();
 	}
+
+	static
+	void CleanUpAnkh (void) {
+		ankh::textures::CleanUp();
+		ankh::images::CleanUp();
+	}
+
+	///////////////////////////////////////////////////////
 
 	static
 	void PlayWithTextureUnitsForTesting (void)
@@ -651,6 +637,14 @@ namespace _ {
 	}
 
 	static
+	void UnloadTehStonets (ImagesArray& images) {
+		if (WITH_DRAW_TEXTURED)
+			foreach(images, std::bind1st(std::mem_fun(&ankh::images::ImageLoader::Unload), ankh::images::ImageLoader::GetSingletonPtr()));
+	}
+
+	///////////////////////////////////////////////////////
+
+	static
 	void CreateTextures (
 			ImagesArray const&	images,
 			TexturesArray&		textures,
@@ -676,12 +670,20 @@ namespace _ {
 	}
 
 	static
+	void DestroyTextures (TexturesArray& textures) {
+		if (WITH_DRAW_TEXTURED)
+			foreach(textures, std::bind1st(std::mem_fun(&ankh::textures::TextureManager::Delete), ankh::textures::TextureManager::GetSingletonPtr()));
+	}
+
+	///////////////////////////////////////////////////////
+
+	static
 	void ConfigureOpenGl (void) {
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 	//	glEnable(GL_TEXTURE_3D);
 
-		glDisable(GL_PROGRAM_POINT_SIZE); DASSERT(glGetError() == GL_NO_ERROR);
+		glDisable(GL_PROGRAM_POINT_SIZE);
 		glPointSize(5.f);
 	}
 
@@ -800,69 +802,49 @@ namespace my {
 
 		// ----------------------------
 		void* setup (void) {
-			using	_::VAOs;
-			using	_::VBOs;
-			using	_::VTOs;
-			using	_::TEXTURES_NUM;
-			using	_::IMAGES_NUM;
+			_::DrawData& dd(*DNEW(_::DrawData));
+			uzeromemory(&dd);
 
-			_::unew_globalState();
-
-			_::DrawData&		drawData						(*DNEW(_::DrawData));
-			GLuint				(&vertexArrayIds)[VAOs]			(drawData.vertexArrayIds);
-			Buffer*				(&buffers)[VBOs]				(drawData.buffers);
-			GLuint&				numberOfPoints					(drawData.numberOfPoints);
-			GLuint&				numberOfPointPoints				(drawData.numberOfPointPoints);
-			GLuint&				numberOfWorldCubeLineSegments	(drawData.numberOfWorldCubeLineSegments);
-			unsigned long int&	startingTime					(drawData.startingTime);
-			unsigned long int&	prevtime						(drawData.prevtime);
-			GLuint&				sampler_location				(drawData.sampler_location);
-			_::TexturesArray&	textures						(drawData.textures);
-			_::ImagesArray&		images							(drawData.images);
-			GLuint&				numberOfTexturedSegments		(drawData.numberOfTexturedSegments);
-
-
-			startingTime									= codeshare::utilities::GetATimestamp();
-			prevtime										= startingTime;
+			dd.prevtime = dd.startingTime = codeshare::utilities::GetATimestamp();
 
 			// Gen VAOs
-			P_STATIC_ASSERT(sizeof(vertexArrayIds)/sizeof(vertexArrayIds[0]) == 4)
-			glGenVertexArrays(sizeof(vertexArrayIds)/sizeof(vertexArrayIds[0]), &vertexArrayIds[0]);
+			P_STATIC_ASSERT(sizeof(dd.vertexArrayIds)/sizeof(dd.vertexArrayIds[0]) == _::NUMBER_OF_VAOs)
+			prim::VertexArray::Generate(dd.vertexArrayIds);
 
 			// Gen VBOs
-			P_STATIC_ASSERT(sizeof(buffers)/sizeof(buffers[0]) == 6)
-			_::GenBuffers(buffers);
+			P_STATIC_ASSERT(sizeof(dd.buffers)/sizeof(dd.buffers[0]) == _::NUMBER_OF_VBOs)
+			_::GenBuffers(dd.buffers);
 
 			if (_::WITH_DRAW_TRIANGLES || _::WITH_DRAW_TEXTURED) {
 				nurbs::Initialise();
-				_::setmesh(nurbs::load(ucstringarg(NURBS_LOAD_FROM)));
+				_::setmesh(dd, nurbs::load(ucstringarg(_::NURBS_LOAD_FROM)));
 			}
 
 			///////////////////////////
 			// VAO#0: Points
 			// (buffers #1)
-			_::SetupPointShapes(vertexArrayIds[0], buffers[1], NULL, numberOfPointPoints);
+			_::SetupPointShapes(dd, dd.vertexArrayIds[0], dd.buffers[1], NULL, dd.numberOfPointPoints);
 			///////////////////////////
 			// VAO#1: Line objects
 			// (buffers #3 #4)
-			_::SetUpLineShapes(vertexArrayIds[1], buffers[3], buffers[4], numberOfPoints);
+			_::SetUpLineShapes(dd, dd.vertexArrayIds[1], dd.buffers[3], dd.buffers[4], dd.numberOfPoints);
 			///////////////////////////
 			// VAO#2: Triangle objects
 			// (buffer #5)
-			_::SetUpTriangleObjects(vertexArrayIds[2], buffers[5], NULL, numberOfWorldCubeLineSegments);
+			_::SetUpTriangleObjects(dd, dd.vertexArrayIds[2], dd.buffers[5], NULL, dd.numberOfWorldCubeLineSegments);
 			///////////////////////////
 			// VAO#3: Textured triangle objects
 			// (buffer #2 )
-			_::SetUpTexturedTriangleObjects(vertexArrayIds[3], buffers[2], NULL, numberOfTexturedSegments);
+			_::SetUpTexturedTriangleObjects(dd, dd.vertexArrayIds[3], dd.buffers[2], NULL, dd.numberOfTexturedSegments);
 
 
 			_::InitialiseAnkh();
 
-			psafecast(sampler_location, OpenGL::VUL_SAMPLER0.operator GLint());
+			psafecast(dd.sampler_location, OpenGL::VUL_SAMPLER0.operator GLint());
 
 			_::PlayWithTextureUnitsForTesting();
-			_::LoadTehStonets(images);
-			_::CreateTextures(images, textures, drawData.previousTextureIndex);
+			_::LoadTehStonets(dd.images);
+			_::CreateTextures(dd.images, dd.textures, dd.previousTextureIndex);
 			_::SetupCamera();
 			{
 				float const wh = 0.80f;
@@ -870,41 +852,30 @@ namespace my {
 			}
 			_::ConfigureOpenGl();
 
-			return &drawData;
+			return &dd;
 		}
 
 		void cleanup (void*& _drawData) {
 			{
-				_::DrawData&	drawData					(*static_cast<_::DrawData*>(_drawData));
-				GLuint			(&vertexArrayIds)[_::VAOs]	(drawData.vertexArrayIds);
-				Buffer*			(&buffers)[_::VBOs]			(drawData.buffers);
+				_::DrawData& dd(*static_cast<_::DrawData*>(_drawData));
 
-				P_STATIC_ASSERT(sizeof(vertexArrayIds)/sizeof(vertexArrayIds[0]) == 4)
-				P_STATIC_ASSERT(sizeof(buffers)/sizeof(buffers[0]) == 6)
+				_::DestroyTextures(dd.textures);
+				_::UnloadTehStonets(dd.images);
 
-				_::DeleteBuffers(buffers);
-				glDeleteVertexArrays(sizeof(buffers)/sizeof(buffers[0]), &vertexArrayIds[0]);
+				_::CleanUpAnkh();
 
-				if (_::WITH_DRAW_TEXTURED) {
-					for (ankh::images::Image* const* i = &drawData.images[0]; i < &drawData.images[sizeof(drawData.images)/sizeof(drawData.images[0])]; ++i)
-						ankh::images::ImageLoader::GetSingleton().Unload(*i);
-					for (ankh::textures::Texture* const* i = &drawData.textures[0]; i < &drawData.textures[sizeof(drawData.textures)/sizeof(drawData.textures[0])]; ++i)
-						ankh::textures::TextureManager::GetSingleton().Delete(*i);
+				if (_::WITH_DRAW_TRIANGLES || _::WITH_DRAW_TEXTURED) {
+					nurbs::unload(&_::getmesh(dd));
+					nurbs::CleanUp();
 				}
 
-				DDELETE(&drawData);
-			}
-			_drawData = NULL;
+				_::DeleteBuffers(dd.buffers);
+				prim::VertexArray::Destroy(dd.vertexArrayIds);
 
-			ankh::textures::CleanUp();
-			ankh::images::CleanUp();
-
-			if (_::WITH_DRAW_TRIANGLES || _::WITH_DRAW_TEXTURED) {
-				nurbs::unload(&_::getmesh());
-				nurbs::CleanUp();
+				DDELETE(&dd);
 			}
 
-			_::udelete_globalState();
+			unullify(_drawData);
 		}
 
 	} // namespace drawing
