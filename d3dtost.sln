@@ -7,8 +7,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MyUtil", "MyUtil\MyUtil.vcx
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "ToastSetaup", "ToastSetaup\ToastSetaup.vdproj", "{25699BA0-10FE-4469-A646-B2F2E8CCEEDF}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Codeshare_Utilities", "Codeshare\isi_branch\Utilities\Project\Codeshare_Utilities.vcxproj", "{CF84D42C-A3C4-4D56-9586-EFF4FC3271ED}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImageLoader", "..\ankh\Images\Project\ImageLoader.vcxproj", "{F3B33FB5-57DC-44CC-8B99-52AFA5F087BF}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TextureManager", "..\ankh\Textures\Project\TextureManager.vcxproj", "{126C2A20-0584-41BD-8658-164B81C4E8F7}"
@@ -62,6 +60,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Bumps", "..\ankh\Bumps\Proj
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Utils", "..\ankh\Utils\Project\Utils.vcxproj", "{CA874677-C3EA-47A1-AE7C-A30DC222E893}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Codeshare_Utilities", "Codeshare\isi_branch\Utilities\Project\Codeshare_Utilities.vcxproj", "{CF84D42C-A3C4-4D56-9586-EFF4FC3271ED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Static|Win32 = Debug_Static|Win32
@@ -107,18 +107,6 @@ Global
 		{25699BA0-10FE-4469-A646-B2F2E8CCEEDF}.Profile|x64.ActiveCfg = Release
 		{25699BA0-10FE-4469-A646-B2F2E8CCEEDF}.Release|Win32.ActiveCfg = Release
 		{25699BA0-10FE-4469-A646-B2F2E8CCEEDF}.Release|x64.ActiveCfg = Release
-		{CF84D42C-A3C4-4D56-9586-EFF4FC3271ED}.Debug_Static|Win32.ActiveCfg = Debug|Win32
-		{CF84D42C-A3C4-4D56-9586-EFF4FC3271ED}.Debug_Static|Win32.Build.0 = Debug|Win32
-		{CF84D42C-A3C4-4D56-9586-EFF4FC3271ED}.Debug_Static|x64.ActiveCfg = Debug|Win32
-		{CF84D42C-A3C4-4D56-9586-EFF4FC3271ED}.Debug|Win32.ActiveCfg = Debug|Win32
-		{CF84D42C-A3C4-4D56-9586-EFF4FC3271ED}.Debug|Win32.Build.0 = Debug|Win32
-		{CF84D42C-A3C4-4D56-9586-EFF4FC3271ED}.Debug|x64.ActiveCfg = Debug|Win32
-		{CF84D42C-A3C4-4D56-9586-EFF4FC3271ED}.Profile|Win32.ActiveCfg = Release|Win32
-		{CF84D42C-A3C4-4D56-9586-EFF4FC3271ED}.Profile|Win32.Build.0 = Release|Win32
-		{CF84D42C-A3C4-4D56-9586-EFF4FC3271ED}.Profile|x64.ActiveCfg = Release|Win32
-		{CF84D42C-A3C4-4D56-9586-EFF4FC3271ED}.Release|Win32.ActiveCfg = Release|Win32
-		{CF84D42C-A3C4-4D56-9586-EFF4FC3271ED}.Release|Win32.Build.0 = Release|Win32
-		{CF84D42C-A3C4-4D56-9586-EFF4FC3271ED}.Release|x64.ActiveCfg = Release|Win32
 		{F3B33FB5-57DC-44CC-8B99-52AFA5F087BF}.Debug_Static|Win32.ActiveCfg = Debug_Static|Win32
 		{F3B33FB5-57DC-44CC-8B99-52AFA5F087BF}.Debug_Static|Win32.Build.0 = Debug_Static|Win32
 		{F3B33FB5-57DC-44CC-8B99-52AFA5F087BF}.Debug_Static|x64.ActiveCfg = Debug_Static|Win32
@@ -338,14 +326,26 @@ Global
 		{CA874677-C3EA-47A1-AE7C-A30DC222E893}.Release|Win32.ActiveCfg = Release|Win32
 		{CA874677-C3EA-47A1-AE7C-A30DC222E893}.Release|Win32.Build.0 = Release|Win32
 		{CA874677-C3EA-47A1-AE7C-A30DC222E893}.Release|x64.ActiveCfg = Release|Win32
+		{CF84D42C-A3C4-4D56-9586-EFF4FC3271ED}.Debug_Static|Win32.ActiveCfg = Debug|Win32
+		{CF84D42C-A3C4-4D56-9586-EFF4FC3271ED}.Debug_Static|Win32.Build.0 = Debug|Win32
+		{CF84D42C-A3C4-4D56-9586-EFF4FC3271ED}.Debug_Static|x64.ActiveCfg = Debug|Win32
+		{CF84D42C-A3C4-4D56-9586-EFF4FC3271ED}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CF84D42C-A3C4-4D56-9586-EFF4FC3271ED}.Debug|Win32.Build.0 = Debug|Win32
+		{CF84D42C-A3C4-4D56-9586-EFF4FC3271ED}.Debug|x64.ActiveCfg = Debug|Win32
+		{CF84D42C-A3C4-4D56-9586-EFF4FC3271ED}.Profile|Win32.ActiveCfg = Release|Win32
+		{CF84D42C-A3C4-4D56-9586-EFF4FC3271ED}.Profile|Win32.Build.0 = Release|Win32
+		{CF84D42C-A3C4-4D56-9586-EFF4FC3271ED}.Profile|x64.ActiveCfg = Release|Win32
+		{CF84D42C-A3C4-4D56-9586-EFF4FC3271ED}.Release|Win32.ActiveCfg = Release|Win32
+		{CF84D42C-A3C4-4D56-9586-EFF4FC3271ED}.Release|Win32.Build.0 = Release|Win32
+		{CF84D42C-A3C4-4D56-9586-EFF4FC3271ED}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{CF84D42C-A3C4-4D56-9586-EFF4FC3271ED} = {5E0DB312-D4EB-4172-9E18-D41E955996B2}
 		{B5B97509-1F26-4D3E-AC89-C3B99CA25E55} = {5E0DB312-D4EB-4172-9E18-D41E955996B2}
 		{13A2404B-B45A-49B6-BA4E-AFE0DBCE1279} = {5E0DB312-D4EB-4172-9E18-D41E955996B2}
+		{CF84D42C-A3C4-4D56-9586-EFF4FC3271ED} = {5E0DB312-D4EB-4172-9E18-D41E955996B2}
 		{CA504778-5B82-4BC6-9E87-3F394E6F7F79} = {E0D2E242-4A80-4E55-9B15-58BA67769E27}
 		{25699BA0-10FE-4469-A646-B2F2E8CCEEDF} = {E0D2E242-4A80-4E55-9B15-58BA67769E27}
 		{126C2A20-0584-41BD-8658-164B81C4E8F7} = {2470354D-9F80-4733-A5B4-58D7A7E1AF39}

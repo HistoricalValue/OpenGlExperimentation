@@ -6,7 +6,8 @@
 #include <my/gl/adapters/Buffer.h>
 #include <my/gl/adapters/BufferManager.h>
 #include <Options.h>
-#include <FrameBufferObject.h>
+#include <OpenGlPrimitiveAdapters.h>
+#include <OpenGlAdapters.h>
 
 ///////////////////////////////////////////////////////////
 
@@ -26,7 +27,7 @@ struct GlobalState {
 ///////////////////////////////////////////////////////
 
 struct DrawData {
-	GLuint						vertexArrayIds[NUMBER_OF_VAOs];
+	gl::adapt::VertexArray*		vertexArrayIds[NUMBER_OF_VAOs];
 	my::gl::adapters::Buffer*	buffers[NUMBER_OF_VBOs];
 	GLuint						texturesIds[NUMBER_OF_TEXTURES];
 	GLuint						numberOfPoints;
@@ -39,7 +40,7 @@ struct DrawData {
 	ImagesArray					images;
 	GLuint						numberOfTexturedSegments;
 	size_t						previousTextureIndex;
-	gl::prim::Id				framebuffer;
+	GLuint						framebuffer;
 	GlobalState					gstate;
 };
 

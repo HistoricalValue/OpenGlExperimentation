@@ -12,11 +12,13 @@
 #include <drawing_setup_ankh.h>
 #include <drawing_setup_images.h>
 #include <drawing_setup_textures.h>
+#include <drawing_setup_opengl_adapters.h>
 #include <NurbsFacade.h>
 #include <MyUtils.h>
 
 using namespace gl::ext;
-namespace prim = gl::prim;
+using gl::adapt::VertexArray;
+using gl::adapt::VertexArrayManager;
 using my::gl::adapters::Buffer;
 using my::gl::adapters::BufferManager;
 
@@ -65,7 +67,6 @@ namespace my {
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
 			unsigned long int const _currtime(codeshare::utilities::GetATimestamp());
 			PASSERT(_currtime >= dd.prevtime);
 			unsigned long int const dt(_currtime - dd.prevtime);
@@ -86,8 +87,8 @@ namespace my {
 
 			// Draw points
 			if (_::WITH_DRAW_POINTS) {
-				PASSERT(glIsVertexArray(psafecast<GLboolean>(dd.vertexArrayIds[0] == GL_TRUE)))
-				glBindVertexArray(dd.vertexArrayIds[0]);
+				PASSERT(::gl::prim::VertexArray::Is(dd.vertexArrayIds[0]->GetId()))
+				dd.vertexArrayIds[0]->Bind();
 				glVertexAttrib4f(psafecast<GLuint>(OpenGL::VAI_AXYC.operator GLint()),
 						angle,
 						-0.0f,
@@ -99,8 +100,8 @@ namespace my {
 
 			// Draw lines
 			if (_::WITH_DRAW_LINES) {
-				PASSERT(glIsVertexArray(dd.vertexArrayIds[1]) == GL_TRUE)
-				glBindVertexArray(dd.vertexArrayIds[1]);
+				PASSERT(::gl::prim::VertexArray::Is(dd.vertexArrayIds[1]->GetId()))
+				dd.vertexArrayIds[1]->Bind();
 				glVertexAttrib4f(psafecast<GLuint>(OpenGL::VAI_AXYC.operator GLint()),
 						angle,
 						-0.0f,
@@ -113,8 +114,8 @@ namespace my {
 			// Draw Triangles
 		//	DONT
 			if (_::WITH_DRAW_TRIANGLES) {
-				PASSERT(glIsVertexArray(dd.vertexArrayIds[2]) == GL_TRUE)
-				glBindVertexArray(dd.vertexArrayIds[2]);
+				PASSERT(::gl::prim::VertexArray::Is(dd.vertexArrayIds[2]->GetId()))
+				dd.vertexArrayIds[2]->Bind();
 				glVertexAttrib4f(psafecast<GLuint>(OpenGL::VAI_AXYC.operator GLint()),
 						angle,
 						-0.0f,
@@ -129,8 +130,8 @@ namespace my {
 
 			// and textured triangles too
 			if (_::WITH_DRAW_TEXTURED) {
-				PASSERT(glIsVertexArray(dd.vertexArrayIds[3]) == GL_TRUE)
-				glBindVertexArray(dd.vertexArrayIds[3]);
+				PASSERT(::gl::prim::VertexArray::Is(dd.vertexArrayIds[3]->GetId()))
+				dd.vertexArrayIds[3]->Bind();
 				glVertexAttrib4f(psafecast<GLuint>(OpenGL::VAI_AXYC.operator GLint()),
 						angle,
 						-0.0f,
@@ -156,9 +157,11 @@ namespace my {
 
 			dd.prevtime = dd.startingTime = codeshare::utilities::GetATimestamp();
 
+			_::SetupOpenGlAdapters();
+
 			// Gen VAOs
 			P_STATIC_ASSERT(sizeof(dd.vertexArrayIds)/sizeof(dd.vertexArrayIds[0]) == _::NUMBER_OF_VAOs)
-			prim::VertexArray::Generate(dd.vertexArrayIds);
+			VertexArrayManager::GetSingleton().Create(dd.vertexArrayIds);
 
 			// Gen VBOs
 			P_STATIC_ASSERT(sizeof(dd.buffers)/sizeof(dd.buffers[0]) == _::NUMBER_OF_VBOs)
@@ -219,7 +222,9 @@ namespace my {
 				}
 
 				_::DeleteBuffers(dd.buffers);
-				prim::VertexArray::Destroy(dd.vertexArrayIds);
+				VertexArrayManager::GetSingleton().Release(dd.vertexArrayIds);
+
+				_::CleanUpOpenGlAdapters();
 
 				DDELETE(&dd);
 			}

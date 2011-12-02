@@ -186,6 +186,7 @@
     <ClInclude Include="Include\drawing_setup_ankh.h" />
     <ClInclude Include="Include\drawing_setup_geometrical.h" />
     <ClInclude Include="Include\drawing_setup_images.h" />
+    <ClInclude Include="Include\drawing_setup_opengl_adapters.h" />
     <ClInclude Include="Include\drawing_setup_shapes.h" />
     <ClInclude Include="Include\drawing_setup_textures.h" />
     <ClInclude Include="Include\drawing_utils.h" />
@@ -218,6 +219,9 @@
     <ProjectReference Include="..\..\ankh\BuiltinShapes\Project\BuiltinShapes.vcxproj">
       <Project>{fd870f35-31e9-4acc-ad24-cd7f9a29bf25}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\ankh\Bumps\Project\Bumps.vcxproj">
+      <Project>{151c0c1f-2b11-49c2-9852-d1b4bcf17a3e}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\ankh\GL\Extensions\Project\GLExtensions.vcxproj">
       <Project>{1c030ea2-1c81-42d6-b00d-849500d4b3ca}</Project>
     </ProjectReference>
@@ -242,12 +246,7 @@
     <ProjectReference Include="..\..\ankh\Utils\Project\Utils.vcxproj">
       <Project>{ca874677-c3ea-47a1-ae7c-a30dc222e893}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\Codeshare\isi_branch\Utilities\Project\Codeshare_Utilities.vcxproj">
-      <Project>{cf84d42c-a3c4-4d56-9586-eff4fc3271ed}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\DevIL\DevIL\src-IL\msvc9\IL Unicode.vcxproj">
-      <Project>{b46b180b-6079-4ce6-8647-a7d712774255}</Project>
-    </ProjectReference>
+    <ProjectReference Include="..\Codeshare\isi_branch\Utilities\Project\Codeshare_Utilities.vcxproj" />
     <ProjectReference Include="..\MyUtil\MyUtil.vcxproj">
       <Project>{b5b97509-1f26-4d3e-ac89-c3b99ca25e55}</Project>
     </ProjectReference>

@@ -72,7 +72,7 @@ template <> struct SetAttributeSettingsCreator<true> {
 
 template <const bool textured>
 static void SetAttribute (
-	GLuint const					vao,
+	gl::adapt::VertexArray*			vao,
 	my::gl::adapters::Buffer* const	vbo,
 	my::gl::shapes::Shape const&	shape,
 	GLboolean const					normalised,
@@ -84,8 +84,8 @@ static void SetAttribute (
 
 	typedef typename SetAttributeSettingsCreator<textured>::Settings	Settings;
 
-	prim::VertexArray::Bind(vao);
-	PASSERT(prim::VertexArray::Is(vao))
+	vao->Bind();
+	PASSERT(::gl::prim::VertexArray::Is(vao->GetId()))
 
 	size_t const	count		(shape.GetNumberOfVertices());
 	size_t const	bytesize	(std::max(count * sizeof(typename Settings::VertexData), 1u));
@@ -133,7 +133,7 @@ static GLboolean const POINTS_NORMALISED(GL_TRUE);
 static
 void SetupPointShapes (
 		DrawData&						,
-		GLuint const					vertexArrayId,
+		gl::adapt::VertexArray* const	vertexArrayId,
 		my::gl::adapters::Buffer* const	buffer0,
 		my::gl::adapters::Buffer* const	,
 		GLuint&							numberOfPointPoints)
@@ -156,7 +156,7 @@ void SetupPointShapes (
 static
 void SetUpLineShapes (
 		DrawData&						dd,
-		GLuint const					vertexArrayId,
+		gl::adapt::VertexArray* const	vertexArrayId,
 		my::gl::adapters::Buffer* const	buffer0,
 		my::gl::adapters::Buffer* const	,
 		GLuint&							numberOfPoints)
@@ -211,7 +211,7 @@ void SetUpLineShapes (
 static
 void SetUpTriangleObjects (
 		DrawData&						dd,
-		GLuint const					vertexArrayId,
+		gl::adapt::VertexArray* const	vertexArrayId,
 		my::gl::adapters::Buffer* const	buffer0,
 		my::gl::adapters::Buffer* const	,
 		GLuint&							numberOfWorldCubeLineSegments)
@@ -257,7 +257,7 @@ void SetUpTriangleObjects (
 static
 void SetUpTexturedTriangleObjects (
 		DrawData&						dd,
-		GLuint const					vertexArrayId,
+		gl::adapt::VertexArray* const	vertexArrayId,
 		my::gl::adapters::Buffer* const	buffer0,
 		my::gl::adapters::Buffer* const	,
 		GLuint&							numberOfTexturedSegments)
@@ -337,17 +337,17 @@ static inline
 void SetUpShapes (
 		DrawData&						dd,
 		//
-		GLuint const					line_vertexArrayId,
+		gl::adapt::VertexArray* const	line_vertexArrayId,
 		my::gl::adapters::Buffer* const	line_buffer0,
 		my::gl::adapters::Buffer* const	line_buffer1,
 		GLuint&							numberOfPoints,
 		//
-		GLuint const					tria_vertexArrayId,
+		gl::adapt::VertexArray* const	tria_vertexArrayId,
 		my::gl::adapters::Buffer* const	tria_buffer0,
 		my::gl::adapters::Buffer* const	tria_buffer1,
 		GLuint&							numberOfWorldCubeLineSegments,
 		//
-		GLuint const					text_vertexArrayId,
+		gl::adapt::VertexArray* const	text_vertexArrayId,
 		my::gl::adapters::Buffer* const	text_buffer0,
 		my::gl::adapters::Buffer* const	text_buffer1,
 		GLuint&							numberOfTexturedSegment)
