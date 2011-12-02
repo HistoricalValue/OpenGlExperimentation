@@ -8,6 +8,7 @@
 #include <my/gl/shapes/Triangle.h>
 #include <MySafeCast.h>
 #include <MyUtils.h>
+#include <PSingleAllocationBuffer.h>
 #pragma warning( push, 0 )
 #	include <cstdio>
 #	include <ComputeMeshAmbientOcclusion.h>
@@ -158,6 +159,40 @@ private:
 	EqualityAsserterAOCreator (EqualityAsserterAOCreator const&);
 	void operator = (EqualityAsserterAOCreator const&);
 };
+
+///////////////////////////////////////////////////////////
+
+static void* __last_static_buffer_allocation(NULL);
+static size_t __last_static_buffer_allocation_size(0);
+static inline
+void* AllocateSingleAllocationBufferMemory (size_t const size) {
+
+	void* const result(codeshare::utilities::GlobalSingleAllocationBuffer::Get().Allocate(size));
+
+	P_DEBUG_STMT(__last_static_buffer_allocation = result;)
+	P_DEBUG_STMT(__last_static_buffer_allocation_size = size;)
+
+	return DNULLCHECK(result);
+}
+
+static inline
+void* ReallocateSingleAllocationBufferMemory (size_t const size) {
+	P_DEBUG_STMT(__last_static_buffer_allocation_size = size;)
+
+	void* const result(codeshare::utilities::GlobalSingleAllocationBuffer::Get().Reallocate(size));
+
+	P_DEBUG_STMT(__last_static_buffer_allocation = result;)
+
+	return result;
+}
+
+static inline
+void DeallocateSingleAllocationBufferMemory (void* ptr) {
+	PASSERT(ptr == __last_static_buffer_allocation)
+	codeshare::utilities::GlobalSingleAllocationBuffer::Get().ReleaseArrayOf<char>(__last_static_buffer_allocation_size);
+}
+
+///////////////////////////////////////////////////////////
 
 } //
 

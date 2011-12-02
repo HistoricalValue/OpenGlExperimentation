@@ -10,6 +10,8 @@
 #	include <ubinaryio.h>
 #	include <usystem.h>
 #	include <uinit.h>
+#	include <ufiles.h>
+#	include <uderivablecheck.h>
 // C RunTime Header Files
 #	include <stdlib.h>
 #	include <malloc.h>
@@ -30,6 +32,7 @@
 //
 #	include <Trig.h>
 #	include <MathTypes.h>
+#	include <Mesh.h>
 #pragma warning( pop )
 
 

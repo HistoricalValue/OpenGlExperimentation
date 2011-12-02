@@ -15,7 +15,6 @@
 #	include "MeshLoader.h"
 #pragma warning( pop )
 #include <drawing_nurbs.h>
-#include <drawing_utils.h>
 #include <Parallelisation.h>
 
 #define FORCE_REAL_TESSELATION	1
@@ -141,7 +140,7 @@ void ProduceOrLoadMeshes (
 
 	// reusables
 	// mt
-	Surface const						bob(Surfaces::MoonValleyWithHorns(0.8f));
+	Surface const						bob(Surfaces::MoonValleyWithHorns(0.8f, false));
 	Mesh::Elements						elements;
 	dptr<BoundingVolume>				volume;
 	Kilostring							meshId, meshIdForStep, loadpath, textpath;

@@ -179,7 +179,15 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\drawing.h" />
+    <ClInclude Include="Include\drawing_buffers.h" />
+    <ClInclude Include="Include\drawing_globalstate.h" />
     <ClInclude Include="Include\drawing_nurbs.h" />
+    <ClInclude Include="Include\drawing_setup_ankh.h" />
+    <ClInclude Include="Include\drawing_setup_geometrical.h" />
+    <ClInclude Include="Include\drawing_setup_images.h" />
+    <ClInclude Include="Include\drawing_setup_shapes.h" />
+    <ClInclude Include="Include\drawing_setup_textures.h" />
     <ClInclude Include="Include\drawing_utils.h" />
     <ClInclude Include="Include\TheCursed\MyConsole.h" />
     <ClInclude Include="Include\TheCursed\MyDirect3D9.h" />
