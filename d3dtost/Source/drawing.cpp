@@ -146,7 +146,6 @@ namespace my {
 				#endif
 			}
 
-
 			(*bufferSwapper)(bufferSwapperClosure);
 		}
 
