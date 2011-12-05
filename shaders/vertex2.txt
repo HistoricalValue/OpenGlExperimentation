@@ -33,25 +33,25 @@ mat4 AId (void)
 
 mat4 AAffine (const vec3 x, const vec3 y, const vec3 z, const vec3 u)
 	{ return mat4( vec4(x, 0), vec4(y, 0), vec4(z, 0), vec4(u, 1) ); }
-	
+
 mat4 ATransform (const vec3 x, const vec3 y, const vec3 z)
 	{ return AAffine(x, y, z, O); }
-	
+
 mat4 ATranslate (const vec3 u)
 	{ return AAffine(Axis_X, Axis_Y, Axis_Z, u); }
 
 mat4 ATransformX (const vec3 x)
 	{ return ATransform(x, Axis_Y, Axis_Z); }
-	
+
 mat4 AScaleX (const float f)
 	{ return ATransformX(vec3(f, 0, 0)); }
 
 mat4 ARotate (const vec3 axis, const float rad) {
-	const float s 	= sin(rad); 
+	const float s 	= sin(rad);
 	const float c 	= cos(rad);
 	const float cc	= (1.0f - c);
 	const vec3  d	= normalize(axis);
-	
+
 	return 	mat4(
 				mat3(
 					vec3(cc*d.x*d.x + c		, cc*d.y*d.x - s*d.z	, cc*d.z*d.x + s*d.y),
@@ -130,7 +130,7 @@ out float		interpolatedAmbientOcclusionFactor;
 
 void main (void) {
 	vec4 pos			=	Hom_True(position);
-						
+
 	mat4 transmodel		=	AId()
 						*	camera
 						*	ARotate(Axis_Y, radians(axyc[0]))
@@ -142,8 +142,8 @@ void main (void) {
 						*	projection
 						*	transmodel
 						;
-						
-	gl_Position			=		transtest * 
+
+	gl_Position			=		transtest *
 								pos;
 	textureCoordinate	= vec4(texcoord.st, textureZ, 1);
 	interpolatedNormal	= transpose(inverse(transmodel)) * normal;
