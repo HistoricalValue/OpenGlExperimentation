@@ -67,6 +67,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
+    <None Include="..\RequiredOpenGlExtensions.txt">
+      <Filter>Header Files\gl</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Codeutils.h">

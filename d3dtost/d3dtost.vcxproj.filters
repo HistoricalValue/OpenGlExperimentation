@@ -124,6 +124,9 @@
     <ClInclude Include="Include\drawing_setup_opengl_adapters.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\drawing_setup_framebuffers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\appicon.ico">

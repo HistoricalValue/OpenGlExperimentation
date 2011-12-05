@@ -13,12 +13,12 @@
 #include <drawing_setup_images.h>
 #include <drawing_setup_textures.h>
 #include <drawing_setup_opengl_adapters.h>
+#include <drawing_setup_framebuffers.h>
 #include <NurbsFacade.h>
 #include <MyUtils.h>
 
 using namespace gl::ext;
-using gl::adapt::VertexArray;
-using gl::adapt::VertexArrayManager;
+using namespace gl::adapt;
 using my::gl::adapters::Buffer;
 using my::gl::adapters::BufferManager;
 
@@ -64,6 +64,7 @@ namespace my {
 		void draw (void* drawData, void (*bufferSwapper) (void*), void* bufferSwapperClosure); // stupid microsoft : proper declaration -- needed for linking with main
 		void draw (void* const drawData, void (*const bufferSwapper) (void*), void* const bufferSwapperClosure) {
 			_::DrawData& dd(*static_cast<_::DrawData* const>(drawData));
+
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -203,12 +204,16 @@ namespace my {
 			}
 			_::ConfigureOpenGl();
 
+			_::SetupFramebuffers(dd);
+
 			return &dd;
 		}
 
 		void cleanup (void*& _drawData) {
 			{
 				_::DrawData& dd(*static_cast<_::DrawData*>(_drawData));
+
+				_::CleanUpFrameBuffers(dd);
 
 				_::DestroyTextures(dd.textures);
 				_::UnloadTehStonets(dd.images);
