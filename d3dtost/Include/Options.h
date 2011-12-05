@@ -34,6 +34,13 @@ static const size_t NUMBER_OF_TEXTURES	(2);
 static const size_t NUMBER_OF_IMAGES	(2);
 
 ///////////////////////////////////////////////////////
+// Indeces for colour renderbuffer bindings
+static const size_t COLOUR_CHANNEL_RED_INDEX	(1u);
+static const size_t COLOUR_CHANNEL_GREEN_INDEX	(2u);
+static const size_t COLOUR_CHANNEL_BLUE_INDEX	(3u);
+static const size_t COLOUR_CHANNEL_ALL_INDEX	(4u);
+
+///////////////////////////////////////////////////////
 // False constants
 
 ///////////////////////////////////////////////////////
