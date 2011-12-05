@@ -32,24 +32,24 @@ struct ColourChannels {
 	static const size_t		BLUE	= 2u;
 	static const size_t		ALL		= 3u;
 
-	gl::adapt::RenderBuffer*	Red (void)
+	gl::adapt::Renderbuffer*	Red (void)
 									{ return Channel(RED); }
-	gl::adapt::RenderBuffer*	Green (void)
+	gl::adapt::Renderbuffer*	Green (void)
 									{ return Channel(GREEN); }
-	gl::adapt::RenderBuffer*	Blue (void)
+	gl::adapt::Renderbuffer*	Blue (void)
 									{ return Channel(BLUE); }
-	gl::adapt::RenderBuffer*	All (void)
+	gl::adapt::Renderbuffer*	All (void)
 									{ return Channel(ALL); }
 
 	ColourChannels (void)
-		{ gl::adapt::RenderBufferManager::GetSingleton().Create(channels); }
+		{ gl::adapt::RenderbufferManager::GetSingleton().Create(channels); }
 	~ColourChannels (void)
-		{ gl::adapt::RenderBufferManager::GetSingleton().Release(channels); }
+		{ gl::adapt::RenderbufferManager::GetSingleton().Release(channels); }
 
 private:
-	gl::adapt::RenderBuffer*	channels[4];
+	gl::adapt::Renderbuffer*	channels[4];
 
-	gl::adapt::RenderBuffer*	Channel (size_t const index)
+	gl::adapt::Renderbuffer*	Channel (size_t const index)
 									{ DASSERT(index < _countof(channels)); return DNULLCHECK(channels[index]); }
 };
 
@@ -70,9 +70,9 @@ struct DrawData {
 	GLuint						numberOfTexturedSegments;
 	size_t						previousTextureIndex;
 	GlobalState					gstate;
-	gl::adapt::FrameBuffer*		framebuffer;
+	gl::adapt::Framebuffer*		framebuffer;
 	ColourChannels				colourbuffers;
-	gl::adapt::RenderBuffer*	depthbuffer;
+	gl::adapt::Renderbuffer*	depthbuffer;
 };
 
 ///////////////////////////////////////////////////////////
