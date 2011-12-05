@@ -33,24 +33,34 @@ struct ColourChannels {
 	static const size_t		ALL		= 3u;
 
 	gl::adapt::Renderbuffer*	Red (void)
-									{ return Channel(RED); }
+									{ return r; }
 	gl::adapt::Renderbuffer*	Green (void)
-									{ return Channel(GREEN); }
+									{ return g; }
 	gl::adapt::Renderbuffer*	Blue (void)
-									{ return Channel(BLUE); }
+									{ return b; }
 	gl::adapt::Renderbuffer*	All (void)
-									{ return Channel(ALL); }
+									{ return a; }
 
-	ColourChannels (void)
-		{ gl::adapt::RenderbufferManager::GetSingleton().Create(channels); }
-	~ColourChannels (void)
-		{ gl::adapt::RenderbufferManager::GetSingleton().Release(channels); }
+	gl::adapt::Renderbuffer*	operator [] (size_t const i)
+									{ DASSERT(i < 4); return AsArray()[i]; }
+
+	void	Create (void)
+				{ gl::adapt::RenderbufferManager::GetSingleton().Create(AsArray()); }
+
+	void	Release (void)
+				{ gl::adapt::RenderbufferManager::GetSingleton().Release(AsArray()); }
 
 private:
-	gl::adapt::Renderbuffer*	channels[4];
+	gl::adapt::Renderbuffer*	r;
+	gl::adapt::Renderbuffer*	g;
+	gl::adapt::Renderbuffer*	b;
+	gl::adapt::Renderbuffer*	a;
 
-	gl::adapt::Renderbuffer*	Channel (size_t const index)
-									{ DASSERT(index < _countof(channels)); return DNULLCHECK(channels[index]); }
+	gl::adapt::Renderbuffer*	(& AsArray (void))[4] {
+									gl::adapt::Renderbuffer* (&result)[4](*reinterpret_cast<gl::adapt::Renderbuffer* (*)[4]>(this));
+									DASSERT(result[RED] == r && result[GREEN] == g && result[BLUE] == b && result[ALL] == a);
+									return result;
+								}
 };
 
 ///////////////////////////////////////////////////////
