@@ -34,7 +34,7 @@ void	SetupFramebuffers (DrawData& dd) {
 			dd.framebuffer->GetColourAttachmentParameters(ps[2], COLOUR_CHANNEL_BLUE_INDEX);
 			dd.framebuffer->GetColourAttachmentParameters(ps[3], COLOUR_CHANNEL_ALL_INDEX);
 
-			uzeromemory(&ps[0]);
+			dd.framebuffer->MapToShaderOutputs();
 		}
 
 static
