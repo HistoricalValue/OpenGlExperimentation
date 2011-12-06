@@ -389,9 +389,9 @@ private:
 
 ///////////////////////////////////////////////////////////
 
-template <typename T, typename K>
+template <typename T, typename K, typename Comparator, typename Allocator>
 static inline
-T const& umapget (std::map<K, T> const& m, K const& k) {
+T const& umapget (std::map<K, T, Comparator, Allocator> const& m, K const& k) {
 	typedef std::map<K, T> Map;
 
 	Map::const_iterator const result = m.find(k);
@@ -412,6 +412,11 @@ T& umapadd (std::map<K, T, Comparator, Allocator>& m, K const& k, T const& v = T
 
 	return insertion.first->second;
 }
+
+template <typename T, typename K, typename Comparator, typename Allocator>
+static inline
+bool umaphaskey (std::map<K, T, Comparator, Allocator> const& m, K const& k)
+	{ return m.find(k) != m.end(); }
 
 ///////////////////////////////////////////////////////////
 

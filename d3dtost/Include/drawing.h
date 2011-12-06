@@ -53,6 +53,10 @@ struct ColourChannels {
 
 	void	Allocate (GLsizei const width, GLsizei const height)
 				{ foreach(AsArray(), ubind2nd(ubind2nd(umemberfunctionpointer(&gl::adapt::Renderbuffer::AllocateColour), width), height)); }
+				
+	void	Map (void) {
+				
+			}
 
 private:
 	gl::adapt::Renderbuffer*	r;
