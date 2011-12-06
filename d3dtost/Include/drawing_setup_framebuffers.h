@@ -21,10 +21,20 @@ void	SetupFramebuffers (DrawData& dd) {
 			dd.colourbuffers.Allocate(W, H);
 
 			dd.framebuffer->AttachColour(COLOUR_CHANNEL_RED_INDEX	, dd.colourbuffers.Red()	);
-			dd.framebuffer->AttachColour(COLOUR_CHANNEL_GREEN_INDEX	, dd.colourbuffers.Green()	);				
+			dd.framebuffer->AttachColour(COLOUR_CHANNEL_GREEN_INDEX	, dd.colourbuffers.Green()	);
 			dd.framebuffer->AttachColour(COLOUR_CHANNEL_BLUE_INDEX	, dd.colourbuffers.Blue()	);
 			dd.framebuffer->AttachColour(COLOUR_CHANNEL_ALL_INDEX	, dd.colourbuffers.All()	);
 			dd.framebuffer->AttachDepth(dd.depthbuffer);
+
+			using gl::adapt::Framebuffer;
+
+			Framebuffer::RenderbufferParameters ps[4];
+			dd.framebuffer->GetColourAttachmentParameters(ps[0], COLOUR_CHANNEL_RED_INDEX);
+			dd.framebuffer->GetColourAttachmentParameters(ps[1], COLOUR_CHANNEL_GREEN_INDEX);
+			dd.framebuffer->GetColourAttachmentParameters(ps[2], COLOUR_CHANNEL_BLUE_INDEX);
+			dd.framebuffer->GetColourAttachmentParameters(ps[3], COLOUR_CHANNEL_ALL_INDEX);
+
+			uzeromemory(&ps[0]);
 		}
 
 static

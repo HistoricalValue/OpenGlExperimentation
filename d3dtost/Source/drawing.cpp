@@ -65,7 +65,7 @@ namespace my {
 		void draw (void* const drawData, void (*const bufferSwapper) (void*), void* const bufferSwapperClosure) {
 			_::DrawData& dd(*static_cast<_::DrawData* const>(drawData));
 
-			dd.framebuffer->BindForDrawing();
+		//	dd.framebuffer->BindForDrawing();
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

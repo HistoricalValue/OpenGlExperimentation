@@ -12,7 +12,7 @@ namespace	_ {
 static
 void SetupOpenGlAdapters (void) {
 	gl::adapt::VertexArrayManager::SingletonCreate();
-	
+
 	gl::adapt::FramebufferManager::SingletonCreate();
 	gl::adapt::RenderbufferManager::SingletonCreate();
 }
