@@ -436,13 +436,10 @@ struct dptr {
 	bool	isnull (void) const			{ return ptr == NULL; }
 	T*		discard (void)				{ T* const result(ptr); nullify(); return result; }
 
-	template <void (*Deleter)(T*)>
-	void	Delete (void)				{ (*Deleter)(discard()); }
-	template <typename Deleter>
-	void	Delete (Deleter const& d)	{ d(discard()); }
-
+	template <void (*useup)(T*)>
+	void	UseUp (void)					{ (*useup)(discard()); }
 	template <typename Operation>
-	void	UseUp (Operation const& op)	{ op(discard()); }
+	void	UseUp (Operation const& useup)	{ useup(discard()); }
 
 	explicit dptr (void): ptr(NULL) {}
 	explicit dptr (T* const _ptr): ptr(NULL) { operator =(_ptr); }

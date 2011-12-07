@@ -65,8 +65,6 @@ namespace my {
 		void draw (void* const drawData, void (*const bufferSwapper) (void*), void* const bufferSwapperClosure) {
 			_::DrawData& dd(*static_cast<_::DrawData* const>(drawData));
 
-		//	dd.framebuffer->BindForDrawing();
-
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			unsigned long int const _currtime(codeshare::utilities::GetATimestamp());
@@ -130,6 +128,7 @@ namespace my {
 				#endif
 			}
 
+			dd.framebuffer->BindForDrawing();
 			// and textured triangles too
 			if (_::WITH_DRAW_TEXTURED) {
 				PASSERT(::gl::prim::VertexArray::Is(dd.vertexArrayIds[3]->GetId()))
@@ -147,6 +146,10 @@ namespace my {
 				_::DrawGrid(dd.numberOfTexturedSegments);
 				#endif
 			}
+			dd.framebuffer->Unbind();
+
+			dd.framebuffer->BindForReading();
+		//	::gl::ext::glBlitFramebuffer(0, 0, 800, 600, 0, 0, 400, 300, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
 			(*bufferSwapper)(bufferSwapperClosure);
 		}
