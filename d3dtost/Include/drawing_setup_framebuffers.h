@@ -27,8 +27,9 @@ void	SetupFramebuffers (DrawData& dd) {
 			dd.framebuffer->AttachDepth(dd.depthbuffer);
 
 			using gl::adapt::Framebuffer;
+			using gl::adapt::RenderbufferFramebufferAttachmentParameters;
 
-			Framebuffer::RenderbufferParameters ps[4];
+			RenderbufferFramebufferAttachmentParameters ps[4];
 			dd.framebuffer->GetColourAttachmentParameters(ps[0], COLOUR_CHANNEL_RED_INDEX);
 			dd.framebuffer->GetColourAttachmentParameters(ps[1], COLOUR_CHANNEL_GREEN_INDEX);
 			dd.framebuffer->GetColourAttachmentParameters(ps[2], COLOUR_CHANNEL_BLUE_INDEX);
