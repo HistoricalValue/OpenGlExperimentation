@@ -142,7 +142,7 @@ public:
 	typedef shapes::Mesh::AmbientOcclusionCreator Gateway;
 
 private:
-	dptr<Gateway> gateway;
+	Dptr<Gateway> gateway;
 
 public:
 	virtual void							operator () (shapes::MeshElement const& elem, float (*&ambientOcclusion)[3]) const
@@ -187,7 +187,7 @@ public:
 		{ gateway.Delete(); }
 
 private:
-	dptr<Gateway>	gateway;
+	Dptr<Gateway>	gateway;
 };
 
 ///////////////////////////////////////////////////////////

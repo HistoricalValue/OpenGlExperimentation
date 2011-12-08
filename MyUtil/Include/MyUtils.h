@@ -1,6 +1,7 @@
 #ifndef __MY_UTIL__MY_UTILS__H__
 #define __MY_UTIL__MY_UTILS__H__
 
+#include "ImageLoaderTools.h"
 #include <PAssert.h>
 #pragma warning( push, 0 )
 #	include <stdio.h>
@@ -421,8 +422,8 @@ bool umaphaskey (std::map<K, T, Comparator, Allocator> const& m, K const& k)
 ///////////////////////////////////////////////////////////
 
 template <typename T>
-struct dptr {
-	typedef dptr<T>	Self;
+struct Dptr {
+	typedef Dptr<T>	Self;
 
 	T* ptr;
 
@@ -441,29 +442,29 @@ struct dptr {
 	template <typename Operation>
 	void	UseUp (Operation const& useup)	{ useup(discard()); }
 
-	explicit dptr (void): ptr(NULL) {}
-	explicit dptr (T* const _ptr): ptr(NULL) { operator =(_ptr); }
-	dptr (dptr const& p): ptr(p.ptr) {}
-	~dptr (void) { DASSERT(ptr == NULL); }
+	explicit Dptr (void): ptr(NULL) {}
+	explicit Dptr (T* const _ptr): ptr(NULL) { operator =(_ptr); }
+	Dptr (Dptr const& p): ptr(p.ptr) {}
+	~Dptr (void) { DASSERT(ptr == NULL); }
 
 	void operator = (T* const _ptr) { DASSERT(ptr == NULL); ptr = DPTR(DNULLCHECK(_ptr)); }
-	UOVERLOADED_VOID_ASSIGN_VIA_COPY_CONSTRUCTOR(dptr)
+	UOVERLOADED_VOID_ASSIGN_VIA_COPY_CONSTRUCTOR(Dptr)
 };
 
 template <typename T>
-struct tmpdptr: public dptr<T> {
-	typedef dptr<T>		Base;
-	typedef tmpdptr<T>	Self;
+struct Tmpdptr: public Dptr<T> {
+	typedef Dptr<T>		Base;
+	typedef Tmpdptr<T>	Self;
 
-	explicit tmpdptr (void): Base() {}
-	explicit tmpdptr (T* const ptr): Base(ptr) {}
-	tmpdptr (Self const& o): Base(o) {}
-	tmpdptr (Base const& o): Base(o) {}
-	~tmpdptr (void) { DASSERTPTR(DNULLCHECK(discard())); }
+	explicit Tmpdptr (void): Base() {}
+	explicit Tmpdptr (T* const ptr): Base(ptr) {}
+	Tmpdptr (Self const& o): Base(o) {}
+	Tmpdptr (Base const& o): Base(o) {}
+	~Tmpdptr (void) { DASSERTPTR(DNULLCHECK(discard())); }
 };
 
 template <typename T>
-tmpdptr<T> maketmpdptr (T* const ptr) { return tmpdptr<T>(ptr); }
+Tmpdptr<T> dptr (T* const ptr) { return Tmpdptr<T>(ptr); }
 
 ///////////////////////////////////////////////////////////
 

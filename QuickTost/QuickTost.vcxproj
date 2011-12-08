@@ -60,17 +60,17 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)..\..\ankh\Images\Include;$(ProjectDir)..\..\ankh\Textures\Include;$(ProjectDir)..\MyUtil\Include;$(ProjectDir)..\Codeshare\isi_branch\Utilities\Include;$(ProjectDir)..\..\ankh\Math\Include;$(ProjectDir)..\..\ankh\BoundingVolumes\Include;$(ProjectDir)..\..\ankh\Meshes\Include;$(PropertiesDir)..\..\ankh\Properties\Include;$(PropertiesDir)..\..\ankh\NURBS\Include;$(ProjectDir)..\..\ankh\Parallelisation\Include;$(ProjectDir)..\..\ankh\Utils\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)..\..\ankh\Images\Include;$(ProjectDir)..\..\ankh\Textures\Include;$(ProjectDir)..\MyUtil\Include;$(ProjectDir)..\Codeshare\isi_branch\Utilities\Include;$(ProjectDir)..\..\ankh\Math\Include;$(ProjectDir)..\..\ankh\BoundingVolumes\Include;$(ProjectDir)..\..\ankh\Meshes\Include;$(PropertiesDir)..\..\ankh\Properties\Include;$(PropertiesDir)..\..\ankh\NURBS\Include;$(ProjectDir)..\..\ankh\Parallelisation\Include;$(ProjectDir)..\..\ankh\Utils\Include;$(ProjectDir)..\..\ankh\Bumps\Include;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)..\..\ankh\Images\Include;$(ProjectDir)..\..\ankh\Textures\Include;$(ProjectDir)..\MyUtil\Include;$(ProjectDir)..\Codeshare\isi_branch\Utilities\Include;$(ProjectDir)..\..\ankh\Math\Include;$(ProjectDir)..\..\ankh\BoundingVolumes\Include;$(ProjectDir)..\..\ankh\Meshes\Include;$(PropertiesDir)..\..\ankh\Properties\Include;$(PropertiesDir)..\..\ankh\NURBS\Include;$(ProjectDir)..\..\ankh\Parallelisation\Include;$(ProjectDir)..\..\ankh\Utils\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)..\..\ankh\Images\Include;$(ProjectDir)..\..\ankh\Textures\Include;$(ProjectDir)..\MyUtil\Include;$(ProjectDir)..\Codeshare\isi_branch\Utilities\Include;$(ProjectDir)..\..\ankh\Math\Include;$(ProjectDir)..\..\ankh\BoundingVolumes\Include;$(ProjectDir)..\..\ankh\Meshes\Include;$(PropertiesDir)..\..\ankh\Properties\Include;$(PropertiesDir)..\..\ankh\NURBS\Include;$(ProjectDir)..\..\ankh\Parallelisation\Include;$(ProjectDir)..\..\ankh\Utils\Include;$(ProjectDir)..\..\ankh\Bumps\Include;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)..\..\ankh\Images\Include;$(ProjectDir)..\..\ankh\Textures\Include;$(ProjectDir)..\MyUtil\Include;$(ProjectDir)..\Codeshare\isi_branch\Utilities\Include;$(ProjectDir)..\..\ankh\Math\Include;$(ProjectDir)..\..\ankh\BoundingVolumes\Include;$(ProjectDir)..\..\ankh\Meshes\Include;$(PropertiesDir)..\..\ankh\Properties\Include;$(PropertiesDir)..\..\ankh\NURBS\Include;$(ProjectDir)..\..\ankh\Parallelisation\Include;$(ProjectDir)..\..\ankh\Utils\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)..\..\ankh\Images\Include;$(ProjectDir)..\..\ankh\Textures\Include;$(ProjectDir)..\MyUtil\Include;$(ProjectDir)..\Codeshare\isi_branch\Utilities\Include;$(ProjectDir)..\..\ankh\Math\Include;$(ProjectDir)..\..\ankh\BoundingVolumes\Include;$(ProjectDir)..\..\ankh\Meshes\Include;$(PropertiesDir)..\..\ankh\Properties\Include;$(PropertiesDir)..\..\ankh\NURBS\Include;$(ProjectDir)..\..\ankh\Parallelisation\Include;$(ProjectDir)..\..\ankh\Utils\Include;$(ProjectDir)..\..\ankh\Bumps\Include;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -134,6 +134,9 @@
     </ProjectReference>
     <ProjectReference Include="..\..\ankh\BuiltinShapes\Project\BuiltinShapes.vcxproj">
       <Project>{fd870f35-31e9-4acc-ad24-cd7f9a29bf25}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ankh\Bumps\Project\Bumps.vcxproj">
+      <Project>{151c0c1f-2b11-49c2-9852-d1b4bcf17a3e}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\ankh\GL\Extensions\Project\GLExtensions.vcxproj">
       <Project>{1c030ea2-1c81-42d6-b00d-849500d4b3ca}</Project>

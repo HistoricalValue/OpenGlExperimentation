@@ -272,7 +272,7 @@ void MeshIndex::ExportAllToMeshLoader (void) {
 	MeshLoader& Loader(MeshLoader::GetSingleton());
 
 	IFOREACH(MeshesEntries::const_iterator, meshes, entryPair) {
-		dptr<Mesh> mesh(Loader.Load(entryPair->second.path));
+		Dptr<Mesh> mesh(Loader.Load(entryPair->second.path));
 		PASSERT(mesh->GetUniqueId() == entryPair->first)
 		mesh.nullify();
 	}

@@ -136,13 +136,13 @@ void ProduceOrLoadMeshes (
 		std::list<MeshInfo>&	into,
 		std::list<Unit> const&	steps,
 		MeshStats&				mt) {
-	typedef dptr<Mesh>					MeshPtr;
+	typedef Dptr<Mesh>					MeshPtr;
 
 	// reusables
 	// mt
 	Surface const						bob(Surfaces::MoonValleyWithHorns(0.8f, false));
 	Mesh::Elements						elements;
-	dptr<BoundingVolume>				volume;
+	Dptr<BoundingVolume>				volume;
 	Kilostring							meshId, meshIdForStep, loadpath, textpath;
 
 	IFOREACH (std::list<Unit>::const_iterator, steps, step) {
@@ -247,7 +247,7 @@ struct TimedOpOnMesh {
 	void	operator () (void) const
 				{ mt.Start(timing); op(mesh.native()); mt.End(timing); }
 
-	TimedOpOnMesh (MeshStats& _mt, MeshStats::Timing const _timing, dptr<Mesh>& _mesh, OpOnMesh const& _op):
+	TimedOpOnMesh (MeshStats& _mt, MeshStats::Timing const _timing, Dptr<Mesh>& _mesh, OpOnMesh const& _op):
 		mt		(_mt		),
 		timing	(_timing	),
 		mesh	(_mesh		),
@@ -262,7 +262,7 @@ struct TimedOpOnMesh {
 
 	MeshStats&			mt;
 	MeshStats::Timing	timing;
-	dptr<Mesh>&			mesh;
+	Dptr<Mesh>&			mesh;
 	OpOnMesh			op;
 
 private:
@@ -270,7 +270,7 @@ private:
 };
 
 template <typename OpOnMesh> static inline
-OpAsJobWrapper<TimedOpOnMesh<OpOnMesh> > const MakeJobOnMesh (MeshStats& mt, MeshStats::Timing const timing, dptr<Mesh>& mesh, OpOnMesh const& op)
+OpAsJobWrapper<TimedOpOnMesh<OpOnMesh> > const MakeJobOnMesh (MeshStats& mt, MeshStats::Timing const timing, Dptr<Mesh>& mesh, OpOnMesh const& op)
 	{ typedef TimedOpOnMesh<OpOnMesh> TOOM; return OpAsJobWrapper<TOOM>(TOOM(mt, timing, mesh, op)); }
 
 // static
@@ -284,8 +284,8 @@ void ProduceMeshFromMeshProductionRequirements (
 		char const* const			meshPath,
 		char const* const			meshTextPath,
 		Unit const					step) {
-	dptr<BoundingVolume>	boundingVolume(_boundingVolume);
-	dptr<Mesh>				mesh;
+	Dptr<BoundingVolume>	boundingVolume(_boundingVolume);
+	Dptr<Mesh>				mesh;
 	{
 		ao::MeshIntersectionData intersectionData;
 
@@ -343,7 +343,7 @@ void LoadMeshesInto (std::list<MeshWithInfo >& into) {
 
 	MeshLoader& Loader(MeshLoader::GetSingleton());
 	IFOREACH(MeshLoader::Meshes::const_iterator, Loader.GetAll(), meshPair) {
-		dptr<Mesh> mesh(meshPair->second);
+		Dptr<Mesh> mesh(meshPair->second);
 		PASSERT(meshPair->first == mesh->GetUniqueId());
 
 		out() << "\n - Loaded " << mesh->GetUniqueId() << " from " << Loader.GetPath(mesh.native());

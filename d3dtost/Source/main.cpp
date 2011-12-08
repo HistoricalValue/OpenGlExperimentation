@@ -14,6 +14,8 @@
 
 // notes: http://www.youtube.com/watch?v=6RbT0zWTb8g&feature=player_embedded
 
+extern int LOAL (void);
+
 namespace my {
 	namespace drawing {
 		extern void draw (void* drawData, void (*bufferSwapper) (void*), void* bufferSwapperClosure);
@@ -187,8 +189,10 @@ namespace my {
 
 				if (_::BE_A_SHADER_COMPILER)
 					TestCompileShaders();
-				else
+				else if (false)
 					window.MainLoop(lpCmdLine, nCmdShow);
+				else
+					LOAL();
 
 				my::drawing::cleanup(drawData.Get());
 			}
