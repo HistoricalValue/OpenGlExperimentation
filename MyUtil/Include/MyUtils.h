@@ -208,10 +208,6 @@ template <typename C, typename F> static inline
 void foreach (C& c, F const& f)
 	{ std::for_each(c.begin(), c.end(), f); }
 
-template <typename T, const size_t N, typename F>
-void foreach (T (& a)[N], F const& f)
-	{ std::for_each(&a[0], &a[N], f); }
-
 ///////////////////////////////////////////////////////////
 
 static inline int vsntprintf (char* const buffer, size_t const sizeOfBuffer, size_t const count, const char* const format, va_list const argptr)
