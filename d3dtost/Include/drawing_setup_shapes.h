@@ -337,6 +337,11 @@ static inline
 void SetUpShapes (
 		DrawData&						dd,
 		//
+		gl::adapt::VertexArray* const	point_vertexArrayId,
+		my::gl::adapters::Buffer* const	point_buffer0,
+		my::gl::adapters::Buffer* const	point_buffer1,
+		GLuint&							numberOfPointPoints,
+		//
 		gl::adapt::VertexArray* const	line_vertexArrayId,
 		my::gl::adapters::Buffer* const	line_buffer0,
 		my::gl::adapters::Buffer* const	line_buffer1,
@@ -352,6 +357,7 @@ void SetUpShapes (
 		my::gl::adapters::Buffer* const	text_buffer1,
 		GLuint&							numberOfTexturedSegment)
 {
+	SetupPointShapes(dd, point_vertexArrayId, point_buffer0, point_buffer1, numberOfPointPoints);
 	SetUpLineShapes(dd, line_vertexArrayId, line_buffer0, line_buffer1, numberOfPoints);
 	SetUpTriangleObjects(dd, tria_vertexArrayId, tria_buffer0, tria_buffer1, numberOfWorldCubeLineSegments);
 	SetUpTexturedTriangleObjects(dd, text_vertexArrayId, text_buffer0, text_buffer1, numberOfTexturedSegment);

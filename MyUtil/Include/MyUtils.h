@@ -146,13 +146,6 @@ struct nmutuple2types: public nmutripletypes<Type1, Type2, int> {};
 
 ///////////////////////////////////////////////////////////
 
-template <typename T, typename Y>
-static inline
-T* assign (T*& dest, Y* const src)
-	{ PASSERT(dest == NULL) return dest = src; }
-
-///////////////////////////////////////////////////////////
-
 template <typename T>
 static inline
 T* callconstructor (T* const ptr)

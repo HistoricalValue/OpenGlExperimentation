@@ -176,22 +176,31 @@ namespace my {
 				_::setmesh(dd, nurbs::load(ucstringarg(_::NURBS_LOAD_FROM)));
 			}
 
-			///////////////////////////
-			// VAO#0: Points
-			// (buffers #1)
-			_::SetupPointShapes(dd, dd.vertexArrayIds[0], dd.buffers[1], NULL, dd.numberOfPointPoints);
-			///////////////////////////
-			// VAO#1: Line objects
-			// (buffers #3 #4)
-			_::SetUpLineShapes(dd, dd.vertexArrayIds[1], dd.buffers[3], dd.buffers[4], dd.numberOfPoints);
-			///////////////////////////
-			// VAO#2: Triangle objects
-			// (buffer #5)
-			_::SetUpTriangleObjects(dd, dd.vertexArrayIds[2], dd.buffers[5], NULL, dd.numberOfWorldCubeLineSegments);
-			///////////////////////////
-			// VAO#3: Textured triangle objects
-			// (buffer #2 )
-			_::SetUpTexturedTriangleObjects(dd, dd.vertexArrayIds[3], dd.buffers[2], NULL, dd.numberOfTexturedSegments);
+			_::SetUpShapes(dd,
+				///////////////////////////
+				// VAO#0: Points
+				// (buffers #1)
+				dd.vertexArrayIds[0],
+				dd.buffers[1], NULL,
+				dd.numberOfPointPoints,
+				///////////////////////////
+				// VAO#1: Line objects
+				// (buffers #3 #4)
+				dd.vertexArrayIds[1],
+				dd.buffers[3], dd.buffers[4],
+				dd.numberOfPoints,
+				///////////////////////////
+				// VAO#2: Triangle objects
+				// (buffer #5)
+				dd.vertexArrayIds[2],
+				dd.buffers[5], NULL,
+				dd.numberOfWorldCubeLineSegments,
+				///////////////////////////
+				// VAO#3: Textured triangle objects
+				// (buffer #2)
+				dd.vertexArrayIds[3],
+				dd.buffers[2], NULL,
+				dd.numberOfTexturedSegments);
 
 
 			_::InitialiseAnkh();
