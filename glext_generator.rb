@@ -92,8 +92,10 @@ def typedefs_to_s (typedefs)
 	lines.join("\n")
 end
 
-def parse_gl_ext (fin, requested)
+def parse_gl_ext (fin, requested_result)
 	enums = { :num => [], :str => [] }
+	
+	requested = requested_result[:requested]
 	
 	fin.each_line { |line|
 		line.strip!
@@ -117,12 +119,16 @@ def parse_gl_ext (fin, requested)
 	}
 	
 	raise "shithell, not all requested requests met: #{requested.size}: #{requested.inspect}" unless requested.empty?
-
+	
+	enums[:str].concat(requested_result[:custom].to_a)
 	enums
 end
 
 def parse_requested_exts (fin)
-	requested = {}
+	result = { :requested => {}, :custom => {} }
+	requested = result[:requested]
+	custom = result[:custom]
+	
 	fin.each_line { |line|
 		line.strip!
 		case
@@ -130,11 +136,16 @@ def parse_requested_exts (fin)
 			when requested.has_key?(line)
 				raise "hell: #{line.inspect}"
 			when line =~ /^\/\//
+			when md = /^\#define\s+([\w_]+)\s+([^\s]*)\s*$/.match(line)
+				name = md[1]
+				val = md[2]
+				raise "hell/double custom: #{name}:#{val}" if custom.has_key?(name) || requested.has_key?(name)
+				custom[name] = val
 			else
 				requested[line] = true
 		end
 	}
-	requested 
+	result
 end
 
 class StreamConcatenation
