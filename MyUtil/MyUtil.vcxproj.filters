@@ -55,12 +55,6 @@
     <Filter Include="Header Files\my\algo">
       <UniqueIdentifier>{1e420400-2dc1-4b04-bdcf-22af86acd3b3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\my\gl\adapters">
-      <UniqueIdentifier>{13bd5cb2-d1ba-4a2a-a169-73c92ffa402f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\my\gl\adapters">
-      <UniqueIdentifier>{db39c52d-1212-439c-b246-642ebcbca338}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\my\ankh">
       <UniqueIdentifier>{3ade0291-115b-4d5d-89a8-4ea10e27ab05}</UniqueIdentifier>
     </Filter>
@@ -264,12 +258,6 @@
     <ClInclude Include="Include\my\gl\shapes\ShapeCompositionFactory_inl.h">
       <Filter>Header Files\my\gl\shapes</Filter>
     </ClInclude>
-    <ClInclude Include="Include\my\gl\adapters\Buffer.h">
-      <Filter>Header Files\my\gl\adapters</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\my\gl\adapters\BufferManager.h">
-      <Filter>Header Files\my\gl\adapters</Filter>
-    </ClInclude>
     <ClInclude Include="Include\MySafeCast.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -281,9 +269,6 @@
     </ClInclude>
     <ClInclude Include="Include\my\hashmap.h">
       <Filter>Header Files\my</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\my\gl\adapters\AttributePointerConfiguration.h">
-      <Filter>Header Files\my\gl\adapters</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -397,12 +382,6 @@
     </ClCompile>
     <ClCompile Include="Source\random.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\my\gl\adapters\Buffer.cpp">
-      <Filter>Source Files\my\gl\adapters</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\my\gl\adapters\BufferManager.cpp">
-      <Filter>Source Files\my\gl\adapters</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

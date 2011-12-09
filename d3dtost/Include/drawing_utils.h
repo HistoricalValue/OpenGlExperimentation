@@ -3,12 +3,12 @@
 
 #include <PAssert.h>
 #include <SurfacesTools.h>
-#include <my/gl/adapters/BufferManager.h>
 #include <my/gl/shapes/Line.h>
 #include <my/gl/shapes/Triangle.h>
 #include <MySafeCast.h>
 #include <MyUtils.h>
 #include <PSingleAllocationBuffer.h>
+#include "OpenGlAdapters.h"
 #pragma warning( push, 0 )
 #	include <cstdio>
 #	include <ComputeMeshAmbientOcclusion.h>
@@ -111,7 +111,7 @@ private:
 	void operator = (timer const&);
 };
 
-struct IneffectiveBufferEntryDeleter: ::my::gl::adapters::Buffer::Deleter {
+struct IneffectiveBufferEntryDeleter: gl::adapt::Vertexbuffer::Deleter {
 	void operator () (GLvoid*) {}
 };
 

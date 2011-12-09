@@ -19,8 +19,6 @@
 
 using namespace gl::ext;
 using namespace gl::adapt;
-using my::gl::adapters::Buffer;
-using my::gl::adapters::BufferManager;
 
 namespace _ {
 
@@ -165,11 +163,11 @@ namespace my {
 
 			// Gen VAOs
 			P_STATIC_ASSERT(sizeof(dd.vertexArrayIds)/sizeof(dd.vertexArrayIds[0]) == _::NUMBER_OF_VAOs)
-			VertexArrayManager::GetSingleton().Create(dd.vertexArrayIds);
+			_::Gen(dd.vertexArrayIds);
 
 			// Gen VBOs
 			P_STATIC_ASSERT(sizeof(dd.buffers)/sizeof(dd.buffers[0]) == _::NUMBER_OF_VBOs)
-			_::GenBuffers(dd.buffers);
+			_::Gen(dd.buffers);
 
 			if (_::WITH_DRAW_TRIANGLES || _::WITH_DRAW_TEXTURED) {
 				nurbs::Initialise();
@@ -238,8 +236,8 @@ namespace my {
 					nurbs::CleanUp();
 				}
 
-				_::DeleteBuffers(dd.buffers);
-				VertexArrayManager::GetSingleton().Release(dd.vertexArrayIds);
+				_::Del(dd.buffers);
+				_::Del(dd.vertexArrayIds);
 
 				_::CleanUpOpenGlAdapters();
 

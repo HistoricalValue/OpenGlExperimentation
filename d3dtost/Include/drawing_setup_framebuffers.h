@@ -2,7 +2,7 @@
 #define __DRAWING__SETUP_FRAMEBUFFERS__H__
 
 #include <drawing.h>
-#include <MyUtils.h>
+#include <drawing_buffers.h>
 
 ///////////////////////////////////////////////////////////
 
@@ -12,8 +12,8 @@ namespace _ {
 
 static
 void	SetupFramebuffers (DrawData& dd) {
-			dd.framebuffer = gl::adapt::FramebufferManager::GetSingleton().Create();
-			dd.depthbuffer = gl::adapt::RenderbufferManager::GetSingleton().Create();
+			Gen(dd.framebuffer);
+			Gen(dd.depthbuffer);
 			dd.colourbuffers.Create();
 
 			size_t const W(800), H(600);
@@ -40,8 +40,8 @@ void	SetupFramebuffers (DrawData& dd) {
 static
 void	CleanUpFrameBuffers (DrawData& dd) {
 			dd.colourbuffers.Release();
-			gl::adapt::RenderbufferManager::GetSingleton().Release(dd.depthbuffer);
-			gl::adapt::FramebufferManager::GetSingleton().Release(dd.framebuffer);
+			Del(dd.depthbuffer);
+			Del(dd.framebuffer);
 		}
 
 ///////////////////////////////////////////////////////////

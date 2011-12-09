@@ -73,7 +73,7 @@ template <> struct SetAttributeSettingsCreator<true> {
 template <const bool textured>
 static void SetAttribute (
 	gl::adapt::VertexArray*			vao,
-	my::gl::adapters::Buffer* const	vbo,
+	gl::adapt::Vertexbuffer* const	vbo,
 	my::gl::shapes::Shape const&	shape,
 	GLboolean const					normalised,
 	GLuint&							numberOfPoints)
@@ -100,7 +100,7 @@ static void SetAttribute (
 
 	{
 		IneffectiveBufferEntryDeleter deleter;
-		size_t const bufferEntryOffset = vbo->Add(data, 1, bytesize, &deleter);
+		ptrdiff_t const bufferEntryOffset = vbo->Add(data, 1, bytesize, &deleter);
 		PASSERT(bufferEntryOffset == 0)
 		vbo->Commit();
 		vbo->Bind();
@@ -134,8 +134,8 @@ static
 void SetupPointShapes (
 		DrawData&						,
 		gl::adapt::VertexArray* const	vertexArrayId,
-		my::gl::adapters::Buffer* const	buffer0,
-		my::gl::adapters::Buffer* const	,
+		gl::adapt::Vertexbuffer* const	buffer0,
+		gl::adapt::Vertexbuffer* const	,
 		GLuint&							numberOfPointPoints)
 {
 	// Save setup time
@@ -157,8 +157,8 @@ static
 void SetUpLineShapes (
 		DrawData&						dd,
 		gl::adapt::VertexArray* const	vertexArrayId,
-		my::gl::adapters::Buffer* const	buffer0,
-		my::gl::adapters::Buffer* const	,
+		gl::adapt::Vertexbuffer* const	buffer0,
+		gl::adapt::Vertexbuffer* const	,
 		GLuint&							numberOfPoints)
 {
 	// Save setup time
@@ -212,8 +212,8 @@ static
 void SetUpTriangleObjects (
 		DrawData&						dd,
 		gl::adapt::VertexArray* const	vertexArrayId,
-		my::gl::adapters::Buffer* const	buffer0,
-		my::gl::adapters::Buffer* const	,
+		gl::adapt::Vertexbuffer* const	buffer0,
+		gl::adapt::Vertexbuffer* const	,
 		GLuint&							numberOfWorldCubeLineSegments)
 {
 	// Save setup time
@@ -258,8 +258,8 @@ static
 void SetUpTexturedTriangleObjects (
 		DrawData&						dd,
 		gl::adapt::VertexArray* const	vertexArrayId,
-		my::gl::adapters::Buffer* const	buffer0,
-		my::gl::adapters::Buffer* const	,
+		gl::adapt::Vertexbuffer* const	buffer0,
+		gl::adapt::Vertexbuffer* const	,
 		GLuint&							numberOfTexturedSegments)
 {
 	// Save setup time
@@ -338,23 +338,23 @@ void SetUpShapes (
 		DrawData&						dd,
 		//
 		gl::adapt::VertexArray* const	point_vertexArrayId,
-		my::gl::adapters::Buffer* const	point_buffer0,
-		my::gl::adapters::Buffer* const	point_buffer1,
+		gl::adapt::Vertexbuffer* const	point_buffer0,
+		gl::adapt::Vertexbuffer* const	point_buffer1,
 		GLuint&							numberOfPointPoints,
 		//
 		gl::adapt::VertexArray* const	line_vertexArrayId,
-		my::gl::adapters::Buffer* const	line_buffer0,
-		my::gl::adapters::Buffer* const	line_buffer1,
+		gl::adapt::Vertexbuffer* const	line_buffer0,
+		gl::adapt::Vertexbuffer* const	line_buffer1,
 		GLuint&							numberOfPoints,
 		//
 		gl::adapt::VertexArray* const	tria_vertexArrayId,
-		my::gl::adapters::Buffer* const	tria_buffer0,
-		my::gl::adapters::Buffer* const	tria_buffer1,
+		gl::adapt::Vertexbuffer* const	tria_buffer0,
+		gl::adapt::Vertexbuffer* const	tria_buffer1,
 		GLuint&							numberOfWorldCubeLineSegments,
 		//
 		gl::adapt::VertexArray* const	text_vertexArrayId,
-		my::gl::adapters::Buffer* const	text_buffer0,
-		my::gl::adapters::Buffer* const	text_buffer1,
+		gl::adapt::Vertexbuffer* const	text_buffer0,
+		gl::adapt::Vertexbuffer* const	text_buffer1,
 		GLuint&							numberOfTexturedSegment)
 {
 	SetupPointShapes(dd, point_vertexArrayId, point_buffer0, point_buffer1, numberOfPointPoints);

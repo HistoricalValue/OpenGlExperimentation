@@ -3,8 +3,6 @@
 
 #include "stdafx.h"
 
-#include <my/gl/adapters/Buffer.h>
-#include <my/gl/adapters/BufferManager.h>
 #include <Options.h>
 #include <OpenGlPrimitiveAdapters.h>
 #include <OpenGlAdapters.h>
@@ -75,7 +73,7 @@ private:
 
 struct DrawData {
 	gl::adapt::VertexArray*		vertexArrayIds[NUMBER_OF_VAOs];
-	my::gl::adapters::Buffer*	buffers[NUMBER_OF_VBOs];
+	gl::adapt::Vertexbuffer*	buffers[NUMBER_OF_VBOs];
 	GLuint						texturesIds[NUMBER_OF_TEXTURES];
 	GLuint						numberOfPoints;
 	GLuint						numberOfWorldCubeLineSegments;
