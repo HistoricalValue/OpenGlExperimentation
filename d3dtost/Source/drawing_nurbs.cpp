@@ -152,6 +152,7 @@ static bool VerifyMultiplicityChecker (void) {
 void Initialise (void) {
 	using namespace ankh::nurbs;
 	using namespace ankh::nurbs::algo;
+	using namespace ankhx::nurbs;
 
 	ankh::shapes::volumes::BoundingVolume::SingletonCreate();
 	ankh::shapes::MeshLoader::SingletonCreate();

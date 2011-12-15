@@ -10,6 +10,19 @@ namespace _ {
 
 ///////////////////////////////////////////////////////////
 
+static inline bool completeAndIfNotWhy (gl::adapt::Framebuffer& fb) {
+	using gl::adapt::Framebuffer;
+	Framebuffer::IncompletionReason const r = fb.GetIncompletionReason();
+	
+	std::vector<Framebuffer::RenderbufferAttachmentParameters> params;
+	for (size_t i(0u); i < gl::prim::Framebuffer::GetMaxColourAttachments(); ++i)
+		params.push_back(fb.GetColourAttachmentParameters(i));
+
+	bool const c = fb.IsComplete();
+	PASSERT(c)
+	return c;
+}
+
 static
 void	SetupFramebuffers (DrawData& dd) {
 			Gen(dd.framebuffer);
@@ -34,8 +47,14 @@ void	SetupFramebuffers (DrawData& dd) {
 			dd.framebuffer->GetColourAttachmentParameters(ps[2], COLOUR_CHANNEL_BLUE_INDEX);
 			dd.framebuffer->GetColourAttachmentParameters(ps[3], COLOUR_CHANNEL_ALL_INDEX);
 
-			PASSERT((dd.framebuffer->BindForDrawing(), dd.framebuffer->IsComplete()))
-			PASSERT((dd.framebuffer->BindForReading(), dd.framebuffer->IsComplete()))
+			PASSERT((
+				dd.framebuffer->BindForDrawing(),
+				completeAndIfNotWhy(*dd.framebuffer)
+			))
+			PASSERT((
+				dd.framebuffer->BindForReading(),
+				completeAndIfNotWhy(*dd.framebuffer)
+			))
 
 			dd.framebuffer->BindForDrawing();
 			dd.framebuffer->Unbind();

@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug_Static|Win32">
-      <Configuration>Debug_Static</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
@@ -25,11 +21,6 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -40,12 +31,6 @@
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\ankh\VSPropertySheets\UtilitiesAndDefensiveHeap.props" />
-    <Import Project="..\..\ankh\VSPropertySheets\UtilitiesAndDefensiveHeapDebugLink.props" />
-    <Import Project="..\..\ankh\VSPropertySheets\OpenGL.props" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\..\ankh\VSPropertySheets\UtilitiesAndDefensiveHeap.props" />
     <Import Project="..\..\ankh\VSPropertySheets\UtilitiesAndDefensiveHeapDebugLink.props" />
@@ -63,11 +48,6 @@
     <IncludePath>$(ProjectDir)..\..\ankh\Images\Include;$(ProjectDir)..\..\ankh\Textures\Include;$(ProjectDir)..\MyUtil\Include;$(ProjectDir)..\Codeshare\isi_branch\Utilities\Include;$(ProjectDir)..\..\ankh\Math\Include;$(ProjectDir)..\..\ankh\BoundingVolumes\Include;$(ProjectDir)..\..\ankh\Meshes\Include;$(PropertiesDir)..\..\ankh\Properties\Include;$(PropertiesDir)..\..\ankh\NURBS\Include;$(ProjectDir)..\..\ankh\Parallelisation\Include;$(ProjectDir)..\..\ankh\Utils\Include;$(ProjectDir)..\..\ankh\Bumps\Include;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">
-    <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)..\..\ankh\Images\Include;$(ProjectDir)..\..\ankh\Textures\Include;$(ProjectDir)..\MyUtil\Include;$(ProjectDir)..\Codeshare\isi_branch\Utilities\Include;$(ProjectDir)..\..\ankh\Math\Include;$(ProjectDir)..\..\ankh\BoundingVolumes\Include;$(ProjectDir)..\..\ankh\Meshes\Include;$(PropertiesDir)..\..\ankh\Properties\Include;$(PropertiesDir)..\..\ankh\NURBS\Include;$(ProjectDir)..\..\ankh\Parallelisation\Include;$(ProjectDir)..\..\ankh\Utils\Include;$(ProjectDir)..\..\ankh\Bumps\Include;$(IncludePath)</IncludePath>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(ProjectDir)..\..\ankh\Images\Include;$(ProjectDir)..\..\ankh\Textures\Include;$(ProjectDir)..\MyUtil\Include;$(ProjectDir)..\Codeshare\isi_branch\Utilities\Include;$(ProjectDir)..\..\ankh\Math\Include;$(ProjectDir)..\..\ankh\BoundingVolumes\Include;$(ProjectDir)..\..\ankh\Meshes\Include;$(PropertiesDir)..\..\ankh\Properties\Include;$(PropertiesDir)..\..\ankh\NURBS\Include;$(ProjectDir)..\..\ankh\Parallelisation\Include;$(ProjectDir)..\..\ankh\Utils\Include;$(ProjectDir)..\..\ankh\Bumps\Include;$(IncludePath)</IncludePath>
@@ -77,20 +57,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;CODESHARE_UTILITIES_IMPORT;NURBS__IMPORTS;IMAGE_LOADER__IMPORTS;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ObjectFileName>$(IntDir)</ObjectFileName>
-      <DisableSpecificWarnings>4251</DisableSpecificWarnings>
-    </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;CODESHARE_UTILITIES_IMPORT;MYUTIL_STATIC_LIB;NURBS__STATIC_LIB;IMAGE_LOADER__STATIC_LIB;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;CODESHARE_UTILITIES_STATIC;MYUTIL_STATIC_LIB;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
     </ClCompile>
@@ -107,7 +74,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;CODESHARE_UTILITIES_IMPORT;NURBS__IMPORTS;IMAGE_LOADER__IMPORTS;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;CODESHARE_UTILITIES_STATIC;MYUTIL_STATIC_LIB;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
     </ClCompile>
@@ -129,30 +96,9 @@
     <ClCompile Include="main6.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ankh\BoundingVolumes\Project\BoundingVolumes.vcxproj">
-      <Project>{1817230a-c75e-4153-95fc-6313f383d666}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ankh\BuiltinShapes\Project\BuiltinShapes.vcxproj">
-      <Project>{fd870f35-31e9-4acc-ad24-cd7f9a29bf25}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ankh\Bumps\Project\Bumps.vcxproj">
-      <Project>{151c0c1f-2b11-49c2-9852-d1b4bcf17a3e}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ankh\GL\Extensions\Project\GLExtensions.vcxproj">
-      <Project>{1c030ea2-1c81-42d6-b00d-849500d4b3ca}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ankh\Images\Project\ImageLoader.vcxproj">
-      <Project>{f3b33fb5-57dc-44cc-8b99-52afa5f087bf}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ankh\Math\Project\Math.vcxproj">
-      <Project>{6e4f6764-bb80-4fa7-bdeb-296dfb306160}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ankh\Properties\Project\Properties.vcxproj">
-      <Project>{4f23ca23-4f87-47db-9af2-70c328513d9a}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\Codeshare\isi_branch\Utilities\Project\Codeshare_Utilities.vcxproj">
-	  <Project>{CF84D42C-A3C4-4D56-9586-EFF4FC3271ED}</Project>
-	</ProjectReference>
+      <Project>{cf84d42c-a3c4-4d56-9586-eff4fc3271ed}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\MyUtil\MyUtil.vcxproj">
       <Project>{b5b97509-1f26-4d3e-ac89-c3b99ca25e55}</Project>
     </ProjectReference>

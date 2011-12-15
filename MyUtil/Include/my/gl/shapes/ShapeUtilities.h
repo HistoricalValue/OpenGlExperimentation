@@ -16,9 +16,9 @@ namespace ShapeUtilities {
 	extern MYUTIL_API void	DisposeClonedShape (Shape* shape);
 
 	template <typename TShape>
-	inline TShape*				CloneShape (TShape const& shape) {
+	static inline TShape*		CloneShape (TShape const& shape) {
 									size_t const bytesize(shape.GetSizeOf());
-									return _DNOTNULL(shape.Clone(_ShapeAlloc(bytesize), bytesize));
+									return DNULLCHECK(shape.Clone(_ShapeAlloc(bytesize), bytesize));
 								}
 
 }

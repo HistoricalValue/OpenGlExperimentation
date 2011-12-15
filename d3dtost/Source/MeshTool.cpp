@@ -40,6 +40,8 @@ using namespace volumes;
 //
 using namespace ankh_x;
 using namespace ankh_x::shapes;
+//
+using namespace ankhx::nurbs;
 
 //
 static const char GenerationStatsPath[] = "../meshes/generation_stats.txt";

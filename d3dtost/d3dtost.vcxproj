@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug_Static|Win32">
-      <Configuration>Debug_Static</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
@@ -25,11 +21,6 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -40,20 +31,6 @@
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\Bloost.props" />
-    <Import Project="..\D3D.props" />
-    <Import Project="..\..\ankh\VSPropertySheets\Import_BoundingVolumes.props" />
-    <Import Project="..\..\ankh\VSPropertySheets\Import_ImageLoader.props" />
-    <Import Project="..\..\ankh\VSPropertySheets\Import_Math.props" />
-    <Import Project="..\..\ankh\VSPropertySheets\Import_Meshes.props" />
-    <Import Project="..\..\ankh\VSPropertySheets\Import_NURBS.props" />
-    <Import Project="..\..\ankh\VSPropertySheets\Import_Parallelisation.props" />
-    <Import Project="..\..\ankh\VSPropertySheets\Import_Properties.props" />
-    <Import Project="..\..\ankh\VSPropertySheets\Import_TextureManager.props" />
-    <Import Project="..\..\ankh\VSPropertySheets\Import_Utils.props" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\Bloost.props" />
     <Import Project="..\D3D.props" />
@@ -84,19 +61,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>.\Include;..\MyUtil\Include;..\..\ankh\Images\Include;..\..\ankh\Textures\Include;..\..\ankh\NURBS\Include;$(DELTA)UtilLib\Include;$(DELTA)DebugLib\Include;$(DELTA)FileReadersLib\Include;..\freeglut-2.6.0\include;..\..\ankh\Math\Include;..\..\ankh\Meshes\Include;..\..\ankh\BoundingVolumes\Include;..\..\ankh\Properties\Include;..\standalonelib\Include;..\..\ankh\Utils\Include;..\..\ankh\Parallelisation\Include;..\..\ankh\Bumps\Include;$(IncludePath)</IncludePath>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <LibraryPath>..\ExtraLibs-Debug;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">
-    <LinkIncremental>true</LinkIncremental>
-    <IncludePath>.\Include;..\MyUtil\Include;..\..\ankh\Images\Include;..\..\ankh\Textures\Include;..\..\ankh\NURBS\Include;$(DELTA)UtilLib\Include;$(DELTA)DebugLib\Include;$(DELTA)FileReadersLib\Include;..\freeglut-2.6.0\include;..\..\ankh\Math\Include;..\..\ankh\Meshes\Include;..\..\ankh\BoundingVolumes\Include;..\..\ankh\Properties\Include;..\standalonelib\Include;..\..\ankh\Utils\Include;..\..\ankh\Parallelisation\Include;..\..\ankh\Bumps\Include;$(IncludePath)</IncludePath>
+    <IncludePath>.\Include;..\MyUtil\Include;..\..\ankh\Images\Include;..\..\ankh\Textures\Include;..\..\ankh\NURBS\Include;$(DELTA)UtilLib\Include;$(DELTA)DebugLib\Include;$(DELTA)FileReadersLib\Include;..\freeglut-2.6.0\include;..\..\ankh\Math\Include;..\..\ankh\Meshes\Include;..\..\ankh\BoundingVolumes\Include;..\..\ankh\Properties\Include;..\standalonelib\Include;..\..\ankh\Utils\Include;..\..\ankh\Parallelisation\Include;..\..\ankh\Bumps\Include;..\..\ankh\NURBSx\Include;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <LibraryPath>..\ExtraLibs-Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>.\Include;..\MyUtil\Include;..\..\ankh\Images\Include;..\..\ankh\Textures\Include;..\..\ankh\NURBS\Include;$(DELTA)UtilLib\Include;$(DELTA)DebugLib\Include;$(DELTA)FileReadersLib\Include;..\freeglut-2.6.0\include;..\..\ankh\Math\Include;..\..\ankh\Meshes\Include;..\..\ankh\BoundingVolumes\Include;..\..\ankh\Properties\Include;..\standalonelib\Include;..\..\ankh\Utils\Include;..\..\ankh\Parallelisation\Include;..\..\ankh\Bumps\Include;$(IncludePath)</IncludePath>
+    <IncludePath>.\Include;..\MyUtil\Include;..\..\ankh\Images\Include;..\..\ankh\Textures\Include;..\..\ankh\NURBS\Include;$(DELTA)UtilLib\Include;$(DELTA)DebugLib\Include;$(DELTA)FileReadersLib\Include;..\freeglut-2.6.0\include;..\..\ankh\Math\Include;..\..\ankh\Meshes\Include;..\..\ankh\BoundingVolumes\Include;..\..\ankh\Properties\Include;..\standalonelib\Include;..\..\ankh\Utils\Include;..\..\ankh\Parallelisation\Include;..\..\ankh\Bumps\Include;..\..\ankh\NURBSx\Include;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <LibraryPath>..\ExtraLibs-Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
@@ -104,26 +75,7 @@
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;D3D_DEBUG_INFO;UTILITIES__IMPORTS;TEXTURE_MANAGER__IMPORTS;IMAGE_LOADER__IMPORTS;NURBS__IMPORTS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <ObjectFileName>$(IntDir)</ObjectFileName>
-      <DisableSpecificWarnings>4061;4251;4350;4351;4505;4514;4710;4711;4738;4820;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <WarningLevel>EnableAllWarnings</WarningLevel>
-    </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Opengl32.lib;$(UTIL_AND_DHEAP_DLL_BASENAME)D.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
-    <ResourceCompile>
-      <ShowProgress>true</ShowProgress>
-    </ResourceCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">
-    <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;D3D_DEBUG_INFO;UTILITIES__IMPORTS;TEXTURE_MANAGER__STATIC_LIB;IMAGE_LOADER__STATIC_LIB;NURBS__STATIC_LIB;MYUTIL_STATIC_LIB;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;D3D_DEBUG_INFO;MYUTIL_STATIC_LIB;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <DisableSpecificWarnings>4061;4251;4350;4351;4505;4514;4710;4711;4738;4820;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -143,7 +95,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;D3D_DEBUG_INFO;UTILITIES__IMPORTS;TEXTURE_MANAGER__IMPORTS;IMAGE_LOADER__IMPORTS;NURBS__IMPORTS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;D3D_DEBUG_INFO;MYUTIL_STATIC_LIB;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
@@ -161,7 +113,6 @@
   <ItemGroup>
     <ClCompile Include="..\shaders\fragment.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">true</ExcludedFromBuild>
       <FileType>Text</FileType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -169,22 +120,18 @@
       <FileType>Text</FileType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="drawing_small.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="ShaderCompiler.cpp" />
     <ClCompile Include="Source\drawing.cpp">
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4127;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">4127;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4127;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <ClCompile Include="Source\drawing_nurbs.cpp" />
     <ClCompile Include="Source\MeshTool.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -192,7 +139,6 @@
     <ClCompile Include="Source\MyDirect3D9.cpp" />
     <ClCompile Include="Source\MyOpenGl.cpp" />
     <ClCompile Include="Source\MyWindow.cpp">
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">4706;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4706;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4706;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
@@ -201,7 +147,6 @@
     <ClCompile Include="Source\Setup.cpp" />
     <ClCompile Include="Source\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
@@ -237,7 +182,6 @@
   <ItemGroup>
     <ResourceCompile Include="resources.rc">
       <ShowProgress Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ShowProgress>
-      <ShowProgress Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">true</ShowProgress>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
@@ -249,6 +193,9 @@
     </ProjectReference>
     <ProjectReference Include="..\..\ankh\Bumps\Project\Bumps.vcxproj">
       <Project>{151c0c1f-2b11-49c2-9852-d1b4bcf17a3e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ankh\GL\Adapters\Project\GLAdapters.vcxproj">
+      <Project>{96e6a922-799e-4edd-9425-13ae93f3fc26}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\ankh\GL\Extensions\Project\GLExtensions.vcxproj">
       <Project>{1c030ea2-1c81-42d6-b00d-849500d4b3ca}</Project>
@@ -262,8 +209,14 @@
     <ProjectReference Include="..\..\ankh\Meshes\Project\Meshes.vcxproj">
       <Project>{8346784f-011e-422a-b0cc-f383a21c4b69}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\ankh\Nurbsx\Project\Nurbsx.vcxproj">
+      <Project>{27810e10-c308-4af9-86e4-4aa2af061f1c}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\ankh\NURBS\Project\Nurbs.vcxproj">
       <Project>{bc821220-382d-4691-8bbe-6db8f45da3f3}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ankh\Parallelisation\Project\Parallelisation.vcxproj">
+      <Project>{c7c53469-5559-47b1-b93f-cecc7419a69f}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\ankh\Properties\Project\Properties.vcxproj">
       <Project>{4f23ca23-4f87-47db-9af2-70c328513d9a}</Project>
@@ -274,8 +227,17 @@
     <ProjectReference Include="..\..\ankh\Utils\Project\Utils.vcxproj">
       <Project>{ca874677-c3ea-47a1-ae7c-a30dc222e893}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\Sparrow2010\trunk\Tools\Delta\DLLs\ReadersWriters\Project\ReadersWriters.vcxproj">
+      <Project>{9c0f9ac1-ed6c-41c3-8078-ce565e945b75}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Sparrow2010\trunk\Tools\Delta\DLLs\UtilAndDebugLib\Project\UtilAndDebugLib.vcxproj">
+      <Project>{f2d735a6-3645-4a06-b368-bcc38d42efee}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Codeshare\isi_branch\Utilities\Project\Codeshare_Utilities.vcxproj">
       <Project>{cf84d42c-a3c4-4d56-9586-eff4fc3271ed}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\DevIL\DevIL\src-IL\msvc9\IL Unicode.vcxproj">
+      <Project>{b46b180b-6079-4ce6-8647-a7d712774255}</Project>
     </ProjectReference>
     <ProjectReference Include="..\MyUtil\MyUtil.vcxproj">
       <Project>{b5b97509-1f26-4d3e-ac89-c3b99ca25e55}</Project>

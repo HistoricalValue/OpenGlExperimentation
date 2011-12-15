@@ -12,19 +12,11 @@ namespace _	{
 
 static
 void InitialiseAnkh (void) {
-// initialise Images and Textures lib
-	{	bool const success(ankh::images::Initialise());
-		PASSERT(success) }
-	{	bool const success(ankh::textures::Initialise());
-		PASSERT(success) }
-
-	ankh::images::InstallDefaultImageDecoders();
+	ankh::textures::TextureUnitManager::SingletonCreate();
 }
 
 static
 void CleanUpAnkh (void) {
-	ankh::textures::CleanUp();
-	ankh::images::CleanUp();
 }
 
 ///////////////////////////////////////////////////////
