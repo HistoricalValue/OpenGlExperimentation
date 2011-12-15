@@ -34,6 +34,12 @@ void	SetupFramebuffers (DrawData& dd) {
 			dd.framebuffer->GetColourAttachmentParameters(ps[2], COLOUR_CHANNEL_BLUE_INDEX);
 			dd.framebuffer->GetColourAttachmentParameters(ps[3], COLOUR_CHANNEL_ALL_INDEX);
 
+			PASSERT((dd.framebuffer->BindForDrawing(), dd.framebuffer->IsComplete()))
+			PASSERT((dd.framebuffer->BindForReading(), dd.framebuffer->IsComplete()))
+
+			dd.framebuffer->BindForDrawing();
+			dd.framebuffer->Unbind();
+
 			dd.framebuffer->MapToShaderOutputs();
 		}
 

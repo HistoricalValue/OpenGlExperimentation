@@ -150,7 +150,9 @@
     <ProjectReference Include="..\..\ankh\Properties\Project\Properties.vcxproj">
       <Project>{4f23ca23-4f87-47db-9af2-70c328513d9a}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\Codeshare\isi_branch\Utilities\Project\Codeshare_Utilities.vcxproj" />
+    <ProjectReference Include="..\Codeshare\isi_branch\Utilities\Project\Codeshare_Utilities.vcxproj">
+	  <Project>{CF84D42C-A3C4-4D56-9586-EFF4FC3271ED}</Project>
+	</ProjectReference>
     <ProjectReference Include="..\MyUtil\MyUtil.vcxproj">
       <Project>{b5b97509-1f26-4d3e-ac89-c3b99ca25e55}</Project>
     </ProjectReference>
