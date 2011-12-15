@@ -43,16 +43,43 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\Bloost.props" />
     <Import Project="..\D3D.props" />
+    <Import Project="..\..\ankh\VSPropertySheets\Import_BoundingVolumes.props" />
+    <Import Project="..\..\ankh\VSPropertySheets\Import_ImageLoader.props" />
+    <Import Project="..\..\ankh\VSPropertySheets\Import_Math.props" />
+    <Import Project="..\..\ankh\VSPropertySheets\Import_Meshes.props" />
+    <Import Project="..\..\ankh\VSPropertySheets\Import_NURBS.props" />
+    <Import Project="..\..\ankh\VSPropertySheets\Import_Parallelisation.props" />
+    <Import Project="..\..\ankh\VSPropertySheets\Import_Properties.props" />
+    <Import Project="..\..\ankh\VSPropertySheets\Import_TextureManager.props" />
+    <Import Project="..\..\ankh\VSPropertySheets\Import_Utils.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\Bloost.props" />
     <Import Project="..\D3D.props" />
+    <Import Project="..\..\ankh\VSPropertySheets\Import_BoundingVolumes.props" />
+    <Import Project="..\..\ankh\VSPropertySheets\Import_ImageLoader.props" />
+    <Import Project="..\..\ankh\VSPropertySheets\Import_Math.props" />
+    <Import Project="..\..\ankh\VSPropertySheets\Import_Meshes.props" />
+    <Import Project="..\..\ankh\VSPropertySheets\Import_NURBS.props" />
+    <Import Project="..\..\ankh\VSPropertySheets\Import_Parallelisation.props" />
+    <Import Project="..\..\ankh\VSPropertySheets\Import_Properties.props" />
+    <Import Project="..\..\ankh\VSPropertySheets\Import_TextureManager.props" />
+    <Import Project="..\..\ankh\VSPropertySheets\Import_Utils.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\Bloost.props" />
     <Import Project="..\D3D.props" />
+    <Import Project="..\..\ankh\VSPropertySheets\Import_BoundingVolumes.props" />
+    <Import Project="..\..\ankh\VSPropertySheets\Import_ImageLoader.props" />
+    <Import Project="..\..\ankh\VSPropertySheets\Import_Math.props" />
+    <Import Project="..\..\ankh\VSPropertySheets\Import_Meshes.props" />
+    <Import Project="..\..\ankh\VSPropertySheets\Import_NURBS.props" />
+    <Import Project="..\..\ankh\VSPropertySheets\Import_Parallelisation.props" />
+    <Import Project="..\..\ankh\VSPropertySheets\Import_Properties.props" />
+    <Import Project="..\..\ankh\VSPropertySheets\Import_TextureManager.props" />
+    <Import Project="..\..\ankh\VSPropertySheets\Import_Utils.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

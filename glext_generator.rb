@@ -12,6 +12,8 @@ header = '// OpenGlExtensions.h
 #ifndef ANKH_IMAGES_OPEN_GL_EXTENSIONS_H
 #define ANKH_IMAGES_OPEN_GL_EXTENSIONS_H
 
+#include <stdlib.h>
+
 '
 
 footer = '
