@@ -3,6 +3,6 @@ java -jar FileJanitor.jar --tidy . ^
 ..\ankh\Textures ^
 ..\ankh\NURBS ^
 ..\ankh\NURBSx ^
-..\ankh\Bumps ^
+..\ankh\OpenGlAdapters ^
 ..\ankh\Parallelisation & ^
 pause

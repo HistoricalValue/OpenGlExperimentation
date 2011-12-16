@@ -61,13 +61,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>.\Include;..\MyUtil\Include;..\..\ankh\Images\Include;..\..\ankh\Textures\Include;..\..\ankh\NURBS\Include;$(DELTA)UtilLib\Include;$(DELTA)DebugLib\Include;$(DELTA)FileReadersLib\Include;..\freeglut-2.6.0\include;..\..\ankh\Math\Include;..\..\ankh\Meshes\Include;..\..\ankh\BoundingVolumes\Include;..\..\ankh\Properties\Include;..\standalonelib\Include;..\..\ankh\Utils\Include;..\..\ankh\Parallelisation\Include;..\..\ankh\Bumps\Include;..\..\ankh\NURBSx\Include;$(IncludePath)</IncludePath>
+    <IncludePath>.\Include;..\MyUtil\Include;..\..\ankh\Images\Include;..\..\ankh\Textures\Include;..\..\ankh\NURBS\Include;$(DELTA)UtilLib\Include;$(DELTA)DebugLib\Include;$(DELTA)FileReadersLib\Include;..\freeglut-2.6.0\include;..\..\ankh\Math\Include;..\..\ankh\Meshes\Include;..\..\ankh\BoundingVolumes\Include;..\..\ankh\Properties\Include;..\standalonelib\Include;..\..\ankh\Utils\Include;..\..\ankh\Parallelisation\Include;..\..\ankh\OpenGlAdapters\Include;..\..\ankh\Nurbsx\Include;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <LibraryPath>..\ExtraLibs-Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>.\Include;..\MyUtil\Include;..\..\ankh\Images\Include;..\..\ankh\Textures\Include;..\..\ankh\NURBS\Include;$(DELTA)UtilLib\Include;$(DELTA)DebugLib\Include;$(DELTA)FileReadersLib\Include;..\freeglut-2.6.0\include;..\..\ankh\Math\Include;..\..\ankh\Meshes\Include;..\..\ankh\BoundingVolumes\Include;..\..\ankh\Properties\Include;..\standalonelib\Include;..\..\ankh\Utils\Include;..\..\ankh\Parallelisation\Include;..\..\ankh\Bumps\Include;..\..\ankh\NURBSx\Include;$(IncludePath)</IncludePath>
+    <IncludePath>.\Include;..\MyUtil\Include;..\..\ankh\Images\Include;..\..\ankh\Textures\Include;..\..\ankh\NURBS\Include;$(DELTA)UtilLib\Include;$(DELTA)DebugLib\Include;$(DELTA)FileReadersLib\Include;..\freeglut-2.6.0\include;..\..\ankh\Math\Include;..\..\ankh\Meshes\Include;..\..\ankh\BoundingVolumes\Include;..\..\ankh\Properties\Include;..\standalonelib\Include;..\..\ankh\Utils\Include;..\..\ankh\Parallelisation\Include;..\..\ankh\OpenGlAdapters\Include;..\..\ankh\Nurbsx\Include;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <LibraryPath>..\ExtraLibs-Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
@@ -200,9 +200,6 @@
     <ProjectReference Include="..\..\ankh\BuiltinShapes\Project\BuiltinShapes.vcxproj">
       <Project>{fd870f35-31e9-4acc-ad24-cd7f9a29bf25}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\ankh\Bumps\Project\Bumps.vcxproj">
-      <Project>{151c0c1f-2b11-49c2-9852-d1b4bcf17a3e}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\..\ankh\GL\Adapters\Project\GLAdapters.vcxproj">
       <Project>{96e6a922-799e-4edd-9425-13ae93f3fc26}</Project>
     </ProjectReference>
@@ -223,6 +220,9 @@
     </ProjectReference>
     <ProjectReference Include="..\..\ankh\NURBS\Project\Nurbs.vcxproj">
       <Project>{bc821220-382d-4691-8bbe-6db8f45da3f3}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ankh\OpenGlAdapters\Project\OpenGlAdapters.vcxproj">
+      <Project>{151c0c1f-2b11-49c2-9852-d1b4bcf17a3e}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\ankh\Parallelisation\Project\Parallelisation.vcxproj">
       <Project>{c7c53469-5559-47b1-b93f-cecc7419a69f}</Project>
