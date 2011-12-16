@@ -1,5 +1,6 @@
 package fj.tidying;
 
+import java.nio.file.Paths;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,7 +13,6 @@ import java.nio.charset.Charset;
 import static fj.util.Find.find;
 import static fj.Main.print;
 import static fj.Main.printf;
-import static java.nio.file.Paths.get;
 import static fj.MainUtils.GetDefaultCharset;
 
 public class Main {
@@ -56,10 +56,16 @@ public class Main {
 		dry = true;
 	}
 
+	private static void Tidy (final Path path, final ToBeTidiedFiltre filtre) throws IOException {
+		printf("Tidying up in directory: %s%n", path);
+		find(path, filtre, fileTidyingCallback);
+	}
+
 	public static void main (final BufferedReader configReader, ArrayList<String> args) throws Throwable {
-		final Path cwd = get(args.get(0));
-		printf("Tidying up in directory: %s%n", cwd.toRealPath());
-		find(cwd, new ToBeTidiedFiltre(configReader), fileTidyingCallback);
+		final ToBeTidiedFiltre filtre = new ToBeTidiedFiltre(configReader);
+
+		for (final String pathstr: args)
+			Tidy(Paths.get(pathstr).toRealPath(), filtre);
 	}
 
 	private Main() {}

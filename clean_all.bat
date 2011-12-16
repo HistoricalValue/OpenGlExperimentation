@@ -1,8 +1,9 @@
-java -jar FileJanitor.jar --clean . & ^
-java -jar FileJanitor.jar --clean ..\ankh & ^
-java -jar FileJanitor.jar --clean ..\Sparrow2010\trunk\Tools\Delta\UtilLib\ & ^
-java -jar FileJanitor.jar --clean ..\Sparrow2010\trunk\Tools\Delta\DebugLib & ^
-java -jar FileJanitor.jar --clean ..\Sparrow2010\trunk\Tools\Delta\FileReadersLib & ^
-java -jar FileJanitor.jar --clean ..\Sparrow2010\trunk\Tools\Delta\DLLs\UtilAndDebugLib & ^
-java -jar FileJanitor.jar --clean ..\Sparrow2010\trunk\Tools\Delta\DLLs\ReadersWriters & ^
+java -jar FileJanitor.jar --clean ^
+. ^
+..\ankh ^
+..\Sparrow2010\trunk\Tools\Delta\UtilLib\ ^
+..\Sparrow2010\trunk\Tools\Delta\DebugLib ^
+..\Sparrow2010\trunk\Tools\Delta\FileReadersLib ^
+..\Sparrow2010\trunk\Tools\Delta\DLLs\UtilAndDebugLib ^
+..\Sparrow2010\trunk\Tools\Delta\DLLs\ReadersWriters & ^
 pause

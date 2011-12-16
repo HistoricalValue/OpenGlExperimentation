@@ -3,8 +3,8 @@ package fj;
 import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.nio.file.Paths;
 import static fj.MainUtils.GetArg;
-import static java.nio.file.Paths.get;
 import static java.nio.file.Files.newBufferedReader;
 import static fj.MainUtils.GetDefaultCharset;
 
@@ -32,8 +32,8 @@ public class Main {
 			withTidying = true;
 		}
 
-		final BufferedReader cleanConfigReader = newBufferedReader(get(GetArg(modargs, "clean:", "FileJanitor_cleaning.config")), GetDefaultCharset());
-		final BufferedReader tidyConfigReader = newBufferedReader(get(GetArg(modargs, "tidy:", "FileJanitor_tidying.config")), GetDefaultCharset());
+		final BufferedReader cleanConfigReader = newBufferedReader(Paths.get(GetArg(modargs, "clean:", "FileJanitor_cleaning.config")), GetDefaultCharset());
+		final BufferedReader tidyConfigReader = newBufferedReader(Paths.get(GetArg(modargs, "tidy:", "FileJanitor_tidying.config")), GetDefaultCharset());
 
 		if (withCleaning)
 			fj.cleaning.Main.main(cleanConfigReader, modargs);

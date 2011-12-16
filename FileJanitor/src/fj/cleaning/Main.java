@@ -1,5 +1,6 @@
 package fj.cleaning;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,7 +11,6 @@ import java.nio.file.Path;
 import java.util.Formatter;
 import static fj.util.Find.find;
 import static fj.Main.printf;
-import static java.nio.file.Paths.get;
 import static fj.MainUtils.GetDefaultCharset;
 import static fj.Main.println;
 
@@ -37,10 +37,16 @@ public class Main {
 		dry = true;
 	}
 
+	private static void Clean (final Path path, final ToBeDeletedFiltre filtre) throws IOException {
+		printf("Cleaning up in directory: %s%n", path);
+		find(path, filtre, treeDeletingCallback);
+	}
+
 	public static void main (final BufferedReader configReader, ArrayList<String> args) throws Throwable {
-		final Path cwd = get(args.get(0));
-		printf("Cleaning up in directory: %s%n", cwd.toRealPath());
-		find(cwd, new ToBeDeletedFiltre(configReader), treeDeletingCallback);
+		final ToBeDeletedFiltre filtre = new ToBeDeletedFiltre(configReader);
+
+		for (final String pathstr: args)
+			Clean(Paths.get(pathstr).toRealPath(), filtre);
 	}
 
 	private Main() {}
