@@ -5,7 +5,7 @@
 
 ///////////////////////////////////////////////////////////
 
-namespace _	{
+namespace _			{
 
 ///////////////////////////////////////////////////////////
 
@@ -19,17 +19,15 @@ void Del (gl::adapt::Vertexbuffer* (&buffers)[N])
 
 ///////////////////////////////////////////////////////////
 
-static inline
-gl::adapt::Framebuffer* Gen (gl::adapt::Framebuffer*& fb)
-	{ return gl::adapt::FramebufferManager::GetSingleton().Create(fb); }
+extern
+gl::adapt::Framebuffer* Gen (gl::adapt::Framebuffer*& fb);
 
 template <const size_t N> static inline
 void Gen (gl::adapt::Framebuffer* (&buffers)[N])
 	{ gl::adapt::FramebufferManager::GetSingleton().Create(buffers); }
 
-static inline
-void Del (gl::adapt::Framebuffer* const fb)
-	{ gl::adapt::FramebufferManager::GetSingleton().Release(fb); }
+extern
+void Del (gl::adapt::Framebuffer* const fb);
 
 template <const size_t N> static inline
 void Del (gl::adapt::Framebuffer* (&buffers)[N])
@@ -37,17 +35,15 @@ void Del (gl::adapt::Framebuffer* (&buffers)[N])
 
 ///////////////////////////////////////////////////////////
 
-static inline
-gl::adapt::Renderbuffer* Gen (gl::adapt::Renderbuffer*& rb)
-	{ return gl::adapt::RenderbufferManager::GetSingleton().Create(rb); }
+extern
+gl::adapt::Renderbuffer* Gen (gl::adapt::Renderbuffer*& rb);
 
 template <const size_t N> static inline
 void Gen (gl::adapt::Renderbuffer* (&buffers)[N])
 	{ gl::adapt::RenderbufferManager::GetSingleton().Create(buffers); }
 
-static inline
-void Del (gl::adapt::Renderbuffer* const rb)
-	{ gl::adapt::RenderbufferManager::GetSingleton().Release(rb); }
+extern
+void Del (gl::adapt::Renderbuffer* const rb);
 
 template <const size_t N> static inline
 void Del (gl::adapt::Renderbuffer* (&buffers)[N])

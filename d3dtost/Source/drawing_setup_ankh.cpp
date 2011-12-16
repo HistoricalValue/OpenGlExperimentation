@@ -1,8 +1,5 @@
-#ifndef __DRAWING__SETUP_ANKH__H__
-#define __DRAWING__SETUP_ANKH__H__
-
-#include <ImageLoader.h>
-#include <TextureManager.h>
+#include "stdafx.h"
+#include <drawing_setup_ankh.h>
 
 ///////////////////////////////////////////////////////
 
@@ -10,13 +7,15 @@ namespace _	{
 
 ///////////////////////////////////////////////////////
 
-extern void	InitialiseAnkh (void);
-extern void CleanUpAnkh (void);
+void InitialiseAnkh (void) {
+	ankh::textures::TextureUnitManager::SingletonCreate();
+}
+
+void CleanUpAnkh (void) {
+}
 
 ///////////////////////////////////////////////////////
 
 }	//	_
 
 ///////////////////////////////////////////////////////
-
-#endif // __DRAWING__SETUP_ANKH__H__

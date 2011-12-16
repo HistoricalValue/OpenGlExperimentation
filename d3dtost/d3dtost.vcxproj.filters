@@ -16,6 +16,12 @@
     <Filter Include="Header Files\The Cursed">
       <UniqueIdentifier>{0522bd32-5487-45fd-9966-f1b283e0db4d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\drawing">
+      <UniqueIdentifier>{c287df86-d661-4ba9-9712-633038a451df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\drawing">
+      <UniqueIdentifier>{3ff80dd6-468b-4a97-b310-21d4e6423284}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\main.cpp">
@@ -59,6 +65,33 @@
     <ClCompile Include="Source\MeshTool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\drawing_buffers.cpp">
+      <Filter>Source Files\drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\drawing_globalstate.cpp">
+      <Filter>Source Files\drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\drawing_setup_ankh.cpp">
+      <Filter>Source Files\drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\drawing_setup_framebuffers.cpp">
+      <Filter>Source Files\drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\drawing_setup_geometrical.cpp">
+      <Filter>Source Files\drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\drawing_setup_images.cpp">
+      <Filter>Source Files\drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\drawing_setup_opengl_adapters.cpp">
+      <Filter>Source Files\drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\drawing_setup_shapes.cpp">
+      <Filter>Source Files\drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\drawing_setup_textures.cpp">
+      <Filter>Source Files\drawing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\stdafx.h">
@@ -100,32 +133,32 @@
     <ClInclude Include="Include\drawing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\drawing_globalstate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Include\drawing_buffers.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\drawing</Filter>
     </ClInclude>
-    <ClInclude Include="Include\drawing_setup_shapes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\drawing_setup_geometrical.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\drawing_setup_textures.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\drawing_setup_images.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Include\drawing_globalstate.h">
+      <Filter>Header Files\drawing</Filter>
     </ClInclude>
     <ClInclude Include="Include\drawing_setup_ankh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\drawing_setup_opengl_adapters.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\drawing</Filter>
     </ClInclude>
     <ClInclude Include="Include\drawing_setup_framebuffers.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\drawing_setup_geometrical.h">
+      <Filter>Header Files\drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\drawing_setup_images.h">
+      <Filter>Header Files\drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\drawing_setup_opengl_adapters.h">
+      <Filter>Header Files\drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\drawing_setup_shapes.h">
+      <Filter>Header Files\drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\drawing_setup_textures.h">
+      <Filter>Header Files\drawing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

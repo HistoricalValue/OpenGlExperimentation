@@ -130,7 +130,16 @@
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4127;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4127;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
+    <ClCompile Include="Source\drawing_buffers.cpp" />
+    <ClCompile Include="Source\drawing_globalstate.cpp" />
     <ClCompile Include="Source\drawing_nurbs.cpp" />
+    <ClCompile Include="Source\drawing_setup_ankh.cpp" />
+    <ClCompile Include="Source\drawing_setup_framebuffers.cpp" />
+    <ClCompile Include="Source\drawing_setup_geometrical.cpp" />
+    <ClCompile Include="Source\drawing_setup_images.cpp" />
+    <ClCompile Include="Source\drawing_setup_opengl_adapters.cpp" />
+    <ClCompile Include="Source\drawing_setup_shapes.cpp" />
+    <ClCompile Include="Source\drawing_setup_textures.cpp" />
     <ClCompile Include="Source\MeshTool.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
