@@ -189,7 +189,7 @@ namespace my {
 
 				if (_::BE_A_SHADER_COMPILER)
 					TestCompileShaders();
-				else if (false)
+				else if (true)
 					window.MainLoop(lpCmdLine, nCmdShow);
 				else
 					LOAL();

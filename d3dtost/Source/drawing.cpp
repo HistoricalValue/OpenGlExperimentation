@@ -127,7 +127,6 @@ namespace my {
 			}
 
 			dd.framebuffer->BindForDrawing();
-			PASSERT(dd.framebuffer->IsComplete())
 			// and textured triangles too
 			if (_::WITH_DRAW_TEXTURED) {
 				PASSERT(::gl::prim::VertexArray::Is(dd.vertexArrayIds[3]->GetId()))
@@ -147,10 +146,7 @@ namespace my {
 			}
 			dd.framebuffer->Unbind();
 
-		//	PASSERT(dd.framebuffer->IsComplete());
-
 			dd.framebuffer->BindForReading();
-		//	PASSERT(dd.framebuffer->IsComplete());
 		//	::gl::ext::glBlitFramebuffer(0, 0, 800, 600, 0, 0, 400, 300, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
 			(*bufferSwapper)(bufferSwapperClosure);

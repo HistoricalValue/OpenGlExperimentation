@@ -14,7 +14,7 @@ namespace _ {
 ///////////////////////////////////////////////////////
 // Test [what] flags
 static const bool	TEST_ALL			(!true);
-static const bool	TEST_TEXTURES		(!true);
+static const bool	TEST_TEXTURES		(true);
 
 ///////////////////////////////////////////////////////
 // With draw [what] flags
