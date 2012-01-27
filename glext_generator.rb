@@ -94,6 +94,25 @@ def typedefs_to_s (typedefs)
 	lines.join("\n")
 end
 
+DEFINE = /^\#define\s+([\w_]+)\s+([^\s]+)\s*$/
+
+def find_value (fin, looking4)
+	results = []
+	
+	fin.each_line { |line|
+		if md = DEFINE.match(line) then
+			begin
+				name = md[1]
+				val = Integer(md[2])
+				(results << name) if val == looking4
+			rescue ArgumentError
+			end
+		end
+	}
+	
+	results
+end
+
 def parse_gl_ext (fin, requested_result)
 	enums = { :num => [], :str => [] }
 	
@@ -103,7 +122,7 @@ def parse_gl_ext (fin, requested_result)
 		line.strip!
 		case
 			when line.empty?
-			when md = /^\#define\s+([\w_]+)\s+([^\s]+)\s*$/.match(line)
+			when md = DEFINE.match(line)
 				name = md[1]
 				begin
 					val = Integer(md[2])
@@ -136,7 +155,7 @@ def parse_requested_exts (fin)
 		case
 			when line.empty?
 			when requested.has_key?(line)
-				raise "hell: #{line.inspect}"
+				raise "hell (already added): #{line.inspect}"
 			when line =~ /^\/\//
 			when md = /^\#define\s+([\w_]+)\s+([^\s]*)\s*$/.match(line)
 				name = md[1]
@@ -161,14 +180,28 @@ class StreamConcatenation
 			stream = streams.shift
 			stream.each_line(&b)
 		end
+		nil
 	end
 	
+	def rewind
+		@streams.each(&:rewind)
+		nil
+	end
 end
 
-File.open(ARGV[3], IO::CREAT | IO::TRUNC | IO::WRONLY) { |fout|
+File.open(ARGV[4], IO::CREAT | IO::TRUNC | IO::WRONLY) { |fout|
 	File.open(ARGV[0], IO::RDONLY) { |fin_gl|
 	File.open(ARGV[1], IO::RDONLY) { |fin_glext|
 	File.open(ARGV[2], IO::RDONLY) { |fin_requested|
-		fout.puts header, enums_to_s(parse_gl_ext(StreamConcatenation.new(fin_gl, fin_glext), parse_requested_exts(fin_requested))), typedefs_to_s(typedefs), footer
+		fin_concat = StreamConcatenation.new(fin_gl, fin_glext)
+		# Find extensions
+		requestedExtensions = parse_requested_exts(fin_requested)
+		enums = parse_gl_ext(fin_concat, requestedExtensions)
+		fout.puts(header, enums_to_s(enums), typedefs_to_s(typedefs), footer)
+		# Reserve find (value -> name)
+		fin_concat.rewind
+		looking4 = Integer(ARGV[3])
+		reverseLookuped = find_value(fin_concat, looking4)
+		print("Looking for " + looking4.to_s + ": \n" + reverseLookuped.map { |s| " * " + s }.join("\n"))
 	}}}
 }
