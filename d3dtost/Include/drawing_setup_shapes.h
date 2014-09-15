@@ -6,7 +6,7 @@
 
 ///////////////////////////////////////////////////////
 
-namespace	_	{
+namespace    _    {
 
 ///////////////////////////////////////////////////////
 
@@ -17,32 +17,32 @@ static GLboolean const POINTS_NORMALISED(GL_TRUE);
 
 extern
 void SetUpShapes (
-		DrawData&						dd,
-		//
-		gl::adapt::VertexArray* const	point_vertexArrayId,
-		gl::adapt::Vertexbuffer* const	point_buffer0,
-		gl::adapt::Vertexbuffer* const	point_buffer1,
-		GLuint&							numberOfPointPoints,
-		//
-		gl::adapt::VertexArray* const	line_vertexArrayId,
-		gl::adapt::Vertexbuffer* const	line_buffer0,
-		gl::adapt::Vertexbuffer* const	line_buffer1,
-		GLuint&							numberOfPoints,
-		//
-		gl::adapt::VertexArray* const	tria_vertexArrayId,
-		gl::adapt::Vertexbuffer* const	tria_buffer0,
-		gl::adapt::Vertexbuffer* const	tria_buffer1,
-		GLuint&							numberOfWorldCubeLineSegments,
-		//
-		gl::adapt::VertexArray* const	text_vertexArrayId,
-		gl::adapt::Vertexbuffer* const	text_buffer0,
-		gl::adapt::Vertexbuffer* const	text_buffer1,
-		GLuint&							numberOfTexturedSegment);
+        DrawData&                        dd,
+        //
+        gl::adapt::VertexArray* const    point_vertexArrayId,
+        gl::adapt::Vertexbuffer* const    point_buffer0,
+        gl::adapt::Vertexbuffer* const    point_buffer1,
+        GLuint&                            numberOfPointPoints,
+        //
+        gl::adapt::VertexArray* const    line_vertexArrayId,
+        gl::adapt::Vertexbuffer* const    line_buffer0,
+        gl::adapt::Vertexbuffer* const    line_buffer1,
+        GLuint&                            numberOfPoints,
+        //
+        gl::adapt::VertexArray* const    tria_vertexArrayId,
+        gl::adapt::Vertexbuffer* const    tria_buffer0,
+        gl::adapt::Vertexbuffer* const    tria_buffer1,
+        GLuint&                            numberOfWorldCubeLineSegments,
+        //
+        gl::adapt::VertexArray* const    text_vertexArrayId,
+        gl::adapt::Vertexbuffer* const    text_buffer0,
+        gl::adapt::Vertexbuffer* const    text_buffer1,
+        GLuint&                            numberOfTexturedSegment);
 
 ///////////////////////////////////////////////////////
 
-}	//	_
+}    //    _
 
 ///////////////////////////////////////////////////////
 
-#endif	// __DRAWING__SETUP_SHAPES___H__
+#endif    // __DRAWING__SETUP_SHAPES___H__

@@ -13,8 +13,8 @@ struct typeequality<T,T>{ static const bool result = true; };
 
 template <typename Tmust, typename T>
 T const& checkedreturn (T const& val) {
-	STATIC_ASSERT((typeequality<Tmust, T>::result))
-	return val;
+    STATIC_ASSERT((typeequality<Tmust, T>::result))
+    return val;
 }
 
 template <bool> struct reterner;
@@ -23,7 +23,7 @@ template <> struct reterner<false>{ static unsigned f (void) { return 0; }};
 
 int main4 (int, char**) {
 
-	return checkedreturn<int>(reterner<typeequality<double,double>::result>::f());
+    return checkedreturn<int>(reterner<typeequality<double,double>::result>::f());
 }
 
 #endif

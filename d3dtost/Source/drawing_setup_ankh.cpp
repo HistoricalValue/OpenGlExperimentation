@@ -4,7 +4,7 @@
 
 ///////////////////////////////////////////////////////
 
-namespace _	{
+namespace _    {
 
 using ankh::textures::TextureUnitManager;
 using ankh::images::ImageLoader;
@@ -20,33 +20,33 @@ DevilImageDecoder& devil (void) { return reinterpret_cast<DevilImageDecoder&>(_d
 ///////////////////////////////////////////////////////
 
 void InitialiseAnkh (void) {
-	TextureUnitManager::SingletonCreate();
-	
-	DevilImageDecoder::Initialise();
-	DevilImageDecoder& devil(_::devil());
-	new(&devil) DevilImageDecoder;
+    TextureUnitManager::SingletonCreate();
+    
+    DevilImageDecoder::Initialise();
+    DevilImageDecoder& devil(_::devil());
+    new(&devil) DevilImageDecoder;
 
-	ImageLoader::SingletonCreate();
-	ImageLoader& il(ImageLoader::GetSingleton());
-	il.InstallDecoder(devil.GetBufferImageDecoder());
-	il.InstallDecoder(devil.GetFilePointerImageDecoder());
+    ImageLoader::SingletonCreate();
+    ImageLoader& il(ImageLoader::GetSingleton());
+    il.InstallDecoder(devil.GetBufferImageDecoder());
+    il.InstallDecoder(devil.GetFilePointerImageDecoder());
 
-	TextureManager::SingletonCreate();
+    TextureManager::SingletonCreate();
 }
 
 void CleanUpAnkh (void) {
-	TextureManager::SingletonDestroy();
+    TextureManager::SingletonDestroy();
 
-	ImageLoader::SingletonDestroy();
+    ImageLoader::SingletonDestroy();
 
-	devil().~DevilImageDecoder();
-	DevilImageDecoder::CleanUp();
+    devil().~DevilImageDecoder();
+    DevilImageDecoder::CleanUp();
 
-	TextureUnitManager::SingletonDestroy();
+    TextureUnitManager::SingletonDestroy();
 }
 
 ///////////////////////////////////////////////////////
 
-}	//	_
+}    //    _
 
 ///////////////////////////////////////////////////////

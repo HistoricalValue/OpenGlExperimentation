@@ -6,31 +6,31 @@
 
 namespace my { namespace gl { namespace shapes {
 
-	class MYUTIL_API Colour {
-	public:
-		explicit										Colour (math::Vector4 const& colour);
-														Colour (Colour const&);
+    class MYUTIL_API Colour {
+    public:
+        explicit                                        Colour (math::Vector4 const& colour);
+                                                        Colour (Colour const&);
 
-		void											operator = (Colour const&);
+        void                                            operator = (Colour const&);
 
-		float											GetRed (void) const;
-		float											GetGreen (void) const;
-		float											GetBlue (void) const;
-		float											GetAlpha (void) const;
+        float                                            GetRed (void) const;
+        float                                            GetGreen (void) const;
+        float                                            GetBlue (void) const;
+        float                                            GetAlpha (void) const;
 
-		Colour											operator * (math::Vector4 const& mod) const;
-		Colour											operator * (float f) const { return Colour(colour * f); }
+        Colour                                            operator * (math::Vector4 const& mod) const;
+        Colour                                            operator * (float f) const { return Colour(colour * f); }
 
-		math::Vector4									operator - (Colour const&) const;
-		Colour											operator + (math::Vector4 const&) const;
-		bool											operator < (Colour const&) const;
-		bool											operator == (Colour const&) const;
+        math::Vector4                                    operator - (Colour const&) const;
+        Colour                                            operator + (math::Vector4 const&) const;
+        bool                                            operator < (Colour const&) const;
+        bool                                            operator == (Colour const&) const;
 
 
-	private:
+    private:
 
-		math::Vector4									colour;
-	}; // class Colour
+        math::Vector4                                    colour;
+    }; // class Colour
 
 
 

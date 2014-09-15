@@ -10,73 +10,73 @@
 
 namespace my { namespace gl { namespace shapes {
 
-	P_INLINE
-	Vertex::Vertex (math::Vector4 const& position):
-		Transformable(),
-		vec(position)
-		{ P_STATIC_ASSERT(sizeof(Vertex) == sizeof(Transformable) + sizeof(vec)) }
+    P_INLINE
+    Vertex::Vertex (math::Vector4 const& position):
+        Transformable(),
+        vec(position)
+        { P_STATIC_ASSERT(sizeof(Vertex) == sizeof(Transformable) + sizeof(vec)) }
 
-	P_INLINE
-	Vertex::Vertex (Vertex const& other):
-		Transformable(other),
-		vec(other.vec)
-		{ P_STATIC_ASSERT(sizeof(Vertex) == sizeof(Transformable) + sizeof(vec)) }
+    P_INLINE
+    Vertex::Vertex (Vertex const& other):
+        Transformable(other),
+        vec(other.vec)
+        { P_STATIC_ASSERT(sizeof(Vertex) == sizeof(Transformable) + sizeof(vec)) }
 
-	P_INLINE
-	Vertex::~Vertex (void) {
-	}
+    P_INLINE
+    Vertex::~Vertex (void) {
+    }
 
-	P_INLINE
-	float Vertex::x (void) const {
-		return vec.x();
-	}
+    P_INLINE
+    float Vertex::x (void) const {
+        return vec.x();
+    }
 
-	P_INLINE
-	float Vertex::y (void) const {
-		return vec.y();
-	}
+    P_INLINE
+    float Vertex::y (void) const {
+        return vec.y();
+    }
 
-	P_INLINE
-	float Vertex::z (void) const {
-		return vec.z();
-	}
+    P_INLINE
+    float Vertex::z (void) const {
+        return vec.z();
+    }
 
-	P_INLINE
-	float Vertex::w (void) const {
-		return vec.z();
-	}
+    P_INLINE
+    float Vertex::w (void) const {
+        return vec.z();
+    }
 
-	P_INLINE
-	math::Vector4 const& Vertex::xyzw (void) const {
-		return vec;
-	}
+    P_INLINE
+    math::Vector4 const& Vertex::xyzw (void) const {
+        return vec;
+    }
 
-	// Transformable
-	P_INLINE
-	void Vertex::Apply (math::Matrix4x4 const& mat4) {
-		vec = mat4 * vec;
-	}
+    // Transformable
+    P_INLINE
+    void Vertex::Apply (math::Matrix4x4 const& mat4) {
+        vec = mat4 * vec;
+    }
 
-	P_INLINE
-	void Vertex::Adjust (math::Vector4 const& off) {
-		vec = vec + off;
-	}
+    P_INLINE
+    void Vertex::Adjust (math::Vector4 const& off) {
+        vec = vec + off;
+    }
 
-	P_INLINE
-	void Vertex::operator = (Vertex const& other) {
-		this->~Vertex();
-		new(this) Vertex(other);
-	}
+    P_INLINE
+    void Vertex::operator = (Vertex const& other) {
+        this->~Vertex();
+        new(this) Vertex(other);
+    }
 
-	P_INLINE
-	Vertex Vertex::operator + (Vertex const& other) const {
-		return Vertex(vec - other.vec);
-	}
+    P_INLINE
+    Vertex Vertex::operator + (Vertex const& other) const {
+        return Vertex(vec - other.vec);
+    }
 
-	P_INLINE
-	bool Vertex::operator == (Vertex const& other) const {
-		return vec == other.vec;
-	}
+    P_INLINE
+    bool Vertex::operator == (Vertex const& other) const {
+        return vec == other.vec;
+    }
 
 }}} // namespace my::gl::shapes
 

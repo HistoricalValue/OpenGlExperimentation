@@ -5,18 +5,18 @@
 
 ///////////////////////////////////////////////////////////
 
-namespace _	{
+namespace _    {
 
 ///////////////////////////////////////////////////////////
 
-extern GlobalState&							getglobalstate (DrawData& dd);
-extern void									setmesh (DrawData& dd, ankh::shapes::Mesh* const mesh);
-extern ankh::shapes::Mesh&					getmesh (DrawData& dd);
-extern ankh::shapes::Mesh::Elements const&	getmeshelements (DrawData& dd);
+extern GlobalState&                            getglobalstate (DrawData& dd);
+extern void                                    setmesh (DrawData& dd, ankh::shapes::Mesh* const mesh);
+extern ankh::shapes::Mesh&                    getmesh (DrawData& dd);
+extern ankh::shapes::Mesh::Elements const&    getmeshelements (DrawData& dd);
 
 ///////////////////////////////////////////////////////////
 
-}	//	_
+}    //    _
 
 ///////////////////////////////////////////////////////////
 

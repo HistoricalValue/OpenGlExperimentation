@@ -1,5 +1,5 @@
 #ifdef __MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT__H__CYCLIC_INCLUSION_ERROR
-#	error "Cyclic inclusion error"
+#    error "Cyclic inclusion error"
 #endif
 #define __MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT__H__CYCLIC_INCLUSION_ERROR
 
@@ -15,32 +15,32 @@
 
 namespace my { namespace gl { namespace textures {
 
-	using TextureUnitWrapper::TextureUnitId;
+    using TextureUnitWrapper::TextureUnitId;
 
-	class MYUTIL_API TextureUnit {
-	public:
+    class MYUTIL_API TextureUnit {
+    public:
 
-		P_INLINE										TextureUnit (TextureUnit const&);
-		P_INLINE										~TextureUnit (void);
+        P_INLINE                                        TextureUnit (TextureUnit const&);
+        P_INLINE                                        ~TextureUnit (void);
 
-		P_INLINE bool									IsValid (void) const;
-		P_INLINE bool									IsActive (void) const;
+        P_INLINE bool                                    IsValid (void) const;
+        P_INLINE bool                                    IsActive (void) const;
 
-		P_INLINE void									Activate (void);
-		P_INLINE void									ActivateIfInactive (void); // TODO: refactor: make utility (uses public API) - nm 2011/06/15
-		P_INLINE void									Deactivate (void);
-		P_INLINE void									DeactivateIfActive (void); // TODO: refactor: make utility (uses public API) - nm 2011/06/15
+        P_INLINE void                                    Activate (void);
+        P_INLINE void                                    ActivateIfInactive (void); // TODO: refactor: make utility (uses public API) - nm 2011/06/15
+        P_INLINE void                                    Deactivate (void);
+        P_INLINE void                                    DeactivateIfActive (void); // TODO: refactor: make utility (uses public API) - nm 2011/06/15
 
-		P_INLINE TextureUnitId							GetId (void) const;
+        P_INLINE TextureUnitId                            GetId (void) const;
 
-	private:
-		friend class TextureUnitManager;
+    private:
+        friend class TextureUnitManager;
 
-		P_INLINE										TextureUnit (TextureUnitId const& textureUnit);
-		P_INLINE void									operator = (TextureUnit const&);
+        P_INLINE                                        TextureUnit (TextureUnitId const& textureUnit);
+        P_INLINE void                                    operator = (TextureUnit const&);
 
-		enum openglutil::GlConst const					textureUnit;
-	}; // class TextureUnit
+        enum openglutil::GlConst const                    textureUnit;
+    }; // class TextureUnit
 
 }}} // namespace my::gl::texture
 

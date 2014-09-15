@@ -17,9 +17,9 @@
 #define __THE_CURSED__H__
 
 #pragma warning( push, 0 )
-	// Pointless including of those two, just to signify
-	// that they are not to be found elsewhere.
-#	include <Windows.h>
+    // Pointless including of those two, just to signify
+    // that they are not to be found elsewhere.
+#    include <Windows.h>
 #pragma warning( pop )
 
 #include "../Include/TheCursed/MyDirect3D9.h"

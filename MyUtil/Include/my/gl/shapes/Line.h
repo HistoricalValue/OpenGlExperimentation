@@ -8,50 +8,50 @@
 
 namespace my { namespace gl { namespace shapes {
 
-	class MYUTIL_API Line: public Shape {
-	public:
-														Line (
-																Vertex const& beginning,
-																Vertex const& end,
-																Colour const& beginningColour	= ColourFactory::New(0.6f, 0.6f, 0.6f, 1.f),
-																Colour const& endColour			= ColourFactory::New(0.9f, 0.9f, 0.9f, 1.f));
-														Line (Line const&);
-		virtual											~Line (void);
+    class MYUTIL_API Line: public Shape {
+    public:
+                                                        Line (
+                                                                Vertex const& beginning,
+                                                                Vertex const& end,
+                                                                Colour const& beginningColour    = ColourFactory::New(0.6f, 0.6f, 0.6f, 1.f),
+                                                                Colour const& endColour            = ColourFactory::New(0.9f, 0.9f, 0.9f, 1.f));
+                                                        Line (Line const&);
+        virtual                                            ~Line (void);
 
-		static size_t									GetLineNumberOfVertices (void);
-		static size_t									GetLineSizeOf (void)
-															{ return sizeof(Line); }
+        static size_t                                    GetLineNumberOfVertices (void);
+        static size_t                                    GetLineSizeOf (void)
+                                                            { return sizeof(Line); }
 
-		Vertex const&									GetBeginning (void) const;
-		Vertex const&									GetEnd (void) const;
+        Vertex const&                                    GetBeginning (void) const;
+        Vertex const&                                    GetEnd (void) const;
 
-		Colour const&									GetBeginningColour (void) const;
-		Colour const&									GetEndColour (void) const;
+        Colour const&                                    GetBeginningColour (void) const;
+        Colour const&                                    GetEndColour (void) const;
 
-		void											SetBeginningColour (Colour const&);
-		void											SetEndColour (Colour const&);
+        void                                            SetBeginningColour (Colour const&);
+        void                                            SetEndColour (Colour const&);
 
 
-		// Shape
-		VertexData*										GetVertexData (void* memory, size_t bytesize) const;
-		Line*											Clone (void* memory, size_t bytesize) const;
-		size_t											GetNumberOfVertices (void) const
-															{ return GetLineNumberOfVertices(); }
-		size_t											GetSizeOf (void) const
-															{ return GetLineSizeOf(); }
+        // Shape
+        VertexData*                                        GetVertexData (void* memory, size_t bytesize) const;
+        Line*                                            Clone (void* memory, size_t bytesize) const;
+        size_t                                            GetNumberOfVertices (void) const
+                                                            { return GetLineNumberOfVertices(); }
+        size_t                                            GetSizeOf (void) const
+                                                            { return GetLineSizeOf(); }
 
-		// Transformable
-		void											Apply (math::Matrix4x4 const&);
-		void											Adjust (math::Vector4 const&);
+        // Transformable
+        void                                            Apply (math::Matrix4x4 const&);
+        void                                            Adjust (math::Vector4 const&);
 
-	private:
-		Vertex											beginning;
-		Vertex											end;
-		Colour											beginningColour;
-		Colour											endColour;
+    private:
+        Vertex                                            beginning;
+        Vertex                                            end;
+        Colour                                            beginningColour;
+        Colour                                            endColour;
 
-		void	operator = (Line const&);
-	};
+        void    operator = (Line const&);
+    };
 
 }}} // namespace my::gl::shapes
 

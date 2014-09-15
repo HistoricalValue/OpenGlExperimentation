@@ -9,12 +9,12 @@ namespace _ {
 
 ///////////////////////////////////////////////////////
 
-extern void		PlayWithTextureUnitsForTesting (void);
-extern void		CreateTextures (
-						ImagesArray const&	images,
-						TexturesArray&		textures,
-						size_t&				previousTextureIndex);
-extern void		DestroyTextures (TexturesArray& textures);
+extern void        PlayWithTextureUnitsForTesting (void);
+extern void        CreateTextures (
+                        ImagesArray const&    images,
+                        TexturesArray&        textures,
+                        size_t&                previousTextureIndex);
+extern void        DestroyTextures (TexturesArray& textures);
 
 ///////////////////////////////////////////////////////
 

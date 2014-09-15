@@ -10,8 +10,8 @@ namespace _ {
 
 ///////////////////////////////////////////////////////////
 
-extern void	SetupFramebuffers (DrawData& dd);
-extern void	CleanUpFrameBuffers (DrawData& dd);
+extern void    SetupFramebuffers (DrawData& dd);
+extern void    CleanUpFrameBuffers (DrawData& dd);
 
 ///////////////////////////////////////////////////////////
 

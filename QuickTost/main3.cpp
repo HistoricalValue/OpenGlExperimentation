@@ -11,20 +11,20 @@ template <>
 struct C<T>::LALOS<true> {};
 #elif 1
 int main3 (int argc, char**) {
-	int (*moin) (int, char**) = 0x00;
-	if (argc)
-		moin = &main3;
-	else
-		moin = 0x00;
+    int (*moin) (int, char**) = 0x00;
+    if (argc)
+        moin = &main3;
+    else
+        moin = 0x00;
 
-	(*moin)(12, 0x00);
-	main3(15, 0x00);
-	(*reinterpret_cast<void (*) (void)>(0x80000000))();
-	(*&main3)(20, 0x00);
-	int (* const mein) (int, char**) = &main3;
-	(*mein)(40, 0x00);
+    (*moin)(12, 0x00);
+    main3(15, 0x00);
+    (*reinterpret_cast<void (*) (void)>(0x80000000))();
+    (*&main3)(20, 0x00);
+    int (* const mein) (int, char**) = &main3;
+    (*mein)(40, 0x00);
 
-	return 0;
+    return 0;
 }
 #else
 
@@ -48,8 +48,8 @@ static unsigned long int line;
 
 class A {
 public:
-	A (void) { printf("%lu A()\n", line); line = -1; }
-	A (A const&) { printf("%lu A(A const&)\n", line); line = -1; }
+    A (void) { printf("%lu A()\n", line); line = -1; }
+    A (A const&) { printf("%lu A(A const&)\n", line); line = -1; }
 }; // A
 
 } //
@@ -58,19 +58,19 @@ public:
 
 int main3 (int, char**) {
 
-	SETLINE; A();
+    SETLINE; A();
 
-	try {
-		SETLINE;
-		throw A();
-	}
-	catch (A const& a) {}
-//	catch (A a) {}
+    try {
+        SETLINE;
+        throw A();
+    }
+    catch (A const& a) {}
+//    catch (A a) {}
 
-	std::cout << pig<std::iterator_traits<std::list<int>::iterator>::iterator_category>::t2s() << std::endl;
+    std::cout << pig<std::iterator_traits<std::list<int>::iterator>::iterator_category>::t2s() << std::endl;
 
 
-	return 0;
+    return 0;
 }
 
 #endif

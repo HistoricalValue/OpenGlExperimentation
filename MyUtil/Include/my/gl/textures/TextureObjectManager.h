@@ -6,14 +6,14 @@
 
 namespace my { namespace gl { namespace textures {
 
-	namespace TextureObjectManager {
-		MYUTIL_API void									Initialise (void);
-		MYUTIL_API void									CleanUp (void);
+    namespace TextureObjectManager {
+        MYUTIL_API void                                    Initialise (void);
+        MYUTIL_API void                                    CleanUp (void);
 
 
-		MYUTIL_API void									Create (TextureObject* placeIn, size_t bytesize);
+        MYUTIL_API void                                    Create (TextureObject* placeIn, size_t bytesize);
 
-	} // namespace TextureObjectManager
+    } // namespace TextureObjectManager
 
 }}} // namespace my::gl::textures
 

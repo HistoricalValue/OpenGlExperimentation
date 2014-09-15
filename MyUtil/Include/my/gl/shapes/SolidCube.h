@@ -10,51 +10,51 @@
 namespace my { namespace gl { namespace shapes {
 
 
-	class MYUTIL_API SolidCube: public Shape {
+    class MYUTIL_API SolidCube: public Shape {
 
-	public:
+    public:
 
-		explicit										SolidCube (Colour const& colour = Colour(math::Vector4::New(0.6f, 0.6f, 0.6f, 1.0f)));
-														SolidCube (SolidCube const&);
-		virtual											~SolidCube (void);
+        explicit                                        SolidCube (Colour const& colour = Colour(math::Vector4::New(0.6f, 0.6f, 0.6f, 1.0f)));
+                                                        SolidCube (SolidCube const&);
+        virtual                                            ~SolidCube (void);
 
-		static size_t									GetSolidCubeNumberOfVertices (void);
-		static size_t									GetSolidCubeSizeOf (void)
-															{ return sizeof(SolidCube); }
+        static size_t                                    GetSolidCubeNumberOfVertices (void);
+        static size_t                                    GetSolidCubeSizeOf (void)
+                                                            { return sizeof(SolidCube); }
 
-		// Shape
-		VertexData*										GetVertexData (void* memory, size_t bytesize) const;
-		TexturedVertexData*								GetTexturedVertexData (void* memory, size_t bytesize) const;
-		SolidCube*										Clone (void* memory, size_t bytesize) const;
-		size_t											GetNumberOfVertices (void) const
-															{ return GetSolidCubeNumberOfVertices(); }
-		size_t											GetSizeOf (void) const
-															{ return GetSolidCubeSizeOf(); }
+        // Shape
+        VertexData*                                        GetVertexData (void* memory, size_t bytesize) const;
+        TexturedVertexData*                                GetTexturedVertexData (void* memory, size_t bytesize) const;
+        SolidCube*                                        Clone (void* memory, size_t bytesize) const;
+        size_t                                            GetNumberOfVertices (void) const
+                                                            { return GetSolidCubeNumberOfVertices(); }
+        size_t                                            GetSizeOf (void) const
+                                                            { return GetSolidCubeSizeOf(); }
 
 
-		// Transformable
-		void											Apply (math::Matrix4x4 const&);
-		void											Adjust (math::Vector4 const&);
+        // Transformable
+        void                                            Apply (math::Matrix4x4 const&);
+        void                                            Adjust (math::Vector4 const&);
 
-	private:
-		Triangle										triangle00;
-		Triangle										triangle01;
-		Triangle										triangle02;
-		Triangle										triangle03;
-		Triangle										triangle04;
-		Triangle										triangle05;
-		Triangle										triangle06;
-		Triangle										triangle07;
-		Triangle										triangle08;
-		Triangle										triangle09;
-		Triangle										triangle10;
-		Triangle										triangle11;
+    private:
+        Triangle                                        triangle00;
+        Triangle                                        triangle01;
+        Triangle                                        triangle02;
+        Triangle                                        triangle03;
+        Triangle                                        triangle04;
+        Triangle                                        triangle05;
+        Triangle                                        triangle06;
+        Triangle                                        triangle07;
+        Triangle                                        triangle08;
+        Triangle                                        triangle09;
+        Triangle                                        triangle10;
+        Triangle                                        triangle11;
 
-		Triangle*										GetTriangles (void);
-		Triangle const*									GetConstTriangles (void) const;
+        Triangle*                                        GetTriangles (void);
+        Triangle const*                                    GetConstTriangles (void) const;
 
-		void operator = (SolidCube const&);
-	}; // class SolidCube
+        void operator = (SolidCube const&);
+    }; // class SolidCube
 
 
 }}} // namespace my::gl::shapes

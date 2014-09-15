@@ -5,13 +5,13 @@
 
 namespace my { namespace gl { namespace shape {
 
-	class MYUTIL_API Texturable {
-	public:
-		virtual											~Texturable (void);
+    class MYUTIL_API Texturable {
+    public:
+        virtual                                            ~Texturable (void);
 
-	protected:
-														Texturable (void);
-	}; // class Texturable
+    protected:
+                                                        Texturable (void);
+    }; // class Texturable
 
 }}} // namespace my::gl::shape
 

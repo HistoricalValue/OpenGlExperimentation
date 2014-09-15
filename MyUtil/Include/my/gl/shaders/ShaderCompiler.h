@@ -10,31 +10,31 @@ namespace my { namespace gl { namespace shaders {
 #pragma warning( push )
 #pragma warning( disable: 4251 ) // std::string<> needs dll-interface for clients of ShaderCompiler
 
-	class MYUTIL_API ShaderCompiler {
-	public:
-		typedef enum {									ShaderType_VertexShader		= 0x0001u,
-														ShaderType_FragmentShader	= 0x0004u }
-														ShaderType;
+    class MYUTIL_API ShaderCompiler {
+    public:
+        typedef enum {                                    ShaderType_VertexShader        = 0x0001u,
+                                                        ShaderType_FragmentShader    = 0x0004u }
+                                                        ShaderType;
 
-		bool											HasCompiled (void) const;
-														// => "success?"
-		bool											Compile (char const* source);
-		bool											IsCompilationSuccessful (void) const;
-		std::string const&								GetErrorMessage (void) const;
+        bool                                            HasCompiled (void) const;
+                                                        // => "success?"
+        bool                                            Compile (char const* source);
+        bool                                            IsCompilationSuccessful (void) const;
+        std::string const&                                GetErrorMessage (void) const;
 
-		GLuint											GetShader (void) const;
-		ShaderType										GetShaderType (void) const;
+        GLuint                                            GetShader (void) const;
+        ShaderType                                        GetShaderType (void) const;
 
-														ShaderCompiler (ShaderType);
-														ShaderCompiler (ShaderCompiler const&);
-														~ShaderCompiler (void);
-	private:
-		std::string										errorMessage;
-		bool											compilationSuccessful;
-		GLuint											shader;
-		bool											hasCompiled;
-		ShaderType										type;
-	}; // class ShaderCompiler
+                                                        ShaderCompiler (ShaderType);
+                                                        ShaderCompiler (ShaderCompiler const&);
+                                                        ~ShaderCompiler (void);
+    private:
+        std::string                                        errorMessage;
+        bool                                            compilationSuccessful;
+        GLuint                                            shader;
+        bool                                            hasCompiled;
+        ShaderType                                        type;
+    }; // class ShaderCompiler
 
 #pragma warning( pop ) // 4251
 

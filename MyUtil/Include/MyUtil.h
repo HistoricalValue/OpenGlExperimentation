@@ -15,13 +15,13 @@
 #endif
 
 #pragma warning( push, 0 )
-#	include <stdlib.h>
+#    include <stdlib.h>
 #pragma warning( pop )
 
 
 /////////////////////////////
 
 namespace my {
-	extern MYUTIL_API void Initialise (void);
-	extern MYUTIL_API void CleanUp (void);
+    extern MYUTIL_API void Initialise (void);
+    extern MYUTIL_API void CleanUp (void);
 }

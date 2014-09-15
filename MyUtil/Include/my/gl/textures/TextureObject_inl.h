@@ -10,36 +10,36 @@
 
 namespace my { namespace gl { namespace textures {
 
-	P_INLINE
-	TextureObject::TextureObject (TextureObject const& other):
-		id(other.id),
-		isUploaded(other.isUploaded)
-	{
-		P_STATIC_ASSERT(sizeof(TextureObject) == 3 + sizeof(id) + sizeof(isUploaded))
-	}
+    P_INLINE
+    TextureObject::TextureObject (TextureObject const& other):
+        id(other.id),
+        isUploaded(other.isUploaded)
+    {
+        P_STATIC_ASSERT(sizeof(TextureObject) == 3 + sizeof(id) + sizeof(isUploaded))
+    }
 
-	P_INLINE
-	void TextureObject::operator = (TextureObject const& other) {
-		this->~TextureObject();
-		new(this) TextureObject(other);
-	}
+    P_INLINE
+    void TextureObject::operator = (TextureObject const& other) {
+        this->~TextureObject();
+        new(this) TextureObject(other);
+    }
 
-	P_INLINE
-	TextureObject::~TextureObject (void) {
-	}
+    P_INLINE
+    TextureObject::~TextureObject (void) {
+    }
 
-	P_INLINE
-	bool TextureObject::IsUploaded (void) const {
-		return isUploaded;
-	}
+    P_INLINE
+    bool TextureObject::IsUploaded (void) const {
+        return isUploaded;
+    }
 
-	P_INLINE
-	TextureObject::TextureObject (Id const& _id):
-		id(_id),
-		isUploaded(false)
-	{
-		P_STATIC_ASSERT(sizeof(TextureObject) == 3 + sizeof(id) + sizeof(isUploaded))
-	}
+    P_INLINE
+    TextureObject::TextureObject (Id const& _id):
+        id(_id),
+        isUploaded(false)
+    {
+        P_STATIC_ASSERT(sizeof(TextureObject) == 3 + sizeof(id) + sizeof(isUploaded))
+    }
 
 }}} // namespace my::gl::textures
 

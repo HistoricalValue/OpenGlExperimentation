@@ -10,61 +10,61 @@ namespace my { namespace gl { namespace shapes {
 //////////////////////////////////////////////////////////
 
 bool DynamicShapeComposition::IsFull (void) const {
-	return SpecificNumberOfShapesComposition::IsFull();
+    return SpecificNumberOfShapesComposition::IsFull();
 }
 
 //////////////////////////////////////////////////////////
 
 void DynamicShapeComposition::Add (Shape const& shape) {
-	PASSERT(!IsFull())
-	SpecificNumberOfShapesComposition::Add(ShapeUtilities::CloneShape(shape));
+    PASSERT(!IsFull())
+    SpecificNumberOfShapesComposition::Add(ShapeUtilities::CloneShape(shape));
 }
 
 //////////////////////////////////////////////////////////
 
 DynamicShapeComposition::DynamicShapeComposition (size_t const numberOfShapes):
-	SpecificNumberOfShapesComposition(numberOfShapes)
-	{ }
+    SpecificNumberOfShapesComposition(numberOfShapes)
+    { }
 
 //////////////////////////////////////////////////////////
 
 DynamicShapeComposition::DynamicShapeComposition (DynamicShapeComposition const& other):
-	SpecificNumberOfShapesComposition(other.GetCapacity()) {
-	PASSERT(other.IsFull())
+    SpecificNumberOfShapesComposition(other.GetCapacity()) {
+    PASSERT(other.IsFull())
 
-	Shape const* const* const shapes= (other.GetShapesArray());						// stupid microsoft -- cannot ()-init
-	Shape const* const* const end	= (shapes + other.GetNumberOfAddedShapes());	// stupid microsoft -- cannot ()-init
-	for (Shape const* const* i = shapes; i != end; ++i)
-		Add(**i);
+    Shape const* const* const shapes= (other.GetShapesArray());                        // stupid microsoft -- cannot ()-init
+    Shape const* const* const end    = (shapes + other.GetNumberOfAddedShapes());    // stupid microsoft -- cannot ()-init
+    for (Shape const* const* i = shapes; i != end; ++i)
+        Add(**i);
 
-	PASSERT(IsFull())
+    PASSERT(IsFull())
 }
 
 //////////////////////////////////////////////////////////
 
 DynamicShapeComposition::~DynamicShapeComposition (void) {
-	PASSERT(IsFull())
-	Shape* const* const shapes = (GetShapesArray()); // stupid microsoft -- cannot ()-init
-	std::for_each(shapes, shapes + GetNumberOfAddedShapes(), uptr_fun(ShapeUtilities::DisposeClonedShape));
+    PASSERT(IsFull())
+    Shape* const* const shapes = (GetShapesArray()); // stupid microsoft -- cannot ()-init
+    std::for_each(shapes, shapes + GetNumberOfAddedShapes(), uptr_fun(ShapeUtilities::DisposeClonedShape));
 }
 
 //////////////////////////////////////////////////////////
 
 DynamicShapeComposition* DynamicShapeComposition::Clone (void* const mem, size_t const bytesize) const {
-	size_t const requiredSize(GetSizeOf());
-	PASSERT(bytesize >= requiredSize);
+    size_t const requiredSize(GetSizeOf());
+    PASSERT(bytesize >= requiredSize);
 
-	DynamicShapeComposition* result(NULL);
-	if (bytesize >= requiredSize)
-		result = new(mem) DynamicShapeComposition(*this);
+    DynamicShapeComposition* result(NULL);
+    if (bytesize >= requiredSize)
+        result = new(mem) DynamicShapeComposition(*this);
 
-	return result;
+    return result;
 }
 
 //////////////////////////////////////////////////////////
 
 size_t DynamicShapeComposition::GetSizeOf (void) const {
-	return sizeof(DynamicShapeComposition);
+    return sizeof(DynamicShapeComposition);
 }
 
 //////////////////////////////////////////////////////////

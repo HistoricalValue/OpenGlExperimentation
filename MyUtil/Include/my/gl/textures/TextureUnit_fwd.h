@@ -5,7 +5,7 @@
 
 namespace my { namespace gl { namespace textures {
 
-	class MYUTIL_API TextureUnit;
+    class MYUTIL_API TextureUnit;
 
 }}} // namespace my::gl::texture
 

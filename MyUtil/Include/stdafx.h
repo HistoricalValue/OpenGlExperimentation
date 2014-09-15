@@ -7,8 +7,8 @@
 #define STDAFX_H
 
 #ifdef _MSC_VER
-//#	pragma once
-#	pragma warning( push, 0 )
+//#    pragma once
+#    pragma warning( push, 0 )
 #endif
 
 // C RunTime Header Files
@@ -48,7 +48,7 @@
 #include <PConfigurations.h>
 
 #ifdef _MSC_VER
-#	pragma warning( pop )
+#    pragma warning( pop )
 #endif
 
 #endif // STDAFX_H

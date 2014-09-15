@@ -9,29 +9,29 @@
 MYUTIL_API extern int n;
 
 namespace my {
-	namespace global {
+    namespace global {
 
 
-		namespace errorHandler {
-			typedef void (*ErrorHandler) (TCHAR const* msg);
+        namespace errorHandler {
+            typedef void (*ErrorHandler) (TCHAR const* msg);
 
-			MYUTIL_API ErrorHandler						Get (void);
-			MYUTIL_API void								Set (ErrorHandler);
-		}
+            MYUTIL_API ErrorHandler                        Get (void);
+            MYUTIL_API void                                Set (ErrorHandler);
+        }
 
-		namespace errorHolder {
-			using codeshare::utilities::ErrorHolder;
+        namespace errorHolder {
+            using codeshare::utilities::ErrorHolder;
 
-			MYUTIL_API ErrorHolder&						Get (void);
-			MYUTIL_API void								Set (ErrorHolder*);
-		}
+            MYUTIL_API ErrorHolder&                        Get (void);
+            MYUTIL_API void                                Set (ErrorHolder*);
+        }
 
-		namespace logger {
-			MYUTIL_API GenericLogger&					Get (void);
-			MYUTIL_API void								Set (GenericLogger*);
-		}
+        namespace logger {
+            MYUTIL_API GenericLogger&                    Get (void);
+            MYUTIL_API void                                Set (GenericLogger*);
+        }
 
-	} // namespace global
+    } // namespace global
 } // namespace my
 
 #endif // __MY__GLOBAL_INSTANCES__H__

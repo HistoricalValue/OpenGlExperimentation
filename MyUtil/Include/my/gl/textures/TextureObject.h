@@ -8,27 +8,27 @@
 
 namespace my { namespace gl { namespace textures {
 
-	using TextureUnitWrapper::TextureUnitId;
+    using TextureUnitWrapper::TextureUnitId;
 
-	class MYUTIL_API TextureObject {
-	public:
-		typedef GLuint									Id;
+    class MYUTIL_API TextureObject {
+    public:
+        typedef GLuint                                    Id;
 
-		P_INLINE										TextureObject (TextureObject const&);
-		P_INLINE void									operator = (TextureObject const&);
-		P_INLINE 										~TextureObject (void);
+        P_INLINE                                        TextureObject (TextureObject const&);
+        P_INLINE void                                    operator = (TextureObject const&);
+        P_INLINE                                         ~TextureObject (void);
 
-		P_INLINE void									Upload (TextureUnit const& to, TextureData const&);
+        P_INLINE void                                    Upload (TextureUnit const& to, TextureData const&);
 
-		P_INLINE bool									IsUploaded (void) const;
+        P_INLINE bool                                    IsUploaded (void) const;
 
-	private:
-		P_INLINE 										TextureObject (Id const&);
-		friend void										TextureObject_Create (TextureObject* placeIn, Id const&);
+    private:
+        P_INLINE                                         TextureObject (Id const&);
+        friend void                                        TextureObject_Create (TextureObject* placeIn, Id const&);
 
-		Id												id;
-		bool											isUploaded;
-	}; // class TextureObject
+        Id                                                id;
+        bool                                            isUploaded;
+    }; // class TextureObject
 
 }}} // namespace my::gl::textures
 

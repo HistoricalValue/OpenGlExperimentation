@@ -8,18 +8,18 @@ namespace my { namespace gl { namespace shapes {
 
 namespace ShapeUtilities {
 
-	extern MYUTIL_API void	Initialise (void);
-	extern MYUTIL_API void	CleanUp (void);
-	extern MYUTIL_API void*	_ShapeAlloc (size_t);
+    extern MYUTIL_API void    Initialise (void);
+    extern MYUTIL_API void    CleanUp (void);
+    extern MYUTIL_API void*    _ShapeAlloc (size_t);
 
-	extern MYUTIL_API void	Reset (void);
-	extern MYUTIL_API void	DisposeClonedShape (Shape* shape);
+    extern MYUTIL_API void    Reset (void);
+    extern MYUTIL_API void    DisposeClonedShape (Shape* shape);
 
-	template <typename TShape>
-	static inline TShape*		CloneShape (TShape const& shape) {
-									size_t const bytesize(shape.GetSizeOf());
-									return DNULLCHECK(shape.Clone(_ShapeAlloc(bytesize), bytesize));
-								}
+    template <typename TShape>
+    static inline TShape*        CloneShape (TShape const& shape) {
+                                    size_t const bytesize(shape.GetSizeOf());
+                                    return DNULLCHECK(shape.Clone(_ShapeAlloc(bytesize), bytesize));
+                                }
 
 }
 

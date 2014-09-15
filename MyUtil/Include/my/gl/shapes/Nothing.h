@@ -7,22 +7,22 @@
 
 namespace my { namespace gl { namespace shapes {
 
-	class MYUTIL_API Nothing: public Shape {
-	public:
-		P_INLINE 										Nothing (void);
-		P_INLINE 										Nothing (Nothing const&);
-		P_INLINE virtual								~Nothing (void);
+    class MYUTIL_API Nothing: public Shape {
+    public:
+        P_INLINE                                         Nothing (void);
+        P_INLINE                                         Nothing (Nothing const&);
+        P_INLINE virtual                                ~Nothing (void);
 
-		P_INLINE VertexData*							GetVertexData (void* memory, size_t bytesize) const;
-		P_INLINE TexturedVertexData*					GetTexturedVertexData (void* memory, size_t bytesize) const;
-		P_INLINE Nothing*								Clone (void* memory, size_t bytesize) const;
-		P_INLINE size_t									GetSizeOf (void) const;
-		P_INLINE size_t									GetNumberOfVertices (void) const;
-		P_INLINE void									Apply (math::Matrix4x4 const&);
-		P_INLINE void									Adjust (math::Vector4 const&);
-	private:
-		void operator = (Nothing const&);
-	}; // class Nothing
+        P_INLINE VertexData*                            GetVertexData (void* memory, size_t bytesize) const;
+        P_INLINE TexturedVertexData*                    GetTexturedVertexData (void* memory, size_t bytesize) const;
+        P_INLINE Nothing*                                Clone (void* memory, size_t bytesize) const;
+        P_INLINE size_t                                    GetSizeOf (void) const;
+        P_INLINE size_t                                    GetNumberOfVertices (void) const;
+        P_INLINE void                                    Apply (math::Matrix4x4 const&);
+        P_INLINE void                                    Adjust (math::Vector4 const&);
+    private:
+        void operator = (Nothing const&);
+    }; // class Nothing
 
 }}} // namespace my::gl::shapes
 

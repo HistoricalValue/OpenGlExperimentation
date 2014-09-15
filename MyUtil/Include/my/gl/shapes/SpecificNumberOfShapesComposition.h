@@ -9,13 +9,13 @@ namespace my { namespace gl { namespace shapes {
 // abstract
 class MYUTIL_API SpecificNumberOfShapesComposition: public ShapeComposition {
 protected:
-					SpecificNumberOfShapesComposition (size_t numberOfShapes);
-	virtual			~SpecificNumberOfShapesComposition (void);
+                    SpecificNumberOfShapesComposition (size_t numberOfShapes);
+    virtual            ~SpecificNumberOfShapesComposition (void);
 
-	Shape**			GetShapesArray (void) const;
+    Shape**            GetShapesArray (void) const;
 private:
-	SpecificNumberOfShapesComposition (SpecificNumberOfShapesComposition const&);
-	void operator = (SpecificNumberOfShapesComposition const&);
+    SpecificNumberOfShapesComposition (SpecificNumberOfShapesComposition const&);
+    void operator = (SpecificNumberOfShapesComposition const&);
 }; // SpecificNumberOfShapesComposition
 
 }}} // namespace my::gl::shapes

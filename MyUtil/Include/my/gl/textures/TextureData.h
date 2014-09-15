@@ -5,8 +5,8 @@
 
 namespace my { namespace gl { namespace textures {
 
-	class MYUTIL_API TextureData {
-	}; // class TextureData
+    class MYUTIL_API TextureData {
+    }; // class TextureData
 
 }}} // namespace my::gl::textures
 

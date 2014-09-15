@@ -7,39 +7,39 @@
 #include <MyOpenGLUtils.h>
 
 #ifdef P_INLINING
-#	define __MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL__LINKAGE	P_INLINE
+#    define __MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL__LINKAGE    P_INLINE
 #else
-#	define __MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL__LINKAGE	MYUTIL_API
+#    define __MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL__LINKAGE    MYUTIL_API
 #endif
 
 namespace my { namespace gl { namespace textures {
 
-	namespace TextureUnitWrapper {
+    namespace TextureUnitWrapper {
 
-		typedef GLenum									TextureUnitId;
+        typedef GLenum                                    TextureUnitId;
 
-		__MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL__LINKAGE
-		bool 											IsValid (TextureUnitId textureUnit);
+        __MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL__LINKAGE
+        bool                                             IsValid (TextureUnitId textureUnit);
 
-		__MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL__LINKAGE
-		bool											IsActive (TextureUnitId textureUnit);
+        __MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL__LINKAGE
+        bool                                            IsActive (TextureUnitId textureUnit);
 
-		__MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL__LINKAGE
-		TextureUnitId									GetActive (void);
+        __MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL__LINKAGE
+        TextureUnitId                                    GetActive (void);
 
-		__MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL__LINKAGE
-		void											Activate (TextureUnitId textureUnit);
+        __MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL__LINKAGE
+        void                                            Activate (TextureUnitId textureUnit);
 
-		__MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL__LINKAGE
-		void											ActivateIfInactive (TextureUnitId textureUnit);
+        __MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL__LINKAGE
+        void                                            ActivateIfInactive (TextureUnitId textureUnit);
 
-		__MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL__LINKAGE
-		void											Deactivate (TextureUnitId textureUnit);
+        __MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL__LINKAGE
+        void                                            Deactivate (TextureUnitId textureUnit);
 
-		__MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL__LINKAGE
-		void											DeactivateIfActive (TextureUnitId textureUnit);
+        __MY_UTIL__MY__GL__TEXTURE__TEXTURE_UNIT_UTIL__LINKAGE
+        void                                            DeactivateIfActive (TextureUnitId textureUnit);
 
-	} // namespace TextureUnitWrapper
+    } // namespace TextureUnitWrapper
 
 }}} // namespace my::gl::texture
 

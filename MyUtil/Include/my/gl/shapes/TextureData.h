@@ -6,11 +6,11 @@
 namespace my { namespace gl { namespace shape {
 
 
-	class MYUTIL_API TextureData {
+    class MYUTIL_API TextureData {
 
 
 
-	};
+    };
 
 
 }}} // namespace my::gl::shape

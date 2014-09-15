@@ -10,16 +10,16 @@ template <const size_t N>
 // abstract
 class NShapesComposition: public SpecificNumberOfShapesComposition {
 public:
-	virtual size_t					GetSizeOf (void) const;
-	virtual NShapesComposition*		Clone (void*, size_t) const;	// Clone and GetSizeOf() added for enabling making of tmp objects.
-																	// They are not allowed for this class, results in runtime failure.
+    virtual size_t                    GetSizeOf (void) const;
+    virtual NShapesComposition*        Clone (void*, size_t) const;    // Clone and GetSizeOf() added for enabling making of tmp objects.
+                                                                    // They are not allowed for this class, results in runtime failure.
 
-									NShapesComposition (void);
-	virtual							~NShapesComposition (void);
+                                    NShapesComposition (void);
+    virtual                            ~NShapesComposition (void);
 
 private:
-	NShapesComposition (NShapesComposition<N> const&);
-	void operator = (NShapesComposition<N> const&);
+    NShapesComposition (NShapesComposition<N> const&);
+    void operator = (NShapesComposition<N> const&);
 // TODO add in-object storage for Shape*[N]
 }; // class NShapesComposition
 

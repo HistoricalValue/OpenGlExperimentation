@@ -3,7 +3,7 @@
 
 #include <my/gl/shapes/ShapeCompositionFactory.h>
 #pragma warning( push, 0 )
-#	include "Mesh.h"
+#    include "Mesh.h"
 #pragma warning( pop )
 
 namespace my { namespace drawing { namespace nurbs {

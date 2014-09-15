@@ -14,27 +14,27 @@ namespace my { namespace gl { namespace shapes {
 
 class MYUTIL_API ShapeCompositionFactory {
 public:
-	void						Add (Shape const&);
-	DynamicShapeComposition*	Generate (void) const;
-	void						Reset (void);
+    void                        Add (Shape const&);
+    DynamicShapeComposition*    Generate (void) const;
+    void                        Reset (void);
 
-	void						Dispose (DynamicShapeComposition*) const;
+    void                        Dispose (DynamicShapeComposition*) const;
 
-	size_t						GetNumberOfAddedShapes (void) const;
+    size_t                        GetNumberOfAddedShapes (void) const;
 
-								ShapeCompositionFactory (void);
-								~ShapeCompositionFactory (void);
+                                ShapeCompositionFactory (void);
+                                ~ShapeCompositionFactory (void);
 
-	template <typename InputIteratorType>
-	ShapeCompositionFactory&	AddAll (InputIteratorType const& begin, InputIteratorType const& end);
+    template <typename InputIteratorType>
+    ShapeCompositionFactory&    AddAll (InputIteratorType const& begin, InputIteratorType const& end);
 
-	template <typename ContainerType>
-	ShapeCompositionFactory&	AddAll (ContainerType const& container);
+    template <typename ContainerType>
+    ShapeCompositionFactory&    AddAll (ContainerType const& container);
 
 private:
 #pragma warning( push )
 #pragma warning( disable: 4251 )
-	std::list<Shape*> shapes;
+    std::list<Shape*> shapes;
 #pragma warning( pop )
 };
 

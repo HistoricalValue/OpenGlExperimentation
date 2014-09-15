@@ -3,24 +3,24 @@
 
 ///////////////////////////////////////////////////////////
 
-namespace _	{
+namespace _    {
 
 ///////////////////////////////////////////////////////////
 
 GlobalState& getglobalstate (DrawData& dd)
-	{ return dd.gstate; }
+    { return dd.gstate; }
 
 void setmesh (DrawData& dd, ankh::shapes::Mesh* const mesh)
-	{ assign(getglobalstate(dd).mesh, dptr(mesh).native()); }
+    { assign(getglobalstate(dd).mesh, dptr(mesh).native()); }
 
 ankh::shapes::Mesh& getmesh (DrawData& dd)
-	{ return *dptr(getglobalstate(dd).mesh); }
+    { return *dptr(getglobalstate(dd).mesh); }
 
 ankh::shapes::Mesh::Elements const& getmeshelements (DrawData& dd)
-	{ return getmesh(dd).GetElements(); }
+    { return getmesh(dd).GetElements(); }
 
 ///////////////////////////////////////////////////////////
 
-}	//	_
+}    //    _
 
 ///////////////////////////////////////////////////////////

@@ -5,34 +5,34 @@
 #include <ImageDecoder.h>
 
 namespace glt {
-	extern MYUTIL_API GLbyte *ReadTGABits(
-			const char*	szFileName,
-			void*		(*memalloc) (size_t),
-			void		(*memfree) (void*),
-			GLenum*		eFormat,
-			GLint*		iWidth,
-			GLint*		iHeight,
-			GLshort*	pDepth						= NULL,
-			GLuint*		pImageSize					= NULL,
-			GLint*		iComponents					= NULL,
-			GLbyte*		pData						= NULL);
+    extern MYUTIL_API GLbyte *ReadTGABits(
+            const char*    szFileName,
+            void*        (*memalloc) (size_t),
+            void        (*memfree) (void*),
+            GLenum*        eFormat,
+            GLint*        iWidth,
+            GLint*        iHeight,
+            GLshort*    pDepth                        = NULL,
+            GLuint*        pImageSize                    = NULL,
+            GLint*        iComponents                    = NULL,
+            GLbyte*        pData                        = NULL);
 
 
 
-	class MYUTIL_API TGADecoder: public ankh::images::GenericReaderImageDecoder {
-	public:
+    class MYUTIL_API TGADecoder: public ankh::images::GenericReaderImageDecoder {
+    public:
 
-		virtual ankh::images::Image* Decode (
-				GenericReader&,
-				ankh::images::ImageCharacteristics const&);
-		virtual ankh::images::ImageFormatId const& GetFormatId (void) const;
-		virtual bool CanHandleFormat (ankh::images::ImageFormatId const& fmt) const;
-		TGADecoder (void);
-		virtual ~TGADecoder (void);
-	private:
-		TGADecoder (TGADecoder const&);
-		void operator = (TGADecoder const&);
-	};
+        virtual ankh::images::Image* Decode (
+                GenericReader&,
+                ankh::images::ImageCharacteristics const&);
+        virtual ankh::images::ImageFormatId const& GetFormatId (void) const;
+        virtual bool CanHandleFormat (ankh::images::ImageFormatId const& fmt) const;
+        TGADecoder (void);
+        virtual ~TGADecoder (void);
+    private:
+        TGADecoder (TGADecoder const&);
+        void operator = (TGADecoder const&);
+    };
 
 }
 
